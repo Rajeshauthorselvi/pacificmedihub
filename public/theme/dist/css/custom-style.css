@@ -1,0 +1,81 @@
+/* Login page & Register page */
+.login-page, .register-page{background:#ededed !important;}
+.login-page .login-box{width:440px;}
+.register-page .register-box{width:720px;}
+.login-page .form-control:focus , .register-page .form-control:focus,.register-card-body .input-group .form-control:focus {border-color: #75c4ff;}
+.login-page .login-box .card, .register-page .register-box .card{border-radius:10px;box-shadow: 0 0 1px rgba(0,0,0,.125),0 0 0 rgba(0,0,0,.2);}
+.login-page .login-box .login-card-body, .register-card-body{padding:30px 45px;border-radius:25px;}
+.login-page .login-box .login-box-logo{text-align:center;padding:10px 0 15px 0;}
+.login-page .login-box .login-card-body h4 {text-align: center;font-size: 28px;color: #1e1e1e;padding-bottom: 15px;}
+.register-page .register-box .register-box-logo{text-align:center;padding:10px 0 10px 0;}
+.register-page form .col-md-12{padding: 0;}
+.register-page form .mb-3{padding: 0;}
+.register-card-body .input-group .form-control{border-right: 1px solid #ced4da;}
+.login-page .login-box .input-group .form-control, .register-page .register-box .input-group .form-control{padding:25px 20px;}
+.login-page .login-box .login-card-body .input-group .form-control:focus ~ .input-group-append .input-group-text, .register-card-body .input-group .form-control:focus ~ .input-group-append .input-group-text, .login-page .login-box .input-group .form-control:focus{border-color:#75c4ff;}
+.login-page .login-box .row .col-12{margin-bottom:10px;}
+.register-page .register-box .btn-primary{padding: 12px;}
+.login-page .login-box .row .btn-primary, .register-page .register-box .row .btn-primary{padding:10px 20px;font-size:20px;}
+.login-page .login-box .btn-primary, .register-page .register-box .btn-primary{background-color:#3287c7;border-color:#3287c7;}
+.login-page .login-box .btn-primary:hover, .register-page .register-box .btn-primary:hover{background-color: #2268b2;}
+.login-page .login-box p.mb-1{text-align:right;}
+.login-page .login-box .login-card-body .input-group .input-group-text, .register-card-body .input-group .input-group-text, .login-page .login-box p.mb-1 a{color:#3287c7;}
+.login-page .login-box p.mb-1 a:hover{text-decoration:underline;}
+.login-page .login-box .input-group-text{padding:0.375rem 1.2rem}
+
+/* Admin Panel */
+/* Slidebar Menu */
+.sidebar-mini .sidebar-light-primary .brand-link {
+    padding: 0.5rem .5rem;
+    float: left;
+    text-align: center;
+    border-bottom: 1px solid #f4f6f9;
+}
+.sidebar-mini .main-sidebar .brand-link .brand-image {
+    float: none;
+}
+.sidebar-mini.sidebar-collapse .main-sidebar .brand-link .brand-image {
+    margin: 4.3px;
+    max-height: 25px;
+}
+.sidebar-mini .sidebar-light-primary .sidebar{
+	padding: 0;
+float: left;
+width: 100%;
+}
+.sidebar-mini .navbar{
+	padding: .3rem .5rem;
+}
+.sidebar-mini .content-wrapper {
+    background-color: #ebeff5;
+}
+.sidebar-mini .sidebar .nav .nav-item .nav-link i {
+    font-size: 14px;
+    margin-right: 10px;
+    color: #3287c7;
+}
+.sidebar-mini .sidebar .nav-sidebar .nav-link p{
+	font-size:14px;
+}
+.sidebar-mini .sidebar .nav .nav-item .nav-link p i,.sidebar-mini .sidebar .nav .nav-item .nav-link .fas.fa-angle-double-right {
+    color: #1e1e1e;
+}
+.sidebar-mini [class*="sidebar-light-"] .nav-sidebar > .nav-item.menu-open > .nav-link{
+	margin:0;
+	border-radius: unset;
+	background-color: #3287c7;
+	color: #fff;
+}
+.sidebar-mini [class*="sidebar-light-"] .nav-sidebar > .nav-item > .nav-treeview{ background-color:#d7e5ef}
+.sidebar-mini [class*="sidebar-light-"] .nav-treeview > .nav-item > .nav-link {
+    color: #1e1e1e;
+    padding: 10px 10px 10px 50px;
+}
+.sidebar-mini .sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active{
+	border-radius: unset;
+	background-color: #3287c7;
+	margin:0
+}
+.sidebar-mini .sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active i{
+	color: #fff;
+}
