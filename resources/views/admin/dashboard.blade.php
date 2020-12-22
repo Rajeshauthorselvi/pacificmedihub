@@ -1,8 +1,5 @@
 @extends('admin.layouts.master')
 @section('main_container')
-
-
-
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -10,19 +7,19 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Dashboard</h1>
+            <h1 class="m-0">Welcome Dashboard</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
+              <li class="breadcrumb-item active">Dashboard</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-
+    <span class="hr"></span>
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
@@ -30,14 +27,13 @@
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-info">
+            <div class="small-box">
               <div class="inner">
-                <h3>150</h3>
-
-                <p>New Orders</p>
+                <h4>RFQ</h4>
+                <p>Total New Quotations</p>
               </div>
               <div class="icon">
-                <i class="ion ion-bag"></i>
+                <span>3</span>
               </div>
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -45,14 +41,13 @@
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-success">
+            <div class="small-box">
               <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                <p>Bounce Rate</p>
+                <h4>Orders</h4>
+                <p>Total New Orders</p>
               </div>
               <div class="icon">
-                <i class="ion ion-stats-bars"></i>
+                <span>5</span>
               </div>
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -60,14 +55,29 @@
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-warning">
+            <div class="small-box">
               <div class="inner">
-                <h3>44</h3>
-
-                <p>User Registrations</p>
+                <h4>Deliveries</h4>
+                <p>Total Pending Orders</p>
               </div>
               <div class="icon">
-                <i class="ion ion-person-add"></i>
+                <span>5</span>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Vendors</h4>
+                <p>Total Vendors</p>
+              </div>
+              <div class="icon">
+                <span>10</span>
               </div>
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -75,14 +85,75 @@
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-danger">
+            <div class="small-box">
               <div class="inner">
-                <h3>65</h3>
-
-                <p>Unique Visitors</p>
+                <h4>Customers</h4>
+                <p>Total Customers</p>
               </div>
               <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+                <span>25</span>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Low Stocks</h4>
+                <p>Total Low Stocks</p>
+              </div>
+              <div class="icon">
+                <span>5</span>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        <h3>Sales Report</h3>
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h5>Daily Sales</h5>
+                <span>$3,500</span>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+           <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h5>Weekly Sales</h5>
+                <span>$10,500</span>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+           <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h5>Monthly Sales</h5>
+                <span>$35,500</span>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+           <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h5>Annual Sales</h5>
+                <span>$4,35,500</span>
               </div>
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -101,4 +172,4 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-  @endsection
+@endsection

@@ -24,20 +24,71 @@
 .login-page .login-box .input-group-text{padding:0.375rem 1.2rem}
 
 /* Admin Panel */
+.btn.add-new {
+    background-color: #3287c7;
+    color: #fff;
+    border-radius: 2px;
+    padding: 5px 15px;
+}
+.btn.reset-btn {
+    background: #363636;
+    padding: 5px 15px;
+    border-radius: 2px;
+    color: #fff;
+    margin-right: 5px;
+}
+.btn.save-btn {
+    padding: 5px 20px;
+    background: #0070b5;
+    color: #fff;
+    border-radius: 2px;
+}
+.content .breadcrumb.float-sm-right {
+    float: none !important;
+    background: transparent;
+    margin: 0;
+}
+.card-outline .card {
+    margin: 0;
+}
+.action-controllers {
+    margin-bottom: 10px;
+}
+table .input-group-prepend .btn.dropdown-toggle {
+    background: #3287c7;
+    padding: 4px 15px;
+    border-radius: 2px;
+    color: #fff;
+}
+table .input-group-prepend.show .dropdown-menu a {
+    color: #363636;
+}
+table .input-group-prepend.show .dropdown-menu a:hover li{
+    color: #3287c7;
+}
+table i.fas {
+    color: #3287c7;
+    font-size: 22px;
+}
 /* Slidebar Menu */
 .sidebar-mini .sidebar-light-primary .brand-link {
-    padding: 0.5rem .5rem;
+    padding: 0.37rem .5rem;
     float: left;
     text-align: center;
     border-bottom: 1px solid #f4f6f9;
 }
 .sidebar-mini .main-sidebar .brand-link .brand-image {
     float: none;
+    max-height: 40px;
 }
 .sidebar-mini.sidebar-collapse .main-sidebar .brand-link .brand-image {
-    margin: 4.3px;
+    margin: 6px 2.3px;
     max-height: 25px;
 }
+.sidebar-mini.sidebar-collapse .main-sidebar .nav .nav-item .nav-link i{
+    margin: 0 10px;
+}
+
 .sidebar-mini .sidebar-light-primary .sidebar{
 	padding: 0;
 float: left;
@@ -63,19 +114,78 @@ width: 100%;
 .sidebar-mini [class*="sidebar-light-"] .nav-sidebar > .nav-item.menu-open > .nav-link{
 	margin:0;
 	border-radius: unset;
-	background-color: #3287c7;
-	color: #fff;
+	background-color: #ebeff5;
 }
 .sidebar-mini [class*="sidebar-light-"] .nav-sidebar > .nav-item > .nav-treeview{ background-color:#d7e5ef}
 .sidebar-mini [class*="sidebar-light-"] .nav-treeview > .nav-item > .nav-link {
     color: #1e1e1e;
     padding: 10px 10px 10px 50px;
 }
-.sidebar-mini .sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active{
+.sidebar-mini .sidebar-light-primary .nav-sidebar > .nav-item.active,.sidebar-mini .sidebar-light-primary .nav-treeview .nav-item.active{
 	border-radius: unset;
 	background-color: #3287c7;
 	margin:0
 }
-.sidebar-mini .sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active i{
+
+.sidebar-mini .sidebar-light-primary .nav-sidebar > .nav-item.active i, .sidebar-mini .sidebar-light-primary .nav-sidebar > .nav-item.active p, .nav-item.active,.sidebar-mini .sidebar-light-primary .nav-treeview .nav-item.active .fas.fa-angle-double-right, .nav-item.active,.sidebar-mini .sidebar-light-primary .nav-treeview .nav-item.active p{
 	color: #fff;
 }
+.sidebar-mini .sidebar-light-primary .nav-sidebar .nav-item > .nav-link {
+    padding: 5px 15px;
+}
+.sidebar-mini .sidebar-light-primary .os-theme-light > .os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
+    background: rgba(50, 135, 199,.1);
+}
+
+/* Dashboard */
+.content-wrapper .content-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0;
+    margin-bottom: 15px;
+}
+.content-wrapper .container-fluid .small-box {
+    background-color: #fff;
+    float: left;
+    width: 100%;
+}
+.content-wrapper .container-fluid .small-box > .inner {
+    padding: 10px;
+    float: left;
+    width: 75%;
+}
+.content-wrapper .container-fluid .small-box > .inner h4, .content-wrapper .container-fluid .small-box > .inner h5 {
+    margin-bottom: 3px;
+}
+.content-wrapper .container-fluid .small-box > .inner p {
+    margin-bottom: 0;
+}
+.content-wrapper .container-fluid .small-box > .inner span {
+    font-size: 24px;
+    font-weight:600;
+    color: #3287c7;
+}
+.content-wrapper .container-fluid .small-box .icon {
+    float: left;
+    width: 25%;
+    text-align: center;
+}
+.content-wrapper .container-fluid .small-box .icon span {
+    font-size: 48px;
+    font-weight: 600;
+    color: #3287c7;
+}
+.content-wrapper .container-fluid .small-box > .small-box-footer {
+    float: left;
+    width: 100%;
+    padding-top: 0;
+    background: #fff;
+    color: #aaa;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+}
+.content-wrapper .container-fluid .small-box > .small-box-footer:hover {
+    color: #3e4854;
+}
+
+/* Vendor */
+.vendor .tab-content .form-group{ display:flex; }
