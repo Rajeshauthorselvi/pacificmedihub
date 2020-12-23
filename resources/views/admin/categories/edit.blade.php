@@ -89,7 +89,7 @@
                   </div>
                   <div class="form-group">
                     <label for="displayOrder">Display Order</label>
-                    <input type="number" class="form-control" name="display_order" min="0" id="displayOrder" value="{{old('display_order',$category->display_order)}}">
+                    <input type="number" class="form-control" name="display_order" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" id="displayOrder" value="{{old('display_order',$category->display_order)}}">
                   </div>
                   <div class="form-group">
                     <label for="searchEngine">Search Engine Friendly Page Name</label>

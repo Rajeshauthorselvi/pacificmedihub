@@ -47,7 +47,13 @@
                     <tbody>
                       @foreach($categories as $category)
                         <tr>
-                          <td>{{$category->name}}</td>
+                          <?php
+                            $category_name = $category->name;
+                            if($category->parent_category_id!=NULL){
+                              $category_name = $category->parent->name.'  >>  '.$category->name;
+                            }
+                          ?>
+                          <td>{{$category_name}}</td>
                           <?php
                             if($category->published==1){$published = "fa-check";}
                             else{$published = "fa-ban";}
@@ -57,13 +63,12 @@
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
-                              <ul class="dropdown-menu" style="">
-                                <a href="#"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
+                              <ul class="dropdown-menu">
                                 <a href="{{route('categories.edit',$category->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-                                <a href="#"><li class="dropdown-item"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;
+                                <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('categories.destroy',$category->id) }}">@csrf 
                                     <input name="_method" type="hidden" value="DELETE">
-                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
                                   </form>
                                 </li></a>
                               </ul>

@@ -58,7 +58,13 @@
                     <select class="form-control select2bs4" name="parent_category">
                       <option selected="selected" value="">[None]</option>
                       @foreach($categories as $category)
-                        <option value="{{$category->id}}" {{ (collect(old('parent_category'))->contains($category->id)) ? 'selected':'' }}>{{$category->name}}</option>
+                        <?php
+                          $category_name = $category->name;
+                          if($category->parent_category_id!=NULL){
+                            $category_name = $category->parent->name.'  >>  '.$category->name;
+                          }
+                        ?>
+                        <option value="{{$category->id}}" {{ (collect(old('parent_category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
                       @endforeach
                     </select>
                   </div>
@@ -86,7 +92,7 @@
                   </div>
                   <div class="form-group">
                     <label for="displayOrder">Display Order</label>
-                    <input type="number" class="form-control" name="display_order" min="0" id="displayOrder" value="{{old('display_order')}}">
+                    <input type="number" class="form-control" name="display_order" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" id="displayOrder" value="{{old('display_order')}}">
                   </div>
                   <div class="form-group">
                     <label for="searchEngine">Search Engine Friendly Page Name</label>

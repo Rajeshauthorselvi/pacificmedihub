@@ -39,7 +39,7 @@
               <li class="nav-item">
                 <a href="" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
-                  <p>import Products</p>
+                  <p>Import Products</p>
                 </a>
               </li>
               <li class="nav-item @if($current_route=='categories.index'||$current_route=='categories.create') active @endif">
@@ -48,7 +48,7 @@
                   <p>Categories</p>
                 </a>
               </li>
-              <li class="nav-item">
+             <!--  <li class="nav-item">
                 <a href="" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Product Variant</p>
@@ -59,7 +59,7 @@
                   <i class="fas fa-angle-double-right"></i>
                   <p>Product Units</p>
                 </a>
-              </li>
+              </li> -->
               <li class="nav-item @if($current_route=='brands.index'||$current_route=='brands.create') active @endif">
                 <a href="{{route('brands.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i><p>Brands</p>

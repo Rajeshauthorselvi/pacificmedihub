@@ -64,10 +64,10 @@
                                 <a href="#"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                 <a href="{{route('vendor.edit',$vendor->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                 <a href="#"><li class="dropdown-item"><i class="far fa-file-alt"></i>&nbsp;&nbsp;List Products</li></a>
-                                <a href="#"><li class="dropdown-item"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;
+                                <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('vendor.destroy',$vendor->id) }}">@csrf 
                                     <input name="_method" type="hidden" value="DELETE">
-                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
                                   </form>
                                 </li></a>
                               </ul>
