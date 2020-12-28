@@ -198,3 +198,55 @@ width: 100%;
 .vendor .nav-tabs .nav-link.active {color: #fff;background-color: #3287c7;border-color: #3287c7;}
 .vendor .nav-tabs .nav-link{padding: .5rem 2.5rem}
 .vendor form .tab-pane ul {padding: 0;margin: 10px 0;}
+
+/* Products */
+.product article .custom-file-label{overflow:hidden;}
+.product article output#result{
+    display: inline-block;
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+.product article output#result .gallery {
+    width: 15%;
+    display: inline-block;
+    margin-right: 5px;
+}
+.product article output#result .gallery .thumbnail {
+    width: 100%;
+    height: 125px;
+}
+.product article #clear{
+    padding: 2px 15px;
+    background-color: #3287c7;
+    border: 1px solid #3287c7;
+    color: #fff;
+    margin-top: 5px;
+}
+.product .product-col-dividers{
+    display: flex;
+}
+.product .product-col-dividers .col-one{
+    padding-left: 0;
+    margin-right: 30px;
+}
+.product .product-col-dividers .col-two {
+    margin-left: 30px;
+}
+
+.product #variantList {
+    border: 1px solid #ddd;
+}
+.product #variantList th{
+    text-align: center;
+    border: 1px solid #ddd;
+    background: #f1f1f1;
+}
+.product #variantList td{
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+.product #variantList .form-group .form-control{
+    border-radius: 1px;
+}

@@ -28,6 +28,11 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('theme/dist/css/adminlte.min.css') }}">
   <link rel="stylesheet" href="{{ asset('theme/dist/css/custom-style.css') }}">
+  <!-- summernote -->
+  <link rel="stylesheet" href="{{ asset('theme/plugins/summernote/summernote-bs4.min.css') }}">
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="{{ asset('theme/plugins/codemirror/codemirror.css') }}">
+  <link rel="stylesheet" href="{{ asset('theme/plugins/codemirror/theme/monokai.css') }}">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
   <!-- Daterange picker -->
@@ -62,6 +67,13 @@
 <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- Select2 -->
 <script src="{{ asset('theme/plugins/select2/js/select2.full.min.js') }}"></script>
+<!-- Summernote -->
+<script src="{{ asset('theme/plugins/summernote/summernote-bs4.min.js') }}"></script>
+<!-- CodeMirror -->
+<script src="{{ asset('theme/plugins/codemirror/codemirror.js') }}"></script>
+<script src="{{ asset('theme/plugins/codemirror/mode/css/css.js') }}"></script>
+<script src="{{ asset('theme/plugins/codemirror/mode/xml/xml.js') }}"></script>
+<script src="{{ asset('theme/plugins/codemirror/mode/htmlmixed/htmlmixed.js') }}"></script>
 <!-- DataTables  & Plugins -->
 <script src="{{ asset('theme/plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('theme/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
@@ -114,6 +126,20 @@
       "responsive": true,
     });
   });
+</script>
+<script>
+  $(function () {
+    // Summernote
+    $('.summernote').summernote({
+      height: 150
+    })
+
+    // CodeMirror
+    CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
+      mode: "htmlmixed",
+      theme: "monokai"
+    });
+  })
 </script>
   
   <!-- Custom Script -->

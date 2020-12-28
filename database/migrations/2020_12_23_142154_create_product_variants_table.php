@@ -21,13 +21,12 @@ class CreateProductVariantsTable extends Migration
             $table->string('package',255);
             $table->float('base_price',8,2)->nullable();
             $table->float('retail_price',8,2)->nullable();
-            $table->float('mininum_selling_price',8,2)->nullable();
+            $table->float('minimum_selling_price',8,2)->nullable();
             $table->boolean('default_variant')->default(0)->comment('0 - not set, 1 - set to default');
             $table->boolean('display_variant')->default(0)->comment('0 - not display, 1 - display');
             $table->bigInteger('display_order')->nullable();
             $table->bigInteger('stock_quantity')->nullable();
             $table->integer('alert_quantity')->nullable();
-            $table->string('vendor_ids',255)->nullable();
             $table->boolean('is_deleted')->default(0)->comment('0 - not deleted, 1 - deleted');
             $table->dateTime('deleted_at')->nullable();
         });

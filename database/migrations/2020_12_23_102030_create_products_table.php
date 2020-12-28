@@ -19,7 +19,8 @@ class CreateProductsTable extends Migration
             $table->string('code',150)->nullable();
             $table->string('sku',20)->nullable();
             $table->bigInteger('category_id');
-            $table->bigInteger('brand_id');
+            $table->bigInteger('brand_id')->nullable();
+            $table->string('main_image',150)->nullable();
             $table->string('short_description',255)->nullable();
             $table->text('long_description')->nullable();
             $table->text('treatment_information')->nullable();
@@ -27,7 +28,6 @@ class CreateProductsTable extends Migration
             $table->integer('alert_quantity')->nullable();
             $table->boolean('commission_type')->default(0)->comment('0 - percentage(%), 1 - fixed(amount)');
             $table->float('commission_value',8,2)->nullable();
-            $table->string('vendor_ids',255)->nullable();
             $table->boolean('published')->default(0)->comment('0 - not published, 1 - published');
             $table->boolean('show_home')->default(0)->comment('0 - not show, 1 - show');
             $table->string('search_engine_name',150)->nullable();

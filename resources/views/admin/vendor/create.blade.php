@@ -242,34 +242,7 @@
                             </td>
                           </tr>
                         </table>
-                        <!-- <table class="list" id="pocList">
-                          <thead>
-                            <tr>
-                              <th></th><th>Name</th><th>Email</th><th>Phone No</th><th><a href="#" id="add"><i class="fas fa-plus-circle"></i>&nbsp;ADD</a></th>
-                            </tr>
-                          </thead>
-                          <tr>
-                            <td>1</td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control" name="poc[name][]" value="{{old('name')}}">
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control" name="poc[email][]" value="{{old('email')}}">
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control" name="poc[contact][]" value="{{old('contact')}}">
-                              </div>
-                            </td>
-                            <td>
-                              <a href="#" class="deleteButton"><i class="fas fa-minus-circle"></i></a>
-                            </td>
-                          </tr>
-                        </table> -->
+                        
                       </div>
                       <ul class="float-left">
                         <li class="list-inline-item">
@@ -365,7 +338,7 @@
           var valid=true;
           fieldsToValidate=['customer','order_type'];
           //$(e.target).closest('.tab-pane.active').find('span.text-danger').hide();
-          /*if($("[name='vendor_name']").val()=="") {
+          if($("[name='vendor_name']").val()=="") {
             $("[name='vendor_name']").closest('.form-group').find('span.text-danger').show();
             valid=false;
           }
@@ -400,7 +373,7 @@
           if($("[name='country']").val()=="") {
             $("[name='country']").closest('.form-group').find('span.text-danger').show();
             valid=false;
-          }*/
+          }
           return valid;
         }
         function validateStep2(e){
@@ -456,36 +429,6 @@
       function prevTab(elem) {
         $(elem).parent().prev().find('a[data-toggle="tab"]').click();
       }
-
-      /*function createRow(id) {
-        var newrow = [
-          id,
-          '<div class="form-group"><input type="text" class="form-control" name="poc[name][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" name="poc[email][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" name="poc[contact][]"></div>',
-          '<a href="#" class="deleteButton"><i class="fas fa-minus-circle"></i></a>'
-        ];
-        return '<tr><td>'+newrow.join('</td><td>')+'</td></tr>';
-      }
-
-      function renumberRows() {
-        $('table#pocList tbody tr').each(function(index) {
-          $(this).children('td:first').text(index+1);
-        });
-      }
-
-      $('a#add').click(function() {
-        var lastvalue = 1 + parseInt($('table#pocList tbody').children('tr:last').children('td:first').text());
-        $('table#pocList tbody').append(createRow(lastvalue));
-      });
-
-      $('table#pocList').on('click','.addButton',function() {
-        $(this).closest('tr').after(createRow(0));
-        renumberRows();
-      }).on('click','.deleteButton',function() {
-        $(this).closest('tr').remove();
-        renumberRows();
-      });*/
 
       $('.validate-email').on('keypress', function() {
         var re = /([A-Z0-9a-z_-][^@])+?@[^$#<>?]+?\.[\w]{1,3}/.test(this.value);
