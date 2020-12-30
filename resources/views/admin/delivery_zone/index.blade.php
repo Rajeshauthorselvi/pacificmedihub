@@ -60,7 +60,11 @@
                     			<td><input type="checkbox" value="{{ $zone->id }}" name="zone-ids"></td>
                     			<td>{{ $zone->post_code }}</td>
                     			<td>{{ $zone->delivery_fee }}</td>
-                    			<td>{{ ($zone->status==1)?'Published':'Not Published' }}</td>
+                          <?php
+                            if($zone->status==1){$published = "fa-check";}
+                            else{$published = "fa-ban";}
+                          ?>
+                          <td><i class="fas {{$published}}"></i></td>
                     			<td>
 		                            <div class="input-group-prepend">
 		                              <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>

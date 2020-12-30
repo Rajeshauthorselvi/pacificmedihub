@@ -62,7 +62,12 @@
                           <td>{{ $comissions->comission->commission_name }}</td>
                           <td>{{ ($comissions->commission_type=="p")?'Percentage':'Fixed' }}</td>
                           <td>{{ $comissions->commission_value }}</td>
-                          <td>{{ ($comissions->status==1)?'Active':'InActive' }}</td>
+                          <?php
+                            if($comissions->status==1){$published = "fa-check";}
+                            else{$published = "fa-ban";}
+                          ?>
+                          <td><i class="fas {{$published}}"></i></td>
+                          
                           <td>
                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
