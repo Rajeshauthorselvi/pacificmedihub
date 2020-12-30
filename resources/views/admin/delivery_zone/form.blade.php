@@ -60,15 +60,15 @@
                     @endif
                   </div>
                   <div class="form-group">
-                    @if (isset($zone->status) && $zone->status==1)
-                        
-                        @php $checked='checked'; @endphp
+                    @if (isset($zone->published) && $zone->published==1)
+                      @php $checked='checked'; @endphp
                     @else  
-                        @php $checked=''; @endphp
+                      @php $checked=''; @endphp
                     @endif
-                    
-                    <label><input type="checkbox" name="status" {{ $checked }}> Published</label>
-                    
+                    <div class="icheck-info d-inline">
+                      <input type="checkbox" name="status" id="Published" {{ $checked }}> 
+                      <label for="Published">Published</label>
+                    </div>
                   </div>
                   <div class="form-group">
                     <a href="{{route('delivery_zone.index')}}" class="btn reset-btn">Cancel</a>

@@ -51,7 +51,7 @@
                       	<th>Commission</th>
                       	<th>Commission Type</th>
                       	<th>Commission Value</th>
-                        <th>Status</th>
+                        <th>Published</th>
                       	<th>Action</th>
                       </tr>
                     </thead>
@@ -63,7 +63,7 @@
                           <td>{{ ($comissions->commission_type=="p")?'Percentage':'Fixed' }}</td>
                           <td>{{ $comissions->commission_value }}</td>
                           <?php
-                            if($comissions->status==1){$published = "fa-check";}
+                            if($comissions->published==1){$published = "fa-check";}
                             else{$published = "fa-ban";}
                           ?>
                           <td><i class="fas {{$published}}"></i></td>

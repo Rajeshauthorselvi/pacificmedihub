@@ -27,17 +27,17 @@ class ProductController extends Controller
         $products = array();
 
         foreach($get_products as $key => $product){
-            $variant = ProductVariant::where('product_id',$product->id)->where('is_deleted',0)->where('default_variant',1)->first();
+            $variant = ProductVariant::where('product_id',$product->id)->where('is_deleted',0)->where('display_order',1)->first();
             $products[$key]['id'] = $product->id;
             $products[$key]['image'] = $product->main_image;
             $products[$key]['name'] = $product->name;
             $products[$key]['code'] = $product->code;
             $products[$key]['sku'] = $product->sku;
             $products[$key]['category'] = $product->category->name;
-            $products[$key]['stock'] = $variant->stock_quantity;
-            $products[$key]['base_price'] = $variant->base_price;
-            $products[$key]['retail_price'] = $variant->retail_price;
-            $products[$key]['minimum_price'] = $variant->minimum_selling_price;
+            $products[$key]['stock'] = isset($variant->stock_quantity)?$variant->stock_quantity:'-';
+            $products[$key]['base_price'] = isset($variant->base_price)?$variant->base_price:'-';
+            $products[$key]['retail_price'] = isset($variant->retail_price)?$variant->retail_price:'-';
+            $products[$key]['minimum_price'] = isset($variant->minimum_selling_price)?$variant->minimum_selling_price:'-';
             $products[$key]['published'] = $product->published;
         }
         $data['products'] = $products;
@@ -241,7 +241,14 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data['product'] = Product::find($id);
+        $data['product_variant'] = ProductVariant::where('product_id',$id)->get();
+        $data['product_image'] = ProductImage::where('product_id',$id)->get();
+        $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['brands'] = Brand::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
+        //dd($data);
+        return view('admin/products/edit',$data);
     }
 
     /**
@@ -253,7 +260,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($request->all());
     }
 
     /**

@@ -18,8 +18,7 @@ class ComissionValueController extends Controller
      */
     public function index()
     {
-        $data['comission_values']=CommissionValue::with('comission')->where('commission_values.status','<>',3)->get();
-
+        $data['comission_values']=CommissionValue::with('comission')->where('commission_values.is_deleted',0)->get();
         return view('admin.commission_values.index',$data);
     }
 
@@ -31,7 +30,7 @@ class ComissionValueController extends Controller
     public function create()
     {
         $data['type']='create';
-        $data['commissions']=[''=>'Please Select']+Commissions::where('status',1)->pluck('commission_name','id')->toArray();
+        $data['commissions']=[''=>'Please Select']+Commissions::where('published',1)->pluck('commission_name','id')->toArray();
         $data['commission_type']=[''=>'Please Select','p'=>'Percentage','f'=>'Fixed'];
         return view('admin.commission_values.form',$data);
     }
@@ -53,7 +52,7 @@ class ComissionValueController extends Controller
 
         $input=$request->all();
         Arr::forget($input,['_token','status']);
-        $input['status']=($request->status=='on')?1:2;
+        $input['published']=($request->status=='on')?1:0;
         CommissionValue::insert($input);
         return Redirect::route('comission_value.index')->with('success','Commission value added successfully...!');
 
@@ -80,7 +79,7 @@ class ComissionValueController extends Controller
     {
         $data['commission_value']=CommissionValue::with('comission')->where('commission_values.id',$comissionValue->id)->first();
         $data['type']='edit';
-        $data['commissions']=[''=>'Please Select']+Commissions::where('status',1)->pluck('commission_name','id')->toArray();
+        $data['commissions']=[''=>'Please Select']+Commissions::where('published',1)->pluck('commission_name','id')->toArray();
         $data['commission_type']=[''=>'Please Select','p'=>'Percentage','f'=>'Fixed'];
         return view('admin.commission_values.form',$data);
     }
@@ -100,12 +99,12 @@ class ComissionValueController extends Controller
             'commission_value' => 'required'
         ]); 
 
-        $status=($request->status=='on')?1:2;
+        $status=($request->status=='on')?1:0;
         $comission_value=CommissionValue::find($comissionValue->id);
         $comission_value->commission_id=$request->commission_id;
         $comission_value->commission_type=$request->commission_type;
         $comission_value->commission_value=$request->commission_value;
-        $comission_value->status=$status;
+        $comission_value->published=$status;
         $comission_value->save();
 
         return Redirect::route('comission_value.index')->with('success','Commission value updated successfully...!');

@@ -14,13 +14,16 @@ class CreateCommissionValuesTable extends Migration
     public function up()
     {
         Schema::create('commission_values', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+            $table->bigIncrements('id');
             $table->unsignedInteger('commission_id');
             $table->foreign('commission_id')->references('id')->on('commissions');
             $table->enum('commission_type', ['p','f'])->comment('P->Percentage, F->Fixed');
             $table->float('commission_value', 8, 2);
-            $table->enum('status', [1,2,3])->comment('1->Active,2->InActive,3->Deleted');
-            $table->timestamps();
+            $table->boolean('published')->default(0)->comment('0 - not published, 1 - published');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+            $table->boolean('is_deleted')->default(0)->comment('0 - not deleted, 1 - deleted');
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

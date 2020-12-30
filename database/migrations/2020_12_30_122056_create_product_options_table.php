@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCommissionsTable extends Migration
+class CreateProductOptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateCommissionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('commissions', function (Blueprint $table) {
+        Schema::create('product_options', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('commission_name',255);
+            $table->string('option_name',150);
+            $table->bigInteger('display_order')->nullable();
             $table->boolean('published')->default(0)->comment('0 - not published, 1 - published');
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
-            $table->boolean('is_deleted')->default(0)->comment('0 - not deleted, 1 - deleted');
+            $table->boolean('is_deleted')->default(0)->comment('0 - not deleted, 1 - is deleted');
             $table->dateTime('deleted_at')->nullable();
         });
     }
@@ -31,6 +32,6 @@ class CreateCommissionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('commissions');
+        Schema::dropIfExists('product_options');
     }
 }

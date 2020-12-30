@@ -7,13 +7,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Add Product</h1>
+            <h1 class="m-0">Edit Product</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
               <li class="breadcrumb-item"><a href="{{route('product.index')}}">Products</a></li>
-              <li class="breadcrumb-item active">Add Product</li>
+              <li class="breadcrumb-item active">Edit Product</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -34,30 +34,30 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Product</h3>
+                <h3 class="card-title">Edit Product</h3>
               </div>
               <div class="card-body">
-                <form action="{{route('product.store')}}" method="post" enctype="multipart/form-data" id="productForm">
+                <form action="{{route('product.update',$product->id)}}" method="post" enctype="multipart/form-data" id="productForm">
                   @csrf
                   <div class="product-col-dividers">
                     <div class="col-one col-sm-6">
                       <div class="form-group">
                         <label for="productName">Product Name *</label>
-                        <input type="text" class="form-control" name="product_name" id="productName" value="{{old('product_name')}}">
+                        <input type="text" class="form-control" name="product_name" id="productName" value="{{old('product_name',$product->name)}}">
                         @if($errors->has('product_name'))
                           <span class="text-danger">{{ $errors->first('product_name') }}</span>
                         @endif
                       </div>
                       <div class="form-group">
                         <label for="productCode">Product Code *</label>
-                        <input type="text" class="form-control" name="product_code" id="productCode" value="{{old('product_code')}}">
+                        <input type="text" class="form-control" name="product_code" id="productCode" value="{{old('product_code',$product->code)}}">
                         @if($errors->has('product_code'))
                           <span class="text-danger">{{ $errors->first('product_code') }}</span>
                         @endif
                       </div>
                       <div class="form-group">
                         <label for="productSku">SKU</label>
-                        <input type="text" class="form-control" name="product_sku" id="productSku" value="{{old('product_sku')}}">
+                        <input type="text" class="form-control" name="product_sku" id="productSku" value="{{old('product_sku',$product->sku)}}">
                       </div>
                       <div class="form-group">
                         <label for="productCategory">Category *</label>
@@ -70,19 +70,21 @@
                                 $category_name = $category->parent->name.'  >>  '.$category->name;
                               }
                             ?>
-                            <option value="{{$category->id}}" {{ (collect(old('category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
+                            <option @if($product->category_id==$category->id) selected="selected" @endif  value="{{$category->id}}" {{ (collect(old('category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
                           @endforeach
                         </select>
                         @if($errors->has('category'))
                           <span class="text-danger">{{ $errors->first('category') }}</span>
                         @endif
                       </div>
+                      <?php 
+                        if(!empty($product->main_image)){$image = "theme/images/products/main/".$product->main_image;}
+                        else {$image = "theme/images/no_image.jpg";}
+                      ?>
                       <div class="form-group">
                         <label for="mainImage">Product Image</label>
-                        <div class="custom-file">
-                          <input type="file" class="custom-file-input" name="main_image" id="mainImage" accept="image/*" value="{{old('main_image')}}">
-                          <label class="custom-file-label" for="mainImage">Choose file</label>
-                        </div>
+                        <input type="file" name="main_image" id="mainImage" accept="image/*" onchange="preview_image(event)" style="display:none;" value="{{$product->main_image}}">
+                        <img title="Click to Change" class="img-product" id="output_image"  onclick="$('#mainImage').trigger('click'); return true;" style="width:100px;height:100px;cursor:pointer;" src="{{asset($image)}}">
                       </div>
                     </div>
 
@@ -92,13 +94,13 @@
                         <select class="form-control select2bs4" name="brand">
                           <option selected="selected" value="">Select Brand</option>
                           @foreach($brands as $brand)
-                            <option value="{{$brand->id}}" {{ (collect(old('brand'))->contains($brand->id)) ? 'selected':'' }}>{{$brand->name}}</option>
+                            <option @if($product->brand_id==$brand->id) selected="selected" @endif value="{{$brand->id}}" {{ (collect(old('brand'))->contains($brand->id)) ? 'selected':'' }}>{{$brand->name}}</option>
                           @endforeach
                         </select>
                       </div>
                       <div class="form-group">
                         <label for="alertQty">Alert Quantity</label>
-                        <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty')}}">
+                        <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty',$product->alert_quantity)}}">
                       </div>
                       <!-- <div class="form-group">
                         <label for="productBrand">Vendor/Supplier</label>
@@ -112,29 +114,29 @@
                         <div class="col-sm-6" style="padding-left:0">
                           <label for="productBrand">Commission Type</label>
                           <select class="form-control commission select2bs4" name="commision_type">
-                            <option selected="selected" value="0">Percentage (%)</option>
-                            <option value="1">Fixed (amount)</option>
+                            <option @if($product->commission_type==0) selected="selected" @endif value="0">Percentage (%)</option>
+                            <option @if($product->commission_type==1) selected="selected" @endif value="1">Fixed (amount)</option>
                           </select>
                         </div>
                         <div class="col-sm-6" style="padding:0">
                           <label for="commissionValue">Value</label>
-                          <input type="text" class="form-control" name="commision_value" id="commissionValue" onkeyup="validateNum(event,this);" value="{{old('commision_value')}}">
+                          <input type="text" class="form-control" name="commision_value" id="commissionValue" onkeyup="validateNum(event,this);" value="{{old('commision_value',$product->commission_value)}}">
                         </div>
                       </div>
                       <div class="form-group">
                         <label for="shortDescription">Product Short Details</label>
-                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description')}}</textarea>
+                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description',$product->short_description)}}</textarea>
                       </div>
                       <div class="form-group clearfix" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
                           <div class="icheck-info d-inline">
-                            <input type="checkbox" name="published" id="Published" @if(old('published')=='on') checked @endif>
+                            <input type="checkbox" name="published" id="Published" @if((old('published')=='on')||($product->published==1)) checked @endif>
                             <label for="Published">Published</label>
                           </div>
                         </div>
                         <div class="col-sm-6" style="padding:0">
                           <div class="icheck-info d-inline">
-                            <input type="checkbox" name="homepage" id="homePage" @if(old('homepage')=='on') checked @endif>
+                            <input type="checkbox" name="homepage" id="homePage" @if((old('homepage')=='on')||($product->show_home==1)) checked @endif>
                             <label for="homePage">Show on Home Page</label>
                           </div>
                         </div>
@@ -156,15 +158,15 @@
 
                   <div class="form-group">
                     <label>Product Details</label>
-                    <textarea class="summernote" name="product_details">{{old('product_details')}}</textarea>
+                    <textarea class="summernote" name="product_details">{{old('product_details',$product->long_description)}}</textarea>
                   </div>
                   <div class="form-group">
                     <label>Treatment Information</label>
-                    <textarea class="summernote" name="treatment_information">{{old('treatment_information')}}</textarea>
+                    <textarea class="summernote" name="treatment_information">{{old('treatment_information',$product->treatment_information)}}</textarea>
                   </div>
                   <div class="form-group">
                     <label>Dosage Instructions</label>
-                    <textarea class="summernote" name="dosage_instructions">{{old('dosage_instructions')}}</textarea>
+                    <textarea class="summernote" name="dosage_instructions">{{old('dosage_instructions',$product->dosage_instructions)}}</textarea>
                   </div>
 
 
@@ -177,99 +179,99 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control dosage" name="variant[dosage][]">
-                              <span class="text-danger" style="display:none">Dosage is required</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control package" name="variant[package][]">
-                              <span class="text-danger" style="display:none">Package is required</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control base_price" onkeyup="validateNum(event,this);" name="variant[base_price][]">
-                              <span class="text-danger" style="display:none">Base Price is required</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control retail_price" onkeyup="validateNum(event,this);" name="variant[retail_price][]">
-                              <span class="text-danger" style="display:none">Retail Price is required</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[minimum_price][]">
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]">
-                              <span class="text-danger" style="display:none">Stock Qty is required</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <select class="form-control select2" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="variant[vendor][0][]">
-
-
-                                @foreach($vendors as $vendor)
-                                  <option value="{{$vendor->id}}">{{$vendor->name}}</option>
-                                @endforeach
-                              </select>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="radio" class="default-variant" name="default" id="defaultVariant" value="1">
-                                <input type="hidden" name="variant[default][]" class="hidden-default-variant" value="1">
-                                <label for="defaultVariant"></label>
+                        @foreach($product_variant as $variant)
+                          <tr>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control dosage" name="variant[dosage][]" value="{{$variant->dosage}}">
+                                <span class="text-danger" style="display:none">Dosage is required</span>
                               </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]">
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <select class="form-control commission select2bs4" name="variant[display][]">
-                                <option value="0" selected>No</option>
-                                <option value="1">Yes</option>
-                              </select>
-                            </div>
-                            <input type="hidden" class="length" value="1">
-                          </td>
-                          <td>
-                            <a href="#" id="add"><i class="fas fa-plus-circle"></i></a>
-                          </td>
-                        </tr>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control package" name="variant[package][]" value="{{$variant->package}}">
+                                <span class="text-danger" style="display:none">Package is required</span>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control base_price" onkeyup="validateNum(event,this);" name="variant[base_price][]" value="{{$variant->base_price}}">
+                                <span class="text-danger" style="display:none">Base Price is required</span>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control retail_price" onkeyup="validateNum(event,this);" name="variant[retail_price][]" value="{{$variant->retail_price}}">
+                                <span class="text-danger" style="display:none">Retail Price is required</span>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[minimum_price][]" value="{{$variant->minimum_selling_price}}">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{$variant->stock_quantity}}">
+                                <span class="text-danger" style="display:none">Stock Qty is required</span>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <select class="form-control select2" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="variant[vendor][0][]">
+                                  @foreach($vendors as $vendor)
+                                    <option value="{{$vendor->id}}">{{$vendor->name}}</option>
+                                  @endforeach
+                                </select>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group clearfix">
+                                <div class="icheck-info d-inline">
+                                  <input type="radio" class="default-variant" name="default" id="defaultVariant" value="1">
+                                  <input type="hidden" name="variant[default][]" @if($product->default_variant==1) checked @endif class="hidden-default-variant" value="1">
+                                  <label for="defaultVariant"></label>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]" value="{{$variant->display_order}}">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <select class="form-control commission select2bs4" name="variant[display][]">
+                                  <option @if($variant->display_variant==0) selected="selected" @endif value="0" selected>No</option>
+                                  <option @if($variant->display_variant==1) selected="selected" @endif value="1">Yes</option>
+                                </select>
+                              </div>
+                              <input type="hidden" class="length" value="1">
+                            </td>
+                            <td>
+                              <a href="#" id="add"><i class="fas fa-plus-circle"></i></a>
+                            </td>
+                          </tr>
+                        @endforeach
                       </tbody>
                     </table>
                   </div>
 
                   <div class="form-group">
                     <label for="searchEngine">Search Engine Friendly Page Name</label>
-                    <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
+                    <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine',$product->search_engine_name)}}">
                   </div>
                   <div class="form-group">
                     <label for="metaTile">Meta Title</label>
-                    <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title')}}">
+                    <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title',$product->meta_title)}}">
                   </div>
                   <div class="form-group">
                     <label for="metaKeyword">Meta Keywords</label>
-                    <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword')}}</textarea>
+                    <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword',$product->meta_keyword)}}</textarea>
                   </div>
                   <div class="form-group">
                     <label for="metaDescription">Meta Description</label>
-                    <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description')}}</textarea>
+                    <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description',$product->meta_description)}}</textarea>
                   </div>
                   <div class="form-group">
                     <a href="{{route('product.index')}}" class="btn reset-btn">Cancel</a>
@@ -471,6 +473,17 @@
           }
         });
       });
+
+    function preview_image(event) 
+    {
+      var reader = new FileReader();
+      reader.onload = function()
+      {
+        var output = document.getElementById('output_image');
+        output.src = reader.result;
+      }
+      reader.readAsDataURL(event.target.files[0]);
+    }
 
     </script>
   @endpush

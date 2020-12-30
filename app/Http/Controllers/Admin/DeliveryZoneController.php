@@ -18,7 +18,7 @@ class DeliveryZoneController extends Controller
     public function index()
     {
         $data=array();
-        $data['delivery_zones']=DeliveryZone::where('status','<>',3)->get();
+        $data['delivery_zones']=DeliveryZone::where('is_deleted',0)->get();
         return view('admin.delivery_zone.index',$data);
     }
 
@@ -46,7 +46,8 @@ class DeliveryZoneController extends Controller
 
         $input=$request->all();
         Arr::forget($input,['_token','status']);
-        $input['status']=($request->status=='on')?1:2;
+        $input['published']=($request->status=='on')?1:0;
+        $input['created_at'] = date('Y-m-d H:i:s');
         DeliveryZone::insert($input);
         return Redirect::route('delivery_zone.index')->with('success','DeliveryZone added successfully...!');
     }
@@ -87,11 +88,11 @@ class DeliveryZoneController extends Controller
 
        $this->validate(request(), ['post_code' => 'required','delivery_fee' => 'required']); 
 
-       $status=($request->status=='on')?1:2;
+       $status=($request->status=='on')?1:0;
        $zone=DeliveryZone::find($deliveryZone->id);
        $zone->post_code=$request->post_code;
        $zone->delivery_fee=$request->delivery_fee;
-       $zone->status=$status;
+       $zone->published=$status;
        $zone->save();
 
        return Redirect::route('delivery_zone.index')->with('success','DeliveryZone details updated successfully...!');
@@ -105,11 +106,9 @@ class DeliveryZoneController extends Controller
      */
     public function destroy(Request $request,DeliveryZone $deliveryZone)
     {
-
-   
-    
        $zone=DeliveryZone::find($deliveryZone->id);
-       $zone->status=3;
+       $zone->is_deleted=1;
+       $zone->deleted_at = date('Y-m-d H:i:s');
        $zone->save();
 
         if ($request->ajax())  return ['status'=>true];

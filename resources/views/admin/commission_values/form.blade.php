@@ -47,7 +47,7 @@
                 @endif
                   <div class="form-group">
                     <label for="commission_id">Commission</label>
-                    {{ Form::select('commission_id',$commissions,null,['class'=>'form-control','id'=>'commission_id']) }}
+                    {{ Form::select('commission_id',$commissions,null,['class'=>'form-control select2bs4','id'=>'commission_id']) }}
                     @if($errors->has('commission_id'))
                       <span class="text-danger">{{ $errors->first('commission_id') }}</span>
                     @endif
@@ -55,7 +55,7 @@
 
                   <div class="form-group">
                     <label for="commission_type">Commission Type</label>
-                    {{ Form::select('commission_type',$commission_type,null,['class'=>'form-control','id'=>'commission_type']) }}
+                    {{ Form::select('commission_type',$commission_type,null,['class'=>'form-control select2bs4','id'=>'commission_type']) }}
                     @if($errors->has('commission_type'))
                       <span class="text-danger">{{ $errors->first('commission_type') }}</span>
                     @endif
@@ -68,13 +68,15 @@
                     @endif
                   </div>
                   <div class="form-group">
-                    @if (isset($commission_value->status) && $commission_value->status==1)
-                        
-                        @php $checked='checked'; @endphp
+                    @if (isset($commission_value->published) && $commission_value->published==1)
+                      @php $checked='checked'; @endphp
                     @else  
-                        @php $checked=''; @endphp
+                      @php $checked=''; @endphp
                     @endif
-                    <label><input type="checkbox" name="status" {{ $checked }}> Published</label>
+                    <div class="icheck-info d-inline">
+                      <input type="checkbox" name="status" id="Published" {{ $checked }}> 
+                      <label for="Published">Published</label>
+                    </div>
                   </div>
                   <div class="form-group">
                     <a href="{{route('comission_value.index')}}" class="btn reset-btn">Cancel</a>
@@ -89,4 +91,13 @@
     </section>
   </div>
 
+  @push('custom-scripts')
+    <script type="text/javascript">
+       $(function ($) {
+          $('.select2bs4').select2({
+            minimumResultsForSearch: -1
+          });
+        });
+    </script>
+  @endpush
 @endsection

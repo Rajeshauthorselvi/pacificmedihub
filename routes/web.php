@@ -24,11 +24,12 @@ Route::post('admin','Admin\AuthController@store')->name('admin.store');
 Route::group(['prefix' => 'admin'], function () {
 	Route::get('admin-dashboard','Admin\DashboardController@index')->name('admin.dashboard')->middleware('superAdmin');
 	Route::get('admin-logout','Admin\AuthController@logout')->name('admin.logout')->middleware('superAdmin');
+	Route::resource('product','Admin\ProductController')->middleware('superAdmin');
+	Route::resource('categories','Admin\CategoriesController')->middleware('superAdmin');
+	Route::resource('options','Admin\OptionController')->middleware('superAdmin');
 	Route::resource('brands','Admin\BrandController')->middleware('superAdmin');
 	Route::resource('product-units','Admin\ProductUnitController')->middleware('superAdmin');
-	Route::resource('categories','Admin\CategoriesController')->middleware('superAdmin');
 	Route::resource('vendor','Admin\VendorController')->middleware('superAdmin');
-	Route::resource('product','Admin\ProductController')->middleware('superAdmin');
 	Route::resource('delivery_zone','Admin\DeliveryZoneController')->middleware('superAdmin');
 	Route::resource('comission_value','Admin\ComissionValueController')->middleware('superAdmin');
 });

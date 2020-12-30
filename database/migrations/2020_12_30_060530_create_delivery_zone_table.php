@@ -14,11 +14,14 @@ class CreateDeliveryZoneTable extends Migration
     public function up()
     {
         Schema::create('delivery_zone', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->integer('post_code')->unsigned();
             $table->float('delivery_fee')->unsigned();
-            $table->enum('status', [1,2,3])->comment('1->Active,2->InActive,3->Deleted');
-            $table->timestamps();
+            $table->boolean('published')->default(0)->comment('0 - not published, 1 - published');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+            $table->boolean('is_deleted')->default(0)->comment('0 - not deleted, 1 - deleted');
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

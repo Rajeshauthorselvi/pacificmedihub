@@ -61,7 +61,7 @@
                     			<td>{{ $zone->post_code }}</td>
                     			<td>{{ $zone->delivery_fee }}</td>
                           <?php
-                            if($zone->status==1){$published = "fa-check";}
+                            if($zone->published==1){$published = "fa-check";}
                             else{$published = "fa-ban";}
                           ?>
                           <td><i class="fas {{$published}}"></i></td>
