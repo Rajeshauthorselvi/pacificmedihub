@@ -29,4 +29,6 @@ Route::group(['prefix' => 'admin'], function () {
 	Route::resource('categories','Admin\CategoriesController')->middleware('superAdmin');
 	Route::resource('vendor','Admin\VendorController')->middleware('superAdmin');
 	Route::resource('product','Admin\ProductController')->middleware('superAdmin');
+	Route::resource('delivery_zone','Admin\DeliveryZoneController')->middleware('superAdmin');
+	Route::resource('comission_value','Admin\ComissionValueController')->middleware('superAdmin');
 });
