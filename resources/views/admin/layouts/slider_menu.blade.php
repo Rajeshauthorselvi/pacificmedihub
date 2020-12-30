@@ -257,21 +257,15 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{route('comission_value.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
-                  <p>Base Commission</p>
+                  <p>List Commission</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{route('comission_value.create')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
-                  <p>Product Commission</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i>
-                  <p>Target Commission</p>
+                  <p>Create New Commission</p>
                 </a>
               </li>
             </ul>
