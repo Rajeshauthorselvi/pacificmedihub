@@ -18,7 +18,7 @@ class ComissionValueController extends Controller
      */
     public function index()
     {
-        $data['comission_values']=CommissionValue::with('comission')->where('commission_values.is_deleted',0)->get();
+        $data['comission_values']=CommissionValue::with('comission')->where('commission_values.is_deleted',0)->orderBy('commission_values.created_at','desc')->get();
         return view('admin.commission_values.index',$data);
     }
 

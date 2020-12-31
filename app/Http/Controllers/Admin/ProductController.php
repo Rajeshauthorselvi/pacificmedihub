@@ -11,6 +11,8 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
+use App\Models\Option;
+use App\Models\OptionValue;
 use Redirect;
 
 class ProductController extends Controller
@@ -54,6 +56,8 @@ class ProductController extends Controller
         $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
         $data['brands'] = Brand::where('is_deleted',0)->orderBy('name','asc')->get();
         $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->get();
+        //dd($data);
         return view('admin/products/create',$data);
     }
 
@@ -272,5 +276,32 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function productVariant(Request $request)
+    {
+        $options = json_decode($request->options,true);
+        $vendors = json_decode($request->vendors,true);
+
+
+        $data=array();
+        $get_options = Option::whereIn('id',$options)->pluck('option_name','id')->toArray();
+        $data['get_option'] = $get_options;
+
+
+        $get_option_values = OptionValue::whereIn('option_id',$options)->get();
+        $option_values = array();
+        foreach ($get_option_values as $key => $option) {
+            $option_values[]=[
+                'option_id'=>$option->option_id,
+                'option_value_id'=>$option->id,
+                'option_value'=>$option->option_value
+            ];
+        }
+      /*  echo "<pre>";
+        print_r($option_values);*/
+
+        $data['option_values']=$option_values;
+        return view('admin/products/variants',$data);
     }
 }

@@ -78,6 +78,14 @@
                         @endif
                       </div>
                       <div class="form-group">
+                        <label for="alertQty">Alert Quantity</label>
+                        <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty')}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="shortDescription">Product Short Details</label>
+                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description')}}</textarea>
+                      </div>
+                      <div class="form-group">
                         <label for="mainImage">Product Image</label>
                         <div class="custom-file">
                           <input type="file" class="custom-file-input" name="main_image" id="mainImage" accept="image/*" value="{{old('main_image')}}">
@@ -96,18 +104,32 @@
                           @endforeach
                         </select>
                       </div>
-                      <div class="form-group">
-                        <label for="alertQty">Alert Quantity</label>
-                        <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty')}}">
+                      
+                      <div class="product-variant-selectbox">
+
+                        <div class="form-group">
+                          <label for="productVariant">Product Variant Options</label>
+                          <select class="form-control select2bs4" id="productVariant" multiple="multiple" data-placeholder="Select Variant Option" name="variant_option">
+                            @foreach($product_options as $options)
+                              <option value="{{$options->id}}" {{ (collect(old('variant_option'))->contains($options->id)) ? 'selected':'' }}>{{$options->option_name}}</option>
+                            @endforeach
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="VendorSupplier">Vendor/Supplier</label>
+                          <select class="form-control select2bs4" id="VendorSupplier" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="vendor">
+                            @foreach($vendors as $vendor)
+                              <option value="{{$vendor->id}}" {{ (collect(old('vendor'))->contains($vendor->id)) ? 'selected':'' }}>{{$vendor->name}}</option>
+                            @endforeach
+                          </select>
+                        </div>
+
+                        <button type="button" class="btn save-btn" id="add-options" style="display:none">Save Options</button>
+
                       </div>
-                      <!-- <div class="form-group">
-                        <label for="productBrand">Vendor/Supplier</label>
-                        <select class="form-control select2bs4" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="vendor">
-                          @foreach($vendors as $vendor)
-                            <option value="{{$vendor->id}}" {{ (collect(old('vendor'))->contains($vendor->id)) ? 'selected':'' }}>{{$vendor->name}}</option>
-                          @endforeach
-                        </select>
-                      </div> -->
+                      <a id="clear-option" class="btn save-btn" style="display:none">Clear</a>
+
                       <div class="form-group" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
                           <label for="productBrand">Commission Type</label>
@@ -121,10 +143,7 @@
                           <input type="text" class="form-control" name="commision_value" id="commissionValue" onkeyup="validateNum(event,this);" value="{{old('commision_value')}}">
                         </div>
                       </div>
-                      <div class="form-group">
-                        <label for="shortDescription">Product Short Details</label>
-                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description')}}</textarea>
-                      </div>
+                      
                       <div class="form-group clearfix" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
                           <div class="icheck-info d-inline">
@@ -158,6 +177,9 @@
                     <label>Product Details</label>
                     <textarea class="summernote" name="product_details">{{old('product_details')}}</textarea>
                   </div>
+
+                  <div class="product-variant-block"></div>
+
                   <div class="form-group">
                     <label>Treatment Information</label>
                     <textarea class="summernote" name="treatment_information">{{old('treatment_information')}}</textarea>
@@ -168,7 +190,7 @@
                   </div>
 
 
-                  <div class="product-variant-block">
+                  <!-- <div class="product-variant-block">
                     <label>Product Variants</label>
                     <table class="list" id="variantList">
                       <thead>
@@ -253,7 +275,7 @@
                         </tr>
                       </tbody>
                     </table>
-                  </div>
+                  </div> -->
 
                   <div class="form-group">
                     <label for="searchEngine">Search Engine Friendly Page Name</label>
@@ -359,7 +381,7 @@
         });
       });
 
-      function createRow() {
+      /*function createRow() {
         var inputs = $('.length').val();
         var id = parseInt(inputs)+parseInt(1);
         $('.length').val(id);
@@ -433,7 +455,7 @@
         return valid;
       }
 
-      $('#productForm').submit(validate);
+      $('#productForm').submit(validate);*/
 
       $('.contact').keyup(function(e){
         if(/\D/g.test(this.value))
@@ -471,6 +493,57 @@
           }
         });
       });
+
+      //Add Variant
+      $('#productVariant').on('change',function(){
+        if($('#productVariant option:selected').val()==null) {
+          $('#add-options').css('display','none');
+        }
+        $('#add-options').css('display','block');
+      });
+
+      $('#add-options').on('click',function(){
+        var options = $('#productVariant option:selected');
+        
+        if(options.length > 0  && options.length <=3 ){
+/*          $('.product-variant-selectbox').css({'pointer-events':'none','opacity':'0.5'});
+          $('#clear-option').css('display','block'); */         
+
+          var selectedOption = JSON.stringify($('#productVariant').val());
+          var selectedVendor = JSON.stringify($('#VendorSupplier').val());
+
+
+          console.log(selectedOption);
+          console.log(selectedVendor);
+
+
+          var csrf_token = "{{ csrf_token() }}";
+
+          $.ajax({
+            url:"{{ url('admin/product_variant') }}",
+            type:"POST",
+            dataType:"JSON",
+            data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor},
+            success: function (data) { 
+              $('.product-variant-block').html(data);
+            }
+          });
+
+        }else{
+          alert('Please select maximum 3 options')
+        }
+      });
+
+      
+      //Clear Options
+      $('#clear-option').on('click',function () {
+        $('#clear-option').css('display','none');
+        $('#add-options').css('display','none');
+        $('#productVariant').val('').change();
+        $('#VendorSupplier').val('').change();
+        $('.product-variant-selectbox').css({'pointer-events':'auto','opacity':'1'});
+      });
+
 
     </script>
   @endpush
