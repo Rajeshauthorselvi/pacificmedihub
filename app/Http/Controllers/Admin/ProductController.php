@@ -14,6 +14,7 @@ use App\Models\ProductVariantVendor;
 use App\Models\Option;
 use App\Models\OptionValue;
 use Redirect;
+use DB;
 
 class ProductController extends Controller
 {
@@ -69,6 +70,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         $this->validate(request(), [
             'product_name' => 'required',
             'product_code' => 'required',
@@ -114,20 +116,93 @@ class ProductController extends Controller
         $product->save();
 
         if($product->id){
-
             if($request->variant){
                 $variant_data = [];
 
-                $i = 0;
-                foreach ($request->variant['dosage'] as $dosage) {
-                    $variant_data[$i]['dosage'] = $dosage;
-                    $i = $i + 1;
+                if(isset($request->variant['option_id1'])){
+                        $i = 0;
+                    foreach ($request->variant['option_id1'] as $option_id1) {
+                        $variant_data[$i]['option_id1'] = $option_id1;
+                        $i = $i + 1;
+                    }
+                }else{
+                    $i = 0;
+                    foreach ($request->variant['base_price'] as $base_price) {
+                        $variant_data[$i]['option_id1'] = null;
+                        $i = $i + 1;
+                    }
                 }
-                $i = 0;
-                foreach ($request->variant['package'] as $package) {
-                    $variant_data[$i]['package'] = $package;
-                    $i = $i + 1;
+
+                if(isset($request->variant['option_id2'])){
+                        $i = 0;
+                    foreach ($request->variant['option_id2'] as $option_id2) {
+                        $variant_data[$i]['option_id2'] = $option_id2;
+                        $i = $i + 1;
+                    }
+                }else{
+                    $i = 0;
+                    foreach ($request->variant['base_price'] as $base_price) {
+                        $variant_data[$i]['option_id2'] = null;
+                        $i = $i + 1;
+                    }
                 }
+
+                if(isset($request->variant['option_id3'])){
+                        $i = 0;
+                    foreach ($request->variant['option_id3'] as $option_id3) {
+                        $variant_data[$i]['option_id3'] = $option_id3;
+                        $i = $i + 1;
+                    }
+                }else{
+                    $i = 0;
+                    foreach ($request->variant['base_price'] as $base_price) {
+                        $variant_data[$i]['option_id3'] = null;
+                        $i = $i + 1;
+                    }
+                }
+
+                if(isset($request->variant['option_value_id1'])){
+                        $i = 0;
+                    foreach ($request->variant['option_value_id1'] as $option_value_id1) {
+                        $variant_data[$i]['option_value_id1'] = $option_value_id1;
+                        $i = $i + 1;
+                    }
+                }else{
+                    $i = 0;
+                    foreach ($request->variant['base_price'] as $base_price) {
+                        $variant_data[$i]['option_value_id1'] = null;
+                        $i = $i + 1;
+                    }
+                }
+
+                if(isset($request->variant['option_value_id2'])){
+                        $i = 0;
+                    foreach ($request->variant['option_value_id2'] as $option_value_id2) {
+                        $variant_data[$i]['option_value_id2'] = $option_value_id2;
+                        $i = $i + 1;
+                    }
+                }else{
+                    $i = 0;
+                    foreach ($request->variant['base_price'] as $base_price) {
+                        $variant_data[$i]['option_value_id2'] = null;
+                        $i = $i + 1;
+                    }
+                }
+
+                if(isset($request->variant['option_value_id3'])){
+                        $i = 0;
+                    foreach ($request->variant['option_value_id3'] as $option_value_id3) {
+                        $variant_data[$i]['option_value_id3'] = $option_value_id3;
+                        $i = $i + 1;
+                    }
+                }else{
+                    $i = 0;
+                    foreach ($request->variant['base_price'] as $base_price) {
+                        $variant_data[$i]['option_value_id3'] = null;
+                        $i = $i + 1;
+                    }
+                }
+
                 $i = 0;
                 foreach ($request->variant['base_price'] as $base_price) {
                     $variant_data[$i]['base_price'] = $base_price;
@@ -150,14 +225,8 @@ class ProductController extends Controller
                 }
               
                 $i = 0;
-                foreach ($request->variant['vendor'] as $vendor) {
-                    $variant_data[$i]['vendor'] = $vendor;
-                    $i = $i + 1;
-                }
-
-                $i = 0;
-                foreach ($request->variant['default'] as $default) {
-                    $variant_data[$i]['default'] = $default;
+                foreach ($request->variant['vendor_id'] as $vendor_id) {
+                    $variant_data[$i]['vendor_id'] = $vendor_id;
                     $i = $i + 1;
                 }
 
@@ -176,26 +245,30 @@ class ProductController extends Controller
                 foreach ($variant_data as $value) {
                     $add = new ProductVariant();
                     $add->product_id = $product->id;
-                    $add->dosage = $value['dosage'];
-                    $add->package = $value['package'];
+                    $add->product_option_id1 = $value['option_id1'];
+                    $add->product_option_value_id1 = $value['option_value_id1'];
+                    $add->product_option_id2 = $value['option_id2'];
+                    $add->product_option_value_id2 = $value['option_value_id2'];
+                    $add->product_option_id3 = $value['option_id3'];
+                    $add->product_option_value_id3 = $value['option_value_id3'];
                     $add->base_price = $value['base_price'];
                     $add->retail_price = $value['retail_price'];
                     $add->minimum_selling_price = $value['minimum_price'];
-                    $add->default_variant = $value['default'];
                     $add->display_variant = $value['display'];
                     $add->display_order = $value['display_order'];
                     $add->stock_quantity = $value['stock_qty'];
+                    $add->vendor_id = $value['vendor_id'];
                     $add->timestamps = false;
                     $add->save();
 
-                    foreach($value['vendor'] as $id) {
+                    /*foreach($value['vendor'] as $id) {
                         $vendor = new ProductVariantVendor();
                         $vendor->product_id = $product->id;
                         $vendor->product_variant_id = $add->id;
                         $vendor->variant_id = isset($id)?$id:NULL;
                         $vendor->timestamps = false;
                         $vendor->save();
-                    }
+                    }*/
                 }
             }
             if($request->hasfile('images')){
@@ -283,25 +356,29 @@ class ProductController extends Controller
         $options = json_decode($request->options,true);
         $vendors = json_decode($request->vendors,true);
 
-
         $data=array();
         $get_options = Option::whereIn('id',$options)->pluck('option_name','id')->toArray();
         $data['get_option'] = $get_options;
-
-
+        
         $get_option_values = OptionValue::whereIn('option_id',$options)->get();
         $option_values = array();
-        foreach ($get_option_values as $key => $option) {
-            $option_values[]=[
-                'option_id'=>$option->option_id,
-                'option_value_id'=>$option->id,
-                'option_value'=>$option->option_value
-            ];
-        }
-      /*  echo "<pre>";
-        print_r($option_values);*/
+        $get_vendor = array();
 
-        $data['option_values']=$option_values;
+        $option_count = count($options);
+        $data['option_count'] = $option_count;
+        foreach ($vendors as $vendor) {
+            $get_vendor[] = Vendor::find($vendor);
+            if($option_count==1){
+                $option_values[] = DB::select('select id as opt_val_id1, option_id as opt_id1, option_value as opt_val1 from product_option_values where option_id = "'.$options[0].'"');
+            }
+            elseif($option_count==2){
+                $option_values[] = DB::select('select v1.id as opt_val_id1, v2.id as opt_val_id2, v1.option_id as opt_id1, v1.option_value as opt_val1, v2.option_id as opt_id2, v2.option_value as opt_val2 from (select * from product_option_values where option_id = "'.$options[0].'") v1 inner join (select * from product_option_values where option_id = "'.$options[1].'") v2 on v1.option_id <> v2.option_id and v1.option_id = "'.$options[0].'"');
+            }else if($option_count==3){
+                $option_values[] = DB::select('select v1.id as opt_val_id1, v2.id as opt_val_id2, v3.id as opt_val_id3, v1.option_id as opt_id1, v1.option_value as opt_val1, v2.option_id as opt_id2, v2.option_value as opt_val2, v3.option_id as opt_id3, v3.option_value as opt_val3 from (select * from product_option_values where option_id = "'.$options[0].'") v1 inner join (select * from product_option_values where option_id = "'.$options[1].'") v2 on v1.option_id <> v2.option_id and v1.option_id = "'.$options[0].'" inner join (select * from product_option_values where option_id = "'.$options[2].'") v3 on v1.option_id <> v3.option_id');
+            }            
+        }
+        $data['vendors'] = $get_vendor;
+        $data['option_values'] = $option_values;
         return view('admin/products/variants',$data);
     }
 }

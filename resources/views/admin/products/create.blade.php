@@ -125,7 +125,7 @@
                           </select>
                         </div>
 
-                        <button type="button" class="btn save-btn" id="add-options" style="display:none">Save Options</button>
+                        <button type="button" class="btn save-btn" id="add-options" style="display:none">Save</button>
 
                       </div>
                       <a id="clear-option" class="btn save-btn" style="display:none">Clear</a>
@@ -376,7 +376,7 @@
       }
 
       $(function ($) {
-        $('.commission.select2bs4').select2({
+        $('body').find('.commission.select2bs4').select2({
           minimumResultsForSearch: -1
         });
       });
@@ -506,31 +506,28 @@
         var options = $('#productVariant option:selected');
         
         if(options.length > 0  && options.length <=3 ){
-/*          $('.product-variant-selectbox').css({'pointer-events':'none','opacity':'0.5'});
-          $('#clear-option').css('display','block'); */         
-
+          $('.product-variant-selectbox').css({'pointer-events':'none','opacity':'0.5'});
+          $('#clear-option').css('display','block');      
           var selectedOption = JSON.stringify($('#productVariant').val());
           var selectedVendor = JSON.stringify($('#VendorSupplier').val());
-
-
+          if($('#VendorSupplier').val().length==0){
+            alert('Please select Vendor/Supplier.!');
+            return false;
+          }
           console.log(selectedOption);
           console.log(selectedVendor);
-
-
           var csrf_token = "{{ csrf_token() }}";
-
           $.ajax({
             url:"{{ url('admin/product_variant') }}",
             type:"POST",
-            dataType:"JSON",
+            dataType:"HTML",
             data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor},
             success: function (data) { 
-              $('.product-variant-block').html(data);
+              $('.product-variant-block').append(data);
             }
           });
-
         }else{
-          alert('Please select maximum 3 options')
+          alert('Please select maximum of 3 options only.!');
         }
       });
 
@@ -542,8 +539,10 @@
         $('#productVariant').val('').change();
         $('#VendorSupplier').val('').change();
         $('.product-variant-selectbox').css({'pointer-events':'auto','opacity':'1'});
+        $('.product-variant-block').find('table').remove();
       });
 
+      
 
     </script>
   @endpush

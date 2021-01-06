@@ -170,7 +170,10 @@ class VendorController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data['vendor'] = Vendor::find($id);
+        $data['vendor_poc'] = VendorPoc::where('vendor_id',$id)->get();
+        $data['count'] = 1;
+        return view('admin/vendor/edit',$data);
     }
 
     /**
@@ -182,7 +185,7 @@ class VendorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($request->all());
     }
 
     /**
