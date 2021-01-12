@@ -39,6 +39,7 @@
               <div class="card-body">
                 <form action="{{route('product.update',$product->id)}}" method="post" enctype="multipart/form-data" id="productForm">
                   @csrf
+                  <input name="_method" type="hidden" value="PATCH">
                   <div class="product-col-dividers">
                     <div class="col-one col-sm-6">
                       <div class="form-group">
@@ -77,15 +78,21 @@
                           <span class="text-danger">{{ $errors->first('category') }}</span>
                         @endif
                       </div>
+
+                      <div class="form-group">
+                        <label for="alertQty">Alert Quantity</label>
+                        <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty',$product->alert_quantity)}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="shortDescription">Product Short Details</label>
+                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description',$product->short_description)}}</textarea>
+                      </div>
+
                       <?php 
                         if(!empty($product->main_image)){$image = "theme/images/products/main/".$product->main_image;}
                         else {$image = "theme/images/no_image.jpg";}
                       ?>
-                      <div class="form-group">
-                        <label for="mainImage">Product Image</label>
-                        <input type="file" name="main_image" id="mainImage" accept="image/*" onchange="preview_image(event)" style="display:none;" value="{{$product->main_image}}">
-                        <img title="Click to Change" class="img-product" id="output_image"  onclick="$('#mainImage').trigger('click'); return true;" style="width:100px;height:100px;cursor:pointer;" src="{{asset($image)}}">
-                      </div>
+                      
                     </div>
 
                     <div class="col-two col-sm-5">
@@ -98,18 +105,32 @@
                           @endforeach
                         </select>
                       </div>
-                      <div class="form-group">
-                        <label for="alertQty">Alert Quantity</label>
-                        <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty',$product->alert_quantity)}}">
+
+                      <!-- <div class="product-variant-selectbox">
+
+                        <div class="form-group">
+                          <label for="productVariant">Product Variant Options</label>
+                          <select class="form-control select2bs4" id="productVariant" multiple="multiple" data-placeholder="Select Variant Option" name="variant_option">
+                            @foreach($product_options as $options)
+                              <option value="{{$options->id}}" {{ (collect(old('variant_option'))->contains($options->id)) ? 'selected':'' }}>{{$options->option_name}}</option>
+                            @endforeach
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="VendorSupplier">Vendor/Supplier</label>
+                          <select class="form-control select2bs4" id="VendorSupplier" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="vendor">
+                            @foreach($vendors as $vendor)
+                              <option value="{{$vendor->id}}" {{ (collect(old('vendor'))->contains($vendor->id)) ? 'selected':'' }}>{{$vendor->name}}</option>
+                            @endforeach
+                          </select>
+                        </div>
+
+                        <button type="button" class="btn save-btn" id="add-options" style="display:none">Save</button>
+
                       </div>
-                      <!-- <div class="form-group">
-                        <label for="productBrand">Vendor/Supplier</label>
-                        <select class="form-control select2bs4" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="vendor">
-                          @foreach($vendors as $vendor)
-                            <option value="{{$vendor->id}}" {{ (collect(old('vendor'))->contains($vendor->id)) ? 'selected':'' }}>{{$vendor->name}}</option>
-                          @endforeach
-                        </select>
-                      </div> -->
+                      <a id="clear-option" class="btn save-btn" style="display:none">Clear</a> -->
+                      
                       <div class="form-group" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
                           <label for="productBrand">Commission Type</label>
@@ -123,10 +144,7 @@
                           <input type="text" class="form-control" name="commision_value" id="commissionValue" onkeyup="validateNum(event,this);" value="{{old('commision_value',$product->commission_value)}}">
                         </div>
                       </div>
-                      <div class="form-group">
-                        <label for="shortDescription">Product Short Details</label>
-                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description',$product->short_description)}}</textarea>
-                      </div>
+                      
                       <div class="form-group clearfix" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
                           <div class="icheck-info d-inline">
@@ -141,25 +159,128 @@
                           </div>
                         </div>
                       </div>
+
+                      <div class="form-group">
+                        <label for="mainImage">Product Image</label>
+                        <input type="file" name="main_image" id="mainImage" accept="image/*" onchange="preview_image(event)" style="display:none;" value="{{$product->main_image}}">
+                        <img title="Click to Change" class="img-product" id="output_image"  onclick="$('#mainImage').trigger('click'); return true;" style="width:100px;height:100px;cursor:pointer;" src="{{asset($image)}}">
+                      </div>
+
                     </div>
                   </div>
 
                   <div class="form-group">
+                    <label for="files">Product Gallery Images</label><br>
                     <article>
-                      <label for="files">Product Gallery Images</label>
                       <div class="custom-file">
                         <input type="file" class="custom-file-input" name="images[]" id="files" multiple onChange="validateImg(this.value)">
-                        <label class="custom-file-label" for="files">Choose file</label>
+                        <label class="custom-file-label" for="files">Add New Images</label>
                       </div>
                       <output id="result" style="display:none;"></output>
                       <button type="button" id="clear" style="display:none;">Clear</button>
                     </article>
+                    <label>Existing Images</label><br>
+                    @foreach($product_images as $images)
+                      <img class="img-category" style="width:120px;height: 100px;" src="{{ asset('theme/images/products/'.$images->name)}}">
+                      <a class="btn btn-danger del-image" product-id="{{$images->id}}" route-url="{{ route('remove.pimage') }}">-</a>
+                    @endforeach
+                    
                   </div>
 
                   <div class="form-group">
                     <label>Product Details</label>
                     <textarea class="summernote" name="product_details">{{old('product_details',$product->long_description)}}</textarea>
                   </div>
+
+                  <div class="product-variant-block">
+                    <label>Product Variants</label>
+                    <table class="list" id="variantList">
+                      <thead>
+                        <tr>
+                          @foreach($get_options as $option)
+                            <th>{{$option}}</th>
+                          @endforeach
+                          <th>Base Price</th><th>Retail Price</th><th>Minimum Selling Price</th><th>Stock Qty</th><th>Vendor</th><th>Order By</th><th>Display</th><th>Remove</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($product_variant as $variant)
+                          <tr>
+                            <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
+                            <td>
+                              <div class="form-group">
+                                <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">
+                                <input type="hidden" name="variant[option_value_id1][]" value="{{$variant['option_value_id1']}}">
+                                {{$variant['option_value1']}}
+                              </div>
+                            </td>
+                            @if($option_count==2||$option_count==3)
+                              <td>
+                                <div class="form-group">
+                                  <input type="hidden" name="variant[option_id2][]" value="{{$variant['option_id2']}}">
+                                  <input type="hidden" name="variant[option_value_id2][]" value="{{$variant['option_value_id2']}}">
+                                  {{$variant['option_value2']}}
+                                </div>
+                              </td>
+                            @endif
+                            @if($option_count==3)
+                              <td>
+                                <div class="form-group">
+                                  <input type="hidden" name="variant[option_id3][]" value="{{$variant['option_id3']}}">
+                                  <input type="hidden" name="variant[option_value_id3][]" value="{{$variant['option_value_id3']}}">
+                                  {{$variant['option_value3']}}
+                                </div>
+                              </td>
+                            @endif
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control base_price" onkeyup="validateNum(event,this);" name="variant[base_price][]" value="{{$variant['base_price']}}">
+                                <span class="text-danger" style="display:none">Base Price is required</span>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control retail_price" onkeyup="validateNum(event,this);" name="variant[retail_price][]" value="{{$variant['retail_price']}}">
+                                <span class="text-danger" style="display:none">Retail Price is required</span>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[minimum_price][]" value="{{$variant['minimum_selling_price']}}">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{$variant['stock_quantity']}}">
+                                <span class="text-danger" style="display:none">Stock Qty is required</span>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="hidden" name="variant[vendor_id][]" value="{{$variant['vendor_id']}}">
+                                {{$variant['vendor_name']}}
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]" value="{{$variant['display_order']}}">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <select class="form-control commission select2bs4" name="variant[display][]">
+                                  <option @if($variant['display_variant']==0) selected="selected" @endif value="0" selected>No</option>
+                                  <option @if($variant['display_variant']==1) selected="selected" @endif value="1">Yes</option>
+                                </select>
+                              </div>
+                            </td>
+                            <td><a class="btn btn-danger remove-variant-individual" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}"><i class="far fa-trash-alt"></i></a></td>
+                          </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </div>
+
                   <div class="form-group">
                     <label>Treatment Information</label>
                     <textarea class="summernote" name="treatment_information">{{old('treatment_information',$product->treatment_information)}}</textarea>
@@ -167,94 +288,6 @@
                   <div class="form-group">
                     <label>Dosage Instructions</label>
                     <textarea class="summernote" name="dosage_instructions">{{old('dosage_instructions',$product->dosage_instructions)}}</textarea>
-                  </div>
-
-
-                  <div class="product-variant-block">
-                    <label>Product Variants</label>
-                    <table class="list" id="variantList">
-                      <thead>
-                        <tr>
-                          <th>Dosage</th><th>Package</th><th>Base Price</th><th>Retail Price</th><th>Minimum Selling Price</th><th>Stock Qty</th><th>Select Vendor</th><th>&nbsp;Default&nbsp;</th><th>Order By</th><th>Display</th><th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @foreach($product_variant as $variant)
-                          <tr>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control dosage" name="variant[dosage][]" value="{{$variant->dosage}}">
-                                <span class="text-danger" style="display:none">Dosage is required</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control package" name="variant[package][]" value="{{$variant->package}}">
-                                <span class="text-danger" style="display:none">Package is required</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control base_price" onkeyup="validateNum(event,this);" name="variant[base_price][]" value="{{$variant->base_price}}">
-                                <span class="text-danger" style="display:none">Base Price is required</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control retail_price" onkeyup="validateNum(event,this);" name="variant[retail_price][]" value="{{$variant->retail_price}}">
-                                <span class="text-danger" style="display:none">Retail Price is required</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[minimum_price][]" value="{{$variant->minimum_selling_price}}">
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{$variant->stock_quantity}}">
-                                <span class="text-danger" style="display:none">Stock Qty is required</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <select class="form-control select2" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="variant[vendor][0][]">
-                                  @foreach($vendors as $vendor)
-                                    <option value="{{$vendor->id}}">{{$vendor->name}}</option>
-                                  @endforeach
-                                </select>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group clearfix">
-                                <div class="icheck-info d-inline">
-                                  <input type="radio" class="default-variant" name="default" id="defaultVariant" value="1">
-                                  <input type="hidden" name="variant[default][]" @if($product->default_variant==1) checked @endif class="hidden-default-variant" value="1">
-                                  <label for="defaultVariant"></label>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]" value="{{$variant->display_order}}">
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <select class="form-control commission select2bs4" name="variant[display][]">
-                                  <option @if($variant->display_variant==0) selected="selected" @endif value="0" selected>No</option>
-                                  <option @if($variant->display_variant==1) selected="selected" @endif value="1">Yes</option>
-                                </select>
-                              </div>
-                              <input type="hidden" class="length" value="1">
-                            </td>
-                            <td>
-                              <a href="#" id="add"><i class="fas fa-plus-circle"></i></a>
-                            </td>
-                          </tr>
-                        @endforeach
-                      </tbody>
-                    </table>
                   </div>
 
                   <div class="form-group">
@@ -361,54 +394,6 @@
         });
       });
 
-      function createRow() {
-        var inputs = $('.length').val();
-        var id = parseInt(inputs)+parseInt(1);
-        $('.length').val(id);
-        var newrow = [
-          '<div class="form-group"><input type="text" class="form-control" name="variant[dosage][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" name="variant[package][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[base_price][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[retail_price][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[minimum_price][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[stock_qty][]"></div>',
-          '<div class="form-group"><select class="form-control select2" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="variant[vendor]['+id+'][]">@foreach($vendors as $vendor)<option value="{{$vendor->id}}">{{$vendor->name}}</option>@endforeach</select></div>',
-          '<div class="form-group clearfix"><div class="icheck-info d-inline"><input type="radio" class="default-variant" name="default" id="defaultVariant'+id+'" value="0"><input type="hidden" name="variant[default][]" class="hidden-default-variant" value="0"><label for="defaultVariant'+id+'"></label></div></div>',
-          '<div class="form-group"><input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]"></div>',
-          '<div class="form-group"><select class="form-control commission select2bs4" name="variant[display][]"><option value="0" selected>No</option><option value="1">Yes</option></select></div>',
-          '<a href="#" class="deleteButton"><i class="fas fa-minus-circle"></i></a>'
-        ];
-        return '<tr><td>'+newrow.join('</td><td>')+'</td></tr>';
-      }
-
-      $('a#add').click(function() {
-        $('table#variantList tbody').append(createRow());
-        return false;
-      });
-
-      $('table#variantList').on('click','.addButton',function() {
-        $(this).closest('tr').after(createRow());
-      }).on('click','.deleteButton',function() {
-        $(this).closest('tr').remove();
-        return false;
-      });
-
-      $(document).ready(function() {
-        $("body").on("click",".default-variant",function(){
-          var val = $(this).val();
-          if(val>0){
-            $("input[type='radio']:checked").next("input[type='hidden']").val('1');
-            $("input[type='radio']:checked").val('1');
-            $("input[type='radio']:not(:checked)").next("input[type='hidden']").val('0');
-            $("input[type='radio']:not(:checked)").val('0');
-          }else{
-            $("input[type='radio']:checked").next("input[type='hidden']").val('1');
-            $("input[type='radio']:checked").val('1');
-            $("input[type='radio']:not(:checked)").next("input[type='hidden']").val('0');
-            $("input[type='radio']:not(:checked)").val('0');
-          }
-        });
-      });
 
       function validate(){
         var valid=true;
@@ -484,6 +469,59 @@
       }
       reader.readAsDataURL(event.target.files[0]);
     }
+
+
+    //Remove Variant
+    var prev_val;
+    $(".remove-variant-individual").on('click', function(e, state) { 
+        prev_val = $(this).val();
+        var success = confirm('Are you sure you want to remove this Variant?');
+        if(success) {
+          var varId = $(this).attr('variant-id');
+          var routeUrl = $(this).attr('route-url');
+          deletevariant(varId,routeUrl);
+
+        }else {
+          $(this).val(prev_val);
+          return false; 
+        }
+      });
+    function deletevariant(varId,routeUrl) {
+      $.ajax({
+        url: routeUrl,
+        type: "POST",
+        data: {"_token": "{{ csrf_token() }}",id:varId},
+        dataType: "html",
+        success: function(response){             
+          location.reload();
+        }
+      });        
+    }
+
+    //Delete image
+      $(".del-image").on('click', function (e1, state1) {
+        prev_val = $(this).val();
+        var success = confirm('Are you sure you want to remove this Image?');
+        if(success) {
+          var imgId = $(this).attr('product-id');
+          var routeUrl = $(this).attr('route-url');
+          removeImage(imgId,routeUrl);
+        }else {
+          $(this).val(prev_val);
+          return false; 
+        }
+      });
+      function removeImage(imgId,routeUrl) {
+        $.ajax({
+          url: routeUrl,
+          type: "POST",
+          data: {"_token": "{{ csrf_token() }}",id:imgId},
+          dataType: "html",
+          success: function(response){ 
+            location.reload();
+          }
+        });
+      }
 
     </script>
   @endpush

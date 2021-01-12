@@ -26,6 +26,8 @@ Route::group(['prefix' => 'admin'], function () {
 	Route::get('admin-logout','Admin\AuthController@logout')->name('admin.logout')->middleware('superAdmin');
 	Route::resource('product','Admin\ProductController')->middleware('superAdmin');
 	Route::post('product_variant','Admin\ProductController@productVariant')->middleware('superAdmin');
+	Route::post('delete-product-image',['as'=>'remove.pimage','uses'=>'Admin\ProductController@removeImage'])->middleware('superAdmin');
+	Route::post('delete-product-variant',['as'=>'delete.variant','uses'=>'Admin\ProductController@removeVariant'])->middleware('superAdmin');
 	Route::resource('categories','Admin\CategoriesController')->middleware('superAdmin');
 	Route::resource('options','Admin\OptionController')->middleware('superAdmin');
 	Route::resource('option_values','Admin\OptionValueController')->middleware('superAdmin');

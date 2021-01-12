@@ -1,4 +1,4 @@
-<table>
+<table class="list" id="variantList">
 	<thead>
 		<tr>
 			@foreach($get_option as $option)
