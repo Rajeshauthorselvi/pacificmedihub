@@ -44,6 +44,7 @@
                       <div class="form-group">
                         <label for="productName">Product Name *</label>
                         <input type="text" class="form-control" name="product_name" id="productName" value="{{old('product_name')}}">
+                        <span class="text-danger product_required hidden">Product name is reqiured</span>
                         @if($errors->has('product_name'))
                           <span class="text-danger">{{ $errors->first('product_name') }}</span>
                         @endif
@@ -51,6 +52,7 @@
                       <div class="form-group">
                         <label for="productCode">Product Code *</label>
                         <input type="text" class="form-control" name="product_code" id="productCode" value="{{old('product_code')}}">
+                      <span class="text-danger product_code_required hidden">Product code is reqiured</span>
                         @if($errors->has('product_code'))
                           <span class="text-danger">{{ $errors->first('product_code') }}</span>
                         @endif
@@ -73,6 +75,7 @@
                             <option value="{{$category->id}}" {{ (collect(old('category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
                           @endforeach
                         </select>
+                        <span class="text-danger category_required hidden">Product name is reqiured</span>
                         @if($errors->has('category'))
                           <span class="text-danger">{{ $errors->first('category') }}</span>
                         @endif
@@ -124,12 +127,16 @@
                             @endforeach
                           </select>
                         </div>
-
-                        <button type="button" class="btn save-btn" id="add-options" style="display:none">Save</button>
+                        <div class="submit-sec">
+                          <a id="clear-option" class="btn reset-btn" style="display:none">Clear</a>
+                          <button type="button" class="btn save-btn" id="add-options" style="display:none">Save</button>
+                          &nbsp;
+                       
+                        </div>
 
                       </div>
-                      <a id="clear-option" class="btn save-btn" style="display:none">Clear</a>
-
+                      
+                      <div class="clearfix"></div>
                       <div class="form-group" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
                           <label for="productBrand">Commission Type</label>
@@ -295,7 +302,7 @@
                   </div>
                   <div class="form-group">
                     <a href="{{route('product.index')}}" class="btn reset-btn">Cancel</a>
-                    <button type="submit" class="btn save-btn">Save</button>
+                    <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
                   </div>
                 </form>
               </div>
@@ -305,7 +312,17 @@
       </div>
     </section>
   </div>
-
+<style type="text/css">
+  #clear-option,#add-options{
+    float: left;
+  }
+  #add-options{
+    margin-right: 10px;
+  }
+  .hidden{
+    display: none;
+  }
+</style>
   @push('custom-scripts')
     <script type="text/javascript">
       //Image Upload
@@ -465,6 +482,56 @@
         }
       });
 
+      $(document).on('click', '#submit-btn', function(event) {
+        event.preventDefault();
+
+        var product_name=$('[name=product_name]').val();
+        var product_code=$('[name=product_code]').val();
+        var category=$('[name=category]').val();
+
+        if (product_name=="") {
+            $('.product_required').removeClass('hidden');
+        }
+        else{
+           $('.product_required').addClass('hidden');
+        }
+
+        if (product_code=="") {
+            $('.product_code_required').removeClass('hidden');
+        }
+        else{
+          $('.product_code_required').addClass('hidden');
+        }
+        if (category=="") {
+          $('.category_required').removeClass('hidden');
+        }
+        else{
+          $('.category_required').addClass('hidden');
+        }
+
+        if (product_name=="" || product_code=="" || category=="") {
+            return false;
+        } 
+
+        if ($('#variantList').length==0) {
+          alert('Please add variants');
+          return false
+        }
+        var empty_field=$('#variantList .form-control').filter(function(){
+                            return !$(this).val();
+                        }).length;
+
+        if (empty_field!=0) {
+          alert('Please fill all the variants.');
+          return false;
+        }
+        else{
+            $('#productForm').submit();
+        }
+
+
+      });
+
       //Validate Number
       function validateNum(e , field) {
         var val = field.value;
@@ -506,13 +573,16 @@
         var options = $('#productVariant option:selected');
         
         if(options.length > 0  && options.length <=3 ){
-          $('.product-variant-selectbox').css({'pointer-events':'none','opacity':'0.5'});
-          $('#clear-option').css('display','block');      
+                
           var selectedOption = JSON.stringify($('#productVariant').val());
           var selectedVendor = JSON.stringify($('#VendorSupplier').val());
-          if($('#VendorSupplier').val().length==0){
+          if($('#VendorSupplier').val().length==0 && $('#productVariant').val()){
             alert('Please select Vendor/Supplier.!');
             return false;
+          }
+          else{
+            $('#add-options').css({'pointer-events':'none','opacity':'0.5'});
+            $('#clear-option').css('display','block');
           }
           console.log(selectedOption);
           console.log(selectedVendor);
@@ -538,7 +608,7 @@
         $('#add-options').css('display','none');
         $('#productVariant').val('').change();
         $('#VendorSupplier').val('').change();
-        $('.product-variant-selectbox').css({'pointer-events':'auto','opacity':'1'});
+        $('#add-options').css({'pointer-events':'auto','opacity':'1'});
         $('.product-variant-block').find('table').remove();
       });
 

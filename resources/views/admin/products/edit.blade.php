@@ -45,6 +45,7 @@
                       <div class="form-group">
                         <label for="productName">Product Name *</label>
                         <input type="text" class="form-control" name="product_name" id="productName" value="{{old('product_name',$product->name)}}">
+                         <span class="text-danger product_required hidden">Product name is reqiured</span>
                         @if($errors->has('product_name'))
                           <span class="text-danger">{{ $errors->first('product_name') }}</span>
                         @endif
@@ -52,6 +53,7 @@
                       <div class="form-group">
                         <label for="productCode">Product Code *</label>
                         <input type="text" class="form-control" name="product_code" id="productCode" value="{{old('product_code',$product->code)}}">
+                      <span class="text-danger product_code_required hidden">Product code is reqiured</span>
                         @if($errors->has('product_code'))
                           <span class="text-danger">{{ $errors->first('product_code') }}</span>
                         @endif
@@ -74,6 +76,7 @@
                             <option @if($product->category_id==$category->id) selected="selected" @endif  value="{{$category->id}}" {{ (collect(old('category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
                           @endforeach
                         </select>
+                        <span class="text-danger category_required hidden">Product name is reqiured</span>
                         @if($errors->has('category'))
                           <span class="text-danger">{{ $errors->first('category') }}</span>
                         @endif
@@ -308,7 +311,7 @@
                   </div>
                   <div class="form-group">
                     <a href="{{route('product.index')}}" class="btn reset-btn">Cancel</a>
-                    <button type="submit" class="btn save-btn">Save</button>
+                    <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
                   </div>
                 </form>
               </div>
@@ -318,7 +321,11 @@
       </div>
     </section>
   </div>
-
+<style type="text/css">
+  .hidden{
+    display: none;
+  }
+</style>
   @push('custom-scripts')
     <script type="text/javascript">
       //Image Upload
@@ -364,7 +371,47 @@
           console.log("Your browser does not support File API");
         }
       }
-        
+      $(document).on('click', '#submit-btn', function(event) {
+        event.preventDefault();
+        var product_name=$('[name=product_name]').val();
+        var product_code=$('[name=product_code]').val();
+        var category=$('[name=category]').val();
+
+        var product_name=$('[name=product_name]').val();
+        var product_code=$('[name=product_code]').val();
+        var category=$('[name=category]').val();
+
+        if (product_name=="") {
+            $('.product_required').removeClass('hidden');
+        }
+        else{
+           $('.product_required').addClass('hidden');
+        }
+
+        if (product_code=="") {
+            $('.product_code_required').removeClass('hidden');
+        }
+        else{
+          $('.product_code_required').addClass('hidden');
+        }
+        if (category=="") {
+          $('.category_required').removeClass('hidden');
+        }
+        else{
+          $('.category_required').addClass('hidden');
+        }
+
+        if (product_name=="" || product_code=="" || category=="") {
+            return false;
+        } 
+        else{
+          $('#productForm').submit();
+        }
+
+
+      });
+
+
       $('#files').on("click", function() {
         $('.thumbnail').parent().remove();
         $('result').hide();

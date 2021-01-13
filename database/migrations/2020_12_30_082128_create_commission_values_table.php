@@ -16,7 +16,7 @@ class CreateCommissionValuesTable extends Migration
         Schema::create('commission_values', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('commission_id');
-            $table->foreign('commission_id')->references('id')->on('commissions');
+            // $table->foreign('commission_id')->references('id')->on('commissions');
             $table->enum('commission_type', ['p','f'])->comment('P->Percentage, F->Fixed');
             $table->float('commission_value', 8, 2);
             $table->boolean('published')->default(0)->comment('0 - not published, 1 - published');

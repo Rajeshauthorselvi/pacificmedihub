@@ -82,7 +82,7 @@
                     <a href="{{route('comission_value.index')}}" class="btn reset-btn">Cancel</a>
                     <button type="submit" class="btn save-btn">Save</button>
                   </div>
-                </form>
+                {!! Form::close() !!}
               </div>
             </div>
           </div>
