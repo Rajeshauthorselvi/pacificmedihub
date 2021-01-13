@@ -92,8 +92,8 @@ class VendorController extends Controller
         }
 
         $add_vendor = new Vendor;
-        $add_vendor->uen = $request->vendor_name;
-        $add_vendor->name = $request->vendor_uen;
+        $add_vendor->uen = $request->vendor_uen;
+        $add_vendor->name = $request->vendor_name;
         $add_vendor->email = $request->vendor_email;
         $add_vendor->contact_number = $request->vendor_contact;
         $add_vendor->logo_image = $logo_image_name;
@@ -204,8 +204,8 @@ class VendorController extends Controller
 
 
         $add_vendor = Vendor::find($id);
-        $add_vendor->uen = $request->vendor_name;
-        $add_vendor->name = $request->vendor_uen;
+        $add_vendor->name = $request->vendor_name;
+        $add_vendor->uen = $request->vendor_uen;
         $add_vendor->email = $request->vendor_email;
         $add_vendor->contact_number = $request->vendor_contact;
         $add_vendor->gst_no = $request->vendor_gst;
