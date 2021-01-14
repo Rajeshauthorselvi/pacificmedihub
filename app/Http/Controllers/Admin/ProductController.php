@@ -703,15 +703,18 @@ class ProductController extends Controller
         $data['option_count'] = $option_count;
         foreach ($vendors as $vendor) {
             $get_vendor[] = Vendor::find($vendor);
-            if($option_count==1){
-                $option_values[] = DB::select('select id as opt_val_id1, option_id as opt_id1, option_value as opt_val1 from product_option_values where option_id = "'.$options[0].'"');
+            // if($option_count==1){
+            foreach ($options as $key => $option) {
+                $option_values[] = DB::select('select id as opt_val_id1, option_id as opt_id1, option_value as opt_val1 from product_option_values where option_id = "'.$option.'"');
             }
+/*            }
             elseif($option_count==2){
                 $option_values[] = DB::select('select v1.id as opt_val_id1, v2.id as opt_val_id2, v1.option_id as opt_id1, v1.option_value as opt_val1, v2.option_id as opt_id2, v2.option_value as opt_val2 from (select * from product_option_values where option_id = "'.$options[0].'") v1 inner join (select * from product_option_values where option_id = "'.$options[1].'") v2 on v1.option_id <> v2.option_id and v1.option_id = "'.$options[0].'"');
             }else if($option_count==3){
                 $option_values[] = DB::select('select v1.id as opt_val_id1, v2.id as opt_val_id2, v3.id as opt_val_id3, v1.option_id as opt_id1, v1.option_value as opt_val1, v2.option_id as opt_id2, v2.option_value as opt_val2, v3.option_id as opt_id3, v3.option_value as opt_val3 from (select * from product_option_values where option_id = "'.$options[0].'") v1 inner join (select * from product_option_values where option_id = "'.$options[1].'") v2 on v1.option_id <> v2.option_id and v1.option_id = "'.$options[0].'" inner join (select * from product_option_values where option_id = "'.$options[2].'") v3 on v1.option_id <> v3.option_id');
-            }            
+            } */           
         }
+        // dd($option_values);
         $data['vendors'] = $get_vendor;
         $data['option_values'] = $option_values;
         return view('admin/products/variants',$data);

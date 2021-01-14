@@ -109,7 +109,7 @@
                         </select>
                       </div>
 
-                      <!-- <div class="product-variant-selectbox">
+                      <div class="product-variant-selectbox">
 
                         <div class="form-group">
                           <label for="productVariant">Product Variant Options</label>
@@ -132,7 +132,7 @@
                         <button type="button" class="btn save-btn" id="add-options" style="display:none">Save</button>
 
                       </div>
-                      <a id="clear-option" class="btn save-btn" style="display:none">Clear</a> -->
+                      <a id="clear-option" class="btn save-btn" style="display:none">Clear</a>
                       
                       <div class="form-group" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
