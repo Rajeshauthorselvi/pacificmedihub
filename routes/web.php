@@ -43,4 +43,8 @@ Route::group(['prefix' => 'admin'], function () {
 Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('settings','Admin\SettingsController');
 	Route::resource('payment_method','Admin\PaymentMethodsController');
+	Route::resource('purchase','Admin\PurchaseController');
+	Route::get('product-search',['uses'=>'product.search','uses'=>'Admin\PurchaseController@ProductSearch']);
+
+	Route::resource('currency','Admin\CurrencyController');
 });
