@@ -91,12 +91,7 @@
       </div>
     </section>
   </div>
-  <style type="text/css">
-  	.text-left{text-align: left;} 
-  	.pull-left{float: left;}
-  	.pull-right{float: right;}
-  	.text-right{text-align: right;} 
-  </style>
+
   @push('custom-scripts')
   <script type="text/javascript">
   		

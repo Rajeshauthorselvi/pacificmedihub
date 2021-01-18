@@ -18,6 +18,8 @@
   <link rel="stylesheet" href="{{ asset('theme/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
   <link rel="stylesheet" href="{{ asset('theme/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
   <link rel="stylesheet" href="{{ asset('theme/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="{{ asset('theme/plugins/daterangepicker/daterangepicker.css') }}">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- iCheck -->
@@ -35,8 +37,7 @@
   <link rel="stylesheet" href="{{ asset('theme/plugins/codemirror/theme/monokai.css') }}">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="{{ asset('theme/plugins/daterangepicker/daterangepicker.css') }}">
+  
   
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -89,8 +90,8 @@
 <script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <!-- bs-custom-file-input -->
 <script src="{{ asset('theme/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
-<!-- daterangepicker -->
 <script src="{{ asset('theme/plugins/moment/moment.min.js') }}"></script>
+<!-- daterangepicker -->
 <script src="{{ asset('theme/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <!-- overlayScrollbars -->
 <script src="{{ asset('theme/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>

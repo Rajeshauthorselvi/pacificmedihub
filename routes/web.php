@@ -21,26 +21,30 @@ use Illuminate\Support\Facades\Route;
 Route::get('admin','Admin\AuthController@index')->name('admin.login');
 Route::post('admin','Admin\AuthController@store')->name('admin.store');
 
-Route::group(['prefix' => 'admin'], function () {
-	Route::get('admin-dashboard','Admin\DashboardController@index')->name('admin.dashboard')->middleware('superAdmin');
-	Route::get('admin-logout','Admin\AuthController@logout')->name('admin.logout')->middleware('superAdmin');
-	Route::resource('product','Admin\ProductController')->middleware('superAdmin');
-	Route::post('product_variant','Admin\ProductController@productVariant')->middleware('superAdmin');
-	Route::post('delete-product-image',['as'=>'remove.pimage','uses'=>'Admin\ProductController@removeImage'])->middleware('superAdmin');
-	Route::post('delete-product-variant',['as'=>'delete.variant','uses'=>'Admin\ProductController@removeVariant'])->middleware('superAdmin');
-	Route::resource('categories','Admin\CategoriesController')->middleware('superAdmin');
-	Route::resource('options','Admin\OptionController')->middleware('superAdmin');
-	Route::resource('option_values','Admin\OptionValueController')->middleware('superAdmin');
-	Route::resource('brands','Admin\BrandController')->middleware('superAdmin');
-	Route::resource('product-units','Admin\ProductUnitController')->middleware('superAdmin');
-	Route::resource('vendor','Admin\VendorController')->middleware('superAdmin');
-	Route::resource('delivery_zone','Admin\DeliveryZoneController')->middleware('superAdmin');
-	Route::resource('comission_value','Admin\ComissionValueController')->middleware('superAdmin');
-	Route::resource('comission_value','Admin\ComissionValueController')->middleware('superAdmin');
-});
-
 
 Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
+	Route::get('admin-dashboard','Admin\DashboardController@index')->name('admin.dashboard');
+	Route::get('admin-logout','Admin\AuthController@logout')->name('admin.logout');
+	Route::resource('product','Admin\ProductController');
+	Route::post('product_variant','Admin\ProductController@productVariant');
+	Route::post('delete-product-image',['as'=>'remove.pimage','uses'=>'Admin\ProductController@removeImage']);
+	Route::post('delete-product-variant',['as'=>'delete.variant','uses'=>'Admin\ProductController@removeVariant']);
+	Route::resource('categories','Admin\CategoriesController');
+	Route::resource('options','Admin\OptionController');
+	Route::resource('option_values','Admin\OptionValueController');
+	Route::resource('brands','Admin\BrandController');
+	Route::resource('product-units','Admin\ProductUnitController');
+	Route::resource('vendor','Admin\VendorController');
+	Route::resource('delivery_zone','Admin\DeliveryZoneController');
+	Route::resource('comission_value','Admin\ComissionValueController');
+	Route::resource('comission_value','Admin\ComissionValueController');
+	
+	Route::resource('departments','Admin\DepartmentController');
+	Route::resource('employees','Admin\EmployeeController');
+
+	Route::get('get-state-list','Admin\DashboardController@getStateList');
+	Route::get('get-city-list','Admin\DashboardController@getCityList');
+
 	Route::resource('settings','Admin\SettingsController');
 	Route::resource('payment_method','Admin\PaymentMethodsController');
 });
