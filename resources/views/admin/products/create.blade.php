@@ -95,9 +95,55 @@
                           <label class="custom-file-label" for="mainImage">Choose file</label>
                         </div>
                       </div>
+
+                      <div class="form-group">
+                    <article>
+                      <label for="files">Product Gallery Images</label>
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="images[]" id="files" multiple onChange="validateImg(this.value)">
+                        <label class="custom-file-label" for="files">Choose file</label>
+                      </div>
+                      <output id="result" style="display:none;"></output>
+                      <button type="button" id="clear" style="display:none;">Clear</button>
+                    </article>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Product Details</label>
+                    <textarea class="summernote" name="product_details">{{old('product_details')}}</textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Treatment Information</label>
+                    <textarea class="summernote" name="treatment_information">{{old('treatment_information')}}</textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Dosage Instructions</label>
+                    <textarea class="summernote" name="dosage_instructions">{{old('dosage_instructions')}}</textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="searchEngine">Search Engine Friendly Page Name</label>
+                    <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
+                  </div>
+                  <div class="form-group">
+                    <label for="metaTile">Meta Title</label>
+                    <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title')}}">
+                  </div>
+                  <div class="form-group">
+                    <label for="metaKeyword">Meta Keywords</label>
+                    <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword')}}</textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="metaDescription">Meta Description</label>
+                    <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description')}}</textarea>
+                  </div>
+
+
+
                     </div>
 
-                    <div class="col-two col-sm-5">
+                    <div class="col-two col-sm-6">
                       <div class="form-group">
                         <label for="productBrand">Brand</label>
                         <select class="form-control select2bs4" name="brand">
@@ -108,6 +154,41 @@
                         </select>
                       </div>
                       
+                      
+                      <div class="clearfix"></div>
+                      <div class="form-group" style="display:flex;">
+                        <div class="col-sm-6" style="padding-left:0">
+                          <label for="productBrand">Commission Type</label>
+                          <select class="form-control commission select2bs4" name="commision_type">
+                            <option selected="selected" value="0">Percentage (%)</option>
+                            <option value="1">Fixed (amount)</option>
+                          </select>
+                        </div>
+                        <div class="col-sm-6" style="padding:0">
+                          <label for="commissionValue">Value</label>
+                          <input type="text" class="form-control" name="commision_value" id="commissionValue" onkeyup="validateNum(event,this);" value="{{old('commision_value')}}">
+                        </div>
+                      </div>
+                      
+                      <div class="form-group clearfix" style="display:flex;">
+                        <div class="col-sm-12" style="padding-left:0">
+                          <div class="icheck-info d-inline">
+                            <input type="checkbox" name="published" id="Published" @if(old('published')=='on') checked @endif>
+                            <label for="Published">Published</label>
+                          </div>
+                        </div>
+                       
+                      </div>
+                      <div class="form-group">
+                         <div class="col-sm-12" style="padding:0">
+                          <div class="icheck-info d-inline">
+                            <input type="checkbox" name="homepage" id="homePage" @if(old('homepage')=='on') checked @endif>
+                            <label for="homePage">Show on Home Page</label>
+                          </div>
+                        </div>
+                      </div>
+
+
                       <div class="product-variant-selectbox">
 
                         <div class="form-group">
@@ -129,72 +210,22 @@
                         </div>
                         <div class="submit-sec">
                           <a id="clear-option" class="btn reset-btn" style="display:none">Clear</a>
-                          <button type="button" class="btn save-btn" id="add-options" style="display:none">Save</button>
+                          <button type="button" class="btn save-btn" id="add-options" style="display:none">Apply</button>
                           &nbsp;
                        
                         </div>
 
                       </div>
-                      
-                      <div class="clearfix"></div>
-                      <div class="form-group" style="display:flex;">
-                        <div class="col-sm-6" style="padding-left:0">
-                          <label for="productBrand">Commission Type</label>
-                          <select class="form-control commission select2bs4" name="commision_type">
-                            <option selected="selected" value="0">Percentage (%)</option>
-                            <option value="1">Fixed (amount)</option>
-                          </select>
-                        </div>
-                        <div class="col-sm-6" style="padding:0">
-                          <label for="commissionValue">Value</label>
-                          <input type="text" class="form-control" name="commision_value" id="commissionValue" onkeyup="validateNum(event,this);" value="{{old('commision_value')}}">
-                        </div>
-                      </div>
-                      
-                      <div class="form-group clearfix" style="display:flex;">
-                        <div class="col-sm-6" style="padding-left:0">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="published" id="Published" @if(old('published')=='on') checked @endif>
-                            <label for="Published">Published</label>
-                          </div>
-                        </div>
-                        <div class="col-sm-6" style="padding:0">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="homepage" id="homePage" @if(old('homepage')=='on') checked @endif>
-                            <label for="homePage">Show on Home Page</label>
-                          </div>
-                        </div>
-                      </div>
+
+                      <div class="product-variant-block"></div>
+
+
+
+
                     </div>
                   </div>
 
-                  <div class="form-group">
-                    <article>
-                      <label for="files">Product Gallery Images</label>
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="images[]" id="files" multiple onChange="validateImg(this.value)">
-                        <label class="custom-file-label" for="files">Choose file</label>
-                      </div>
-                      <output id="result" style="display:none;"></output>
-                      <button type="button" id="clear" style="display:none;">Clear</button>
-                    </article>
-                  </div>
-
-                  <div class="form-group">
-                    <label>Product Details</label>
-                    <textarea class="summernote" name="product_details">{{old('product_details')}}</textarea>
-                  </div>
-
-                  <div class="product-variant-block"></div>
-
-                  <div class="form-group">
-                    <label>Treatment Information</label>
-                    <textarea class="summernote" name="treatment_information">{{old('treatment_information')}}</textarea>
-                  </div>
-                  <div class="form-group">
-                    <label>Dosage Instructions</label>
-                    <textarea class="summernote" name="dosage_instructions">{{old('dosage_instructions')}}</textarea>
-                  </div>
+                  
 
 
                   <!-- <div class="product-variant-block">
@@ -283,23 +314,6 @@
                       </tbody>
                     </table>
                   </div> -->
-
-                  <div class="form-group">
-                    <label for="searchEngine">Search Engine Friendly Page Name</label>
-                    <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
-                  </div>
-                  <div class="form-group">
-                    <label for="metaTile">Meta Title</label>
-                    <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title')}}">
-                  </div>
-                  <div class="form-group">
-                    <label for="metaKeyword">Meta Keywords</label>
-                    <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword')}}</textarea>
-                  </div>
-                  <div class="form-group">
-                    <label for="metaDescription">Meta Description</label>
-                    <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description')}}</textarea>
-                  </div>
                   <div class="form-group">
                     <a href="{{route('product.index')}}" class="btn reset-btn">Cancel</a>
                     <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
@@ -572,7 +586,7 @@
       $('#add-options').on('click',function(){
         var options = $('#productVariant option:selected');
         
-        if(options.length > 0  && options.length <=3 ){
+        if(options.length > 0  && options.length <=5 ){
                 
           var selectedOption = JSON.stringify($('#productVariant').val());
           var selectedVendor = JSON.stringify($('#VendorSupplier').val());
@@ -590,14 +604,16 @@
           $.ajax({
             url:"{{ url('admin/product_variant') }}",
             type:"POST",
-            dataType:"HTML",
+            dataType:"JSON",
             data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor},
             success: function (data) { 
-              $('.product-variant-block').append(data);
+              console.log(data);
+              createTable(data.options);
+              addOptionValue(0,data)
             }
           });
         }else{
-          alert('Please select maximum of 3 options only.!');
+          alert('Please select maximum of 5 options only.!');
         }
       });
 
@@ -612,7 +628,71 @@
         $('.product-variant-block').find('table').remove();
       });
 
-      
+function createTable(options){
+  var html='';
+      html += '<div class="table-responsive">';
+      html += '  <table  id="variantList" class="table table-striped table-bordered table-hover">';
+      html += '    <thead>';
+      html += '      <tr>';
+      html += '        <td class="text-left">Vendor</td>';
+      for(option of options){
+        html += '        <td class="text-left">' + option.option_name + '</td>';
+      }
+      html += '        <td class="text-left">Base Price</td>';
+      html += '        <td class="text-left">Retail Price</td>';
+      html += '        <td class="text-left">Minimum Selling Price</td>';
+      html += '        <td class="text-left">Stock Qty</td>';
+      html += '        <td class="text-left">Order By</td>';
+      html += '        <td class="text-left">Display</td>';
+      //html += '        <td></td>';
+      html += '      </tr>';
+      html += '    </thead>';
+      html += '    <tbody>';
+      html += '    </tbody>';
+      html += '  </table>';
+      html += '</div>';
+      $('.product-variant-block').html(html);
+}    
+var option_value_row = 0;
+function addOptionValue(option_row,data) {
+
+  html  = '<tr id="option-value-row' + option_value_row + '">';
+  var totalOptions = data.options.length;
+  var optionValue=data.option_values[option_value_row];
+  var vendors=data.vendor;
+  for(vendor of vendors){
+    html += '  <td class="text-left"><input type="hidden" name="product_option[' + option_row + '][vendor]" value="'+vendor.id+'" />'+vendor.name+'</td>';
+  }
+  for(var i=1;i<=totalOptions;i++){
+    html += '  <td class="text-left"><input type="hidden" name="product_option[' + option_row + '][product_option_value][' + i + '][product_option_value_id]" value="'+optionValue["optionValueID"+i]+'" /><input type="hidden" name="product_option[' + option_row + '][product_option][' + i + '][product_option_id]" value="'+optionValue["optionID"+i]+'" />'+optionValue["optionValue"+i]+'</td>';
+  }
+
+  // html += '  <td class="text-right"><input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][quantity]" value="" placeholder="Quantity" class="form-control" /></td>';
+  // html += '  <td class="text-left"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][subtract]" class="form-control">';
+  // html += '    <option value="1">Yes</option>';
+  // html += '    <option value="0">No</option>';
+  // html += '  </select></td>';
+  // html += '  <td class="text-right"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][price_prefix]" class="form-control">';
+  // html += '    <option value="+">+</option>';
+  // html += '    <option value="-">-</option>';
+  // html += '  </select>';
+  // html += '  <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][price]" value="" placeholder="Price" class="form-control" /></td>';
+  // html += '  <td class="text-right"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][points_prefix]" class="form-control">';
+  // html += '    <option value="+">+</option>';
+  // html += '    <option value="-">-</option>';
+  // html += '  </select>';
+  // html += '  <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][points]" value="" placeholder="Points" class="form-control" /></td>';
+  // html += '  <td class="text-right"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][weight_prefix]" class="form-control">';
+  // html += '    <option value="+">+</option>';
+  // html += '    <option value="-">-</option>';
+  // html += '  </select>';
+  // html += '  <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][weight]" value="" placeholder="Weight" class="form-control" /></td>';
+  // html += '  <td class="text-left"><button type="button" onclick="$(this).tooltip(\'destroy\');$(\'#option-value-row' + option_value_row + '\').remove();" data-toggle="tooltip" rel="tooltip" title="Remove" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+  html += '</tr>';
+
+  $('#variantList tbody').append(html);
+  option_value_row++;
+}
 
     </script>
   @endpush
