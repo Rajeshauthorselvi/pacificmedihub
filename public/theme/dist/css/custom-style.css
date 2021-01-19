@@ -227,13 +227,13 @@ width: 100%;
 .product .product-col-dividers{
     display: flex;
 }
-.product .product-col-dividers .col-one{
+/*.product .product-col-dividers .col-one{
     padding-left: 0;
     margin-right: 30px;
 }
 .product .product-col-dividers .col-two {
     margin-left: 30px;
-}
+}*/
 
 .product #variantList {
     border: 1px solid #ddd;
