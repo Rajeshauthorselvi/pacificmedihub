@@ -685,39 +685,73 @@ class ProductController extends Controller
 
         return redirect()->route('product.index')->with('error','Product deleted successfully.!');
     }
+    public function generateRawOptions($options){
+        $sql='';
+        $totalOptions=count($options);
+        if($totalOptions==1){
+            $sql="Select * from (SELECT pov.option_id as optionID1,pov.option_value as optionValue1,pov.id as optionValueID1 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".current($options).") a";
+        }
+        else if($totalOptions==2){
+            list($option1,$option2)=$options;
+            $sql ="Select * from (SELECT pov.option_id as optionID1,pov.option_value as optionValue1,pov.id as optionValueID1 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option1.") a cross join (SELECT pov.option_id as optionID2,pov.option_value as optionValue2,pov.id as optionValueID2 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option2.") b";
+        }
+        else if($totalOptions==3){
+            list($option1,$option2,$option3)=$options;
+            $sql ="Select * from (SELECT pov.option_id as optionID1,pov.option_value as optionValue1,pov.id as optionValueID1 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option1.") a cross join (Select * from (SELECT pov.option_id as optionID2,pov.option_value as optionValue2,pov.id as optionValueID2 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option2.") a cross join (SELECT pov.option_id as optionID3,pov.option_value as optionValue3,pov.id as optionValueID3 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option3.") b)c";
+        }
+        else if($totalOptions==4){
+            list($option1,$option2,$option3,$option4)=$options;
+            $sql ="Select * from (SELECT pov.option_id as optionID1,pov.option_value as optionValue1,pov.id as optionValueID1 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option1.") a cross join (Select * from (SELECT pov.option_id as optionID2,pov.option_value as optionValue2,pov.id as optionValueID2 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option2.") a cross join (Select * from (SELECT pov.option_id as optionID3,pov.option_value as optionValue3,pov.id as optionValueID3 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option3.") a cross join (SELECT pov.option_id as optionID4,pov.option_value as optionValue4,pov.id as optionValueID4 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option4.") b)c) d";
+        }
+        else if($totalOptions==5){
+            list($option1,$option2,$option3,$option4,$option5)=$options;
+            $sql ="Select * from (SELECT pov.option_id as optionID1,pov.option_value as optionValue1,pov.id as optionValueID1 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option1.") a cross join (Select * from (SELECT pov.option_id as optionID2,pov.option_value as optionValue2,pov.id as optionValueID2 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option2.") a cross join (Select * from (SELECT pov.option_id as optionID3,pov.option_value as optionValue3,pov.id as optionValueID3 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option3.") a cross join (Select * from (SELECT pov.option_id as optionID4,pov.option_value as optionValue4,pov.id as optionValueID4 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option4.") a cross join (SELECT pov.option_id as optionID5,pov.option_value as optionValue5,pov.id as optionValueID5 FROM `product_options` as po inner join `product_option_values` as pov on po.id= pov.option_id where po.id=".$option5.") b)c) d ) e";
+        }
+        return $sql;
+    }
 
     public function productVariant(Request $request)
     {
         $options = json_decode($request->options,true);
         $vendors = json_decode($request->vendors,true);
+        $get_options = Option::whereIn('id',$options)->get();
+        $sql =$this->generateRawOptions($options);
+        $variant_options = DB::select($sql);
+        $vendor_data=Vendor::whereIn('id',$vendors)->get();
+        $data['vendors'] = $vendor_data;
+        $data['option_values'] = $variant_options;
+        $data['options']= $get_options;
+        return response()->json($data); 
+        
 
-        $data=array();
-        $get_options = Option::whereIn('id',$options)->pluck('option_name','id')->toArray();
-        $data['get_option'] = $get_options;
 
-        $get_option_values = OptionValue::whereIn('option_id',$options)->get();
-        $option_values = array();
-        $get_vendor = array();
+        // $data=array();
+        // $get_options = Option::whereIn('id',$options)->pluck('option_name','id')->toArray();
+        // $data['get_option'] = $get_options;
 
-        $option_count = count($options);
-        $data['option_count'] = $option_count;
-        foreach ($vendors as $vendor) {
-            $get_vendor[] = Vendor::find($vendor);
-            // if($option_count==1){
-            foreach ($options as $key => $option) {
-                $option_values[] = DB::select('select id as opt_val_id1, option_id as opt_id1, option_value as opt_val1 from product_option_values where option_id = "'.$option.'"');
-            }
-/*            }
-            elseif($option_count==2){
-                $option_values[] = DB::select('select v1.id as opt_val_id1, v2.id as opt_val_id2, v1.option_id as opt_id1, v1.option_value as opt_val1, v2.option_id as opt_id2, v2.option_value as opt_val2 from (select * from product_option_values where option_id = "'.$options[0].'") v1 inner join (select * from product_option_values where option_id = "'.$options[1].'") v2 on v1.option_id <> v2.option_id and v1.option_id = "'.$options[0].'"');
-            }else if($option_count==3){
-                $option_values[] = DB::select('select v1.id as opt_val_id1, v2.id as opt_val_id2, v3.id as opt_val_id3, v1.option_id as opt_id1, v1.option_value as opt_val1, v2.option_id as opt_id2, v2.option_value as opt_val2, v3.option_id as opt_id3, v3.option_value as opt_val3 from (select * from product_option_values where option_id = "'.$options[0].'") v1 inner join (select * from product_option_values where option_id = "'.$options[1].'") v2 on v1.option_id <> v2.option_id and v1.option_id = "'.$options[0].'" inner join (select * from product_option_values where option_id = "'.$options[2].'") v3 on v1.option_id <> v3.option_id');
-            } */           
-        }
-        // dd($option_values);
-        $data['vendors'] = $get_vendor;
-        $data['option_values'] = $option_values;
-        return view('admin/products/variants',$data);
+        // $get_option_values = OptionValue::whereIn('option_id',$options)->get();
+        // $option_values = array();
+        // $get_vendor = array();
+
+        // $option_count = count($options);
+        // $data['option_count'] = $option_count;
+        // foreach ($vendors as $vendor) {
+        //     $get_vendor[] = Vendor::find($vendor);
+        //     // if($option_count==1){
+        //     foreach ($options as $key => $option) {
+        //         $option_values[] = DB::select('select id as opt_val_id1, option_id as opt_id1, option_value as opt_val1 from product_option_values where option_id = "'.$option.'"');
+        //     }
+        //     }
+        //     elseif($option_count==2){
+        //         $option_values[] = DB::select('select v1.id as opt_val_id1, v2.id as opt_val_id2, v1.option_id as opt_id1, v1.option_value as opt_val1, v2.option_id as opt_id2, v2.option_value as opt_val2 from (select * from product_option_values where option_id = "'.$options[0].'") v1 inner join (select * from product_option_values where option_id = "'.$options[1].'") v2 on v1.option_id <> v2.option_id and v1.option_id = "'.$options[0].'"');
+        //     }else if($option_count==3){
+        //         $option_values[] = DB::select('select v1.id as opt_val_id1, v2.id as opt_val_id2, v3.id as opt_val_id3, v1.option_id as opt_id1, v1.option_value as opt_val1, v2.option_id as opt_id2, v2.option_value as opt_val2, v3.option_id as opt_id3, v3.option_value as opt_val3 from (select * from product_option_values where option_id = "'.$options[0].'") v1 inner join (select * from product_option_values where option_id = "'.$options[1].'") v2 on v1.option_id <> v2.option_id and v1.option_id = "'.$options[0].'" inner join (select * from product_option_values where option_id = "'.$options[2].'") v3 on v1.option_id <> v3.option_id');
+        //     }            
+        // }
+        // // dd($option_values);
+        // $data['vendors'] = $get_vendor;
+        // $data['option_values'] = $option_values;
+        //return view('admin/products/variants',$data);
     }
 
 

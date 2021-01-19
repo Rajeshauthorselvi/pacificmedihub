@@ -88,12 +88,7 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             {!! Form::label('doj', 'Date of Join') !!}
-                            <div class="input-group date" id="dateofjoin" data-target-input="nearest">
-                              <input type="text" name="doj_date" class="form-control datetimepicker-input" data-target="#dateofjoin" value="{{old('doj_date')}}" />
-                              <div class="input-group-append" data-target="#dateofjoin" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                              </div>                                
-                            </div>
+                              <input type="date" name="doj_date" class="form-control datetimepicker-input" data-target="#dateofjoin" value="{{old('doj_date')}}" />
                           </div>
                           
                           <div class="col-sm-5">
@@ -165,6 +160,10 @@
                             </div>
                           </div>
                           <div class="col-sm-5">
+                            <div class="icheck-info d-inline">
+                              <input type="checkbox" name="emp_status" id="Status" @if(old('emp_status')=='on') checked @endif>
+                              <label for="Status">Status</label>
+                            </div>
                           </div>
                         </div>
 
@@ -341,7 +340,7 @@
           var valid=true;
           fieldsToValidate=['customer','order_type'];
           //$(e.target).closest('.tab-pane.active').find('span.text-danger').hide();
-          /*if($("[name='emp_name']").val()=="") {
+          if($("[name='emp_name']").val()=="") {
             $("[name='emp_name']").closest('.form-group').find('span.text-danger').show();
             valid=false;
           }
@@ -372,12 +371,12 @@
           if($("#Country").val()=="") {
             $("#Country").closest('.form-group').find('span.text-danger.country').show();
             valid=false;
-          }*/
+          }
           return valid;
         }
         function validateStep2(e){
           var valid=true;
-         /* if($("[name='account_name']").val()=="") {
+          if($("[name='account_name']").val()=="") {
             $("[name='account_name']").closest('.form-group').find('span.text-danger').show();
             valid=false;
           }
@@ -396,7 +395,7 @@
           if($("[name='ifsc']").val()=="") {
             $("[name='ifsc']").closest('.form-group').find('span.text-danger').show();
             valid=false;
-          }*/
+          }
           return valid;
         }
         function validateStep3(e){

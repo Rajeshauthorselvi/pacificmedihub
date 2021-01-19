@@ -62,13 +62,27 @@
                     	@foreach($employees as $emp)
                         <tr>
                           <td><input type="checkbox" value="{{ $emp->id }}" name="emp-ids"></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          <td>{{$emp->emp_id}}</td>
+                          <td>{{$emp->emp_name}}</td>
+                          <td>{{$emp->department->dept_name}}</td>
+                          <td>{{$emp->city->name}}</td>
+                          <?php 
+                            if($emp->basic_commission_type==0) {
+                              $com_type ='%';
+                              $com_value = $emp->basic_commission_value.' '.($com_type);
+                            }
+                            else{
+                              $com_type ='$';
+                              $com_value =  $com_type.' '.$emp->basic_commission_value;
+                            }
+                          ?>
+                          <td>{{$com_value}}</td>
+                          <td>{{$emp->basic}}</td>
+                          <?php
+                            if($emp->status==1){$status = "fa-check";}
+                            else{$status = "fa-ban";}
+                          ?>
+                          <td><i class="fas {{$status}}"></i></td>
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
