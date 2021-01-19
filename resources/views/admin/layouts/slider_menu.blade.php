@@ -89,13 +89,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('purchase.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List Purchase</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('purchase.create') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Add Purchase</p>
                 </a>
@@ -230,7 +230,7 @@
               </li>
             </ul>
           </li>
-           <li class="nav-item">
+           <li class="nav-item @if($current_route=='employees.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-address-card"></i>
               <p>
@@ -238,21 +238,21 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="" class="nav-link">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit') block @endif">
+              <li class="nav-item @if($current_route=='employees.index'||$current_route=='employees.edit') active @endif">
+                <a href="{{route('employees.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List Employees</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="" class="nav-link">
+              <li class="nav-item @if($current_route=='employees.create') active @endif">
+                <a href="{{route('employees.create')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Add Employee</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="" class="nav-link">
+              <li class="nav-item @if($current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit') active @endif">
+                <a href="{{route('departments.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Departments</p>
                 </a>

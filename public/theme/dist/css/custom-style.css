@@ -190,14 +190,14 @@ width: 100%;
 }
 
 /* Vendor */
-.vendor .tab-content .form-group{ display:flex;}
-.vendor #pocList{width: 100%}
-.vendor #pocList th{padding: 5px 0;}
-.vendor #pocList td{padding-right: 15px;}
-.vendor #pocList td span.counts {padding: 8px 15px;border-radius: 50%;border: 1px solid #3287c7;background-color: #3287c7;color: #fff;position: relative;top: -5px;font-weight: 700;}
-.vendor .nav-tabs .nav-link.active {color: #fff;background-color: #3287c7;border-color: #3287c7;}
-.vendor .nav-tabs .nav-link{padding: .5rem 2.5rem}
-.vendor form .tab-pane ul {padding: 0;margin: 10px 0;}
+.toggle-tabs .tab-content .form-group{ display:flex;}
+.toggle-tabs #pocList{width: 100%}
+.toggle-tabs #pocList th{padding: 5px 0;}
+.toggle-tabs #pocList td{padding-right: 15px;}
+.toggle-tabs #pocList td span.counts {padding: 8px 15px;border-radius: 50%;border: 1px solid #3287c7;background-color: #3287c7;color: #fff;position: relative;top: -5px;font-weight: 700;}
+.toggle-tabs .nav-tabs .nav-link.active {color: #fff;background-color: #3287c7;border-color: #3287c7;}
+.toggle-tabs .nav-tabs .nav-link{padding: .5rem 2.5rem}
+.toggle-tabs form .tab-pane ul {padding: 0;margin: 10px 0;}
 
 /* Products */
 .product article .custom-file-label{overflow:hidden;}
@@ -250,3 +250,9 @@ width: 100%;
 .product #variantList .form-group .form-control{
     border-radius: 1px;
 }
+
+
+.text-left{text-align: left;} 
+.pull-left{float: left;}
+.pull-right{float: right;}
+.text-right{text-align: right;}

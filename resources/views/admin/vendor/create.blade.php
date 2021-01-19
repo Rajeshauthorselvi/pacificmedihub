@@ -29,7 +29,7 @@
           <a href="{{route('vendor.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
-      <div class="container-fluid vendor">
+      <div class="container-fluid toggle-tabs">
         <div class="row">
           <div class="col-md-12">
             <div class="card card-outline card-primary">
