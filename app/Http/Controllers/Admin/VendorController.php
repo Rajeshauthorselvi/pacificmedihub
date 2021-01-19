@@ -8,6 +8,8 @@ use App\Models\Vendor;
 use App\Models\VendorPoc;
 use Redirect;
 use File;
+use App\Models\Countries;
+
 class VendorController extends Controller
 {
     /**
@@ -17,6 +19,7 @@ class VendorController extends Controller
      */
     public function index()
     {
+        $data = array();
         $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('created_at','desc')->get();
         return view('admin/vendor/index',$data);
     }
@@ -28,7 +31,9 @@ class VendorController extends Controller
      */
     public function create()
     {
-        return view('admin/vendor/create');
+        $data = array();
+        $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        return view('admin/vendor/create',$data);
     }
 
     /**
@@ -172,6 +177,7 @@ class VendorController extends Controller
     {
         $data['vendor'] = Vendor::find($id);
         $data['vendor_poc'] = VendorPoc::where('vendor_id',$id)->get();
+        $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
         $data['count'] = 1;
         return view('admin/vendor/edit',$data);
     }

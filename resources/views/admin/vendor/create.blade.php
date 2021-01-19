@@ -144,7 +144,7 @@
                           </div>
                           <div class="col-sm-5">
                             <label for="Country">Country *</label>
-                            <input type="text" class="form-control" name="country" id="Country" value="{{old('country')}}">
+                            {!! Form::select('country',$countries,null,['class'=>'form-control select2bs4', 'id'=>'Country']) !!}
                             <span class="text-danger" style="display:none">Country is required</span>
                           </div>
                         </div>
@@ -152,11 +152,11 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             <label for="State">State</label>
-                            <input type="text" class="form-control" name="state" id="State" value="{{old('state')}}">
+                            <select name="state" class="form-control select2bs4" id="State"></select>
                           </div>
                           <div class="col-sm-5">
                             <label for="City">City</label>
-                            <input type="text" class="form-control" name="city" id="City" value="{{old('city')}}">
+                            <select name="city" class="form-control select2bs4" id="City"></select>
                           </div>
                         </div>
 
@@ -503,6 +503,72 @@
           alert('Enter numbers only');
         }
       });
+
+      //Get State
+      $('#Country').change(function() {
+        var country_id = $(this).val();
+        getState(country_id);
+      })
+      function getState(countryID){
+        var state_id = "{{old('State')}}" ;        
+        if(countryID){
+          $.ajax({
+            type:"GET",
+            dataType: 'json',
+            url:"{{url('admin/get-state-list')}}?country_id="+countryID,
+            success:function(res){  
+              if(res){
+                $("#State").empty();
+                $("#State").append('<option selected value=""> ---Select--- </option>');
+                $.each(res,function(key,value){
+                  var select_state="";
+                  if(state_id == key) { var select_state = "selected" }
+                  $("#State").append('<option value="'+key+'" '+select_state+'>'+value+'</option>');
+                });
+                $('#State').selectpicker('refresh');           
+              }else{
+                $("#State").empty();
+              }
+            },
+            error: function(res) { alert(res.responseText) }
+          });
+        }else{
+          $("#State").empty();        
+        }      
+      }
+
+      //Get City
+      $('#State').change(function() {
+        var state_id = $(this).val();
+        getCity(state_id);
+      })
+      function getCity(stateID){
+        var city_id = "{{old('State')}}" ;        
+        if(stateID){
+          $.ajax({
+            type:"GET",
+            dataType: 'json',
+            url:"{{url('admin/get-city-list')}}?state_id="+stateID,
+            success:function(res){  
+              if(res){
+                $("#City").empty();
+                $("#City").append('<option selected value=""> ---Select--- </option>');
+                $.each(res,function(key,value){
+                  var select_city="";
+                  if(city_id == key) { var select_city = "selected" }
+                  $("#City").append('<option value="'+key+'" '+select_city+'>'+value+'</option>');
+                });
+                $('#City').selectpicker('refresh');           
+              }else{
+                $("#City").empty();
+              }
+            },
+            error: function(res) { alert(res.responseText) }
+          });
+        }else{
+          $("#City").empty();        
+        }      
+      }
 
     </script>
   @endpush

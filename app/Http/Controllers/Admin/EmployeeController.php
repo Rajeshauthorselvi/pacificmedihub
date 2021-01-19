@@ -143,7 +143,9 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = array();
+        $data['employees'] = Employee::find($id);
+        return view('admin.employees.show',$data);
     }
 
     /**
@@ -203,7 +205,6 @@ class EmployeeController extends Controller
 
         if($request->emp_status){$status = 1;}else{$status = 0;}
 
-        
         $update_emp->emp_id = $request->emp_id;
         $update_emp->emp_name = $request->emp_name;
         $update_emp->emp_department = $request->dept_id;
@@ -276,5 +277,30 @@ class EmployeeController extends Controller
         if ($request->ajax())  return ['status'=>true];
         else
            return Redirect::route('employees.index')->with('success','Employee deleted successfully.!');
+    }
+
+    public function salaryList()
+    {
+        $data = array();
+        $get_employees = Employee::where('status',1)->where('is_deleted',0)->get();
+        $employee = array();
+        foreach ($get_employees as $key => $emp) {
+            $employee[$key]['id'] = $emp->id;
+            $employee[$key]['name'] = $emp->emp_name;
+            $employee[$key]['basic_salary'] = $emp->basic;
+            $employee[$key]['hra'] = $emp->hr;
+            $employee[$key]['da'] = $emp->da;
+            $employee[$key]['conveyance'] = $emp->conveyance;
+            $employee[$key]['esi'] = $emp->esi;
+            $employee[$key]['pf'] = $emp->pf;
+            $salary = $emp->basic+$emp->hr+$emp->da+$emp->conveyance;
+            $deduction = $emp->esi+$emp->pf;
+            $employee[$key]['toatl_salary'] = $salary - $deduction;
+            $employee[$key]['paid_date'] = '-';
+            $employee[$key]['status'] = '-';
+        }
+        
+        $data['employee_salary'] = $employee;
+        return view('admin.employees.salary_list',$data);
     }
 }
