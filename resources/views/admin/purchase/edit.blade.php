@@ -8,13 +8,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Add Purchase</h1>
+            <h1 class="m-0">Edit Purchase</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
               <li class="breadcrumb-item"><a href="{{route('purchase.index')}}">Purchase</a></li>
-              <li class="breadcrumb-item active">Add Purchase</li>
+              <li class="breadcrumb-item active">Edit Purchase</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -47,20 +47,12 @@
                 <h3 class="card-title">Add Purchase</h3>
               </div>
               <div class="card-body">
-                <form action="{{route('purchase.store')}}" method="post" enctype="multipart/form-data" id="productForm">
-                  @csrf
+                  {{ Form::model($purchase,['method' => 'PATCH', 'route' =>['purchase.update',$purchase->id]]) }}
                   <div class="date-sec">
                     <div class="col-sm-4">
                         <div class="form-group">
-                          <label for="purchase_date">Date *</label>
-
-                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                        <input name="purchase_date" type="text" class="form-control datetimepicker-input" data-target="#reservationdate"/>
-                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
-
+                          <label for="purchase_order_number">Date *</label>
+                          {!! Form::text('purchase_date', null,['class'=>'form-control','readonly'=>true]) !!}
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -103,15 +95,27 @@
                         <th></th>
                       </thead>
                       <tbody>
-                        <tr class="no-match">
-                          <td>No Entry Found</td>
-                          <td>dd/mm/yyyy</td>
-                          <td>0.00</td>
-                          <td>0.00</td>
-                          <td>0.00</td>
-                          <td>0.00</td>
-                          <td>0.00</td>
-                        </tr>
+                        @foreach ($purchase_products as $products)
+                          <tr>
+                              <td>{{ $products->product->name }}</td>
+                              <td>{{ $products->optionvalue->option_value }}</td>
+                              <td class="base_price">{{ $products->base_price }}</td>
+                              <td>{{ $products->retail_price }}</td>
+                              <td>{{ $products->minimum_selling_price }}</td>
+                              <td>
+                                  <input type='text' name='quantity[{{ $products->product->id }}][{{ $products->optionvalue->option_id }}][{{ $products->optionvalue->id }}]' value='{{ $products->quantity }}' class='form-control quantity'>
+                              </td>
+                              <td class='sub_total'>{{ $products->sub_total }}</td>
+                              <td>
+
+                                <a href="javascript:void(0)" class="btn btn-danger remove-item" title="Remove">
+                                  <i class="fa fa-trash"></i>
+                                </a>
+
+                                <input type='hidden' class='subtotal_hidden' name='subtotal[{{ $products->product->id }}][{{ $products->optionvalue->option_id }}][{{ $products->optionvalue->id }}]' value='{{ $products->sub_total }}'>
+                              </td>
+                          </tr>
+                        @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -167,7 +171,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                           <label for="purchase_date">Payment Note</label>
-                          {!! Form::textarea('payment_note', null,['class'=>'form-control','rows'=>5]) !!}
+                          {!! Form::textarea('payment_note', null,['class'=>'form-control summernote','rows'=>5]) !!}
                         </div>
                     </div>
                     </div>
@@ -175,7 +179,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                           <label for="purchase_date">Note</label>
-                          {!! Form::textarea('note', null,['class'=>'form-control','rows'=>5]) !!}
+                          {!! Form::textarea('note', null,['class'=>'form-control summernote','rows'=>5]) !!}
                         </div>
                     </div>
                     <div class="col-sm-12 submit-sec">
@@ -187,7 +191,7 @@
                       </button>
 
                     </div>
-                </form>
+                {!! Form::close() !!}
               </div>
             </div>
           </div>
@@ -198,11 +202,14 @@
 
 @push('custom-scripts')
 <script type="text/javascript">
-
-   /* $('#reservationdate').datetimepicker({
+      //Date range picker
+    $('#reservationdate').datetimepicker({
         format: 'L'
     });
-    */
+  $(document).on('click', '.remove-item', function(event) {
+    $(this).parents('tr').remove();
+  });
+
     $(document).on('keyup', '.quantity', function(event) {
       if (/\D/g.test(this.value))
       {
@@ -217,7 +224,7 @@
       }
     });
   var path ="{{ url('admin/product-search') }}";
-
+  
     $('#prodct-add-sec').autocomplete({
       source: function( request, response) {
         $.ajax({
@@ -233,7 +240,13 @@
       },
       minLength: 3,
       select: function( event, ui ) {
-        $(this).val('');
+        var check_length=$('.product_id[value=1]').length;
+        if (check_length>0) {
+            alert('This product already exists');
+            $(this).val('');
+            return false;
+        }
+         $(this).val('');
         $('.no-match').hide();
         $.ajax({
           url: "{{ url('admin/product-search') }}",

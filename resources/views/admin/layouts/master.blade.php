@@ -93,6 +93,8 @@
 <script src="{{ asset('theme/plugins/moment/moment.min.js') }}"></script>
 <!-- daterangepicker -->
 <script src="{{ asset('theme/plugins/daterangepicker/daterangepicker.js') }}"></script>
+
+<script src="{{ asset('theme/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
 <!-- overlayScrollbars -->
 <script src="{{ asset('theme/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <script src="{{ asset('theme/dist/js/adminlte.min.js') }}"></script>
@@ -140,7 +142,13 @@
       mode: "htmlmixed",
       theme: "monokai"
     });
-  })
+  });
+
+      //Date range picker
+    $('#reservationdate').datetimepicker({
+        format: 'L'
+    });
+  
 </script>
   
   <!-- Custom Script -->

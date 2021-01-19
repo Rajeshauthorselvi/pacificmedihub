@@ -52,15 +52,8 @@
                   <div class="date-sec">
                     <div class="col-sm-4">
                         <div class="form-group">
-                          <label for="purchase_date">Date *</label>
-
-                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                        <input name="purchase_date" type="text" class="form-control datetimepicker-input" data-target="#reservationdate"/>
-                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
-
+                          <label for="purchase_order_number">Date *</label>
+                          <input type="text" class="form-control" name="purchase_date" value="{{ date('d/m/Y H:i') }}" readonly="true" />
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -80,7 +73,7 @@
                     <div class="col-sm-8">
                         <div class="form-group">
                           <label for="purchase_order_number">Products *</label>
-                          {!! Form::text('product',null, ['class'=>'form-control','id'=>'prodct-add-sec']) !!}
+                          {!! Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec']) !!}
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -167,7 +160,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                           <label for="purchase_date">Payment Note</label>
-                          {!! Form::textarea('payment_note', null,['class'=>'form-control','rows'=>5]) !!}
+                          {!! Form::textarea('payment_note', null,['class'=>'form-control summernote','rows'=>5]) !!}
                         </div>
                     </div>
                     </div>
@@ -175,7 +168,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                           <label for="purchase_date">Note</label>
-                          {!! Form::textarea('note', null,['class'=>'form-control','rows'=>5]) !!}
+                          {!! Form::textarea('note', null,['class'=>'form-control summernote','rows'=>5]) !!}
                         </div>
                     </div>
                     <div class="col-sm-12 submit-sec">
@@ -198,6 +191,12 @@
 
 @push('custom-scripts')
 <script type="text/javascript">
+
+  $(document).on('click', '.remove-item', function(event) {
+    $(this).parents('tr').remove();
+  });
+
+
     $(document).on('keyup', '.quantity', function(event) {
       if (/\D/g.test(this.value))
       {
@@ -228,7 +227,15 @@
       },
       minLength: 3,
       select: function( event, ui ) {
-        $(this).val('');
+        var check_length=$('.product_id[value=1]').length;
+
+        if (check_length>0) {
+            alert('This product already exists');
+            $(this).val('');
+            return false;
+        }
+         $(this).val('');
+
         $('.no-match').hide();
         $.ajax({
           url: "{{ url('admin/product-search') }}",
@@ -240,14 +247,14 @@
         .done(function(response) {
             $.each(response, function(index, val) {
               var tr_val ="<tr>";
-                       tr_val +="<td>"+val.label+"</td>";
+                       tr_val +="<td><input type='hidden' class='product_id' value='"+val.value+"'>"+val.label+"</td>";
                         tr_val +="<td>"+val.option_value+"</td>";
                         tr_val +="<td class='base_price'>"+val.base_price+"</td>";
                         tr_val +="<td>"+val.retail_price+"</td>";
                         tr_val +="<td>"+val.minimum_selling_price+"</td>";
                         tr_val +="<td><input type='text' name='quantity["+val.value+"]["+val.option_id+"]["+val.option_value_id+"]' value='1' class='form-control quantity'></td>";
                         tr_val +="<td class='sub_total'>"+val.base_price+"</td>";
-                        tr_val +="<td><input type='hidden' class='subtotal_hidden' name='subtotal["+val.value+"]["+val.option_id+"]["+val.option_value_id+"]' value='"+val.base_price+"'></td>";
+                        tr_val +="<td><a href='javascript:void(0)' class='btn btn-danger remove-item' title='Remove'> <i class='fa fa-trash'></i> </a><input type='hidden' class='subtotal_hidden' name='subtotal["+val.value+"]["+val.option_id+"]["+val.option_value_id+"]' value='"+val.base_price+"'></td>";
                         tr_val +="</tr>"; 
                   $('.purchase-table').append(tr_val);
             });
