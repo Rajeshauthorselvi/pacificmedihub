@@ -98,14 +98,8 @@
 
 <!-- daterangepicker -->
 <script src="{{ asset('theme/plugins/daterangepicker/daterangepicker.js') }}"></script>
-
-<<<<<<< HEAD
-<script src="{{ asset('theme/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
-=======
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{ asset('theme/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-
->>>>>>> 2f154f23cc7fce762a6c01455a786836d83a1ca1
 <!-- overlayScrollbars -->
 <script src="{{ asset('theme/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <script src="{{ asset('theme/dist/js/adminlte.min.js') }}"></script>
