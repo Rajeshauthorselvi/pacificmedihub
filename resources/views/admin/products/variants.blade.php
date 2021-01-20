@@ -17,7 +17,7 @@
 		</tr>
 	</thead>
 	<tbody>
-	<?php $count=1;	?>
+	<?php $count=1;?>
 	@foreach($option_values as $key => $option_value)
 		<?php
 			$vendor_id = $vendors[$key]->id;
@@ -70,9 +70,11 @@
 					$minimum_price_row_id = 'minimum_price_row';
 					$stock_qty_row_id = 'stock_qty_row';
 				}
-
 			?>
 			<tr>
+				@if($data_from=="edit")
+					<input type="hidden" name="variant[id][]" value=0>
+				@endif
 				<td>
 					<input type="hidden" name="variant[option_id1][]" value="{{$option_id1}}">
 					<input type="hidden" name="variant[option_value_id1][]" value="{{$option_value_id1}}">
