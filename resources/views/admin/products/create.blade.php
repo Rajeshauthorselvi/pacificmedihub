@@ -124,21 +124,16 @@
                         </div>
                       </div>
                       
-                      <div class="form-group clearfix" style="display:flex;">
-                        <div class="col-sm-12" style="padding-left:0">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="published" id="Published" @if(old('published')=='on') checked @endif>
-                            <label for="Published">Published</label>
-                          </div>
+                      <div class="form-group clearfix">
+                        <div class="icheck-info d-inline">
+                          <input type="checkbox" name="published" id="Published" @if(old('published')=='on') checked @endif>
+                          <label for="Published">Published</label>
                         </div>
-                       
                       </div>
-                      <div class="form-group">
-                         <div class="col-sm-12" style="padding:0">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="homepage" id="homePage" @if(old('homepage')=='on') checked @endif>
-                            <label for="homePage">Show on Home Page</label>
-                          </div>
+                      <div class="form-group clearfix">
+                        <div class="icheck-info d-inline">
+                          <input type="checkbox" name="homepage" id="homePage" @if(old('homepage')=='on') checked @endif>
+                          <label for="homePage">Show on Home Page</label>
                         </div>
                       </div>
 
@@ -313,16 +308,6 @@
         });
       });
 
-      
-
-      $('.contact').keyup(function(e){
-        if(/\D/g.test(this.value))
-        {
-          this.value = this.value.replace(/\D/g, '');
-          alert('Enter numbers only');
-        }
-      });
-
       $(document).on('click', '#submit-btn', function(event) {
         event.preventDefault();
 
@@ -430,13 +415,10 @@
           $.ajax({
             url:"{{ url('admin/product_variant') }}",
             type:"POST",
-            //dataType:"JSON",
             data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor},
             success: function (data) { 
               console.log(data);
-              //alert('test');
               $('#product-variant-block').html(data);
-
 /*              createTable(data.options);
               addOptionValue(0,data)*/
             }
@@ -454,7 +436,7 @@
         $('#productVariant').val('').change();
         $('#VendorSupplier').val('').change();
         $('#add-options').css({'pointer-events':'auto','opacity':'1'});
-        $('.product-variant-block').find('table').remove();
+        $('#product-variant-block').find('table').remove();
       });
 
 /*function createTable(options){

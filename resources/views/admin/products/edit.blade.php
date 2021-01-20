@@ -81,6 +81,14 @@
                           <span class="text-danger">{{ $errors->first('category') }}</span>
                         @endif
                       </div>
+
+                      
+
+                      <div class="form-group">
+                        <label for="shortDescription">Product Short Details</label>
+                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description',$product->short_description)}}</textarea>
+                      </div>
+
                       <?php 
                         if(!empty($product->main_image)){$image = "theme/images/products/main/".$product->main_image;}
                         else {$image = "theme/images/no_image.jpg";}
@@ -103,37 +111,6 @@
                           @endforeach
                         </select>
                       </div>
-
-                      <div class="form-group">
-                        <label for="alertQty">Alert Quantity</label>
-                        <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty',$product->alert_quantity)}}">
-                      </div>
-
-<!-- 
-                      <div class="product-variant-selectbox">
-
-                        <div class="form-group">
-                          <label for="productVariant">Product Variant Options</label>
-                          <select class="form-control select2bs4" id="productVariant" multiple="multiple" data-placeholder="Select Variant Option" name="variant_option">
-                            @foreach($product_options as $options)
-                              <option value="{{$options->id}}" {{ (collect(old('variant_option'))->contains($options->id)) ? 'selected':'' }}>{{$options->option_name}}</option>
-                            @endforeach
-                          </select>
-                        </div>
-
-                        <div class="form-group">
-                          <label for="VendorSupplier">Vendor/Supplier</label>
-                          <select class="form-control select2bs4" id="VendorSupplier" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="vendor">
-                            @foreach($vendors as $vendor)
-                              <option value="{{$vendor->id}}" {{ (collect(old('vendor'))->contains($vendor->id)) ? 'selected':'' }}>{{$vendor->name}}</option>
-                            @endforeach
-                          </select>
-                        </div>
-
-                        <button type="button" class="btn save-btn" id="add-options" style="display:none">Save</button>
-
-                      </div>
-                      <a id="clear-option" class="btn save-btn" style="display:none">Clear</a> -->
                       
                       <div class="form-group" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
@@ -149,23 +126,50 @@
                         </div>
                       </div>
                       
-                      <div class="form-group">
-                        <label for="shortDescription">Product Short Details</label>
-                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description',$product->short_description)}}</textarea>
-                      </div>
+                      
 
-                      <div class="form-group clearfix" style="display:flex;">
-                        <div class="col-sm-6" style="padding-left:0">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="published" id="Published" @if((old('published')=='on')||($product->published==1)) checked @endif>
-                            <label for="Published">Published</label>
-                          </div>
+                      <div class="form-group clearfix">
+                        <div class="icheck-info d-inline">
+                          <input type="checkbox" name="published" id="Published" @if((old('published')=='on')||($product->published==1)) checked @endif>
+                          <label for="Published">Published</label>
                         </div>
-                        <div class="col-sm-6" style="padding:0">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="homepage" id="homePage" @if((old('homepage')=='on')||($product->show_home==1)) checked @endif>
-                            <label for="homePage">Show on Home Page</label>
-                          </div>
+                      </div>
+                      <div class="form-group clearfix">
+                        <div class="icheck-info d-inline">
+                          <input type="checkbox" name="homepage" id="homePage" @if((old('homepage')=='on')||($product->show_home==1)) checked @endif>
+                          <label for="homePage">Show on Home Page</label>
+                        </div>
+                      </div>
+                      
+                      <div class="form-group">
+                        <label for="alertQty">Alert Quantity</label>
+                        <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty',$product->alert_quantity)}}">
+                      </div>
+                      
+                      <div class="product-variant-selectbox">
+
+                        <!-- <div class="form-group">
+                          <label for="productVariant">Product Variant Options</label>
+                          <select class="form-control select2bs4" id="productVariant" multiple="multiple" data-placeholder="Select Variant Option" name="variant_option">
+                            @foreach($product_options as $options)
+                              <option value="{{$options->id}}" {{ (collect(old('variant_option'))->contains($options->id)) ? 'selected':'' }}>{{$options->option_name}}</option>
+                            @endforeach
+                          </select>
+                        </div> -->
+
+                        <div class="form-group">
+                          <label for="VendorSupplier">Vendor/Supplier</label>
+                          <select class="form-control select2bs4" id="VendorSupplier" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="vendor">
+                            @foreach($vendors as $vendor)
+                              <option value="{{$vendor->id}}" {{ (collect(old('vendor'))->contains($vendor->id)) ? 'selected':'' }}>{{$vendor->name}}</option>
+                            @endforeach
+                          </select>
+                        </div>
+
+                        <div class="submit-sec">
+                          <a id="clear-option" class="btn reset-btn" style="display:none">Clear</a>
+                          <button type="button" class="btn save-btn" id="add-options" style="display:none">Apply</button>
+                          &nbsp;
                         </div>
                       </div>
 
@@ -297,6 +301,10 @@
                     </table>
                   </div>
 
+                  
+                  <label class="new-product-variant-lable" style="display:none">New Product Variants</label>
+                  <div id="new-product-variant-block"></div>
+
                   <div class="form-group">
                     <label>Product Details</label>
                     <textarea class="summernote" name="product_details">{{old('product_details',$product->long_description)}}</textarea>
@@ -339,13 +347,68 @@
       </div>
     </section>
   </div>
-<style type="text/css">
-  .hidden{
-    display: none;
-  }
+  <style type="text/css">
+    #clear-option,#add-options{
+      float: left;
+    }
+    #add-options{
+      margin-right: 10px;
+    }
+    .hidden{
+      display: none;
+    }
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
+
+      //Add Variant
+      $('#VendorSupplier').on('change',function(){
+        if($('#VendorSupplier option:selected').val()==null) {
+          $('#add-options').css('display','none');
+        }
+        $('#add-options').css('display','block');
+      });
+
+      $('#add-options').on('click',function(){
+          var options = <?php echo json_encode($options_id); ?>;
+          var selectedOption = JSON.stringify(options);
+          var selectedVendor = JSON.stringify($('#VendorSupplier').val());
+          if($('#VendorSupplier').val().length==0 && $('#productVariant').val()){
+            alert('Please select Vendor/Supplier.!');
+            return false;
+          }
+          else{
+            $('#add-options').css({'pointer-events':'none','opacity':'0.5'});
+            $('#clear-option').css('display','block');
+          }
+
+          var csrf_token = "{{ csrf_token() }}";
+          $.ajax({
+            url:"{{ url('admin/product_variant') }}",
+            type:"POST",
+            data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor,dataFrom:'edit'},
+            success: function (data) { 
+              console.log(data);
+              $('#new-product-variant-block').html(data);
+              $('.new-product-variant-lable').css('display','block');
+/*              createTable(data.options);
+              addOptionValue(0,data)*/
+            }
+          });
+      });
+
+      
+      //Clear Options
+      $('#clear-option').on('click',function () {
+        $('#clear-option').css('display','none');
+        $('#add-options').css('display','none');
+        $('#productVariant').val('').change();
+        $('#VendorSupplier').val('').change();
+        $('#add-options').css({'pointer-events':'auto','opacity':'1'});
+        $('#new-product-variant-block').find('table').remove();
+      });
+
+
       //Image Upload
       window.onload = function(){   
         //Check File API support
@@ -425,10 +488,7 @@
         else{
           $('#productForm').submit();
         }
-
-
       });
-
 
       $('#files').on("click", function() {
         $('.thumbnail').parent().remove();
@@ -457,42 +517,6 @@
         $('.commission.select2bs4').select2({
           minimumResultsForSearch: -1
         });
-      });
-
-
-      function validate(){
-        var valid=true;
-        if($(".dosage").val()=="") {
-          $(".dosage").closest('.form-group').find('span.text-danger').show();
-          valid=false;
-        }
-        if($(".package").val()=="") {
-          $(".package").closest('.form-group').find('span.text-danger').show();
-          valid=false;
-        }
-        if($(".base_price").val()=="") {
-          $(".base_price").closest('.form-group').find('span.text-danger').show();
-          valid=false;
-        }
-        if($(".retail_price").val()=="") {
-          $(".retail_price").closest('.form-group').find('span.text-danger').show();
-          valid=false;
-        }
-        if($(".stock_qty").val()=="") {
-          $(".stock_qty").closest('.form-group').find('span.text-danger').show();
-          valid=false;
-        }
-        return valid;
-      }
-
-      $('#productForm').submit(validate);
-
-      $('.contact').keyup(function(e){
-        if(/\D/g.test(this.value))
-        {
-          this.value = this.value.replace(/\D/g, '');
-          alert('Enter numbers only');
-        }
       });
 
       //Validate Number
@@ -534,7 +558,6 @@
       }
       reader.readAsDataURL(event.target.files[0]);
     }
-
 
     //Remove Variant
     var prev_val;

@@ -380,16 +380,20 @@ class ProductController extends Controller
         $data['product'] = Product::find($id);
         $variant = ProductVariant::where('product_id',$id)->where('is_deleted',0)->first();
         $options = array();
+        $options_id = array();
         
         if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
         {
             $options[] = $variant->optionName1->option_name;
             $option_count = 1;
+            $options_id [] = $variant->option_id;
         }
         elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
         {
             $options[] = $variant->optionName1->option_name;
             $options[] = $variant->optionName2->option_name;
+            $options_id [] = $variant->option_id;
+            $options_id [] = $variant->option_id2;
             $option_count = 2;
         }
         elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
@@ -397,6 +401,9 @@ class ProductController extends Controller
             $options[] = $variant->optionName1->option_name;
             $options[] = $variant->optionName2->option_name;
             $options[] = $variant->optionName3->option_name;
+            $options_id [] = $variant->option_id;
+            $options_id [] = $variant->option_id2;
+            $options_id [] = $variant->option_id3;
             $option_count = 3;
         }
         elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5==NULL))
@@ -405,6 +412,10 @@ class ProductController extends Controller
             $options[] = $variant->optionName2->option_name;
             $options[] = $variant->optionName3->option_name;
             $options[] = $variant->optionName4->option_name;
+            $options_id [] = $variant->option_id;
+            $options_id [] = $variant->option_id2;
+            $options_id [] = $variant->option_id3;
+            $options_id [] = $variant->option_id4;
             $option_count = 4;
         }
         elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5!=NULL))
@@ -413,6 +424,11 @@ class ProductController extends Controller
             $options[] = $variant->optionName2->option_name;
             $options[] = $variant->optionName3->option_name;
             $options[] = $variant->optionName4->option_name;
+            $options_id [] = $variant->option_id;
+            $options_id [] = $variant->option_id2;
+            $options_id [] = $variant->option_id3;
+            $options_id [] = $variant->option_id4;
+            $options_id [] = $variant->option_id5;
             $option_count = 5;
         }
 
@@ -495,6 +511,7 @@ class ProductController extends Controller
         }
         $data['option_count'] = $option_count;
         $data['get_options'] = $options;
+        $data['options_id'] = $options_id;
         $data['product_variant'] = $product_variants;
         $data['product_images'] = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
         $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
@@ -755,9 +772,8 @@ class ProductController extends Controller
                     $variant_data[$i]['display'] = $display;
                     $i = $i + 1;
                 }
-                
                 foreach ($variant_data as $value) {
-                    if(isset($value['id'])){
+                    if(($value['id'])>0){
                         $update_variant = ProductVariant::find($value['id']);
                         $update_variant->product_id = $product->id;
                         $update_variant->option_id = $value['option_id1'];
@@ -787,23 +803,21 @@ class ProductController extends Controller
                             $update_vendor->timestamps = false;
                             $update_vendor->update();
                         }
-                    }else{
+                    }
+                    elseif(($value['id'])==0){
                         $add = new ProductVariant();
                         $add->product_id = $product->id;
-                        $add->product_option_id1 = $value['option_id1'];
-                        $add->product_option_value_id1 = $value['option_value_id1'];
-                        $add->product_option_id2 = $value['option_id2'];
-                        $add->product_option_value_id2 = $value['option_value_id2'];
-                        $add->product_option_id3 = $value['option_id3'];
-                        $add->product_option_value_id3 = $value['option_value_id3'];
-                        $add->base_price = $value['base_price'];
-                        $add->retail_price = $value['retail_price'];
-                        $add->minimum_selling_price = $value['minimum_price'];
-                        $add->display_variant = $value['display'];
-                        $add->display_order = $value['display_order'];
-                        $add->stock_quantity = $value['stock_qty'];
-                        $add->vendor_id = $value['vendor_id'];
-                        $add->timestamps = false;
+                        $add->option_id = $value['option_id1'];
+                        $add->option_value_id = $value['option_value_id1'];
+                        $add->option_id2 = $value['option_id2'];
+                        $add->option_value_id2 = $value['option_value_id2'];
+                        $add->option_id3 = $value['option_id3'];
+                        $add->option_value_id3 = $value['option_value_id3'];
+                        $add->option_id4 = $value['option_id4'];
+                        $add->option_value_id4 = $value['option_value_id4'];
+                        $add->option_id5 = $value['option_id5'];
+                        $add->option_value_id5 = $value['option_value_id5'];
+                        $add->created_at = date('Y-m-d H:i:s');
                         $add->save();
 
                         if($add){
@@ -934,7 +948,10 @@ class ProductController extends Controller
         // echo "<pre>";
         // print_r($variant_options);
         // echo "</pre>";
-
+        $data['data_from'] ="";
+        if($request->dataFrom=="edit"){
+            $data['data_from'] ="edit";
+        }
         $data['vendors'] = $vendor_data;
         $data['option_values'] = $variant_options;
         $data['options']= $get_options;
