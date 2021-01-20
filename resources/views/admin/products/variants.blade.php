@@ -1,3 +1,4 @@
+<div class="table-responsive">
 <table class="list" id="variantList">
 	<thead>
 		<tr>
@@ -16,7 +17,7 @@
 		</tr>
 	</thead>
 	<tbody>
-	<?php $count=1; ?>
+	<?php $count=1;	?>
 	@foreach($option_values as $key => $option_value)
 		<?php
 			$vendor_id = $vendors[$key]->id;
@@ -25,19 +26,28 @@
 		@foreach($option_value as $k => $options)
 			<?php 
 				$option_id1 = $options->optionID1;
-				$option_value_id1 = $options->opt_val_id1;
-				$option1 = $options->opt_val1;
-				if($option_count==2||$option_count==3){
-					$option_id2 = $options->opt_id2;
-					$option_value_id2 = $options->opt_val_id2;
-					$option2 = $options->opt_val2;	
+				$option_value_id1 = $options->optionValueID1;
+				$option1 = $options->optionValue1;
+				if($option_count==2||$option_count==3||$option_count==4||$option_count==5){
+					$option_id2 = $options->optionID2;
+					$option_value_id2 = $options->optionValueID2;
+					$option2 = $options->optionValue2;	
 				}
-				if($option_count==3){
-					$option_id3 = $options->opt_id3;
-					$option_value_id3 = $options->opt_val_id3;
-					$option3 = $options->opt_val3;	
+				if($option_count==3||$option_count==4||$option_count==5){
+					$option_id3 = $options->optionID3;
+					$option_value_id3 = $options->optionValueID3;
+					$option3 = $options->optionValue3;	
 				}
-
+				if($option_count==4||$option_count==5){
+					$option_id4 = $options->optionID4;
+					$option_value_id4 = $options->optionValueID4;
+					$option4 = $options->optionValue4;	
+				}
+				if($option_count==5){
+					$option_id5 = $options->optionID5;
+					$option_value_id5 = $options->optionValueID5;
+					$option5 = $options->optionValue5;	
+				}
 
 				if($k<=0){
 					$base_price_row_id = 'base_price_row1';
@@ -68,18 +78,32 @@
 					<input type="hidden" name="variant[option_value_id1][]" value="{{$option_value_id1}}">
 					{{$option1}}
 				</td>
-				@if($option_count==2||$option_count==3)
+				@if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
 					<td>
 						<input type="hidden" name="variant[option_id2][]" value="{{$option_id2}}">
 						<input type="hidden" name="variant[option_value_id2][]" value="{{$option_value_id2}}">
 						{{$option2}}
 					</td>
 				@endif
-				@if($option_count==3)
+				@if($option_count==3||$option_count==4||$option_count==5)
 					<td>
 						<input type="hidden" name="variant[option_id3][]" value="{{$option_id3}}">
 						<input type="hidden" name="variant[option_value_id3][]" value="{{$option_value_id3}}">
 						{{$option3}}
+					</td>
+				@endif
+				@if($option_count==4||$option_count==5)
+					<td>
+						<input type="hidden" name="variant[option_id4][]" value="{{$option_id4}}">
+						<input type="hidden" name="variant[option_value_id4][]" value="{{$option_value_id4}}">
+						{{$option4}}
+					</td>
+				@endif
+				@if($option_count==5)
+					<td>
+						<input type="hidden" name="variant[option_id5][]" value="{{$option_id5}}">
+						<input type="hidden" name="variant[option_value_id5][]" value="{{$option_value_id5}}">
+						{{$option5}}
 					</td>
 				@endif
 				<td>
@@ -127,6 +151,7 @@
 	</tbody>
 </table>
 
+</div>
 <script type="text/javascript">
 	$('#base_price_row1').keyup(function(){
         $('.base_price_row').val(this.value);

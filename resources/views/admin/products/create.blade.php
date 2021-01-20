@@ -95,52 +95,6 @@
                           <label class="custom-file-label" for="mainImage">Choose file</label>
                         </div>
                       </div>
-
-                      <div class="form-group">
-                    <article>
-                      <label for="files">Product Gallery Images</label>
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="images[]" id="files" multiple onChange="validateImg(this.value)">
-                        <label class="custom-file-label" for="files">Choose file</label>
-                      </div>
-                      <output id="result" style="display:none;"></output>
-                      <button type="button" id="clear" style="display:none;">Clear</button>
-                    </article>
-                  </div>
-
-                  <div class="form-group">
-                    <label>Product Details</label>
-                    <textarea class="summernote" name="product_details">{{old('product_details')}}</textarea>
-                  </div>
-
-                  <div class="form-group">
-                    <label>Treatment Information</label>
-                    <textarea class="summernote" name="treatment_information">{{old('treatment_information')}}</textarea>
-                  </div>
-                  <div class="form-group">
-                    <label>Dosage Instructions</label>
-                    <textarea class="summernote" name="dosage_instructions">{{old('dosage_instructions')}}</textarea>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="searchEngine">Search Engine Friendly Page Name</label>
-                    <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
-                  </div>
-                  <div class="form-group">
-                    <label for="metaTile">Meta Title</label>
-                    <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title')}}">
-                  </div>
-                  <div class="form-group">
-                    <label for="metaKeyword">Meta Keywords</label>
-                    <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword')}}</textarea>
-                  </div>
-                  <div class="form-group">
-                    <label for="metaDescription">Meta Description</label>
-                    <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description')}}</textarea>
-                  </div>
-
-
-
                     </div>
 
                     <div class="col-two col-sm-6">
@@ -188,9 +142,7 @@
                         </div>
                       </div>
 
-
                       <div class="product-variant-selectbox">
-
                         <div class="form-group">
                           <label for="productVariant">Product Variant Options</label>
                           <select class="form-control select2bs4" id="productVariant" multiple="multiple" data-placeholder="Select Variant Option" name="variant_option">
@@ -212,108 +164,57 @@
                           <a id="clear-option" class="btn reset-btn" style="display:none">Clear</a>
                           <button type="button" class="btn save-btn" id="add-options" style="display:none">Apply</button>
                           &nbsp;
-                       
                         </div>
-
                       </div>
-
-                      <div class="product-variant-block"></div>
-
-
-
 
                     </div>
                   </div>
 
+                    <div class="form-group">
+                      <article>
+                        <label for="files">Product Gallery Images</label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" name="images[]" id="files" multiple onChange="validateImg(this.value)">
+                          <label class="custom-file-label" for="files">Choose file</label>
+                        </div>
+                        <output id="result" style="display:none;"></output>
+                        <button type="button" id="clear" style="display:none;">Clear</button>
+                      </article>
+                    </div>
+                    <div id="product-variant-block"></div>
+
+                    <div class="form-group">
+                      <label>Product Details</label>
+                      <textarea class="summernote" name="product_details">{{old('product_details')}}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Treatment Information</label>
+                      <textarea class="summernote" name="treatment_information">{{old('treatment_information')}}</textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>Dosage Instructions</label>
+                      <textarea class="summernote" name="dosage_instructions">{{old('dosage_instructions')}}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="searchEngine">Search Engine Friendly Page Name</label>
+                      <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
+                    </div>
+                    <div class="form-group">
+                      <label for="metaTile">Meta Title</label>
+                      <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title')}}">
+                    </div>
+                    <div class="form-group">
+                      <label for="metaKeyword">Meta Keywords</label>
+                      <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword')}}</textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="metaDescription">Meta Description</label>
+                      <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description')}}</textarea>
+                    </div>
                   
 
-
-                  <!-- <div class="product-variant-block">
-                    <label>Product Variants</label>
-                    <table class="list" id="variantList">
-                      <thead>
-                        <tr>
-                          <th>Dosage</th><th>Package</th><th>Base Price</th><th>Retail Price</th><th>Minimum Selling Price</th><th>Stock Qty</th><th>Select Vendor</th><th>&nbsp;Default&nbsp;</th><th>Order By</th><th>Display</th><th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control dosage" name="variant[dosage][]">
-                              <span class="text-danger" style="display:none">Dosage is required</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control package" name="variant[package][]">
-                              <span class="text-danger" style="display:none">Package is required</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control base_price" onkeyup="validateNum(event,this);" name="variant[base_price][]">
-                              <span class="text-danger" style="display:none">Base Price is required</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control retail_price" onkeyup="validateNum(event,this);" name="variant[retail_price][]">
-                              <span class="text-danger" style="display:none">Retail Price is required</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[minimum_price][]">
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]">
-                              <span class="text-danger" style="display:none">Stock Qty is required</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <select class="form-control select2" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="variant[vendor][0][]">
-
-
-                                @foreach($vendors as $vendor)
-                                  <option value="{{$vendor->id}}">{{$vendor->name}}</option>
-                                @endforeach
-                              </select>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="radio" class="default-variant" name="default" id="defaultVariant" value="1">
-                                <input type="hidden" name="variant[default][]" class="hidden-default-variant" value="1">
-                                <label for="defaultVariant"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]">
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group">
-                              <select class="form-control commission select2bs4" name="variant[display][]">
-                                <option value="0" selected>No</option>
-                                <option value="1">Yes</option>
-                              </select>
-                            </div>
-                            <input type="hidden" class="length" value="1">
-                          </td>
-                          <td>
-                            <a href="#" id="add"><i class="fas fa-plus-circle"></i></a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div> -->
                   <div class="form-group">
                     <a href="{{route('product.index')}}" class="btn reset-btn">Cancel</a>
                     <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
@@ -412,81 +313,7 @@
         });
       });
 
-      /*function createRow() {
-        var inputs = $('.length').val();
-        var id = parseInt(inputs)+parseInt(1);
-        $('.length').val(id);
-        var newrow = [
-          '<div class="form-group"><input type="text" class="form-control" name="variant[dosage][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" name="variant[package][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[base_price][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[retail_price][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[minimum_price][]"></div>',
-          '<div class="form-group"><input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[stock_qty][]"></div>',
-          '<div class="form-group"><select class="form-control select2" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="variant[vendor]['+id+'][]">@foreach($vendors as $vendor)<option value="{{$vendor->id}}">{{$vendor->name}}</option>@endforeach</select></div>',
-          '<div class="form-group clearfix"><div class="icheck-info d-inline"><input type="radio" class="default-variant" name="default" id="defaultVariant'+id+'" value="0"><input type="hidden" name="variant[default][]" class="hidden-default-variant" value="0"><label for="defaultVariant'+id+'"></label></div></div>',
-          '<div class="form-group"><input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]"></div>',
-          '<div class="form-group"><select class="form-control commission select2bs4" name="variant[display][]"><option value="0" selected>No</option><option value="1">Yes</option></select></div>',
-          '<a href="#" class="deleteButton"><i class="fas fa-minus-circle"></i></a>'
-        ];
-        return '<tr><td>'+newrow.join('</td><td>')+'</td></tr>';
-      }
-
-      $('a#add').click(function() {
-        $('table#variantList tbody').append(createRow());
-        return false;
-      });
-
-      $('table#variantList').on('click','.addButton',function() {
-        $(this).closest('tr').after(createRow());
-      }).on('click','.deleteButton',function() {
-        $(this).closest('tr').remove();
-        return false;
-      });
-
-      $(document).ready(function() {
-        $("body").on("click",".default-variant",function(){
-          var val = $(this).val();
-          if(val>0){
-            $("input[type='radio']:checked").next("input[type='hidden']").val('1');
-            $("input[type='radio']:checked").val('1');
-            $("input[type='radio']:not(:checked)").next("input[type='hidden']").val('0');
-            $("input[type='radio']:not(:checked)").val('0');
-          }else{
-            $("input[type='radio']:checked").next("input[type='hidden']").val('1');
-            $("input[type='radio']:checked").val('1');
-            $("input[type='radio']:not(:checked)").next("input[type='hidden']").val('0');
-            $("input[type='radio']:not(:checked)").val('0');
-          }
-        });
-      });
-
-      function validate(){
-        var valid=true;
-        if($(".dosage").val()=="") {
-          $(".dosage").closest('.form-group').find('span.text-danger').show();
-          valid=false;
-        }
-        if($(".package").val()=="") {
-          $(".package").closest('.form-group').find('span.text-danger').show();
-          valid=false;
-        }
-        if($(".base_price").val()=="") {
-          $(".base_price").closest('.form-group').find('span.text-danger').show();
-          valid=false;
-        }
-        if($(".retail_price").val()=="") {
-          $(".retail_price").closest('.form-group').find('span.text-danger').show();
-          valid=false;
-        }
-        if($(".stock_qty").val()=="") {
-          $(".stock_qty").closest('.form-group').find('span.text-danger').show();
-          valid=false;
-        }
-        return valid;
-      }
-
-      $('#productForm').submit(validate);*/
+      
 
       $('.contact').keyup(function(e){
         if(/\D/g.test(this.value))
@@ -603,10 +430,11 @@
           $.ajax({
             url:"{{ url('admin/product_variant') }}",
             type:"POST",
-            dataType:"JSON",
+            //dataType:"JSON",
             data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor},
             success: function (data) { 
-
+              console.log(data);
+              //alert('test');
               $('#product-variant-block').html(data);
 
 /*              createTable(data.options);
@@ -629,7 +457,7 @@
         $('.product-variant-block').find('table').remove();
       });
 
-function createTable(options){
+/*function createTable(options){
   var html='';
       html += '<div class="table-responsive">';
       html += '  <table  id="variantList" class="table table-striped table-bordered table-hover">';
@@ -701,7 +529,7 @@ function addOptionValue(option_row,data) {
 
   $('#variantList tbody').append(html);
   option_value_row++;
-}
+}*/
 
     </script>
   @endpush
