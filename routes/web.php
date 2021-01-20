@@ -42,6 +42,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('departments','Admin\DepartmentController');
 	Route::resource('employees','Admin\EmployeeController');
 
+	Route::get('salary-list','Admin\EmployeeController@salaryList')->name('salary.list');
+
 	Route::get('get-state-list','Admin\DashboardController@getStateList');
 	Route::get('get-city-list','Admin\DashboardController@getCityList');
 

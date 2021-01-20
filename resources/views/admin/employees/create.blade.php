@@ -88,7 +88,12 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             {!! Form::label('doj', 'Date of Join') !!}
-                              <input type="date" name="doj_date" class="form-control datetimepicker-input" data-target="#dateofjoin" value="{{old('doj_date')}}" />
+                            <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                              <input type="text" name="doj_date" class="form-control datetimepicker-input" data-target="#reservationdate" value="{{old('doj_date')}}"/>
+                              <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                              </div>
+                            </div>
                           </div>
                           
                           <div class="col-sm-5">

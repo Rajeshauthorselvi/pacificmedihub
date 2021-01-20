@@ -90,6 +90,9 @@
                                 <a href="{{route('employees.edit',$emp->id)}}"><li class="dropdown-item">
                                   <i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li>
                                 </a>
+                                <a href="{{route('employees.show',$emp->id)}}"><li class="dropdown-item">
+                                  <i class="fas fa-eye"></i>&nbsp;&nbsp;View</li>
+                                </a>
                                 <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('employees.destroy',$emp->id) }}">@csrf 
                                     <input name="_method" type="hidden" value="DELETE">

@@ -28,9 +28,9 @@ class CreateVendorsTable extends Migration
             $table->string('address_line1',255)->nullable();
             $table->string('address_line2',255)->nullable();
             $table->string('post_code',25)->nullable();
-            $table->string('country',100)->nullable();
-            $table->string('state',100)->nullable();
-            $table->string('city',100)->nullable();
+            $table->bigInteger('country')->nullable();
+            $table->bigInteger('state')->nullable();
+            $table->bigInteger('city')->nullable();
             $table->string('account_name',100)->nullable();
             $table->string('account_number',100)->nullable();
             $table->string('bank_name',100)->nullable();
