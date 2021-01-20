@@ -1,9 +1,9 @@
 <table class="list" id="variantList">
 	<thead>
 		<tr>
-			@foreach($get_option as $option)
+			@foreach($options as $option)
 			<th>
-				{{$option}}
+				{{$option->option_name}}
 			</th>
 			@endforeach
 			<th>Base Price</th>
@@ -24,7 +24,7 @@
 		?>
 		@foreach($option_value as $k => $options)
 			<?php 
-				$option_id1 = $options->opt_id1;
+				$option_id1 = $options->optionID1;
 				$option_value_id1 = $options->opt_val_id1;
 				$option1 = $options->opt_val1;
 				if($option_count==2||$option_count==3){

@@ -535,13 +535,13 @@
                             return !$(this).val();
                         }).length;
 
-        if (empty_field!=0) {
+     /*   if (empty_field!=0) {
           alert('Please fill all the variants.');
           return false;
         }
-        else{
+        else{*/
             $('#productForm').submit();
-        }
+        // }
 
 
       });
@@ -598,8 +598,7 @@
             $('#add-options').css({'pointer-events':'none','opacity':'0.5'});
             $('#clear-option').css('display','block');
           }
-          console.log(selectedOption);
-          console.log(selectedVendor);
+
           var csrf_token = "{{ csrf_token() }}";
           $.ajax({
             url:"{{ url('admin/product_variant') }}",
@@ -607,9 +606,11 @@
             dataType:"JSON",
             data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor},
             success: function (data) { 
-              console.log(data);
-              createTable(data.options);
-              addOptionValue(0,data)
+
+              $('#product-variant-block').html(data);
+
+/*              createTable(data.options);
+              addOptionValue(0,data)*/
             }
           });
         }else{
@@ -659,14 +660,22 @@ function addOptionValue(option_row,data) {
   html  = '<tr id="option-value-row' + option_value_row + '">';
   var totalOptions = data.options.length;
   var optionValue=data.option_values[option_value_row];
-  var vendors=data.vendor;
-  for(vendor of vendors){
-    html += '  <td class="text-left"><input type="hidden" name="product_option[' + option_row + '][vendor]" value="'+vendor.id+'" />'+vendor.name+'</td>';
-  }
+  var vendors=data.vendors;
+  var totalVendors=data.vendors.length;
+
+  console.log(data.options);
+
+  $.each(vendors, function(index, vendor) {
+        html += '  <td class="text-left"><input type="hidden" name="product_option[' + option_row + '][vendor]" value="'+vendor.id+'" />'+vendor.name+'</td>'
+  });
   for(var i=1;i<=totalOptions;i++){
     html += '  <td class="text-left"><input type="hidden" name="product_option[' + option_row + '][product_option_value][' + i + '][product_option_value_id]" value="'+optionValue["optionValueID"+i]+'" /><input type="hidden" name="product_option[' + option_row + '][product_option][' + i + '][product_option_id]" value="'+optionValue["optionID"+i]+'" />'+optionValue["optionValue"+i]+'</td>';
   }
-
+      html +='<td><input type="text" class="form-control" name="product_option['+option_row+'][baseprice][' + i + '][product_option_value_id]"></td>';
+      html +='<td><input type="text" class="form-control" name="product_option['+option_row+'][retail_price][' + i + '][product_option_value_id]"></td>';
+      html +='<td><input type="text" class="form-control" name="product_option['+option_row+'][minimum_selling_price][' + i + '][product_option_value_id]"></td>';
+      html +='<td><input type="text" class="form-control" name="product_option['+option_row+'][display_order][' + i + '][product_option_value_id]"></td>';
+      html +='<td><input type="text" class="form-control" name="product_option['+option_row+'][stock_quantity][' + i + '][product_option_value_id]"></td>';
   // html += '  <td class="text-right"><input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][quantity]" value="" placeholder="Quantity" class="form-control" /></td>';
   // html += '  <td class="text-left"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][subtract]" class="form-control">';
   // html += '    <option value="1">Yes</option>';

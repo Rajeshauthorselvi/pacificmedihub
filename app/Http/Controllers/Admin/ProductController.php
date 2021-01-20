@@ -70,7 +70,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+        dd($request->all());
         $this->validate(request(), [
             'product_name' => 'required',
             'product_code' => 'required',
@@ -717,11 +717,18 @@ class ProductController extends Controller
         $get_options = Option::whereIn('id',$options)->get();
         $sql =$this->generateRawOptions($options);
         $variant_options = DB::select($sql);
+
+
+        print_r($variant_options);
         $vendor_data=Vendor::whereIn('id',$vendors)->get();
+
         $data['vendors'] = $vendor_data;
         $data['option_values'] = $variant_options;
         $data['options']= $get_options;
-        return response()->json($data); 
+
+
+        return view('admin.products.variants',$data);
+        // return response()->json($data); 
         
 
 
