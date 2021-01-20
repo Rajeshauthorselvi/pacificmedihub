@@ -83,31 +83,7 @@
                         </div>
                     </div>
                   </div>
-                  <div class="order-item-sec">
-                    <table class="table table-bordered purchase-table">
-                      <thead>
-                        <th>Product (Code-Name)</th>
-                        <th>Options</th>
-                        <th>Base Price</th>
-                        <th>Retail Price</th>
-                        <th>Minimum Selling Price</th>
-                        <th>Quantity</th>
-                        <th>Sub Total</th>
-                        <th></th>
-                      </thead>
-                      <tbody>
-                        <tr class="no-match">
-                          <td>No Entry Found</td>
-                          <td>dd/mm/yyyy</td>
-                          <td>0.00</td>
-                          <td>0.00</td>
-                          <td>0.00</td>
-                          <td>0.00</td>
-                          <td>0.00</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <div class="order-item-sec"></div>
                   <div class="tax-sec">
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -197,7 +173,7 @@
   });
 
 
-    $(document).on('keyup', '.quantity', function(event) {
+    $(document).on('keyup', '.stock_qty', function(event) {
       if (/\D/g.test(this.value))
       {
         this.value = this.value.replace(/\D/g, '');
@@ -245,19 +221,7 @@
           },
         })
         .done(function(response) {
-            $.each(response, function(index, val) {
-              var tr_val ="<tr>";
-                       tr_val +="<td><input type='hidden' class='product_id' value='"+val.value+"'>"+val.label+"</td>";
-                        tr_val +="<td>"+val.option_value+"</td>";
-                        tr_val +="<td class='base_price'>"+val.base_price+"</td>";
-                        tr_val +="<td>"+val.retail_price+"</td>";
-                        tr_val +="<td>"+val.minimum_selling_price+"</td>";
-                        tr_val +="<td><input type='text' name='quantity["+val.value+"]["+val.option_id+"]["+val.option_value_id+"]' value='1' class='form-control quantity'></td>";
-                        tr_val +="<td class='sub_total'>"+val.base_price+"</td>";
-                        tr_val +="<td><a href='javascript:void(0)' class='btn btn-danger remove-item' title='Remove'> <i class='fa fa-trash'></i> </a><input type='hidden' class='subtotal_hidden' name='subtotal["+val.value+"]["+val.option_id+"]["+val.option_value_id+"]' value='"+val.base_price+"'></td>";
-                        tr_val +="</tr>"; 
-                  $('.purchase-table').append(tr_val);
-            });
+          $('.order-item-sec').html(response);
         })
         .fail(function() {
           console.log("error");
