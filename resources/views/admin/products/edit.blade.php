@@ -81,21 +81,16 @@
                           <span class="text-danger">{{ $errors->first('category') }}</span>
                         @endif
                       </div>
-
-                      <div class="form-group">
-                        <label for="alertQty">Alert Quantity</label>
-                        <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty',$product->alert_quantity)}}">
-                      </div>
-                      <div class="form-group">
-                        <label for="shortDescription">Product Short Details</label>
-                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description',$product->short_description)}}</textarea>
-                      </div>
-
                       <?php 
                         if(!empty($product->main_image)){$image = "theme/images/products/main/".$product->main_image;}
                         else {$image = "theme/images/no_image.jpg";}
                       ?>
-                      
+                      <div class="form-group">
+                        <label for="mainImage">Product Image</label>
+                        <input type="file" name="main_image" id="mainImage" accept="image/*" onchange="preview_image(event)" style="display:none;" value="{{$product->main_image}}">
+                        <img title="Click to Change" class="img-product" id="output_image"  onclick="$('#mainImage').trigger('click'); return true;" style="width:100px;height:100px;cursor:pointer;" src="{{asset($image)}}">
+                      </div>
+                     
                     </div>
 
                     <div class="col-two col-sm-5">
@@ -109,6 +104,12 @@
                         </select>
                       </div>
 
+                      <div class="form-group">
+                        <label for="alertQty">Alert Quantity</label>
+                        <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty',$product->alert_quantity)}}">
+                      </div>
+
+<!-- 
                       <div class="product-variant-selectbox">
 
                         <div class="form-group">
@@ -132,7 +133,7 @@
                         <button type="button" class="btn save-btn" id="add-options" style="display:none">Save</button>
 
                       </div>
-                      <a id="clear-option" class="btn save-btn" style="display:none">Clear</a>
+                      <a id="clear-option" class="btn save-btn" style="display:none">Clear</a> -->
                       
                       <div class="form-group" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
@@ -148,6 +149,11 @@
                         </div>
                       </div>
                       
+                      <div class="form-group">
+                        <label for="shortDescription">Product Short Details</label>
+                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description',$product->short_description)}}</textarea>
+                      </div>
+
                       <div class="form-group clearfix" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
                           <div class="icheck-info d-inline">
@@ -161,12 +167,6 @@
                             <label for="homePage">Show on Home Page</label>
                           </div>
                         </div>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="mainImage">Product Image</label>
-                        <input type="file" name="main_image" id="mainImage" accept="image/*" onchange="preview_image(event)" style="display:none;" value="{{$product->main_image}}">
-                        <img title="Click to Change" class="img-product" id="output_image"  onclick="$('#mainImage').trigger('click'); return true;" style="width:100px;height:100px;cursor:pointer;" src="{{asset($image)}}">
                       </div>
 
                     </div>
@@ -188,11 +188,6 @@
                       <a class="btn btn-danger del-image" product-id="{{$images->id}}" route-url="{{ route('remove.pimage') }}">-</a>
                     @endforeach
                     
-                  </div>
-
-                  <div class="form-group">
-                    <label>Product Details</label>
-                    <textarea class="summernote" name="product_details">{{old('product_details',$product->long_description)}}</textarea>
                   </div>
 
                   <div class="product-variant-block">
@@ -217,7 +212,7 @@
                                 {{$variant['option_value1']}}
                               </div>
                             </td>
-                            @if($option_count==2||$option_count==3)
+                            @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
                               <td>
                                 <div class="form-group">
                                   <input type="hidden" name="variant[option_id2][]" value="{{$variant['option_id2']}}">
@@ -226,12 +221,30 @@
                                 </div>
                               </td>
                             @endif
-                            @if($option_count==3)
+                            @if($option_count==3||$option_count==4||$option_count==5)
                               <td>
                                 <div class="form-group">
                                   <input type="hidden" name="variant[option_id3][]" value="{{$variant['option_id3']}}">
                                   <input type="hidden" name="variant[option_value_id3][]" value="{{$variant['option_value_id3']}}">
                                   {{$variant['option_value3']}}
+                                </div>
+                              </td>
+                            @endif
+                            @if($option_count==4||$option_count==5)
+                              <td>
+                                <div class="form-group">
+                                  <input type="hidden" name="variant[option_id4][]" value="{{$variant['option_id4']}}">
+                                  <input type="hidden" name="variant[option_value_id4][]" value="{{$variant['option_value_id4']}}">
+                                  {{$variant['option_value4']}}
+                                </div>
+                              </td>
+                            @endif
+                            @if($option_count==5)
+                              <td>
+                                <div class="form-group">
+                                  <input type="hidden" name="variant[option_id5][]" value="{{$variant['option_id5']}}">
+                                  <input type="hidden" name="variant[option_value_id5][]" value="{{$variant['option_value_id5']}}">
+                                  {{$variant['option_value5']}}
                                 </div>
                               </td>
                             @endif
@@ -282,6 +295,11 @@
                         @endforeach
                       </tbody>
                     </table>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Product Details</label>
+                    <textarea class="summernote" name="product_details">{{old('product_details',$product->long_description)}}</textarea>
                   </div>
 
                   <div class="form-group">
