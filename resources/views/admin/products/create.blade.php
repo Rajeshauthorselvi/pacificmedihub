@@ -407,6 +407,7 @@
             return false;
           }
           else{
+            $('.product-variant-selectbox').find('.select2').css({'pointer-events':'none','opacity':'0.5'});
             $('#add-options').css({'pointer-events':'none','opacity':'0.5'});
             $('#clear-option').css('display','block');
           }
@@ -417,7 +418,7 @@
             type:"POST",
             data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor},
             success: function (data) { 
-              console.log(data);
+              //console.log(data);
               $('#product-variant-block').html(data);
 /*              createTable(data.options);
               addOptionValue(0,data)*/
@@ -436,6 +437,7 @@
         $('#productVariant').val('').change();
         $('#VendorSupplier').val('').change();
         $('#add-options').css({'pointer-events':'auto','opacity':'1'});
+        $('.product-variant-selectbox').find('.select2').css({'pointer-events':'auto','opacity':'1'});
         $('#product-variant-block').find('table').remove();
       });
 

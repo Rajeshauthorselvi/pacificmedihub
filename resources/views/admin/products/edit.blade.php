@@ -145,25 +145,17 @@
                         <label for="alertQty">Alert Quantity</label>
                         <input type="text" class="form-control" name="alert_qty" id="alertQty" onkeyup="validateNum(event,this);" value="{{old('alert_qty',$product->alert_quantity)}}">
                       </div>
-                      
-                      <div class="product-variant-selectbox">
 
-                        <!-- <div class="form-group">
+                      <div class="product-variant-selectbox">
+                        
+                        <div class="form-group">
                           <label for="productVariant">Product Variant Options</label>
-                          <select class="form-control select2bs4" id="productVariant" multiple="multiple" data-placeholder="Select Variant Option" name="variant_option">
-                            @foreach($product_options as $options)
-                              <option value="{{$options->id}}" {{ (collect(old('variant_option'))->contains($options->id)) ? 'selected':'' }}>{{$options->option_name}}</option>
-                            @endforeach
-                          </select>
-                        </div> -->
+                          {!! Form::select('variant_option',$product_options,$options_id,['class'=>'form-control select2bs4', 'id'=>'productVariant', 'multiple'=>'multiple', 'data-placeholder'=>'Select Variant Option', '@if($product_options->id==$options_id){"disabled"=>"disabled"}']) !!}
+                        </div>
 
                         <div class="form-group">
                           <label for="VendorSupplier">Vendor/Supplier</label>
-                          <select class="form-control select2bs4" id="VendorSupplier" multiple="multiple" data-placeholder="Select Vendor/Supplier" name="vendor">
-                            @foreach($vendors as $vendor)
-                              <option value="{{$vendor->id}}" {{ (collect(old('vendor'))->contains($vendor->id)) ? 'selected':'' }}>{{$vendor->name}}</option>
-                            @endforeach
-                          </select>
+                          {!! Form::select('vendor',$vendors,$vendors_id,['class'=>'form-control select2bs4', 'id'=>'VendorSupplier', 'multiple'=>'multiple', 'data-placeholder'=>'Select Vendor/Supplier' ]) !!}
                         </div>
 
                         <div class="submit-sec">
@@ -362,6 +354,13 @@
     <script type="text/javascript">
 
       //Add Variant
+      $('#productVariant').on('change',function(){
+        if($('#productVariant option:selected').val()==null) {
+          $('#add-options').css('display','none');
+        }
+        $('#add-options').css('display','block');
+      });
+
       $('#VendorSupplier').on('change',function(){
         if($('#VendorSupplier option:selected').val()==null) {
           $('#add-options').css('display','none');
@@ -370,14 +369,24 @@
       });
 
       $('#add-options').on('click',function(){
-          var options = <?php echo json_encode($options_id); ?>;
-          var selectedOption = JSON.stringify(options);
+          var existing_options = <?php echo json_encode($options_id); ?>;
+          var existingOption = JSON.stringify(existing_options);
+
+          var existing_vendors = <?php echo json_encode($vendors_id); ?>;
+          var existingVendor = JSON.stringify(existing_vendors);
+
+          var options = $('#productVariant option:selected');
+        
+        if(options.length > 0  && options.length <=5 ){
+
+          var selectedOption = JSON.stringify($('#productVariant').val());
           var selectedVendor = JSON.stringify($('#VendorSupplier').val());
           if($('#VendorSupplier').val().length==0 && $('#productVariant').val()){
             alert('Please select Vendor/Supplier.!');
             return false;
           }
           else{
+            $('.product-variant-selectbox').find('.select2').css({'pointer-events':'none','opacity':'0.5'});
             $('#add-options').css({'pointer-events':'none','opacity':'0.5'});
             $('#clear-option').css('display','block');
           }
@@ -386,25 +395,30 @@
           $.ajax({
             url:"{{ url('admin/product_variant') }}",
             type:"POST",
-            data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor,dataFrom:'edit'},
+            data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor,dataFrom:'edit',existOption:existingOption,existVendor:existingVendor},
             success: function (data) { 
-              console.log(data);
+              //console.log(data);
               $('#new-product-variant-block').html(data);
               $('.new-product-variant-lable').css('display','block');
-/*              createTable(data.options);
+              /*createTable(data.options);
               addOptionValue(0,data)*/
             }
           });
+        }else{
+          alert('Please select maximum of 5 options only.!');
+        }
       });
 
       
       //Clear Options
       $('#clear-option').on('click',function () {
         $('#clear-option').css('display','none');
-        $('#add-options').css('display','none');
-        $('#productVariant').val('').change();
-        $('#VendorSupplier').val('').change();
+        //$('#add-options').css('display','none');
+        // $('#productVariant').val('').change();
+        // $('#VendorSupplier').val('').change();
+        $('.new-product-variant-lable').css('display','none');
         $('#add-options').css({'pointer-events':'auto','opacity':'1'});
+        $('.product-variant-selectbox').find('.select2').css({'pointer-events':'auto','opacity':'1'});
         $('#new-product-variant-block').find('table').remove();
       });
 
