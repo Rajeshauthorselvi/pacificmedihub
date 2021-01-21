@@ -118,13 +118,13 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('return.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List Return</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('return.create') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Add Return</p>
                 </a>

@@ -1,20 +1,10 @@
-<div class="table-responsive">
-<table class="list" id="variantList" width="100%">
-                      <thead>
-                        <tr>
-                          @foreach($options as $option)
-                            <th>{{$option}}</th>
-                          @endforeach
-                          <th>Base Price</th>
-                          <th>Retail Price</th>
-                          <th>Minimum Selling Price</th>
-                          <th>Quantity</th>
-                          <th>Sub Total</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @foreach($product_variant as $variant)
+
+                        @foreach($product_variant as $key=>$variant)
+                        @if ($key==0)
+	                        <tr>
+	                        	<td class="text-center" colspan="{{ $option_count+6 }}">{{ $product_name }}</td>
+	                        </tr>
+                        @endif
                           <tr>
                           	<input type="hidden" name="variant[product_id][]" value="{{ $product_id }}" class="product_id">
                             <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
@@ -88,7 +78,3 @@
                             <td><a class="btn btn-danger remove-item" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}"><i class="fa fa-trash"></i></a></td>
                           </tr>
                         @endforeach
-                      </tbody>
-                    </table>
-
-</div>

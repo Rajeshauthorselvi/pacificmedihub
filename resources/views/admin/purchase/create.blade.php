@@ -203,7 +203,8 @@
       },
       minLength: 3,
       select: function( event, ui ) {
-        var check_length=$('.product_id[value=1]').length;
+
+        var check_length=$('.product_id[value='+ui.item.value+']').length;
 
         if (check_length>0) {
             alert('This product already exists');
@@ -211,24 +212,10 @@
             return false;
         }
          $(this).val('');
+         ajaxFunction('header',ui)
+         ajaxFunction('options',ui);
+         $('.no-match').hide();
 
-        $('.no-match').hide();
-        $.ajax({
-          url: "{{ url('admin/product-search') }}",
-          data: {
-            product_search_type: 'options',
-            product_id:ui.item.value
-          },
-        })
-        .done(function(response) {
-          $('.order-item-sec').html(response);
-        })
-        .fail(function() {
-          console.log("error");
-        })
-        .always(function() {
-          console.log("complete");
-        });
       },
       open: function() {
         $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
@@ -238,6 +225,51 @@
       }
     });
 
+
+    function ajaxFunction(type,ui) {
+        $.ajax({
+          url: "{{ url('admin/product-search') }}",
+          data: {
+            product_search_type: type,
+            product_id:ui.item.value
+          },
+        })
+        .done(function(response) {
+          if (type=="header") {
+            if ($('.vatiant_table').length==0) {
+              createTable(response['options'])
+            }
+          }
+          else if(type=="options"){
+            $('.vatiant_table tbody').append(response);
+          }
+        });
+
+    }
+function createTable(options){
+  var html='';
+      html += '<div class="table-responsive">';
+      html += '  <table  id="variantList" class="table table-striped table-bordered table-hover vatiant_table">';
+      html += '    <thead>';
+      html += '      <tr>';
+      for(option of options){
+        html += '        <td class="text-left">' + option + '</td>';
+      }
+      html += '        <td class="text-left">Base Price</td>';
+      html += '        <td class="text-left">Retail Price</td>';
+      html += '        <td class="text-left">Minimum Selling Price</td>';
+      html += '        <td class="text-left">Quantity</td>';
+      html += '        <td class="text-left">Sub Total</td>';
+      html += '        <td class="text-left"></td>';
+      //html += '        <td></td>';
+      html += '      </tr>';
+      html += '    </thead>';
+      html += '    <tbody>';
+      html += '    </tbody>';
+      html += '  </table>';
+      html += '</div>';
+      $('.order-item-sec').html(html);
+}
 </script>
 @endpush
   <style type="text/css">

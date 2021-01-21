@@ -53,6 +53,7 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::get('product-search',['uses'=>'product.search','uses'=>'Admin\PurchaseController@ProductSearch']);
 
 	Route::resource('currency','Admin\CurrencyController');
+	Route::resource('return','Admin\PurchaseReturnController');
 
 
 	Route::resource('stock-in-transit','Admin\StockInTransitController');

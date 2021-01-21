@@ -945,9 +945,7 @@ class ProductController extends Controller
             $variant_options[] = DB::select($sql);
         }
 
-        // echo "<pre>";
-        // print_r($variant_options);
-        // echo "</pre>";
+
         $data['data_from'] ="";
         if($request->dataFrom=="edit"){
             $data['data_from'] ="edit";
@@ -958,7 +956,7 @@ class ProductController extends Controller
         $data['option_count'] = count($options);
 
         return view('admin.products.variants',$data);
-        return response()->json($data); 
+        // return response()->json($data); 
         
 
 

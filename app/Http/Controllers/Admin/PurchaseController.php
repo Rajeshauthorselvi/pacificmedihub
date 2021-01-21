@@ -14,6 +14,7 @@ use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Session;
 use Redirect;
+use Response;
 use DB;
 class PurchaseController extends Controller
 {
@@ -224,13 +225,13 @@ class PurchaseController extends Controller
         $data['payment_method']=[''=>'Please Select']+$payment_method;
 
 
-        $products=PurchaseProducts::where('purchase_id',$purchase->id)->get();
+        $products=PurchaseProducts::where('purchase_id',$purchase->id)
+                  ->groupBy('product_id')->get();
+
         foreach ($products as $key => $product) {
             $options=$this->Options($product->product_id);
             $product_variant[]=$this->Variants($product->product_id);
         }
-        $products=PurchaseProducts::where('purchase_id',$purchase->id)->get();
-
 
         $data['purchase_products']=$product_variant;
         $data['options'] = $options['options'];
@@ -366,18 +367,38 @@ class PurchaseController extends Controller
     {
 
         $search_type=$request->product_search_type;
-        if ($search_type=="options") {
             $product_id=$request->product_id;
             $data=$options=array();
+
+
+            
+        if ($search_type=="options") {
             $options=$this->Options($product_id);
             $data['product_variant']=$this->Variants($product_id);
-            $data['options'] = $options['options'];
+            
              $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
-            // print_r($data['options']);
+            $data['options'] = $options['options'];
+            $data['options_json'] = Response::json($options['options']);
+
             $data['option_count'] = $options['option_count'];
             $data['product_id'] = $product_id;
+            $data['product_name']=Product::where('id',$product_id)->value('name');
 
-            return view('admin.purchase.variations',$data);
+           $view=view('admin.purchase.variations',$data)->render();
+
+           return $view;
+        }
+        elseif ($search_type=="header") {
+            $data['product_id'] = $product_id;
+            $data['product_variant']=$this->Variants($product_id);
+            $options=$this->Options($product_id);
+           $data['options'] = $options['options'];
+            $data['options_json'] = Response::json($options['options']);
+
+            $data['option_count'] = $options['option_count'];
+
+           // $data['view']=view('admin.purchase.variations',$data)->render();
+           return Response::json($data);
         }
         elseif ($search_type=="product") {
 
@@ -405,7 +426,7 @@ class PurchaseController extends Controller
 
             $product_variants[$key]['variant_id'] = $variants->id;
             $product_variants[$key]['product_name']=Product::where('id',$variants->product_id)->value('name');
-            $product_variants[$key]['product_id']=$variants->product_id;
+            $product_variants[$key]['product_id']=$product_id;
 
             if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
             {

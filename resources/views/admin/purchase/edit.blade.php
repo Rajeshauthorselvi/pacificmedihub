@@ -99,101 +99,107 @@
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach ($purchase_products as $key=>$variant)
+                        @foreach ($purchase_products as $key1=>$variants)
+                        @foreach ($variants as $key=>$variant)
+                  
                         <?php 
-
-                        $option_id1=isset($variant[$key]['option_id1'])?$variant[$key]['option_id1']:'';
-
-                        $product_id=$variant[$key]['product_id'];
-                        $option_id2=isset($variant[$key]['option_id2'])?$variant[$key]['option_id2']:'';
-                        $option_id3=isset($variant[$key]['option_id3'])?$variant[$key]['option_id3']:'';
-                        $option_id4=isset($variant[$key]['option_id4'])?$variant[$key]['option_id4']:'';
-                        $option_id5=isset($variant[$key]['option_id5'])?$variant[$key]['option_id5']:'';
+                          
 
 
+                        $option_id1=isset($variant['option_id1'])?$variant['option_id1']:'';
+                        $product_id=isset($variant['product_id'])?$variant['product_id']:0;
+                    
+                        $product_id=$variant['product_id'];
+                        $option_id2=isset($variant['option_id2'])?$variant['option_id2']:'';
+                        $option_id3=isset($variant['option_id3'])?$variant['option_id3']:'';
+                        $option_id4=isset($variant['option_id4'])?$variant['option_id4']:'';
+                        $option_id5=isset($variant['option_id5'])?$variant['option_id5']:'';
 
-                        $option_value_id1=isset($variant[$key]['option_value_id1'])?$variant[$key]['option_value_id1']:'';
-                        $option_value_id2=isset($variant[$key]['option_value_id2'])?$variant[$key]['option_value_id2']:'';
-                        $option_value_id3=isset($variant[$key]['option_value_id3'])?$variant[$key]['option_value_id3']:'';
-                        $option_value_id4=isset($variant[$key]['option_value_id4'])?$variant[$key]['option_value_id4']:'';
-                        $option_value_id5=isset($variant[$key]['option_value_id5'])?$variant[$key]['option_value_id5']:'';
+                        $option_value_id1=isset($variant['option_value_id1'])?$variant['option_value_id1']:'';
+                        $option_value_id2=isset($variant['option_value_id2'])?$variant['option_value_id2']:'';
+                        $option_value_id3=isset($variant['option_value_id3'])?$variant['option_value_id3']:'';
+                        $option_value_id4=isset($variant['option_value_id4'])?$variant['option_value_id4']:'';
+                        $option_value_id5=isset($variant['option_value_id5'])?$variant['option_value_id5']:'';
 
   
 
-                        $total=\App\Models\PurchaseProducts::StockQuantity($product_id,'sub_total');
-                        $total_quantity=\App\Models\PurchaseProducts::StockQuantity($product_id,'quantity');
+                        $total=\App\Models\PurchaseProducts::StockQuantity($product_id,$option_id1, $option_id2, $option_id3, $option_id4, $option_value_id1, $option_value_id2, $option_value_id3, $option_value_id4, $option_value_id5,'  sub_total');
+
+
+
+                        $total_quantity=\App\Models\PurchaseProducts::StockQuantity($product_id,$option_id1, $option_id2, $option_id3, $option_id4, $option_value_id1, $option_value_id2, $option_value_id3, $option_value_id4, $option_value_id5,$option_count,'quantity');
 
 
                         ?>
                           <tr>
                               <td>
-                                {{ $variant[$key]['product_name'] }}
+                                {{ $variant['product_name'] }}
                                 <input type="hidden" name="variant[product_id][]" value="{{ $product_id }}" class="product_id">
                               </td>
                             <td>
                               <div class="form-group">
-                                <input type="hidden" name="variant[option_id1][]" value="{{$variant[$key]['option_id1']}}">
-                                <input type="hidden" name="variant[option_value_id1][]" value="{{$variant[$key]['option_value_id1']}}">
-                                {{$variant[$key]['option_value1']}}
+                                <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">
+                                <input type="hidden" name="variant[option_value_id1][]" value="{{$variant['option_value_id1']}}">
+                                {{$variant['option_value1']}}
                               </div>
                             </td>
                             @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
                               <td>
                                 <div class="form-group">
-                                  <input type="hidden" name="variant[option_id2][]" value="{{$variant[$key]['option_id2']}}">
-                                  <input type="hidden" name="variant[option_value_id2][]" value="{{$variant[$key]['option_value_id2']}}">
-                                  {{$variant[$key]['option_value2']}}
+                                  <input type="hidden" name="variant[option_id2][]" value="{{$variant['option_id2']}}">
+                                  <input type="hidden" name="variant[option_value_id2][]" value="{{$variant['option_value_id2']}}">
+                                  {{$variant['option_value2']}}
                                 </div>
                               </td>
                             @endif
                             @if($option_count==3||$option_count==4||$option_count==5)
                               <td>
                                 <div class="form-group">
-                                  <input type="hidden" name="variant[option_id3][]" value="{{$variant[$key]['option_id3']}}">
-                                  <input type="hidden" name="variant[option_value_id3][]" value="{{$variant[$key]['option_value_id3']}}">
-                                  {{$variant[$key]['option_value3']}}
+                                  <input type="hidden" name="variant[option_id3][]" value="{{$variant['option_id3']}}">
+                                  <input type="hidden" name="variant[option_value_id3][]" value="{{$variant['option_value_id3']}}">
+                                  {{$variant['option_value3']}}
                                 </div>
                               </td>
                             @endif
                             @if($option_count==4||$option_count==5)
                               <td>
                                 <div class="form-group">
-                                  <input type="hidden" name="variant[option_id4][]" value="{{$variant[$key]['option_id4']}}">
-                                  <input type="hidden" name="variant[option_value_id4][]" value="{{$variant[$key]['option_value_id4']}}">
-                                  {{$variant[$key]['option_value4']}}
+                                  <input type="hidden" name="variant[option_id4][]" value="{{$variant['option_id4']}}">
+                                  <input type="hidden" name="variant[option_value_id4][]" value="{{$variant['option_value_id4']}}">
+                                  {{$variant['option_value4']}}
                                 </div>
                               </td>
                             @endif
                             @if($option_count==5)
                               <td>
                                 <div class="form-group">
-                                  <input type="hidden" name="variant[option_id5][]" value="{{$variant[$key]['option_id5']}}">
-                                  <input type="hidden" name="variant[option_value_id5][]" value="{{$variant[$key]['option_value_id5']}}">
-                                  {{$variant[$key]['option_value5']}}
+                                  <input type="hidden" name="variant[option_id5][]" value="{{$variant['option_id5']}}">
+                                  <input type="hidden" name="variant[option_value_id5][]" value="{{$variant['option_value_id5']}}">
+                                  {{$variant['option_value5']}}
                                 </div>
                               </td>
                             @endif
               <td class="base_price">
-                {{$variant[$key]['base_price']}}
+                {{$variant['base_price']}}
                             </td>
                             <td>
-                              <input type="hidden" name="variant[base_price][]" value="{{$variant[$key]['base_price']}}">
-                              <input type="hidden" name="variant[retail_price][]" value="{{$variant[$key]['retail_price']}}">
-                              {{$variant[$key]['retail_price']}}
+                              <input type="hidden" name="variant[base_price][]" value="{{$variant['base_price']}}">
+                              <input type="hidden" name="variant[retail_price][]" value="{{$variant['retail_price']}}">
+                              {{$variant['retail_price']}}
                             </td>
                             <td>
-                              <input type="hidden" name="variant[minimum_selling_price][]" value="{{$variant[$key]['minimum_selling_price']}}">
-                              {{$variant[$key]['minimum_selling_price']}}
+                              <input type="hidden" name="variant[minimum_selling_price][]" value="{{$variant['minimum_selling_price']}}">
+                              {{$variant['minimum_selling_price']}}
                             </td>
                           <td>
                               <div class="form-group">
-                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{ $total_quantity[$key] }}">
+                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{ $total_quantity }}">
                               </div>
                             </td>
                             <td>
                               <div class="form-group">
-                                <span class="sub_total">{{ $total[$key] }}</span>
-                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $variant[$key]['base_price'] }}">
+                                <span class="sub_total">{{ $variant['base_price']*$total_quantity }}</span>
+                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $variant['base_price']*$total_quantity  }}">
                               </div>
                             </td>
                             <td>
@@ -202,6 +208,8 @@
                               </a>
                             </td>
                           </tr>
+
+                        @endforeach
                         @endforeach
                       </tbody>
                     </table>

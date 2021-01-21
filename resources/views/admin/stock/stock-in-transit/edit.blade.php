@@ -69,22 +69,55 @@
                         <thead>
                           <tr>
                             <th>Product (Code-Name)</th>
-                            <th>Options</th>
+                            @foreach ($options as $option)
+                              <th>{{ $option }}</th>
+                            @endforeach
                             <th>Qty Ordered</th>
                             <th>Qty Recevied</th>
                             <th>Issue Qty</th>
                             <th>Reason</th>
-                            {{-- <th></th> --}}
                           </tr>
                         </thead>
                         <tbody>
+                          @foreach ($product_datas as $product)
+                            <tr>
+                              <td>{{ $product['product_name'] }}</td>
+                              @if (isset($product['option_value_id1']))
+                                <td>{{ $product['option_value_id1'] }}</td>
+                              @endif
+                              @if (isset($product['option_value_id2']))
+                                <td>{{ $product['option_value_id2'] }}</td>
+                              @endif
+                              @if (isset($product['option_value_id3']))
+                                <td>{{ $product['option_value_id3'] }}</td>
+                              @endif
+                              @if (isset($product['option_value_id4']))
+                                <td>{{ $product['option_value_id4'] }}</td>
+                              @endif
+                              @if (isset($product['option_value_id5']))
+                                <td>{{ $product['option_value_id5'] }}</td>
+                              @endif
+                              <td>{{ $product['quantity'] }}</td>
+                              <td>
+                                <input type="text" name="qty_received[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['qty_received'])?$product['qty_received']:$product['quantity'] }}" class="form-control">
+                              </td>
+                              <td>
+                                <input type="text" name="issue_quantity[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['issue_quantity'])?$product['issue_quantity']:$product['quantity'] }}" class="form-control">
+                              </td>
+                              <td>
+                                <input type="text" name="reason[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['reason'])?$product['reason']:'-' }}" class="form-control">
+                              </td>
+                            </tr>
+                          @endforeach
+                        </tbody>
+                       {{--  <tbody>
                           @foreach ($purchase_products as $products)
                             <tr>
                               <td>{{ $products->product->name }}</td>
                               <td>{{ $products->optionvalue->option_value }}</td>
                               <td>{{ $products->quantity }}</td>
                               <td>
-                                  <input type='text' name='quantity_received[{{ $products->product->id }}][{{ $products->optionvalue->option_id }}][{{ $products->optionvalue->id }}]' value='{{ $products->qty_received }}' class='form-control quantity'>
+                                  <input type='text' name='quantity_received[{{product_purchase_id }}][{{ $products->optionvalue->option_id }}][{{ $products->optionvalue->id }}]' value='{{ $products->qty_received }}' class='form-control quantity'>
                               </td>
                               <td>
                                   <input type='text' name='issued_quantity[{{ $products->product->id }}][{{ $products->optionvalue->option_id }}][{{ $products->optionvalue->id }}]' value='{{ $products->issue_quantity }}' class='form-control'>
@@ -92,14 +125,10 @@
                               <td>
                                   <input type='text' name='reason[{{ $products->product->id }}][{{ $products->optionvalue->option_id }}][{{ $products->optionvalue->id }}]' value='{{ $products->reason }}' class='form-control'>
                               </td>
-                    {{--           <td>
-                                <a href="javascript:void(0)" class="btn btn-danger" title="remove">
-                                  <i class="fa fa-trash"></i>
-                                </a>
-                              </td> --}}
+            
                             </tr>
                           @endforeach
-                        </tbody>
+                        </tbody> --}}
                     </table>
                   </div>
                   <div class="clearfix"></div>
