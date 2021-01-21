@@ -381,7 +381,9 @@ class ProductController extends Controller
         $variant = ProductVariant::where('product_id',$id)->where('is_deleted',0)->first();
         $options = array();
         $options_id = array();
-        
+
+        $vendor_id = ProductVariantVendor::select('vendor_id')->where('product_id',$id)->distinct()->pluck('vendor_id')->toArray();
+
         if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
         {
             $options[] = $variant->optionName1->option_name;
@@ -509,15 +511,17 @@ class ProductController extends Controller
             $product_variants[$key]['vendor_id'] = $variant_details->vendor_id;
             $product_variants[$key]['vendor_name'] = $variant_details->vendorName->name;
         }
+
         $data['option_count'] = $option_count;
         $data['get_options'] = $options;
         $data['options_id'] = $options_id;
+        $data['vendors_id'] = $vendor_id;
         $data['product_variant'] = $product_variants;
         $data['product_images'] = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
         $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
         $data['brands'] = Brand::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->get();
+        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->pluck('name','id')->toArray();
+        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->pluck('option_name','id')->toArray();
         //dd($data);
         return view('admin/products/edit',$data);
     }
@@ -871,7 +875,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
         $product = Product::where('id',$id)->first();
         if($product){
@@ -902,8 +906,8 @@ class ProductController extends Controller
                 $img->update();
             }
         }
-
-        return redirect()->route('product.index')->with('error','Product deleted successfully.!');
+        if ($request->ajax())  return ['status'=>true];
+        else  return redirect()->route('product.index')->with('error','Product deleted successfully.!');
     }
     public function generateRawOptions($options){
         $sql='';
@@ -934,22 +938,36 @@ class ProductController extends Controller
     {
         $options = json_decode($request->options,true);
         $vendors = json_decode($request->vendors,true);
-        
-
+    
         $vendor_data = array();
 
+        $data['data_from'] ="";
+        if($request->dataFrom=="edit"){
+            $data['data_from'] ="edit";
+            //$exist_options = json_decode($request->existOption,true);
+            //$exist_vendors = json_decode($request->existVendor,true);
+        }
         foreach ($vendors as $vendor) {
             $vendor_data[]=Vendor::find($vendor);
             $get_options = Option::whereIn('id',$options)->get();
             $sql =$this->generateRawOptions($options);
             $variant_options[] = DB::select($sql);
         }
+<<<<<<< HEAD
 
 
         $data['data_from'] ="";
         if($request->dataFrom=="edit"){
             $data['data_from'] ="edit";
         }
+=======
+        
+        // echo "<pre>";
+        // print_r($variant_options);
+        // echo "</pre>";
+        // exit();
+
+>>>>>>> 4adbe9cc31c3037991d905fad5e290be9f6a28f1
         $data['vendors'] = $vendor_data;
         $data['option_values'] = $variant_options;
         $data['options']= $get_options;
