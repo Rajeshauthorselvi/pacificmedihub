@@ -415,12 +415,7 @@
                   <p>Customer Settings</p>
                 </a>
               </li>
-               <li class="nav-item">
-                <a href="" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i>
-                  <p>Shopping Cart Settings</p>
-                </a>
-              </li>
+
                <li class="nav-item">
                 <a href="" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
@@ -433,20 +428,7 @@
                   <p>Payment Methods</p>
                 </a>
               </li>
-               <li class="nav-item">
-                <a href="" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i>
-                  <p>Warehoues</p>
-                </a>
-              </li>
-               <li class="nav-item">
-                <a href="" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i>
-                  <p>Email Templates</p>
-                </a>
-              </li>
-              
-
+               
             </ul>
           </li>
       
