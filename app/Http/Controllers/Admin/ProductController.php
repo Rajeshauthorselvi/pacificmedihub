@@ -953,21 +953,7 @@ class ProductController extends Controller
             $sql =$this->generateRawOptions($options);
             $variant_options[] = DB::select($sql);
         }
-<<<<<<< HEAD
 
-
-        $data['data_from'] ="";
-        if($request->dataFrom=="edit"){
-            $data['data_from'] ="edit";
-        }
-=======
-        
-        // echo "<pre>";
-        // print_r($variant_options);
-        // echo "</pre>";
-        // exit();
-
->>>>>>> 4adbe9cc31c3037991d905fad5e290be9f6a28f1
         $data['vendors'] = $vendor_data;
         $data['option_values'] = $variant_options;
         $data['options']= $get_options;
