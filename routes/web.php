@@ -43,6 +43,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('employees','Admin\EmployeeController');
 
 	Route::get('salary-list','Admin\EmployeeController@salaryList')->name('salary.list');
+	Route::get('payment_form','Admin\EmployeeController@paymentForm');
+	Route::post('confirm_salary','Admin\EmployeeController@confirmSalary')->name('confirm.salary');
 
 	Route::get('get-state-list','Admin\DashboardController@getStateList');
 	Route::get('get-city-list','Admin\DashboardController@getCityList');

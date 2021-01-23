@@ -68,16 +68,19 @@
                           <td>{{$emp['conveyance']}}</td>
                           <td>{{$emp['esi']}}</td>
                           <td>{{$emp['pf']}}</td>
-                          <td>{{$emp['toatl_salary']}}</td>
+                          <td>{{$emp['total_salary']}}</td>
                           <td>{{$emp['paid_date']}}</td>
-                          <td>{{$emp['status']}}</td>
                           <td>
-                            <div class="input-group-prepend">
-                              <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
-                              <ul class="dropdown-menu">
-                                
-                              </ul>
-                            </div>
+                            <span style="background: @if($emp['status']=='Paid') #3287c7 @else #fb9a19 @endif ;color:#fff">
+                              {{$emp['status']}}
+                            </span>
+                          </td>
+                          <td>
+                            @if($emp['action']=='Payslip')
+                              <a href="#" class="btn btn-info">Payslip</a>
+                            @else
+                              <button type="button" class="btn btn-success paynow" employee-id="{{$emp['id']}}" data-toggle="modal" data-target="#payment-form">Pay Now</button>
+                            @endif
                           </td>
                         </tr>
                       @endforeach
@@ -91,6 +94,28 @@
       </div>
     </section>
   </div>
+
+  <div class="modal fade" id="payment-form">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Payment Form</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div id="form-block"></div>
+            </div>
+            
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+
+
   <style type="text/css">
     .date-filter {position: absolute;left: 550px;width: 150px;z-index: 999;}
   </style>
@@ -102,6 +127,19 @@
             format: 'MM/yy'
         });
       });
+
+      $('.paynow').click(function(){
+        var empId = $(this).attr('employee-id');
+        $.ajax({
+          url:"{{ url('admin/payment_form') }}?emp_id="+empId,
+          type:"GET",
+          success: function (data) { 
+            //console.log(data);
+            $('#form-block').html(data);
+          }
+        });
+      });
+
     </script>
   @endpush
 
