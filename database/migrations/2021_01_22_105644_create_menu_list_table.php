@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePurchaseReturnProductsTable extends Migration
+class CreateMenuListTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreatePurchaseReturnProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('purchase_return_products', function (Blueprint $table) {
+        Schema::create('menu_list', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('product_id');
-            $table->integer('purchase_variation_id');
-            $table->integer('return_quantity');
-            $table->integer('return_sub_total');
+            $table->string('menu_name',255)->nullable();
+            $table->string('route_name',255);
+            $table->timestamps();
         });
     }
 
@@ -29,6 +28,6 @@ class CreatePurchaseReturnProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('purchase_return_products');
+        Schema::dropIfExists('menu_list');
     }
 }

@@ -55,6 +55,7 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('currency','Admin\CurrencyController');
 	Route::resource('return','Admin\PurchaseReturnController');
 
+	Route::resource('access-control','Admin\AccessController');	
 
 	Route::resource('stock-in-transit','Admin\StockInTransitController');
 	
