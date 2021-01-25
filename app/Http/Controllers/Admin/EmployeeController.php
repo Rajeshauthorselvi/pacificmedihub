@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\Countries;
 use App\Models\State;
 use App\Models\City;
+use App\Models\Settings;
 use App\Models\EmpSalaryHistory;
 use Session;
 use Redirect;
@@ -37,7 +38,27 @@ class EmployeeController extends Controller
     {
         $data = array();
         $data['departments']=[''=>'Please Select']+Department::where('is_deleted',0)->where('status',1)->pluck('dept_name','id')->toArray();
+
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+
+        $key_val=Settings::where('key','prefix')
+                 ->where('code','employee')
+                 ->value('content');
+        $data['employee_id']='';
+        if (isset($key_val)) {
+            $value=unserialize($key_val);
+
+            $char_val=$value['value'];
+            $total_datas=Employee::count();
+            $data_original='EMP-[dd]-[mm]-[yyyy]-[Start No]';
+
+            $search=['[dd]', '[mm]', '[yyyy]', '[Start No]'];
+            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
+
+            $data['employee_id']=str_replace($search,$replace, $data_original);
+
+        }
+
         return view('admin.employees.create',$data);
     }
 

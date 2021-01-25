@@ -63,7 +63,7 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             {!! Form::label('employeeId', 'Employee ID') !!}
-                            {!! Form::text('emp_id',null,['class'=>'form-control','id'=>'employeeId']) !!}
+                            {!! Form::text('emp_id',$employee_id,['class'=>'form-control','id'=>'employeeId']) !!}
                           </div>
                           <div class="col-sm-5">
                             {!! Form::label('employeeName', 'Employee Name *') !!}

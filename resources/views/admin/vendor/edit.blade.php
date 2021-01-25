@@ -295,7 +295,11 @@
       </div>
     </section>
   </div>
-
+<style type="text/css">
+.tab-content .form-group {
+  display: flex;
+}
+</style>
   @push('custom-scripts')
     <script type="text/javascript">
       $(document).ready(function () {

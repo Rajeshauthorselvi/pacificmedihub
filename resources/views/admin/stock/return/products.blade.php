@@ -71,16 +71,6 @@
 		</tbody>
 	</table>
 </div>
-<div class="col-sm-12">
-	<div class="col-sm-6 pull-left">
-		<label>Return Note</label>
-		<textarea class="form-control summernote"></textarea>
-	</div>
-	<div class="col-sm-6 pull-left">
-		<label>Staff Note</label>
-		<textarea class="form-control summernote"></textarea>
-	</div>
-</div>
 <div class="clearfix"></div>
 <br>
 <br>

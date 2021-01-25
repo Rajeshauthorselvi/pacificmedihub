@@ -51,12 +51,14 @@
                       </div>
                       <div class="form-group">
                         <label for="productCode">Product Code *</label>
-                        <input type="text" class="form-control" name="product_code" id="productCode" value="{{old('product_code')}}">
+
+                        {!! Form::text('product_code', $product_id,['class'=>'form-control','id'=>'productCode','readonly']) !!}
                       <span class="text-danger product_code_required hidden">Product code is reqiured</span>
                         @if($errors->has('product_code'))
                           <span class="text-danger">{{ $errors->first('product_code') }}</span>
                         @endif
                       </div>
+
                       <div class="form-group">
                         <label for="productSku">SKU</label>
                         <input type="text" class="form-control" name="product_sku" id="productSku" value="{{old('product_sku')}}">

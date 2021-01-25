@@ -60,7 +60,7 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             <label for="vendorCode">Vendor Code</label>
-                            <input type="text" class="form-control" disabled name="vendor_code" id="vendorCode" value="{{old('vendor_code')}}">
+                            {!! Form::text('code', $employee_id, ['class'=>'form-control','readonly']) !!}
                           </div>
                           <div class="col-sm-5">
                             <label for="vendorName">Vendor Name *</label>
@@ -110,11 +110,11 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             <label for="Email">Email *</label>
-                            <input type="text" class="form-control validate-email" name="vendor_email" id="Email" value="{{old('vendor_email')}}">
+                            <input type="text" class="form-control validate-email" name="email" id="Email" value="{{old('email')}}">
                             <span class="email-error" style="display:none;color:red;">Invalid email</span>
                             <span class="text-danger" style="display:none">Vendor Email is required</span>
-                            @if($errors->has('vendor_email'))
-                              <span class="text-danger">{{ $errors->first('vendor_email') }}</span>
+                            @if($errors->has('email'))
+                              <span class="text-danger">{{ $errors->first('email') }}</span>
                             @endif
                           </div>
                           <div class="col-sm-5">

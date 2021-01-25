@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Option;
+use App\Models\OptionValue;
 use Redirect;
 use Arr;
 use DB;
@@ -42,11 +43,23 @@ class OptionController extends Controller
     public function store(Request $request)
     {
         $this->validate(request(), ['option_name' => 'required','display_order' => 'required']); 
+
         $input=$request->all();
-        Arr::forget($input,['_token','status']);
+        Arr::forget($input,['_token','status','options','option_values']);
         $input['published']=($request->status=='on')?1:0;
         $input['created_at'] = date('Y-m-d H:i:s');
-        Option::insert($input);
+        $option_id=Option::insertGetId($input);
+
+        foreach ($request->option_values as $key => $values) {
+            OptionValue::insert([
+                'option_id'=>$option_id,
+                'option_value'=> $values,
+                'display_order'=>0,
+                'created_at'=>date('Y-m-d H:i:s'),
+                'is_deleted'=>0
+            ]);
+        }
+
         return Redirect::route('options.index')->with('success','New Option added successfully.!');
     }
 
@@ -71,7 +84,12 @@ class OptionController extends Controller
     {
         $data['option']=Option::find($id);
         $data['type']="edit";
-        return view('admin/options/form',$data);
+        $data['option_values'] = OptionValue::where('option_id',$id)
+                                 ->where('is_deleted',0)
+                                 ->orderBy('created_at','desc')
+                                 ->pluck('option_value','id');
+
+        return view('admin/options/edit',$data);
     }
 
     /**
@@ -83,6 +101,8 @@ class OptionController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+
         $this->validate(request(), ['option_name' => 'required','display_order' => 'required']);
         $status=($request->status=='on')?1:0;
         $option=Option::find($id);
@@ -90,6 +110,38 @@ class OptionController extends Controller
         $option->display_order=$request->display_order;
         $option->published=$status;
         $option->save();
+
+        $option_cunt=OptionValue::where('option_id',$id)->count();
+
+            foreach ($request->option_values as $key => $values) {
+                $check_val=OptionValue::where('option_id',$id)
+                           ->where('id',$key)
+                           ->exists();
+                if ($check_val) {
+                    OptionValue::where('id',$key)->update([
+                        'option_value'   => $values
+                    ]);
+                }
+                else{
+                    OptionValue::insert([
+                        'option_id'=>$id,
+                        'option_value'=>$values,
+                        'display_order'=>0,
+                        'created_at'=>date('Y-m-d H:i:s'),
+                        'is_deleted'=>0,
+                    ]);
+                }
+            }
+        if (count($request->option_values) < $option_cunt) {
+
+            $data_check=OptionValue::whereNotIn('option_value',$request->option_values)
+                        ->where('option_id',$id)
+                        ->update([
+                            'is_deleted'=>1,
+                            'deleted_at'=>date('Y-m-d H:i:s')
+                        ]);
+
+        }
         return Redirect::route('options.index')->with('info','Option updated successfully.!');
     }
 

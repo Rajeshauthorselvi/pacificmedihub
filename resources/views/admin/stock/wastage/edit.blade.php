@@ -8,13 +8,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Add Purchase</h1>
+            <h1 class="m-0">Add Wastage</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('purchase.index')}}">Purchase</a></li>
-              <li class="breadcrumb-item active">Add Purchase</li>
+              <li class="breadcrumb-item"><a href="{{route('purchase.index')}}">Wastage</a></li>
+              <li class="breadcrumb-item active">Add Wastage</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -36,7 +36,7 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('purchase.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route('wastage.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid product">
@@ -44,107 +44,106 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Purchase</h3>
+                <h3 class="card-title">Add Wastage</h3>
               </div>
               <div class="card-body">
-                <form action="{{route('purchase.store')}}" method="post" enctype="multipart/form-data" id="productForm">
+                  {{ Form::model($wastages,['method' => 'PATCH', 'route' =>['wastage.update',$wastages->id]]) }}
                   @csrf
                   <div class="date-sec">
                     <div class="col-sm-4">
                         <div class="form-group">
-                          <label for="purchase_order_number">Date *</label>
+                          <label for="purchase_date">Date *</label>
                           <input type="text" class="form-control" name="purchase_date" value="{{ date('d/m/Y H:i') }}" readonly="true" />
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                          <label for="purchase_order_number">Purchase Order Number *</label>
-                          {!! Form::text('purchase_order_number',null,['class'=>'form-control']) !!}
+                          <label for="reference_number">Reference Number</label>
+                          {!! Form::text('reference_number',null,['class'=>'form-control']) !!}
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_order_number">Status *</label>
-                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                  </div>
+                  </div>{{-- 
                   <div class="product-sec">
                     <div class="col-sm-8">
                         <div class="form-group">
-                          <label for="purchase_order_number">Products *</label>
+                          <label for="product">Products *</label>
                           {!! Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec']) !!}
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_order_number">Vendor *</label>
-                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                  </div>
-                  <div class="order-item-sec"></div>
-                  <div class="tax-sec">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Order Tax</label>
-                          {!! Form::text('order_tax', null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Order Discount</label>
-                          {!! Form::text('order_discount', null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Payment Term</label>
-                          {!! Form::text('payment_term', null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Payment Status *</label>
-                          <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Not Paid']; ?>
-                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
+                  </div> --}}
+                  <div class="clearfix"></div>
+                  <div class="order-item-sec">
+                    <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Product (Code-Name)</th>
+                            @foreach ($options as $option)
+                              <th>{{ $option }}</th>
+                            @endforeach
+                            <th>Quantity</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @foreach ($wastage_products as $wastage)
+                            <tr>
+                              <td>{{ $wastage['product_name'] }}</td>
+                              @if (isset($wastage['option_value_id1']))
+                                <td>{{ $wastage['option_value_id1'] }}</td>
+                              @endif
+                              @if (isset($wastage['option_value_id2']))
+                                <td>{{ $wastage['option_value_id2'] }}</td>
+                              @endif
+                              @if (isset($wastage['option_value_id3']))
+                                <td>{{ $wastage['option_value_id3'] }}</td>
+                              @endif
+                              @if (isset($wastage['option_value_id4']))
+                                <td>{{ $wastage['option_value_id4'] }}</td>
+                              @endif
+                              @if (isset($wastage['option_value_id5']))
+                                <td>{{ $wastage['option_value_id5'] }}</td>
+                              @endif
+                              <td><input type="text" name="quantity[{{$wastage['id']}}]" value="{{ $wastage['quantity'] }}" class="form-control"></td>
+                            </tr>
+                          @endforeach
+
+                        {{--   @foreach ($product_datas as $product)
+                            <tr>
+                              <td>{{ $product['product_name'] }}</td>
+                              @if (isset($product['option_value_id1']))
+                                <td>{{ $product['option_value_id1'] }}</td>
+                              @endif
+                              @if (isset($product['option_value_id2']))
+                                <td>{{ $product['option_value_id2'] }}</td>
+                              @endif
+                              @if (isset($product['option_value_id3']))
+                                <td>{{ $product['option_value_id3'] }}</td>
+                              @endif
+                              @if (isset($product['option_value_id4']))
+                                <td>{{ $product['option_value_id4'] }}</td>
+                              @endif
+                              @if (isset($product['option_value_id5']))
+                                <td>{{ $product['option_value_id5'] }}</td>
+                              @endif
+                              <td>{{ $product['quantity'] }}</td>
+                              <td>
+                                <input type="text" name="qty_received[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['qty_received'])?$product['qty_received']:$product['quantity'] }}" class="form-control">
+                              </td>
+                              <td>
+                                <input type="text" name="issue_quantity[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['issue_quantity'])?$product['issue_quantity']:$product['quantity'] }}" class="form-control">
+                              </td>
+                              <td>
+                                <input type="text" name="reason[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['reason'])?$product['reason']:'-' }}" class="form-control">
+                              </td>
+                            </tr>
+                          @endforeach --}}
+                        </tbody>
+                    </table>
                   </div>
                   <div class="clearfix"></div>
-                  <div class="panel panel-default payment-note-sec">
-                    <div class="panel-body">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Payment Reference Number</label>
-                          {!! Form::text('payment_reference_no', null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Amount</label>
-                          {!! Form::text('amount', null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Paying By</label>
-                          {!! Form::select('paying_by', $payment_method, null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                          <label for="purchase_date">Payment Note</label>
-                          {!! Form::textarea('payment_note', null,['class'=>'form-control summernote','rows'=>5]) !!}
-                        </div>
-                    </div>
-                    </div>
-                  </div>
                     <div class="col-sm-12">
                         <div class="form-group">
                           <label for="purchase_date">Note</label>
-                          {!! Form::textarea('note', null,['class'=>'form-control summernote','rows'=>5]) !!}
+                          {!! Form::textarea('note', $wastages->notes,['class'=>'form-control summernote','rows'=>5]) !!}
                         </div>
                     </div>
                     <div class="col-sm-12 submit-sec">
@@ -172,7 +171,6 @@
     $(this).parents('tr').remove();
   });
 
-
     $(document).on('keyup', '.stock_qty', function(event) {
       if (/\D/g.test(this.value))
       {
@@ -186,12 +184,11 @@
           base.find('.sub_total').text(total_price);
       }
     });
-  var path ="{{ url('admin/product-search') }}";
 
     $('#prodct-add-sec').autocomplete({
       source: function( request, response) {
         $.ajax({
-          url: "{{ url('admin/product-search') }}",
+          url: "{{ url('admin/wastage-product-search') }}",
           data: {
             name: request.term,
             product_search_type:'product'
@@ -211,12 +208,10 @@
             $(this).val('');
             return false;
         }
+         $(this).val('');
          ajaxFunction('header',ui)
          ajaxFunction('options',ui);
          $('.no-match').hide();
-         $(this).val('');
-
-         return false;
 
       },
       open: function() {
@@ -230,7 +225,7 @@
 
     function ajaxFunction(type,ui) {
         $.ajax({
-          url: "{{ url('admin/product-search') }}",
+          url: "{{ url('admin/wastage-product-search') }}",
           data: {
             product_search_type: type,
             product_id:ui.item.value
@@ -270,7 +265,7 @@ function createTable(options){
       html += '    </tbody>';
       html += '  </table>';
       html += '</div>';
-      $('.order-item-sec').append(html);
+      $('.order-item-sec').html(html);
 }
 </script>
 @endpush

@@ -34,15 +34,24 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                  <h3 class="card-title">Add New Product Option</h3>
+                  <h3 class="card-title">Edit Product Option</h3>
+
               </div>
               <div class="card-body">
-                  {!! Form::open(['route'=>'options.store','method'=>'POST','id'=>'form-validate']) !!}
+     
+                  {{ Form::model($option,['method' => 'PATCH', 'route' =>['options.update',$option->id]]) }}
                   <div class="form-group">
                     <label for="option_name">Option Name</label>
                     {{ Form::text('option_name',null,['class'=>'form-control','id'=>'option_name']) }}
                     @if($errors->has('option_name'))
                       <span class="text-danger">{{ $errors->first('option_name') }}</span>
+                    @endif
+                  </div>
+                  <div class="form-group">
+                    <label for="display_order">Display Order</label>
+                    {{ Form::text('display_order',null,['class'=>'form-control','id'=>'display_order','onkeyup'=>'validateNum(event,this);']) }}
+                    @if($errors->has('display_order'))
+                      <span class="text-danger">{{ $errors->first('display_order') }}</span>
                     @endif
                   </div>
                   <div class="form-group">
@@ -53,20 +62,30 @@
                     {{ Form::text('options', null, array('class' => 'raters form-control','id'=>'option','placeholder'=>'Type Options')) }}
                        <div id="chat-screen" class="well">
                         <div style="padding: 5px">Add Option values</div>
-                        <ul class="chat-screen list-unstyled"></ul>
+                        <ul class="chat-screen list-unstyled">
+
+                          @foreach($option_values as $option_id=>$option_value)
+                            <li class="multipleInput-value"> 
+                              {{$option_value}}
+                              <span>
+                                <input class="rater_value" value="{{$option_value}}" name="option_values[{{ $option_id }}]" type="hidden">
+                              </span>
+                                <a href="javascript:void(0)" class="multipleInput-close" title="Remove"><i class="fa fa-times-circle"></i> </a>
+                            </li>
+                          @endforeach
+            
+                        </ul>
                        </div>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="display_order">Display Order</label>
-                    {{ Form::text('display_order',null,['class'=>'form-control','id'=>'display_order','onkeyup'=>'validateNum(event,this);']) }}
-                    @if($errors->has('display_order'))
-                      <span class="text-danger">{{ $errors->first('display_order') }}</span>
+                    @if (isset($option->published) && $option->published==1)
+                      @php $checked='checked'; @endphp
+                    @else  
+                      @php $checked=''; @endphp
                     @endif
-                  </div>
-                  <div class="form-group">
                     <div class="icheck-info d-inline">
-                      <input type="checkbox" name="status" id="Published" > 
+                      <input type="checkbox" name="status" id="Published" {{ $checked }}> 
                       <label for="Published">Published</label>
                     </div>
                   </div>
@@ -84,7 +103,6 @@
   </div>
 <style type="text/css">
 
-#printchatbox{color:blue}
 .chat-screen {
    
     margin: 10px;
@@ -118,7 +136,13 @@ li.multipleInput-value {
 }
 </style>
   @push('custom-scripts')
-    <script type="text/javascript">
+<script type="text/javascript">
+
+
+$(".multipleInput-close").click(function(){
+    $(this).parent().remove();
+    return false;
+});
 
 $('#option').keydown(function(event) {
 
@@ -157,7 +181,6 @@ $('#option').keydown(function(event) {
     }
 });
 
-
       //Validate Number
       function validateNum(e , field) {
         var val = field.value;
@@ -186,7 +209,47 @@ $('#option').keydown(function(event) {
           }
         });
       });
+/*Rater Field Keypress*/
+
+$('#rater').keydown(function(event) {
+
+    if (event.keyCode == 13 || event.keyCode == 9) {
+          var append_val = true;
+          var keypress_val=$(this).val();
+             $(".chat-screen .multipleInput-value").each(function(){
+                 if(keypress_val.trim() == $(this).text().trim())
+                 { 
+                    append_val = false;
+                 }
+             });
+
+      if ($(this).val()!=""  && append_val==true) {
+         $('.chat-screen').append($('<li class="multipleInput-value" > ' + $("#rater").val() + '<span><input type="hidden" value="' + $("#rater").val() + '" name="rater_value[]"></span></li>')
+                      .append($('<a href="javascript:void(0)" class="multipleInput-close" title="Remove"><i class="glyphicon glyphicon-remove-sign"></i></a>')
+                                   .click(function(e) {
+                                        $(this).parent().remove();
+                                        e.preventDefault();
+                                   })
+                              )
+                   );
+      }
+    else{
+      
+      if ($(this).val()!="" ) {
+       alert('This Rater already exists');
+      }
+    }
+    $('.remove-message').remove();
+    $('#chat-screen').removeClass('required');
+    $("#activate-step-2"). removeAttr("disabled");
+    $(this).val('');
+    event.preventDefault();
+    return false;
+    }
+});
+/*End Rater Field Keypress*/
     </script>
   @endpush
 
 @endsection
+

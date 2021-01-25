@@ -17,10 +17,12 @@
                             @endif
                         </div>
                         <div class="col-sm-3">
-                                <label>Order No *</label>
+                                <label>Employee No *</label>
                                 {!! Form::text('value', $value_val,['class'=>'form-control','placeholder'=>'ORD-[dd]-[mm]-[yyyy]-[Start No]']) !!}
+                                <small>Eg: EMP-[dd]-[mm]-[yyyy]-[Start No]</small>
                            @if($errors->has('value') && $check_error_place=='employee')
-                              <span class="text-danger">Order No is required</span>
+                              <span class="
+                              break-normaltext-danger">Employee No is required</span>
                             @endif
                         </div>
                         <div class="col-sm-3">
@@ -34,7 +36,11 @@
                                 {!! Form::hidden('from','employee') !!}
                                 <label></label>
                                 <br>
-                                <button type="submit" class="btn save-btn">Save</button>
+                                @php $class=""; @endphp
+                                @if ($employee_count>0)
+                                    @php $class="disabled"; @endphp
+                                @endif
+                                <button type="submit" class="btn save-btn" {{ $class }}>Save</button>
                         </div>
                         {!! Form::close() !!}
                 </div>

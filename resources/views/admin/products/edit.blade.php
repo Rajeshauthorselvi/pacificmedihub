@@ -52,7 +52,7 @@
                       </div>
                       <div class="form-group">
                         <label for="productCode">Product Code *</label>
-                        <input type="text" class="form-control" name="product_code" id="productCode" value="{{old('product_code',$product->code)}}">
+                        <input type="text" class="form-control" name="product_code" id="productCode" value="{{old('product_code',$product->code)}}" readonly>
                       <span class="text-danger product_code_required hidden">Product code is reqiured</span>
                         @if($errors->has('product_code'))
                           <span class="text-danger">{{ $errors->first('product_code') }}</span>

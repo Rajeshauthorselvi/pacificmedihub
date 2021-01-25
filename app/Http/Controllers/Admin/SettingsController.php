@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Settings;
+use App\Models\Employee;
+use App\Models\Vendor;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Session;
 use Redirect;
@@ -18,9 +21,13 @@ class SettingsController extends Controller
     public function index()
     {
         $data=array();
-        $data['status']=[''=>'Please Select',0=>'Same as Order Number',1=>'Yes',2=>'No'];
+        $data['status']=[''=>'Please Select',1=>'Yes',2=>'No'];
         $data['reset']=[''=>'Please Select',1=>'Yearly',2=>'No'];
         $data['prefix']=Settings::where('key','prefix')->pluck('content','code')->toArray();
+
+        $data['employee_count']=Employee::count();
+        $data['product_count']=Product::count();
+        $data['vendor_count']=Vendor::count();
         return view('admin.settings.prefix.form',$data);
     }
 

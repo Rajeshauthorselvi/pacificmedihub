@@ -13,6 +13,7 @@ use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
 use App\Models\Option;
 use App\Models\OptionValue;
+use App\Models\Settings;
 use Redirect;
 use DB;
 
@@ -44,6 +45,8 @@ class ProductController extends Controller
             $products[$key]['published'] = $product->published;
         }
         $data['products'] = $products;
+
+
         return view('admin/products/index',$data);
     }
 
@@ -59,6 +62,24 @@ class ProductController extends Controller
         $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
         $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->get();
         //dd($data);
+       $data['product_id']='';
+
+        $product_codee=Settings::where('key','prefix')
+                         ->where('code','product_code')
+                        ->value('content');
+
+        if (isset($product_codee)) {
+            $value=unserialize($product_codee);
+
+            $char_val=$value['value'];
+            $total_datas=Product::count();
+
+            $data_original=$char_val;
+            $search=['[dd]', '[mm]', '[yyyy]', '[Start No]'];
+            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
+            $data['product_id']=str_replace($search,$replace, $data_original);
+        }
+
         return view('admin/products/create',$data);
     }
 

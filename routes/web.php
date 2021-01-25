@@ -57,5 +57,9 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 
 
 	Route::resource('stock-in-transit','Admin\StockInTransitController');
+	Route::resource('wastage','Admin\WastageController');
+
+	Route::get('wastage-product-search',['uses'=>'wastage.product.search','uses'=>'Admin\WastageController@ProductSearch']);	
+	Route::resource('customer','Admin\CustomerController');
 	
 });

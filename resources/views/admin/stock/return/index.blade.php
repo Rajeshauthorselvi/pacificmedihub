@@ -48,7 +48,6 @@
                         <th>Return Quantity</th>
                         <th>Return Amount</th>
                         <th>Payment Status</th>
-                        <th>Return Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -57,12 +56,11 @@
                           <tr>
                             <td>{{ $return['date'] }}</td>
                             <td>{{ $return['po_number'] }}</td>
-                            <td>{{ $return['order_type'] }}</td>
+                            <td>{{ ($return['order_type']==1)?'Purchase':'Order' }}</td>
                             <td>{{ $return['vendor'] }}</td>
                             <td>{{ $return['total_quantity'] }}</td>
                             <td>{{ $return['sub_total'] }}</td>
                             <td>{{ ($return['payment_status']==1)?'Paid':'Not Paid' }}</td>
-                            <td>{{ $return['return_status'] }}</td>
                             <td>
                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>

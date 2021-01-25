@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li> 
-              <li class="breadcrumb-item"><a href="{{route('product.index')}}">Products</a></li>
+              <li class="breadcrumb-item"><a href="{{route('return.index')}}">Products</a></li>
               <li class="breadcrumb-item active">Add Return</li>
             </ol>
           </div><!-- /.col -->
@@ -26,7 +26,7 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('options.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route('return.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid">
@@ -55,25 +55,25 @@
                   <div class="product_sec">
                     
                   </div>
-<div class="col-sm-12">
-  <div class="col-sm-6 pull-left">
-    <label>Return Note</label>
-    <textarea class="form-control summernote" name="return_notes"></textarea>
-  </div>
-  <div class="col-sm-6 pull-left">
-    <label>Staff Note</label>
-    <textarea class="form-control summernote" name="staff_notes"></textarea>
-  </div>
-</div>
-<div class="clearfix"></div>
-<br>
-<br> 
-                  <div class="form-group col-sm-12">
+                  <div class="col-sm-12 notes-sec">
+                    <div class="col-sm-6 pull-left">
+                      <label>Return Note</label>
+                      <textarea class="form-control summernote" name="return_notes"></textarea>
+                    </div>
+                    <div class="col-sm-6 pull-left">
+                      <label>Staff Note</label>
+                      <textarea class="form-control summernote" name="staff_notes"></textarea>
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
+                  <br>
+                  <br> 
+                  <div class="form-group col-sm-12 submit-sec">
                     <a href="{{route('return.index')}}" class="btn reset-btn">Cancel</a>
                     <button type="submit" class="btn save-btn">Save</button>
                   </div>
                   </div>
-                </form>
+                {!! Form::close() !!}
               </div>
             </div>
           </div>
@@ -88,9 +88,10 @@
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
+      $('.notes-sec').hide();
+      $('.submit-sec').hide();
 
       $(document).on('keyup', '.return_quantity', function(event) {
-          
           var current_val=$(this).val();
           var parent=$(this).parents('tr');
           var base_price=parent.find('.base_price').val();
@@ -111,10 +112,15 @@
           })
           .done(function(response) {
               if (response.status==false) {
-                $('.product_sec').html(response.message);
+                alert('Po Number is invalid');
+                $('.product_sec').html('');
+                $('.notes-sec').hide();
+                $('.submit-sec').hide();
               }
               else{
-                  $('.product_sec').html(response.view);
+                $('.notes-sec').show();
+                $('.submit-sec').show();
+                $('.product_sec').html(response.view);
               }
           })
           .fail(function() {

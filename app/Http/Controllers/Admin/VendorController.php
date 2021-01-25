@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Vendor;
 use App\Models\VendorPoc;
+use App\Models\Settings;
+use App\Models\Employee;
 use Redirect;
 use File;
 use App\Models\Countries;
@@ -33,6 +35,24 @@ class VendorController extends Controller
     {
         $data = array();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+
+        $key_val=Settings::where('key','prefix')
+                 ->where('code','employee')
+                 ->value('content');
+        $data['employee_id']='';
+        if (isset($key_val)) {
+            $value=unserialize($key_val);
+
+            $char_val=$value['value'];
+            $total_datas=Vendor::count();
+            $data_original='VEN-[dd]-[mm]-[yyyy]-[Start No]';
+
+            $search=['[dd]', '[mm]', '[yyyy]', '[Start No]'];
+            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
+
+            $data['employee_id']=str_replace($search,$replace, $data_original);
+        }
+
         return view('admin/vendor/create',$data);
     }
 
@@ -47,7 +67,7 @@ class VendorController extends Controller
         $this->validate(request(), [
             'vendor_name'    => 'required',
             'vendor_uen'     => 'required',
-            'vendor_email'   => 'required|email',
+            'email'   => 'required|email|unique:vendors',
             'vendor_contact' => 'required',
             'address1'       => 'required',
             'postcode'       => 'required',
@@ -97,9 +117,10 @@ class VendorController extends Controller
         }
 
         $add_vendor = new Vendor;
+        $add_vendor->code = $request->vendor_code;
         $add_vendor->uen = $request->vendor_uen;
         $add_vendor->name = $request->vendor_name;
-        $add_vendor->email = $request->vendor_email;
+        $add_vendor->email = $request->email;
         $add_vendor->contact_number = $request->vendor_contact;
         $add_vendor->logo_image = $logo_image_name;
         $add_vendor->gst_no = $request->vendor_gst;
@@ -119,6 +140,7 @@ class VendorController extends Controller
         $add_vendor->paynow_contact_number = $request->paynow_no;
         $add_vendor->bank_place = $request->place;
         $add_vendor->others = $request->others;
+        $add_vendor->status = 1;
         $add_vendor->created_at = date('Y-m-d H:i:s');
         $add_vendor->save();
 

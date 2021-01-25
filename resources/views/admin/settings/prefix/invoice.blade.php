@@ -17,10 +17,12 @@
                             @endif
                         </div>
                         <div class="col-sm-3">
-                                <label>Order No *</label>
+                                <label>Invoice No *</label>
                                 {!! Form::text('value', $value_val,['class'=>'form-control','placeholder'=>'ORD-[dd]-[mm]-[yyyy]-[Start No]']) !!}
+                                <small>Eg: INV-[dd]-[mm]-[yyyy]-[Start No]</small>
                            @if($errors->has('value') && $check_error_place=='invoice')
-                              <span class="text-danger">Order No is required</span>
+                           <br>
+                              <span class="text-danger">Invoice No is required</span>
                             @endif
                         </div>
                         <div class="col-sm-3">

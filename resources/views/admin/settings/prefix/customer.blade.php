@@ -17,10 +17,11 @@
                             @endif
                         </div>
                         <div class="col-sm-3">
-                                <label>Order No *</label>
+                                <label>Customer No *</label>
                                 {!! Form::text('value', $value_val,['class'=>'form-control','placeholder'=>'ORD-[dd]-[mm]-[yyyy]-[Start No]']) !!}
+                                <small>Eg: CUS-[dd]-[mm]-[yyyy]-[Start No]</small>
                            @if($errors->has('value') && $check_error_place=='customer')
-                              <span class="text-danger">Order No is required</span>
+                              <span class="text-danger">Customer No is required</span>
                             @endif
                         </div>
                         <div class="col-sm-3">

@@ -19,7 +19,9 @@
                 	<div class="col-sm-3">
                 		<label>Order No *</label>
                 		{!! Form::text('value', $value_val,['class'=>'form-control','placeholder'=>'ORD-[dd]-[mm]-[yyyy]-[Start No]']) !!}
+                        <small>Eg: ORD-[dd]-[mm]-[yyyy]-[Start No]</small>
                            @if($errors->has('value') && $check_error_place=='order_no')
+                           <br>
                               <span class="text-danger">Order No is required</span>
                             @endif
                 	</div>

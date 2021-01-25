@@ -54,12 +54,12 @@
                   <p>Options</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='option_values.index'||$current_route=='option_values.create'||$current_route=='option_values.edit') active @endif">
+{{--               <li class="nav-item @if($current_route=='option_values.index'||$current_route=='option_values.create'||$current_route=='option_values.edit') active @endif">
                 <a href="{{route('option_values.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Option Values</p>
                 </a>
-              </li>
+              </li> --}}
              <!--  <li class="nav-item">
                 <a href="" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
@@ -130,7 +130,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('wastage.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Wastage</p>
                 </a>
