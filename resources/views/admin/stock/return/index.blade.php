@@ -54,7 +54,7 @@
                     <tbody>
                         @foreach ($returns as $return)
                           <tr>
-                            <td>{{ $return['purchase_date'] }}</td>
+                            <td>{{ $return['date'] }}</td>
                             <td>{{ $return['po_number'] }}</td>
                             <td>{{ ($return['order_type']==1)?'Purchase':'Order' }}</td>
                             <td>{{ $return['vendor'] }}</td>
