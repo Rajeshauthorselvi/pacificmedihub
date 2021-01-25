@@ -26,7 +26,7 @@ class WastageController extends Controller
     {
         $data=array();
         $wastages=Wastage::all();
-        $wastage=array();
+        $w_stage=array();
         foreach ($wastages as $key => $wastage) {
 
            $user_role=DB::table('roles')->where('id',$wastage->created_by)->value('name');
