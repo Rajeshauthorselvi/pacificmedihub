@@ -19,7 +19,7 @@ class CreateEmployeesTable extends Migration
             $table->string('emp_name',255);
             $table->bigInteger('emp_department');
             $table->string('emp_designation',255);
-            $table->string('emp_identification_no',255);
+            $table->string('emp_identification_no',255)->nullable();
             $table->date('emp_doj')->nullable();
             $table->string('emp_mobile_no',15);
             $table->string('emp_email',255);

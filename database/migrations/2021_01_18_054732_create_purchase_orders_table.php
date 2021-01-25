@@ -18,13 +18,13 @@ class CreatePurchaseOrdersTable extends Migration
             $table->integer('purchase_id');
             $table->integer('product_id');
             $table->date('expiry_date')->nullable();
-            $table->float('base_price',8,2);
-            $table->float('retail_price',8,2);
-            $table->float('minimum_selling_price',8,2);
+            $table->decimal('base_price',8,2);
+            $table->decimal('retail_price',8,2);
+            $table->decimal('minimum_selling_price',8,2);
             $table->integer('quantity');
-            $table->float('discount',8,2);
-            $table->float('product_tax',8,2);
-            $table->float('sub_total',8,2);
+            $table->decimal('discount',8,2);
+            $table->decimal('product_tax',8,2);
+            $table->decimal('sub_total',8,2);
         });
     }
 

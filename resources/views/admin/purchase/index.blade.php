@@ -61,7 +61,7 @@
                           <td>{{ $order['vendor'] }}</td>
                           <td>{{ $order['quantity'] }}</td>
                           <td>{{ $order['grand_total'] }}</td>
-                          <td>{{ $order['amount'] }}</td>
+                          <td>{{ ($order['amount']!="")?$order['amount']:'0.00' }}</td>
                           <td>{{ $order['balance'] }}</td>
                           <td>{{ $order['payment_status'] }}</td>
                           <td>
