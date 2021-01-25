@@ -58,8 +58,13 @@
                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                                   <ul class="dropdown-menu">
-                                    <a href="{{route('wastage.edit',$wastage['id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-             
+                                    {{-- <a href="{{route('wastage.edit',$wastage['id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a> --}}
+                                    <a href="#"><li class="dropdown-item">
+                                      <form method="POST" action="{{ route('wastage.destroy',$wastage['id']) }}">@csrf 
+                                        <input name="_method" type="hidden" value="DELETE">
+                                        <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
+                                      </form>
+                                    </li></a>
                                   </ul>
                                 </div>
                               </td>

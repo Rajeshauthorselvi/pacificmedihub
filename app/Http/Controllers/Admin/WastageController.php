@@ -63,10 +63,14 @@ class WastageController extends Controller
      */
     public function store(Request $request)
     {
+
+        $this->validate(request(), [
+            'variant'   => 'required'
+        ],['variant.required'=>'Product is required']);
         $variant=$request->get('variant');
         $wastage=[
-            'reference_number'  =>$request->purchase_order_number,
-            'product_id'    => $request->product_id,
+            'reference_number'  =>$request->reference_number,
+            // 'product_id'    => $request->product_id,
             'notes'  => $request->note,
             'created_by'  =>Auth::user()->role_id,
             'created_at'  => date('Y-m-d H:i:s')
@@ -75,13 +79,26 @@ class WastageController extends Controller
         $wastage_id=Wastage::insertGetId($wastage);
 
         foreach ($variant['stock_qty'] as $variant_id => $stock_quantity) {
+
+            $product_id=$variant['product_id'][$variant_id];
+
             $watage_products=WastageProducts::insert([
                 'wastage_id'    => $wastage_id,
-                'product_id'    => $request->product_id,
+                'product_id'    => $product_id,
                 'product_variation_id'    => $variant_id,
                 'quantity'    => $stock_quantity,
                 'created_at'    => date('Y-m-d H:i:s')
             ]);
+
+            $stock_quantity=ProductVariantVendor::where('product_variant_id',$variant_id)
+                            ->where('product_id',$product_id)
+                            ->value('stock_quantity');
+
+            $total_quantity=$stock_quantity-$stock_quantity;
+
+            ProductVariantVendor::where('product_variant_id',$variant_id)
+            ->where('product_id',$product_id)
+            ->update(['stock_quantity'=>$total_quantity]);
         }
 
         return Redirect::route('wastage.index')->with('success','Wastage added successfully.!');
@@ -108,7 +125,6 @@ class WastageController extends Controller
     {
         $data=array();
          $data['wastages']=$wastages=Wastage::where('id',$wastage->id)->first();
-
          $wastage_products=WastageProducts::where('wastage_id',$wastage->id)
                            ->get();
         $options=$this->Options($wastages->product_id);
@@ -176,7 +192,11 @@ class WastageController extends Controller
      */
     public function destroy(Wastage $wastage)
     {
-        //
+        Wastage::where('id',$wastage->id)->delete();
+        WastageProducts::where('wastage_id',$wastage->id)->delete();
+
+       return Redirect::route('wastage.index')->with('success','Wastage deleted successfully.!');
+ 
     }
 
     public function ProductSearch(Request $request)

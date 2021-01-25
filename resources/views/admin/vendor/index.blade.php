@@ -64,7 +64,7 @@
                               <ul class="dropdown-menu" style="">
                                 <a href="#"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                 <a href="{{route('vendor.edit',$vendor->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-                                <a href="#"><li class="dropdown-item"><i class="far fa-file-alt"></i>&nbsp;&nbsp;List Products</li></a>
+                                <a href="{{ route('vendor-products.index',['vendor_id'=>$vendor->id]) }}"><li class="dropdown-item"><i class="far fa-file-alt"></i>&nbsp;&nbsp;List Products</li></a>
                                 <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('vendor.destroy',$vendor->id) }}">@csrf 
                                     <input name="_method" type="hidden" value="DELETE">

@@ -58,7 +58,7 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                          <label for="purchase_order_number">Reference Number</label>
+                          <label for="reference_number">Reference Number</label>
                           {!! Form::text('reference_number',null,['class'=>'form-control']) !!}
                         </div>
                     </div>
@@ -146,6 +146,8 @@
          ajaxFunction('options',ui);
          $('.no-match').hide();
 
+
+         return false;
       },
       open: function() {
         $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
@@ -167,11 +169,11 @@
         .done(function(response) {
           if (type=="header") {
             if ($('.vatiant_table').length==0) {
-              createTable(response['options'])
+              // createTable(response['options'])
             }
           }
           else if(type=="options"){
-            $('.vatiant_table tbody').append(response);
+            $('.order-item-sec').append(response);
           }
         });
 
