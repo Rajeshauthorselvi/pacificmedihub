@@ -102,7 +102,7 @@
                                 <input type="text" name="qty_received[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['qty_received'])?$product['qty_received']:$product['quantity'] }}" class="form-control">
                               </td>
                               <td>
-                                <input type="text" name="issue_quantity[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['issue_quantity'])?$product['issue_quantity']:$product['quantity'] }}" class="form-control">
+                                <input type="text" name="issue_quantity[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['issue_quantity'])?$product['issue_quantity']:0 }}" class="form-control">
                               </td>
                               <td>
                                 <input type="text" name="reason[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['reason'])?$product['reason']:'-' }}" class="form-control">
