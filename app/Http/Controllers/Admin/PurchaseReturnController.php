@@ -39,7 +39,7 @@ class PurchaseReturnController extends Controller
                       ->value('name');
             $data_return[]=[
                 'id'    => $return->id,
-                'date'  => date('d-m-Y',isset($return->created_at)),
+                'date'  => date('d-m-Y',strtotime($return->created_at)),
                 'po_number' =>$purchase,
                 'vendor' =>$vendor,
                 'order_type' =>$return->order_type,
