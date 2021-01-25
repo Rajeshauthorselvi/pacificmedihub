@@ -224,21 +224,22 @@ class PurchaseController extends Controller
         $data['order_status']=[''=>'Please Select']+$order_status;
         $data['payment_method']=[''=>'Please Select']+$payment_method;
 
-
         $products=PurchaseProducts::where('purchase_id',$purchase->id)
-                  ->groupBy('product_id')->get();
+                  ->groupBy('product_id')->pluck('product_id');
 
-        foreach ($products as $key => $product) {
-            $options=$this->Options($product->product_id);
-            $product_variant[]=$this->Variants($product->product_id);
+        foreach ($products as $key => $product_id) {
+          $product_name[$product_id]=Product::where('id',$product_id)
+                                     ->value('name');
+          $options[$product_id]=$this->Options($product_id);
+          $product_variant[$product_id]=$this->Variants($product_id);
         }
-
+ 
         $data['purchase_products']=$product_variant;
-        $data['options'] = $options['options'];
-        $data['option_count'] = $options['option_count'];
-        $data['purchase']=Purchase::find($purchase->id);
+        // $data['option_count'] = $options['option_count'];
+        $data['options'] = $options;
 
-        // $data['purchase_products']=PurchaseProducts::with('product','optionvalue')->where('purchase_id',$purchase->id)->get();
+        $data['purchase']=Purchase::find($purchase->id);
+        $data['product_name']=$product_name;
 
         return view('admin.purchase.edit',$data);
     }
@@ -313,7 +314,7 @@ class PurchaseController extends Controller
            $option_id5=$variant['option_id5'];
            $option_value_id5=$variant['option_value_id5'];
        }
-
+       dd($request->all());
        foreach ($product_ids as $key => $variant) {
             $data[]=[
                 'purchase_id'   => $purchase_id,

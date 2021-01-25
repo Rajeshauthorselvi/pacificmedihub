@@ -168,6 +168,7 @@
 @push('custom-scripts')
 <script type="text/javascript">
 
+
   $(document).on('click', '.remove-item', function(event) {
     $(this).parents('tr').remove();
   });
@@ -211,11 +212,11 @@
             $(this).val('');
             return false;
         }
-         ajaxFunction('header',ui)
+         // ajaxFunction('header',ui)
          ajaxFunction('options',ui);
          $('.no-match').hide();
          $(this).val('');
-
+         collapseFunction();
          return false;
 
       },
@@ -227,7 +228,22 @@
       }
     });
 
-
+    function collapseFunction() {
+    $(document).ready(function(){
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.show").each(function(){
+          $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+        });
+        
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function(){
+          $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+        }).on('hide.bs.collapse', function(){
+          $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+        });
+    });
+  
+    }
     function ajaxFunction(type,ui) {
         $.ajax({
           url: "{{ url('admin/product-search') }}",
@@ -237,13 +253,15 @@
           },
         })
         .done(function(response) {
+          // $('.order-item-sec').append(response);
+
           if (type=="header") {
             if ($('.vatiant_table').length==0) {
-              createTable(response['options'])
+              // createTable(response['options'])
             }
           }
           else if(type=="options"){
-            $('.vatiant_table tbody').append(response);
+            $('.order-item-sec').append(response);
           }
         });
 

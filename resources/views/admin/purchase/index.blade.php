@@ -88,9 +88,9 @@
           </div>
         </div>
       </div>
+
     </section>
   </div>
-
   @push('custom-scripts')
   <script type="text/javascript">
     $('.select-all').change(function() {

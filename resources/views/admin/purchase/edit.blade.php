@@ -83,11 +83,24 @@
                     </div>
                   </div>
                   <div class="order-item-sec">
-                    <table class="table table-bordered purchase-table">
+<div class="clearfix"></div>
+<div class="bs-example">
+    <div class="accordion" id="accordionExample">
+      @foreach ($purchase_products as $product_id=>$products)
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ $product_id }}"><i class="fa fa-plus"></i> {{ $product_name[$product_id] }}</button>                  
+                </h2>
+            </div>
+            <div id="collapse{{ $product_id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                  <div class="table-responsive">
+  <table class="table table-bordered purchase-table">
                       <thead>
                         <tr>
                           <th>Product</th>
-                          @foreach($options as $option)
+                          @foreach($options[$product_id]['options'] as $option)
                             <th>{{$option}}</th>
                           @endforeach
                           <th>Base Price</th>
@@ -99,9 +112,8 @@
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach ($purchase_products as $key1=>$variants)
-                        @foreach ($variants as $key=>$variant)
-                  
+                        @foreach ($products as $key=>$variant)
+                        <?php $option_count=$options[$product_id]['option_count']; ?>
                         <?php 
                           
 
@@ -123,11 +135,11 @@
 
   
 
-                        $total=\App\Models\PurchaseProducts::StockQuantity($product_id,$option_id1, $option_id2, $option_id3, $option_id4, $option_value_id1, $option_value_id2, $option_value_id3, $option_value_id4, $option_value_id5,'  sub_total');
+                        $total=\App\Models\PurchaseProducts::StockQuantity($product_id,$option_id1, $option_id2, $option_id3, $option_id4, $option_value_id1, $option_value_id2, $option_value_id3, $option_value_id4, $option_value_id5,$option_count,'sub_total',$purchase->id);
 
 
 
-                        $total_quantity=\App\Models\PurchaseProducts::StockQuantity($product_id,$option_id1, $option_id2, $option_id3, $option_id4, $option_value_id1, $option_value_id2, $option_value_id3, $option_value_id4, $option_value_id5,$option_count,'quantity');
+                        $total_quantity=\App\Models\PurchaseProducts::StockQuantity($product_id,$option_id1, $option_id2, $option_id3, $option_id4, $option_value_id1, $option_value_id2, $option_value_id3, $option_value_id4, $option_value_id5,$option_count,'quantity',$purchase->id);
 
 
                         ?>
@@ -210,9 +222,18 @@
                           </tr>
 
                         @endforeach
-                        @endforeach
                       </tbody>
                     </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <br>
+      @endforeach
+    </div>
+</div>
+
+
                   </div>
                   <div class="tax-sec">
                     <div class="col-sm-4">
@@ -297,7 +318,20 @@
 
 @push('custom-scripts')
 <script type="text/javascript">
-
+    $(document).ready(function(){
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.show").each(function(){
+          $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+        });
+        
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function(){
+          $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+        }).on('hide.bs.collapse', function(){
+          $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+        });
+    });
+  
   $(document).on('click', '.remove-item', function(event) {
     $(this).parents('tr').remove();
   });

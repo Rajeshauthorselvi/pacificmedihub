@@ -18,16 +18,18 @@ class PurchaseProducts extends Model
         return $this->belongsTo(OptionValue::class,'option_value_id');
     }
 
-    static function StockQuantity($product_id,$option_id1='', $option_id2='', $option_id3='', $option_id4='', $option_value_id1='', $option_value_id2='', $option_value_id3='', $option_value_id4='', $option_value_id5,$option_count,$type='')
+    static function StockQuantity($product_id,$option_id1='', $option_id2='', $option_id3='', $option_id4='', $option_value_id1='', $option_value_id2='', $option_value_id3='', $option_value_id4='', $option_value_id5,$option_count,$type='',$purchase_id)
     {
 
-
-    $query=self::where('product_id',$product_id);
+    $query=self::where('product_id',$product_id)->where('purchase_id',$purchase_id);
       if ($option_count==1) {
           $query->where('option_id',$option_id1)->where('option_value_id',$option_value_id1);
       }
       if ($option_count==2) {
-          $query->where('option_id',$option_id1)->where('option_value_id',$option_value_id1)->where('option_id2',$option_id2)->where('option_value_id2',$option_value_id2);
+          $query->where('option_id',$option_id1)
+          ->where('option_value_id',$option_value_id1)
+          ->where('option_id2',$option_id2)
+          ->where('option_value_id2',$option_value_id2);
       }
       if ($option_count==3) {
           $query->where('option_id',$option_id1)
