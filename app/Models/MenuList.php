@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PurchaseReturn extends Model
+class MenuList extends Model
 {
-    protected $table="purchase_return";
+    protected $table = 'menu_list';
 }

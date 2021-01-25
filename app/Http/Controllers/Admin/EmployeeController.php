@@ -11,6 +11,7 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\Settings;
 use App\Models\EmpSalaryHistory;
+use App\Models\EmpSalaryStatus;
 use Session;
 use Redirect;
 use Arr;
@@ -306,6 +307,7 @@ class EmployeeController extends Controller
         $get_employees = Employee::where('status',1)->where('is_deleted',0)->get();
         $employee = array();
         foreach ($get_employees as $key => $emp) {
+            $salaryStatus=EmpSalaryStatus::where('emp_id',$emp->id)->whereRaw('MONTH(paid_date)=?',date('m'))->first();
             $employee[$key]['id'] = $emp->id;
             $employee[$key]['name'] = $emp->emp_name;
             $employee[$key]['basic_salary'] = $emp->basic;
@@ -316,12 +318,55 @@ class EmployeeController extends Controller
             $employee[$key]['pf'] = $emp->pf;
             $salary = $emp->basic+$emp->hr+$emp->da+$emp->conveyance;
             $deduction = $emp->esi+$emp->pf;
-            $employee[$key]['toatl_salary'] = $salary - $deduction;
-            $employee[$key]['paid_date'] = '-';
-            $employee[$key]['status'] = '-';
+            $total_salary = $salary - $deduction;
+            if($salaryStatus){
+                $paid_date = date('d/m/Y',strtotime($salaryStatus->paid_date));
+                if($salaryStatus->status==1) {
+                    $status = 'Paid'; 
+                    $action = 'Payslip';
+                    $total_salary = $salaryStatus->paid_amount;
+                }
+                else{
+                    $status = 'Not Paid';
+                    $action = 'Paynow';
+                }
+            }else{
+                $paid_date = '-';
+                $status = 'Not Paid';
+                $action = 'Paynow';
+            }
+            $employee[$key]['total_salary'] = $total_salary;
+            $employee[$key]['paid_date'] = $paid_date;
+            $employee[$key]['status'] = $status;
+            $employee[$key]['action'] = $action;
         }
         
         $data['employee_salary'] = $employee;
         return view('admin.employees.salary_list',$data);
+    }
+
+    public function paymentForm(Request $request)
+    {
+        $emp = Employee::find($request->emp_id);
+        $data['id'] = $emp->id;
+        $data['name'] = $emp->emp_name;
+        $salary = $emp->basic+$emp->hr+$emp->da+$emp->conveyance;
+        $deduction = $emp->esi+$emp->pf;
+        $total_salary = $salary - $deduction;
+        $data['total_salary'] = number_format($total_salary,2,'.',',');
+        $data['salary_month'] = date('F Y');
+        return view('admin.employees.payment_form',$data);
+    }
+
+    public function confirmSalary(Request $request)
+    {
+        $salary = new EmpSalaryStatus;
+        $salary->emp_id = $request->emp_id;
+        $salary->paid_amount = floatval(str_replace(",","",$request->total_salary));
+        $salary->paid_date = date('Y-m-d');
+        $salary->status = 1;
+        $salary->created_at = date('Y-m-d H:i:s');
+        $salary->save();
+        return Redirect::route('salary.list')->with('success','Paid Successfully.!');
     }
 }

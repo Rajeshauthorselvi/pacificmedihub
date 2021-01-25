@@ -43,6 +43,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('employees','Admin\EmployeeController');
 
 	Route::get('salary-list','Admin\EmployeeController@salaryList')->name('salary.list');
+	Route::get('payment_form','Admin\EmployeeController@paymentForm');
+	Route::post('confirm_salary','Admin\EmployeeController@confirmSalary')->name('confirm.salary');
 
 	Route::get('get-state-list','Admin\DashboardController@getStateList');
 	Route::get('get-city-list','Admin\DashboardController@getCityList');
@@ -55,6 +57,7 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('currency','Admin\CurrencyController');
 	Route::resource('return','Admin\PurchaseReturnController');
 
+	Route::resource('access-control','Admin\AccessController');	
 
 	Route::resource('stock-in-transit','Admin\StockInTransitController');
 	Route::resource('wastage','Admin\WastageController');

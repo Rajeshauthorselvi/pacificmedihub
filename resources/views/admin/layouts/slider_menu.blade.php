@@ -59,6 +59,7 @@
                   <i class="fas fa-angle-double-right"></i>
                   <p>Option Values</p>
                 </a>
+
               </li> --}}
              <!--  <li class="nav-item">
                 <a href="" class="nav-link">
@@ -72,6 +73,9 @@
                   <p>Product Units</p>
                 </a>
               </li> -->
+
+              </li>
+
               <li class="nav-item @if($current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit') active @endif">
                 <a href="{{route('brands.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i><p>Brands</p>
@@ -376,7 +380,7 @@
             </a>
           </li>
 
-          <li class="nav-item">
+          <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-cog"></i>
               <p>
@@ -384,20 +388,20 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index') block @endif">
               <li class="nav-item">
                 <a href="" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>General Settings</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="" class="nav-link">
+              <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show') active @endif">
+                <a href="{{route('access-control.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Access Control</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item @if($current_route=='settings.index') active @endif">
                 <a href="{{ route('settings.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Prefix</p>
