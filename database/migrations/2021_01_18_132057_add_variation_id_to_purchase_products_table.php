@@ -16,6 +16,18 @@ class AddVariationIdToPurchaseProductsTable extends Migration
         Schema::table('purchase_products', function (Blueprint $table) {
             $table->integer('option_id');
             $table->integer('option_value_id');
+            $table->integer('option_id2')->nullable();
+            $table->integer('option_value_id2')->nullable();
+            $table->integer('option_id3')->nullable();
+            $table->integer('option_value_id3')->nullable();
+            $table->integer('option_id4')->nullable();
+            $table->integer('option_value_id4')->nullable();
+            $table->integer('option_id5')->nullable();
+            $table->integer('option_value_id5')->nullable();
+            $table->integer('qty_received')->nullable();
+            $table->integer('issue_quantity')->nullable();
+            $table->string('reason',255)->nullable();
+
         });
     }
 
