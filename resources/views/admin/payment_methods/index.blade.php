@@ -24,10 +24,17 @@
      <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12 action-controllers">
-            <a class="btn add-new" href="{{route('payment_method.create')}}">
+          <div class="col-md-12 action-controllers ">
+            <div class="col-sm-6 text-left pull-left">
+              <a href="javascript:void(0)" class="btn btn-danger delete-all">
+                <i class="fa fa-trash"></i> Delete (selected)
+              </a>
+            </div>
+            <div class="col-sm-6 text-right pull-right">
+              <a class="btn add-new" href="{{route('payment_method.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
-            </a>
+              </a>
+            </div>
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -39,6 +46,7 @@
                   <table id="example2" class="table table-bordered table-striped">
                     <thead>
                       <tr>
+                        <th><input type="checkbox" class="select-all"></th>
                         <th>S.No</th>
                         <th>Payment Methods</th>
                         <th>Action</th>
@@ -48,6 +56,7 @@
                       <?php $s_no=1; ?>
                         @foreach ($all_payments as $payments)
                           <tr>
+                            <td><input type="checkbox" value="{{ $payments->id }}" name="payments-ids"></td>
                             <td>{{ $s_no }}</td>
                             <td>{{ $payments->payment_method }}</td>
                             <td>
@@ -83,4 +92,50 @@
 			float: left;
 		}
     </style>
+
+    @push('custom-scripts')
+  <script type="text/javascript">
+      
+    $('.select-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('input:checkbox').prop('checked',true);
+        }
+        else{
+          $('input:checkbox').prop('checked',false);
+        }
+    });
+
+
+      $('.delete-all').click(function(event) {
+        var checkedNum = $('input[name="payments-ids"]:checked').length;
+        if (checkedNum==0) {
+          alert('Please select payment');
+        }
+        else{
+          if (confirm('Are you sure want to delete?')) {
+            $('input[name="payments-ids"]:checked').each(function () {
+              var current_val=$(this).val();
+              $.ajax({
+                url: "{{ url('admin/payment_method/') }}/"+current_val,
+                type: 'DELETE',
+                data:{
+                 "_token": $("meta[name='csrf-token']").attr("content")
+                }
+              })
+              .done(function() {
+                 location.reload(); 
+              })
+              .fail(function() {
+                console.log("Ajax Error :-");
+              });
+            });
+          }
+
+          
+        }
+        
+      });
+
+  </script>
+  @endpush
 @endsection

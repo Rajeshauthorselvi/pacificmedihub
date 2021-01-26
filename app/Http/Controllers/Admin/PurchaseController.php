@@ -356,12 +356,13 @@ class PurchaseController extends Controller
      * @param  \App\Models\Purchase  $purchase
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Purchase $purchase)
+    public function destroy(Request $request, Purchase $purchase)
     {
-        Purchase::where('id',$purchase->id)->delete();
-        PurchaseProducts::where('purchase_id',$purchase->id)->delete();
+      Purchase::where('id',$purchase->id)->delete();
+      PurchaseProducts::where('purchase_id',$purchase->id)->delete();
 
-        return Redirect::route('purchase.index')->with('success','Purchase order deleted successfully...!');
+      if ($request->ajax())  return ['status'=>true];
+      else return Redirect::route('purchase.index')->with('success','Purchase order deleted successfully...!');
 
     }
     public function ProductSearch(Request $request)

@@ -104,12 +104,13 @@ class PaymentMethodsController extends Controller
      * @param  \App\Models\PaymentMethod  $paymentMethod
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PaymentMethod $paymentMethod)
+    public function destroy(Request $request, PaymentMethod $paymentMethod)
     {
        $payment_method=PaymentMethod::find($paymentMethod->id);
        $payment_method->status=3;
        $payment_method->save();
 
-           return Redirect::route('payment_method.index')->with('success','Payment method deleted successfully...!');
+        if ($request->ajax())  return ['status'=>true];
+        else return Redirect::route('payment_method.index')->with('success','Payment method deleted successfully...!');
     }
 }

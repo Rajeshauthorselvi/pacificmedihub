@@ -26,10 +26,17 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12 action-controllers">
-            <a class="btn add-new" href="{{route('categories.create')}}">
+          <div class="col-md-12 action-controllers ">
+            <div class="col-sm-6 text-left pull-left">
+              <a href="javascript:void(0)" class="btn btn-danger delete-all">
+                <i class="fa fa-trash"></i> Delete (selected)
+              </a>
+            </div>
+            <div class="col-sm-6 text-right pull-right">
+              <a class="btn add-new" href="{{route('categories.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
-            </a>
+              </a>
+            </div>
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -41,12 +48,14 @@
                   <table id="example2" class="table table-bordered table-striped">
                     <thead>
                       <tr>
+                        <th><input type="checkbox" class="select-all"></th>
                         <th>Category Name</th><th>Published</th><th>Display order</th><th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       @foreach($categories as $category)
                         <tr>
+                          <td><input type="checkbox" value="{{ $category->id }}" name="category-ids"></td>
                           <?php
                             $category_name = $category->name;
                             if($category->parent_category_id!=NULL){
@@ -86,4 +95,51 @@
       </div>
     </section>
   </div>
+
+  @push('custom-scripts')
+  <script type="text/javascript">
+      
+    $('.select-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('input:checkbox').prop('checked',true);
+        }
+        else{
+          $('input:checkbox').prop('checked',false);
+        }
+    });
+
+
+      $('.delete-all').click(function(event) {
+        var checkedNum = $('input[name="category-ids"]:checked').length;
+        if (checkedNum==0) {
+          alert('Please select category');
+        }
+        else{
+          if (confirm('Are you sure want to delete?')) {
+            $('input[name="category-ids"]:checked').each(function () {
+              var current_val=$(this).val();
+              $.ajax({
+                url: "{{ url('admin/categories/') }}/"+current_val,
+                type: 'DELETE',
+                data:{
+                 "_token": $("meta[name='csrf-token']").attr("content")
+                }
+              })
+              .done(function() {
+                 location.reload(); 
+              })
+              .fail(function() {
+                console.log("Ajax Error :-");
+              });
+            });
+          }
+
+          
+        }
+        
+      });
+
+  </script>
+  @endpush
+
 @endsection

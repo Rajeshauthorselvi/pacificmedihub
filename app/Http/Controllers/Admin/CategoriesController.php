@@ -162,7 +162,7 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $check_category=Categories::find($id);
         if($check_category){
@@ -172,6 +172,7 @@ class CategoriesController extends Controller
             $check_category->deleted_at = date('Y-m-d H:i:s');
             $check_category->update();
         }
-        return redirect()->route('categories.index')->with('error','Category deleted successfully...!');
+        if ($request->ajax())  return ['status'=>true];
+        else return redirect()->route('categories.index')->with('error','Category deleted successfully...!');
     }
 }

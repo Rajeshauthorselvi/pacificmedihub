@@ -26,10 +26,17 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12 action-controllers">
-            <a class="btn add-new" href="{{route('return.create')}}">
+          <div class="col-md-12 action-controllers ">
+            <div class="col-sm-6 text-left pull-left">
+              <a href="javascript:void(0)" class="btn btn-danger delete-all">
+                <i class="fa fa-trash"></i> Delete (selected)
+              </a>
+            </div>
+            <div class="col-sm-6 text-right pull-right">
+              <a class="btn add-new" href="{{route('return.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
-            </a>
+              </a>
+            </div>
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -41,6 +48,7 @@
                   <table id="example2" class="table table-bordered table-striped">
                     <thead>
                       <tr>
+                        <th><input type="checkbox" class="select-all"></th>
                       	<th>Date</th>
                         <th>Purchase Order No</th>
                         <th>Order Type</th>
@@ -54,6 +62,7 @@
                     <tbody>
                         @foreach ($returns as $return)
                           <tr>
+                            <td><input type="checkbox" value="{{ $return['id'] }}" name="return-ids"></td>
                             <td>{{ $return['date'] }}</td>
                             <td>{{ $return['po_number'] }}</td>
                             <td>{{ ($return['order_type']==1)?'Purchase':'Order' }}</td>
@@ -85,7 +94,7 @@
 
   @push('custom-scripts')
   <script type="text/javascript">
-  		
+      
     $('.select-all').change(function() {
         if ($(this). prop("checked") == true) {
           $('input:checkbox').prop('checked',true);
@@ -96,35 +105,35 @@
     });
 
 
-  		$('.delete-all').click(function(event) {
-  			var checkedNum = $('input[name="option-ids"]:checked').length;
-  			if (checkedNum==0) {
-  				alert('Please select option');
-  			}
-  			else{
-  				if (confirm('Are you sure want to delete?')) {
-	  				$('input[name="option-ids"]:checked').each(function () {
-	  					var current_val=$(this).val();
-		  				$.ajax({
-		  					url: "{{ url('admin/options/') }}/"+current_val,
-		  					type: 'DELETE',
-		  					data:{
-		  					 "_token": $("meta[name='csrf-token']").attr("content")
-		  					}
-		  				})
-		  				.done(function() {
-		  					 location.reload(); 
-		  				})
-		  				.fail(function() {
-		  					console.log("Ajax Error :-");
-		  				});
-	  				});
-  				}
+      $('.delete-all').click(function(event) {
+        var checkedNum = $('input[name="return-ids"]:checked').length;
+        if (checkedNum==0) {
+          alert('Please select return');
+        }
+        else{
+          if (confirm('Are you sure want to delete?')) {
+            $('input[name="return-ids"]:checked').each(function () {
+              var current_val=$(this).val();
+              $.ajax({
+                url: "{{ url('admin/return/') }}/"+current_val,
+                type: 'DELETE',
+                data:{
+                 "_token": $("meta[name='csrf-token']").attr("content")
+                }
+              })
+              .done(function() {
+                 location.reload(); 
+              })
+              .fail(function() {
+                console.log("Ajax Error :-");
+              });
+            });
+          }
 
-  				
-  			}
-  			
-  		});
+          
+        }
+        
+      });
 
   </script>
   @endpush

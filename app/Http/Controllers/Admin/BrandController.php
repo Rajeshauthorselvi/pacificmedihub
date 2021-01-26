@@ -136,7 +136,7 @@ class BrandController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $check_brand=brand::find($id);
         if($check_brand){
@@ -145,6 +145,7 @@ class BrandController extends Controller
             $check_brand->deleted_at = date('Y-m-d H:i:s');
             $check_brand->update();
         }
-        return redirect()->route('brands.index')->with('error','Brand deleted successfully...!');
+         if ($request->ajax())  return ['status'=>true];
+        else return redirect()->route('brands.index')->with('error','Brand deleted successfully...!');
     }
 }
