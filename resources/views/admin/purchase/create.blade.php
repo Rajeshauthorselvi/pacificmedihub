@@ -168,6 +168,13 @@
 @push('custom-scripts')
 <script type="text/javascript">
 
+$(document).on('click', '.save-btn', function(event) {
+  var check_variant_count=$('#variantList').length;
+  if (check_variant_count==0) {
+    event.preventDefault();
+    alert('Please select products');
+  }
+});
 
   $(document).on('click', '.remove-item', function(event) {
     $(this).parents('tr').remove();
