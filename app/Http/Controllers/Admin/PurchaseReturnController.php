@@ -113,7 +113,7 @@ class PurchaseReturnController extends Controller
 
         $purchase_detail=Purchase::where('purchase_order_number',$slug)
                                ->first();
-        dd($purchase_detail);
+
         if (!$purchase_detail) {
             return ['status'=>false,'message'=>'No order found'];
         }

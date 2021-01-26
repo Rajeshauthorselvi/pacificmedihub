@@ -16,6 +16,7 @@ use App\Models\OptionValue;
 use App\Models\Settings;
 use Redirect;
 use DB;
+use Session;
 
 class ProductController extends Controller
 {
@@ -56,8 +57,15 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+
+
+        if ($request->has('from') && $request->has('vendor_id')) {
+            Session::put('active_vendor','yes');
+            Session::put('vendor_id',$request->get('vendor_id'));
+        }
+
         $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
         $data['brands'] = Brand::where('is_deleted',0)->orderBy('name','asc')->get();
         $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
@@ -374,6 +382,13 @@ class ProductController extends Controller
                     $addImage->save();
                 }
             }
+
+            if (Session::get('active_vendor')=="yes") {
+                $vendor_id=Session::has('vendor_id');
+                Session::forget('vendor_id');
+                Session::forget('active_vendor');
+                return Redirect::route('vendor-products.index',['vendor_id'=>$vendor_id])->with('success','New Product Added successfully...!');
+            }
             return redirect()->route('product.index')->with('success','New Product Added successfully...!');
         }else{
             return Redirect::back()->with('error','Somthing wrong please try again...!'); 
@@ -397,8 +412,13 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
+        if ($request->has('from') && $request->has('vendor_id')) {
+            Session::put('active_vendor','yes');
+            Session::put('vendor_id',$request->get('vendor_id'));
+        }
+
         $data['product'] = Product::find($id);
         $variant = ProductVariant::where('product_id',$id)->where('is_deleted',0)->first();
         $options = array();
@@ -885,7 +905,13 @@ class ProductController extends Controller
                     $addImage->save();
                 }
             }
-            return redirect()->route('product.index')->with('success','New Product Added successfully...!');
+            if (Session::get('active_vendor')=="yes") {
+                $vendor_id=Session::has('vendor_id');
+                Session::forget('vendor_id');
+                Session::forget('active_vendor');
+                return Redirect::route('vendor-products.index',['vendor_id'=>$vendor_id])->with('success','Product modified successfully...!');
+            }
+            return redirect()->route('product.index')->with('success','Product modified successfully...!');
         }else{
             return Redirect::back()->with('error','Somthing wrong please try again...!'); 
         }
