@@ -76,7 +76,7 @@ class WastageController extends Controller
             'created_at'  => date('Y-m-d H:i:s')
         ];
 
-        $wastage_id=Wastage::insertGetId($wastage);
+       $wastage_id=Wastage::insertGetId($wastage);
 
         foreach ($variant['stock_qty'] as $variant_id => $stock_quantity) {
 
@@ -90,11 +90,11 @@ class WastageController extends Controller
                 'created_at'    => date('Y-m-d H:i:s')
             ]);
 
-            $stock_quantity=ProductVariantVendor::where('product_variant_id',$variant_id)
+            $avalible_quantity=ProductVariantVendor::where('product_variant_id',$variant_id)
                             ->where('product_id',$product_id)
                             ->value('stock_quantity');
 
-            $total_quantity=$stock_quantity-$stock_quantity;
+            $total_quantity=$avalible_quantity-$stock_quantity;
 
             ProductVariantVendor::where('product_variant_id',$variant_id)
             ->where('product_id',$product_id)
