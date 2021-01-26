@@ -23,6 +23,13 @@
     @include('flash-message')
     <!-- Main content -->
     <section class="content">
+<div class="col-sm-12">
+      <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item active">
+          <a href="{{route('vendor.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+        </li>
+      </ol>
+</div>
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12 action-controllers ">
@@ -38,11 +45,7 @@
             </div>
           </div>
           <div class="col-md-12">
-      <ol class="breadcrumb float-sm-right">
-        <li class="breadcrumb-item active">
-          <a href="{{route('vendor.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
-        </li>
-      </ol>
+
             <div class="card card-outline card-primary">
               <div class="card-header">
                 <h3 class="card-title">All Products</h3>
