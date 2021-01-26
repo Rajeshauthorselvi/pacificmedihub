@@ -32,12 +32,17 @@
               </a>
             </div>
             <div class="col-sm-6 text-right pull-right">
-              <a class="btn add-new" href="{{route('product.create')}}">
+              <a class="btn add-new" href="{{route('product.create',['from'=>'vendor','vendor_id'=>Request::get('vendor_id')])}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
             </a>
             </div>
           </div>
           <div class="col-md-12">
+      <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item active">
+          <a href="{{route('vendor.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+        </li>
+      </ol>
             <div class="card card-outline card-primary">
               <div class="card-header">
                 <h3 class="card-title">All Products</h3>
@@ -80,7 +85,7 @@
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
                                 <a href="#"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                <a href="{{route('product.edit',$product['id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                <a href="{{route('product.edit',[$product['id'],'from'=>'vendor','vendor_id'=>Request::get('vendor_id')])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                 <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('product.destroy',$product['id']) }}">@csrf 
                                     <input name="_method" type="hidden" value="DELETE">

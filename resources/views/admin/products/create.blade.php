@@ -26,7 +26,11 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
+          @if (Request::get('from')=="vendor" && Request::has('vendor_id'))
+           <a href="{{route('vendor-products.index',['vendor_id'=>Request::get('vendor_id')])}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          @else
           <a href="{{route('product.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          @endif
         </li>
       </ol>
       <div class="container-fluid product">
