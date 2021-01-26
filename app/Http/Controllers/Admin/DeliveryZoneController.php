@@ -49,7 +49,7 @@ class DeliveryZoneController extends Controller
         $input['published']=($request->status=='on')?1:0;
         $input['created_at'] = date('Y-m-d H:i:s');
         DeliveryZone::insert($input);
-        return Redirect::route('delivery_zone.index')->with('success','DeliveryZone added successfully...!');
+        return Redirect::route('delivery_zone.index')->with('success','Delivery Zone added successfully...!');
     }
 
     /**
@@ -95,7 +95,7 @@ class DeliveryZoneController extends Controller
        $zone->published=$status;
        $zone->save();
 
-       return Redirect::route('delivery_zone.index')->with('success','DeliveryZone details updated successfully...!');
+       return Redirect::route('delivery_zone.index')->with('success','Delivery Zone details updated successfully...!');
     }
 
     /**

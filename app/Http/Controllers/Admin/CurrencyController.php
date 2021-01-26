@@ -53,7 +53,7 @@ class CurrencyController extends Controller
 
         Arr::forget($input,['_token','is_primary']);
         if ($request->has('is_primary')) {
-           Currency::update(['is_primary'=>2]);
+           DB::table('currency')->update(['is_primary'=>2]);
         }
         $input['is_primary']=($request->has('is_primary'))?1:2;
         $input['status']=1;

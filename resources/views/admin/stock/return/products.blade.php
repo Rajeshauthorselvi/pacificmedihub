@@ -25,7 +25,7 @@
 				<th>Base Price</th>
 				<th>Retail Price</th>
 				<th>Minimum Price</th>
-				<th>Sold Quantity</th>
+				<th>Total Quantity</th>
 				<th>Return Quantity</th>
 				<th>Subtotal</th>
 			</tr>

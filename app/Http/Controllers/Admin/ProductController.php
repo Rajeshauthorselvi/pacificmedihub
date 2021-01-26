@@ -32,21 +32,22 @@ class ProductController extends Controller
 
         foreach($get_products as $key => $product){
             $variant_details = ProductVariantVendor::where('product_id',$product->id)->where('display_order',1)->first();
+
+            $total_quantity=ProductVariantVendor::where('product_id',$product->id)->sum('stock_quantity');
+
             $products[$key]['id'] = $product->id;
             $products[$key]['image'] = $product->main_image;
             $products[$key]['name'] = $product->name;
             $products[$key]['code'] = $product->code;
             $products[$key]['sku'] = $product->sku;
             $products[$key]['category'] = $product->category->name;
-            $products[$key]['stock'] = isset($variant_details->stock_quantity)?$variant_details->stock_quantity:'-';
+            $products[$key]['stock'] =$total_quantity;
             $products[$key]['base_price'] = isset($variant_details->base_price)?$variant_details->base_price:'-';
             $products[$key]['retail_price'] = isset($variant_details->retail_price)?$variant_details->retail_price:'-';
             $products[$key]['minimum_price'] = isset($variant_details->minimum_selling_price)?$variant_details->minimum_selling_price:'-';
             $products[$key]['published'] = $product->published;
         }
         $data['products'] = $products;
-
-
         return view('admin/products/index',$data);
     }
 

@@ -7,12 +7,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Prefix</h1>
+            <h1 class="m-0">Payment Method</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="#">Prefixx</a></li>
+              <li class="breadcrumb-item"><a href="#">Payment Method</a></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->

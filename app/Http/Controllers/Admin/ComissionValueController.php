@@ -120,7 +120,7 @@ class ComissionValueController extends Controller
     {
     
        $comission_value=CommissionValue::find($comissionValue->id);
-       $comission_value->status=3;
+       $comission_value->is_deleted=3;
        $comission_value->save();
 
         if ($request->ajax())  return ['status'=>true];
