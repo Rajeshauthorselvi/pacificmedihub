@@ -58,7 +58,7 @@
                     <tbody>
                         @foreach ($wastages as $wastage)
                           <tr>
-                            <td><input type="checkbox" value="{{ $wastage->id }}" name="wastage-ids"></td>
+                            <td><input type="checkbox" value="{{ $wastage['id'] }}" name="wastage-ids"></td>
                             <td>{{ $wastage['date'] }}</td>
                             <td>{{ $wastage['reference_number'] }}</td>
                             <td>{!! $wastage['created_by'] !!}</td>

@@ -62,7 +62,7 @@
                     <tbody>
                         @foreach ($returns as $return)
                           <tr>
-                            <td><input type="checkbox" value="{{ $return->id }}" name="return-ids"></td>
+                            <td><input type="checkbox" value="{{ $return['id'] }}" name="return-ids"></td>
                             <td>{{ $return['date'] }}</td>
                             <td>{{ $return['po_number'] }}</td>
                             <td>{{ ($return['order_type']==1)?'Purchase':'Order' }}</td>
