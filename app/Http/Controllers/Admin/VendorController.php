@@ -335,7 +335,7 @@ class VendorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
         $check_vendor=Vendor::find($id);
         if($check_vendor){
@@ -344,6 +344,7 @@ class VendorController extends Controller
             $check_vendor->update();
             $vendor_poc = VendorPoc::where('vendor_id',$id)->delete();
         }
-        return redirect()->route('vendor.index')->with('error','Vendor deleted successfully...!');
+        if ($request->ajax())  return ['status'=>true];
+        else return redirect()->route('vendor.index')->with('error','Vendor deleted successfully...!');
     }
 }

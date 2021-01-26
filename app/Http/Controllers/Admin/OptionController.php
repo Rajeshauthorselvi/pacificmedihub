@@ -158,6 +158,14 @@ class OptionController extends Controller
         $option->deleted_at = date('Y-m-d H:i:s');
         $option->save();
 
+        $option_value = OptionValue::where('option_id',$id)->get();
+        foreach ($option_value as $key => $value) {
+            $value = OptionValue::find($value->id);
+            $value->is_deleted=1;
+            $value->deleted_at = date('Y-m-d H:i:s');
+            $value->save();    
+        }
+        
         if ($request->ajax())  return ['status'=>true];
         else return Redirect::route('options.index')->with('error','Option deleted successfully...!');
     }

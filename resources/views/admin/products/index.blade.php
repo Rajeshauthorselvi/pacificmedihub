@@ -123,7 +123,7 @@
           $('input[name="product-ids"]:checked').each(function () {
             var current_val=$(this).val();
             $.ajax({
-              url: "{{ url('admin/options/') }}/"+current_val,
+              url: "{{ url('admin/product/') }}/"+current_val,
               type: 'DELETE',
               data:{
                 "_token": $("meta[name='csrf-token']").attr("content")

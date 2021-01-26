@@ -928,9 +928,12 @@ class ProductController extends Controller
                 $img->update();
             }
         }
+        
         if ($request->ajax())  return ['status'=>true];
         else  return redirect()->route('product.index')->with('error','Product deleted successfully.!');
     }
+
+    
     public function generateRawOptions($options){
         $sql='';
         $totalOptions=count($options);

@@ -83,7 +83,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
+          <li class="nav-item @if($current_route=='purchase.index'||$current_route=='purchase.create'||$current_route=='purchase.edit') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-shopping-cart"></i>
               <p>
@@ -91,14 +91,14 @@
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='purchase.index'||$current_route=='purchase.create'||$current_route=='purchase.edit') block @endif">
+              <li class="nav-item @if($current_route=='purchase.index'||$current_route=='purchase.edit') active @endif" >
                 <a href="{{ route('purchase.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List Purchase</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item @if($current_route=='purchase.create') active @endif">
                 <a href="{{ route('purchase.create') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Add Purchase</p>
@@ -106,7 +106,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
+          <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-boxes"></i>
               <p>
@@ -114,26 +114,26 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index') block @endif">
+              <li class="nav-item @if($current_route=='stock-in-transit.index') active @endif">
                 <a href="{{ route('stock-in-transit.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Stock-In-Transit</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item @if($current_route=='return.index'||$current_route=='return.edit') active @endif">
                 <a href="{{ route('return.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List Return</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item @if($current_route=='return.create') active @endif">
                 <a href="{{ route('return.create') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Add Return</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item @if($current_route=='wastage.index') active @endif">
                 <a href="{{ route('wastage.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Wastage</p>
@@ -380,7 +380,7 @@
             </a>
           </li>
 
-          <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index'||$current_route=='currency.index'||$current_route=='payment_method.index') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-cog"></i>
               <p>
@@ -388,19 +388,19 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index') block @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index'||$current_route=='currency.index'||$current_route=='payment_method.index') block @endif">
               <li class="nav-item">
                 <a href="" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>General Settings</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show') active @endif">
-                <a href="{{route('access-control.index')}}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i>
-                  <p>Access Control</p>
-                </a>
-              </li>
+              {{-- <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show') active @endif">
+                                            <a href="{{route('access-control.index')}}" class="nav-link">
+                                              <i class="fas fa-angle-double-right"></i>
+                                              <p>Access Control</p>
+                                            </a>
+                                          </li> --}}
               <li class="nav-item @if($current_route=='settings.index') active @endif">
                 <a href="{{ route('settings.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
@@ -420,13 +420,13 @@
                 </a>
               </li>
 
-               <li class="nav-item">
+               <li class="nav-item @if($current_route=='currency.index') active @endif">
                 <a href="{{ route('currency.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Currencies</p>
                 </a>
               </li>
-               <li class="nav-item">
+               <li class="nav-item @if($current_route=='payment_method.index') active @endif">
                 <a href="{{ route('payment_method.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Payment Methods</p>

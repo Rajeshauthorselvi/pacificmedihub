@@ -25,10 +25,17 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12 action-controllers">
-            <a class="btn add-new" href="{{route('wastage.create')}}">
+          <div class="col-md-12 action-controllers ">
+            <div class="col-sm-6 text-left pull-left">
+              <a href="javascript:void(0)" class="btn btn-danger delete-all">
+                <i class="fa fa-trash"></i> Delete (selected)
+              </a>
+            </div>
+            <div class="col-sm-6 text-right pull-right">
+              <a class="btn add-new" href="{{route('wastage.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
-            </a>
+              </a>
+            </div>
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -40,6 +47,7 @@
                   <table id="example2" class="table table-bordered table-striped">
                     <thead>
                       <tr>
+                        <th><input type="checkbox" class="select-all"></th>
                       	<th>Date</th>
                         <th>Reference Number</th>
                         <th>Created By</th>
@@ -50,6 +58,7 @@
                     <tbody>
                         @foreach ($wastages as $wastage)
                           <tr>
+                            <td><input type="checkbox" value="{{ $wastage->id }}" name="wastage-ids"></td>
                             <td>{{ $wastage['date'] }}</td>
                             <td>{{ $wastage['reference_number'] }}</td>
                             <td>{!! $wastage['created_by'] !!}</td>
@@ -80,4 +89,49 @@
       </div>
     </section>
   </div>
+   @push('custom-scripts')
+  <script type="text/javascript">
+      
+    $('.select-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('input:checkbox').prop('checked',true);
+        }
+        else{
+          $('input:checkbox').prop('checked',false);
+        }
+    });
+
+
+      $('.delete-all').click(function(event) {
+        var checkedNum = $('input[name="wastage-ids"]:checked').length;
+        if (checkedNum==0) {
+          alert('Please select wastage');
+        }
+        else{
+          if (confirm('Are you sure want to delete?')) {
+            $('input[name="wastage-ids"]:checked').each(function () {
+              var current_val=$(this).val();
+              $.ajax({
+                url: "{{ url('admin/wastage/') }}/"+current_val,
+                type: 'DELETE',
+                data:{
+                 "_token": $("meta[name='csrf-token']").attr("content")
+                }
+              })
+              .done(function() {
+                 location.reload(); 
+              })
+              .fail(function() {
+                console.log("Ajax Error :-");
+              });
+            });
+          }
+
+          
+        }
+        
+      });
+
+  </script>
+  @endpush
 @endsection
