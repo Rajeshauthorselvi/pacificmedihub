@@ -84,6 +84,22 @@
                     </div>
                   </div>
                   <div class="order-item-sec"></div>
+                  <div class="clearfix"></div>
+                  <div class="col-sm-12 order-total-sec">
+
+                    <div class="panel panel-default">
+                      <div class="panel-body">
+                        <table class="table table-bordered total-sec">
+                          <tr>
+                            <td>Grand Total</td>
+                            <td class="all_quantity"></td>
+                            <td class="all_total"></td>
+                          </tr>
+                        </table>
+                      </div>
+                      </div>
+                    </div>
+
                   <div class="tax-sec">
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -164,10 +180,22 @@
       </div>
     </section>
   </div>
-
+<style type="text/css">
+  .order-total-sec{
+    background-color: #f1f1f1;
+    padding-bottom: 5px;
+    padding-top: 26px;
+    padding-right: 20px;
+    padding-left: 20px;
+    box-shadow: none !important;    
+  }
+  .total-sec{
+    background-color: #fcf8e3;
+  }
+</style>
 @push('custom-scripts')
 <script type="text/javascript">
-
+$('.order-total-sec').hide();
 $(document).on('click', '.save-btn', function(event) {
   var check_variant_count=$('#variantList').length;
   if (check_variant_count==0) {
@@ -208,8 +236,28 @@ $(document).on('click', '.save-btn', function(event) {
             });
             $(this).parents('.vatiant_table').find('.total_quantity').text(quantity);
 
+            SumAllTotal();
+
       }
     });
+
+    function SumAllTotal() {
+            $('.order-total-sec').show();
+            var sum = 0;
+            $('.total_amount').each(function(){
+                sum += parseFloat($(this).text());
+            });
+
+            $('.all_total').text(sum);
+
+            var quantity=0;
+            $('.total_quantity').each(function(){
+                quantity += parseFloat($(this).text());
+            });
+            $('.all_quantity').text(quantity);
+
+    }
+
   var path ="{{ url('admin/product-search') }}";
 
     $('#prodct-add-sec').autocomplete({
@@ -240,6 +288,7 @@ $(document).on('click', '.save-btn', function(event) {
          $('.no-match').hide();
          $(this).val('');
          collapseFunction();
+         
          return false;
 
       },
@@ -284,6 +333,7 @@ $(document).on('click', '.save-btn', function(event) {
           else if(type=="options"){
             $('.order-item-sec').append(response);
           }
+          SumAllTotal();
         });
 
     }

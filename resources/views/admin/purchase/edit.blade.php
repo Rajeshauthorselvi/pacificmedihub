@@ -113,8 +113,9 @@
                       </thead>
                       <tbody>
                         <?php 
-                        $total_amount=$quantity=0;
+                        $total_amount=$quantity=$all_quantity=$all_amount=0;
                         ?>
+
                         @foreach ($products as $key=>$variant)
                         <?php $option_count=$options[$product_id]['option_count']; ?>
                         <?php 
@@ -238,12 +239,29 @@
             </div>
         </div>
         <br>
+
+        <?php $all_quantity +=$quantity; ?>
+        <?php $all_amount +=$total_amount; ?>
       @endforeach
     </div>
 </div>
 
 
                   </div>
+                  <div class="col-sm-12 order-total-sec">
+
+                    <div class="panel panel-default">
+                      <div class="panel-body">
+                        <table class="table table-bordered total-sec">
+                          <tr>
+                            <td>Grand Total</td>
+                            <td class="all_quantity">{{ $all_quantity }}</td>
+                            <td class="all_total">{{ $all_amount }}</td>
+                          </tr>
+                        </table>
+                      </div>
+                      </div>
+                    </div>
                   <div class="tax-sec">
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -324,9 +342,40 @@
       </div>
     </section>
   </div>
-
+<style type="text/css">
+  .order-total-sec{
+    background-color: #f1f1f1;
+    padding-bottom: 5px;
+    padding-top: 26px;
+    padding-right: 20px;
+    padding-left: 20px;
+    box-shadow: none !important;    
+  }
+  .total-sec{
+    background-color: #fcf8e3;
+  }
+</style>
 @push('custom-scripts')
 <script type="text/javascript">
+
+    function SumAllTotal() {
+            $('.order-total-sec').show();
+            var sum = 0;
+            $('.total_amount').each(function(){
+                sum += parseFloat($(this).text());
+            });
+
+            $('.all_total').text(sum);
+
+            var quantity=0;
+            $('.total_quantity').each(function(){
+                quantity += parseFloat($(this).text());
+            });
+            $('.all_quantity').text(quantity);
+
+    }
+
+
     $(document).ready(function(){
         // Add minus icon for collapse element which is open by default
         $(".collapse.show").each(function(){
@@ -388,7 +437,8 @@
       },
       minLength: 3,
       select: function( event, ui ) {
-        var check_length=$('.product_id[value=1]').length;
+
+        var check_length=$('.product_id[value='+ui.item.value+']').length;
         if (check_length>0) {
             alert('This product already exists');
             $(this).val('');
@@ -404,19 +454,8 @@
           },
         })
         .done(function(response) {
-            $.each(response, function(index, val) {
-              var tr_val ="<tr>";
-                       tr_val +="<td>"+val.label+"</td>";
-                        tr_val +="<td>"+val.option_value+"</td>";
-                        tr_val +="<td class='base_price'>"+val.base_price+"</td>";
-                        tr_val +="<td>"+val.retail_price+"</td>";
-                        tr_val +="<td>"+val.minimum_selling_price+"</td>";
-                        tr_val +="<td><input type='text' name='quantity["+val.value+"]["+val.option_id+"]["+val.option_value_id+"]' value='1' class='form-control quantity'></td>";
-                        tr_val +="<td class='sub_total'>"+val.base_price+"</td>";
-                        tr_val +="<td><input type='hidden' class='subtotal_hidden' name='subtotal["+val.value+"]["+val.option_id+"]["+val.option_value_id+"]' value='"+val.base_price+"'></td>";
-                        tr_val +="</tr>"; 
-                  $('.purchase-table').append(tr_val);
-            });
+            $('.order-item-sec').append(response)
+            SumAllTotal();
         })
         .fail(function() {
           console.log("error");
@@ -425,6 +464,8 @@
           console.log("complete");
         });
 
+
+        return false;
       },
       open: function() {
         $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
