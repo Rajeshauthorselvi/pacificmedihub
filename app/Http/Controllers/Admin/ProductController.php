@@ -81,10 +81,11 @@ class ProductController extends Controller
             $value=unserialize($product_codee);
 
             $char_val=$value['value'];
+            $explode_val=explode('-',$value['value']);
             $total_datas=Product::count();
 
             $data_original=$char_val;
-            $search=['[dd]', '[mm]', '[yyyy]', '[Start No]'];
+            $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
             $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
             $data['product_id']=str_replace($search,$replace, $data_original);
         }

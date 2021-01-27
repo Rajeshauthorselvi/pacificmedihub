@@ -132,7 +132,7 @@
                       
                       <div class="form-group clearfix">
                         <div class="icheck-info d-inline">
-                          <input type="checkbox" name="published" id="Published" @if(old('published')=='on') checked @endif>
+                          <input type="checkbox" name="published" id="Published" checked>
                           <label for="Published">Published</label>
                         </div>
                       </div>
