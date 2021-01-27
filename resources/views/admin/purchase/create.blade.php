@@ -192,6 +192,22 @@ $(document).on('click', '.save-btn', function(event) {
           var total_price=base_price*$(this).val();
           base.find('.subtotal_hidden').val(total_price);
           base.find('.sub_total').text(total_price);
+
+            var subtotal=$(this).parents('.vatiant_table').find('.subtotal_hidden');
+            var sum = 0;
+            $(subtotal).each(function(){
+                sum += parseFloat(this.value);
+            });
+            $(this).parents('.vatiant_table').find('.total_amount').text(sum);
+
+
+            var stock_qty=$(this).parents('.vatiant_table').find('.stock_qty');
+            var quantity=0;
+            $(stock_qty).each(function(){
+                quantity += parseFloat(this.value);
+            });
+            $(this).parents('.vatiant_table').find('.total_quantity').text(quantity);
+
       }
     });
   var path ="{{ url('admin/product-search') }}";

@@ -66,7 +66,7 @@
                   </div>
                   <div class="form-group">
                     <div class="icheck-info d-inline">
-                      <input type="checkbox" name="status" id="Published" > 
+                      <input type="checkbox" name="status" id="Published" checked > 
                       <label for="Published">Published</label>
                     </div>
                   </div>

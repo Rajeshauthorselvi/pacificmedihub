@@ -68,10 +68,14 @@
                     @endif
                   </div>
                   <div class="form-group">
-                    @if (isset($commission_value->published) && $commission_value->published==1)
+                    @if ($type=="edit")
+                      @if (isset($commission_value->published) && $commission_value->published==1)
+                        @php $checked='checked'; @endphp
+                      @else  
+                        @php $checked=''; @endphp
+                      @endif
+                    @else
                       @php $checked='checked'; @endphp
-                    @else  
-                      @php $checked=''; @endphp
                     @endif
                     <div class="icheck-info d-inline">
                       <input type="checkbox" name="status" id="Published" {{ $checked }}> 

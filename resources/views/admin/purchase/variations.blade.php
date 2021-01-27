@@ -27,6 +27,7 @@
                         </tr>
                       </thead>
                       <tbody>
+                        <?php $total_amount=$total_quantity=0 ?>
    @foreach($product_variant as $key=>$variant)
  {{--                        @if ($key==0)
                           <tr>
@@ -94,7 +95,8 @@
                             </td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="1">
+                                <?php $quantity=1 ?>
+                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{ $quantity }}">
                               </div>
                             </td>
                             <td>
@@ -105,8 +107,14 @@
                             </td>
                             <td><a class="btn btn-danger remove-item" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}"><i class="fa fa-trash"></i></a></td>
                           </tr>
+                          <?php $total_amount +=$variant['base_price']; ?>
+                          <?php $total_quantity +=$quantity; ?>
                         @endforeach
-
+                        <tr>
+                          <td colspan="5"></td>
+                          <td class="total_quantity">{{ $total_quantity }}</td>
+                          <td class="total_amount">{{ $total_amount }}</td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>

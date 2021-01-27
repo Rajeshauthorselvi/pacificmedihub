@@ -96,7 +96,7 @@
             <div id="collapse{{ $product_id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                 <div class="card-body">
                   <div class="table-responsive">
-  <table class="table table-bordered purchase-table">
+  <table class="table table-bordered purchase-table vatiant_table">
                       <thead>
                         <tr>
                           <th>Product</th>
@@ -112,6 +112,9 @@
                         </tr>
                       </thead>
                       <tbody>
+                        <?php 
+                        $total_amount=$quantity=0;
+                        ?>
                         @foreach ($products as $key=>$variant)
                         <?php $option_count=$options[$product_id]['option_count']; ?>
                         <?php 
@@ -220,8 +223,14 @@
                               </a>
                             </td>
                           </tr>
-
+                          <?php $total_amount +=$variant['base_price']*$total_quantity; ?>
+                          <?php $quantity +=$total_quantity; ?>
                         @endforeach
+                        <tr>
+                          <td colspan="{{ count($options[$product_id]['options'])+4 }}"></td>
+                          <td class="total_quantity">{{ $quantity }}</td>
+                          <td class="total_amount">{{ $total_amount }}</td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -347,6 +356,19 @@
           var total_price=base_price*$(this).val();
           base.find('.subtotal_hidden').val(total_price);
           base.find('.sub_total').text(total_price);
+
+            var subtotal=$(this).parents('.vatiant_table').find('.subtotal_hidden');
+            var sum = 0;
+            $(subtotal).each(function(){
+                sum += parseFloat(this.value);
+            });
+            $(this).parents('.vatiant_table').find('.total_amount').text(sum);
+            var stock_qty=$(this).parents('.vatiant_table').find('.stock_qty');
+            var quantity=0;
+            $(stock_qty).each(function(){
+                quantity += parseFloat(this.value);
+            });
+            $(this).parents('.vatiant_table').find('.total_quantity').text(quantity);
       }
     });
   var path ="{{ url('admin/product-search') }}";

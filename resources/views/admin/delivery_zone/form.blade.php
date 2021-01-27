@@ -60,10 +60,15 @@
                     @endif
                   </div>
                   <div class="form-group">
-                    @if (isset($zone->published) && $zone->published==1)
+                  <div class="form-group">
+                    @if ($type=="edit")
+                      @if (isset($zone->published) && $zone->published==1)
+                        @php $checked='checked'; @endphp
+                      @else  
+                        @php $checked=''; @endphp
+                      @endif
+                    @else
                       @php $checked='checked'; @endphp
-                    @else  
-                      @php $checked=''; @endphp
                     @endif
                     <div class="icheck-info d-inline">
                       <input type="checkbox" name="status" id="Published" {{ $checked }}> 

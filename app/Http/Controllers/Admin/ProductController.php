@@ -83,8 +83,9 @@ class ProductController extends Controller
             $char_val=$value['value'];
             $explode_val=explode('-',$value['value']);
             $total_datas=Product::count();
-
+            $total_datas=($total_datas==0)?end($explode_val)+1:$total_datas+1;
             $data_original=$char_val;
+
             $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
             $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
             $data['product_id']=str_replace($search,$replace, $data_original);
