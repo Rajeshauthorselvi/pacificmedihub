@@ -228,9 +228,13 @@
                           <?php $quantity +=$total_quantity; ?>
                         @endforeach
                         <tr>
-                          <td colspan="{{ count($options[$product_id]['options'])+4 }}"></td>
-                          <td class="total_quantity">{{ $quantity }}</td>
-                          <td class="total_amount">{{ $total_amount }}</td>
+                          <td colspan="{{ count($options[$product_id]['options'])+4 }}" class="text-right">Total: </td>
+                          <td class="total_quantity">
+                            {{ $quantity }}
+                          </td>
+                          <td class="total_amount">
+                           {{ $total_amount }}
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -254,9 +258,12 @@
                       <div class="panel-body">
                         <table class="table table-bordered total-sec">
                           <tr>
-                            <td>Grand Total</td>
-                            <td class="all_quantity">{{ $all_quantity }}</td>
-                            <td class="all_total">{{ $all_amount }}</td>
+                            <td class="all_quantity text-center">
+                             <b>Total Quantity: {{ $all_quantity }}</b>
+                            </td>
+                            <td class="all_total text-center">
+                               <b>Grant Total: {{ $all_amount }}</b>
+                            </td>
                           </tr>
                         </table>
                       </div>
@@ -364,15 +371,12 @@
             $('.total_amount').each(function(){
                 sum += parseFloat($(this).text());
             });
-
-            $('.all_total').text(sum);
-
+            $('.all_total').html('<b>Grant Total: '+sum+'</b>');
             var quantity=0;
             $('.total_quantity').each(function(){
                 quantity += parseFloat($(this).text());
             });
-            $('.all_quantity').text(quantity);
-
+            $('.all_quantity').html('<b> Total Quantity: '+quantity+'</b>');
     }
 
 

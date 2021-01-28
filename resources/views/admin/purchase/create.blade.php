@@ -91,9 +91,8 @@
                       <div class="panel-body">
                         <table class="table table-bordered total-sec">
                           <tr>
-                            <td>Grand Total</td>
-                            <td class="all_quantity"></td>
-                            <td class="all_total"></td>
+                            <td class="all_quantity text-center"></td>
+                            <td class="all_total text-center"></td>
                           </tr>
                         </table>
                       </div>
@@ -248,13 +247,13 @@ $(document).on('click', '.save-btn', function(event) {
                 sum += parseFloat($(this).text());
             });
 
-            $('.all_total').text(sum);
+            $('.all_total').html('<b>Grant Total: '+sum+'</b>');
 
             var quantity=0;
             $('.total_quantity').each(function(){
                 quantity += parseFloat($(this).text());
             });
-            $('.all_quantity').text(quantity);
+            $('.all_quantity').html('<b>Total Quantity: '+quantity+'</b>');
 
     }
 
