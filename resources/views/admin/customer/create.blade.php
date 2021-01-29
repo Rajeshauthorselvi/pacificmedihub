@@ -391,7 +391,6 @@ address_city
       });
 
       function getState(countryID,append_id){
-        alert(append_id);
         var state_id = "{{old('State')}}" ;        
         if(countryID){
           $.ajax({

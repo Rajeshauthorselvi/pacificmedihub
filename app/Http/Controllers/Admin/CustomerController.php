@@ -60,7 +60,6 @@ class CustomerController extends Controller
             '*.email.unique'=>'This email already taken'
         ]);
 
-        exit();
         /*Insert Customer Details*/
         $users=$request->customer;
         $users['role_id']=7;
