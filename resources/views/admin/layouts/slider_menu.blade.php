@@ -198,13 +198,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('customer.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List Customers</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('customer.create') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Add Customers</p>
                 </a>

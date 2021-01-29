@@ -5,7 +5,9 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+use App\Models\UserBankAcccount;
+use App\Models\UserAddress;
+use App\Models\UserCompanyDetails;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -36,4 +38,23 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function company()
+    {
+        return $this->belongsTo(UserCompanyDetails::class,'company_id');
+    }
+
+    public function bank()
+    {
+        return $this->belongsTo(UserBankAcccount::class,'bank_account_id');
+    }
+    
+    public function address()
+    {
+        return $this->belongsTo(UserAddress::class,'address_id');
+    }
+    public function alladdress()
+    {
+        return $this->hasMany(UserAddress::class,'customer_id','id');
+    }
 }

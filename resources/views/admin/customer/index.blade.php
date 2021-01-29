@@ -59,12 +59,32 @@
                     				<input type="checkbox" name="customer_ids[]" value="{{ $customer->id }}">
                     			</td>
                     			<td> {{ $customer->first_name.' '.$customer->last_name }} </td>
-                    			<td></td>
-                    			<td></td>
+                    			<td>{{ $customer->company->company_name }}</td>
+                    			<td>
+                            <?php
+                            $parent=\App\Models\UserCompanyDetails::ParentCompany($customer->company_id);
+                             ?>
+                            {{ isset($parent)?$parent:'-' }}
+                          </td>
                     			<td>{{ $customer->email }}</td>
                     			<td>{{ $customer->contact_number }}</td>
-                    			<td></td>
+                    			<td>0</td>
+                          <td>0</td>
                     			<td>{{ ($customer->status==1)?'Approved':'Disapproved' }}</td>
+                          <td>
+                                <div class="input-group-prepend">
+                                  <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
+                                  <ul class="dropdown-menu">
+                                    <a href="{{route('customer.edit',$customer->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                    <a href="#"><li class="dropdown-item">
+                                      <form method="POST" action="{{ route('customer.destroy',$customer->id) }}">@csrf 
+                                        <input name="_method" type="hidden" value="DELETE">
+                                        <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
+                                      </form>
+                                    </li></a>
+                                  </ul>
+                                </div>
+                              </td>
                     		</tr>
                     	@endforeach
                     </tbody>

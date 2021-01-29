@@ -151,12 +151,10 @@
                       </div>
 
                       <div class="product-variant-selectbox">
-                        
                         <div class="form-group">
                           <label for="productVariant">Product Variant Options</label>
                           {!! Form::select('variant_option',$product_options,$options_id,['class'=>'form-control select2bs4', 'id'=>'productVariant', 'multiple'=>'multiple', 'data-placeholder'=>'Select Variant Option', '@if($product_options->id==$options_id){"disabled"=>"disabled"}']) !!}
                         </div>
-
                         <div class="form-group">
                           <label for="VendorSupplier">Vendor/Supplier</label>
                           {!! Form::select('vendor',$vendors,$vendors_id,['class'=>'form-control select2bs4', 'id'=>'VendorSupplier', 'multiple'=>'multiple', 'data-placeholder'=>'Select Vendor/Supplier' ]) !!}
@@ -192,17 +190,70 @@
 
                   <div class="product-variant-block">
                     <label>Product Variants</label>
-                    <table class="list" id="variantList">
+                    <?php inputFields($get_options,$product_variant,$option_count); ?>
+                    
+                  </div>
+
+                  
+                  <label class="new-product-variant-lable" style="display:none">New Product Variants</label>
+                  <div id="new-product-variant-block"></div>
+
+                  <div class="form-group">
+                    <label>Product Details</label>
+                    <textarea class="summernote" name="product_details">{{old('product_details',$product->long_description)}}</textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Treatment Information</label>
+                    <textarea class="summernote" name="treatment_information">{{old('treatment_information',$product->treatment_information)}}</textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Dosage Instructions</label>
+                    <textarea class="summernote" name="dosage_instructions">{{old('dosage_instructions',$product->dosage_instructions)}}</textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="searchEngine">Search Engine Friendly Page Name</label>
+                    <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine',$product->search_engine_name)}}">
+                  </div>
+                  <div class="form-group">
+                    <label for="metaTile">Meta Title</label>
+                    <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title',$product->meta_title)}}">
+                  </div>
+                  <div class="form-group">
+                    <label for="metaKeyword">Meta Keywords</label>
+                    <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword',$product->meta_keyword)}}</textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="metaDescription">Meta Description</label>
+                    <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description',$product->meta_description)}}</textarea>
+                  </div>
+                  <div class="form-group">
+                    <a href="{{route('product.index')}}" class="btn reset-btn">Cancel</a>
+                    <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  @php function inputFields($get_options,$product_variant,$option_count) { @endphp
+<table class="list" id="variantList">
                       <thead>
                         <tr>
-                          @foreach($get_options as $option)
-                            <th>{{$option}}</th>
-                          @endforeach
+                          
+                          @php foreach($get_options as $option){
+                           echo '<th>'.$option.'</th>';
+                          }
+                          @endphp
                           <th>Base Price</th><th>Retail Price</th><th>Minimum Selling Price</th><th>Stock Qty</th><th>Vendor</th><th>Order By</th><th>Display</th><th>Remove</th>
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach($product_variant as $variant)
+                        @php foreach($product_variant as $variant){ @endphp
                           <tr>
                             <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
                             <td>
@@ -284,7 +335,7 @@
                             </td>
                             <td>
                               <div class="form-group">
-                                <select class="form-control commission select2bs4" name="variant[display][]">
+                                <select class="form-control display_variant" name="variant[display][]">
                                   <option @if($variant['display_variant']==0) selected="selected" @endif value="0" selected>No</option>
                                   <option @if($variant['display_variant']==1) selected="selected" @endif value="1">Yes</option>
                                 </select>
@@ -292,57 +343,12 @@
                             </td>
                             <td><a class="btn btn-danger remove-variant-individual" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}"><i class="far fa-trash-alt"></i></a></td>
                           </tr>
-                        @endforeach
+                        @php } @endphp
                       </tbody>
                     </table>
-                  </div>
+    @php } @endphp
 
-                  
-                  <label class="new-product-variant-lable" style="display:none">New Product Variants</label>
-                  <div id="new-product-variant-block"></div>
 
-                  <div class="form-group">
-                    <label>Product Details</label>
-                    <textarea class="summernote" name="product_details">{{old('product_details',$product->long_description)}}</textarea>
-                  </div>
-
-                  <div class="form-group">
-                    <label>Treatment Information</label>
-                    <textarea class="summernote" name="treatment_information">{{old('treatment_information',$product->treatment_information)}}</textarea>
-                  </div>
-                  <div class="form-group">
-                    <label>Dosage Instructions</label>
-                    <textarea class="summernote" name="dosage_instructions">{{old('dosage_instructions',$product->dosage_instructions)}}</textarea>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="searchEngine">Search Engine Friendly Page Name</label>
-                    <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine',$product->search_engine_name)}}">
-                  </div>
-                  <div class="form-group">
-                    <label for="metaTile">Meta Title</label>
-                    <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title',$product->meta_title)}}">
-                  </div>
-                  <div class="form-group">
-                    <label for="metaKeyword">Meta Keywords</label>
-                    <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword',$product->meta_keyword)}}</textarea>
-                  </div>
-                  <div class="form-group">
-                    <label for="metaDescription">Meta Description</label>
-                    <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description',$product->meta_description)}}</textarea>
-                  </div>
-                  <div class="form-group">
-                    <a href="{{route('product.index')}}" class="btn reset-btn">Cancel</a>
-                    <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
   <style type="text/css">
     #clear-option,#add-options{
       float: left;
@@ -352,6 +358,15 @@
     }
     .hidden{
       display: none;
+    }
+    .list input{
+      width: 50%;
+      display: inline-block;
+      text-align: center;
+    }
+    .list td{
+      text-align: center;
+      /*display: inline-block;*/
     }
 </style>
   @push('custom-scripts')
@@ -373,6 +388,22 @@
       });
 
       $('#add-options').on('click',function(){
+        var order_exists='{{ $order_exists }}';
+        if (order_exists) {
+          if (!confirm('The product contain orders, adding new variant will result in disabling exiting variants.Do you want to make change?')) {
+              return false;
+          }
+        }
+        else{
+          if(!confirm('Existing variants will be removed. Do you want to make change?')){
+              return false;
+          }
+          else{
+            $('.product-variant-block').remove();
+          }
+        }
+
+          $('.product-variant-block .display_variant').val(0).attr("selected", "selected");
           var existing_options = <?php echo json_encode($options_id); ?>;
           var existingOption = JSON.stringify(existing_options);
 
@@ -383,6 +414,7 @@
         
         if(options.length > 0  && options.length <=5 ){
 
+
           var selectedOption = JSON.stringify($('#productVariant').val());
           var selectedVendor = JSON.stringify($('#VendorSupplier').val());
           if($('#VendorSupplier').val().length==0 && $('#productVariant').val()){
@@ -390,6 +422,7 @@
             return false;
           }
           else{
+            // alert($('#VendorSupplier').val());
             $('.product-variant-selectbox').find('.select2').css({'pointer-events':'none','opacity':'0.5'});
             $('#add-options').css({'pointer-events':'none','opacity':'0.5'});
             $('#clear-option').css('display','block');
@@ -399,7 +432,14 @@
           $.ajax({
             url:"{{ url('admin/product_variant') }}",
             type:"POST",
-            data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor,dataFrom:'edit',existOption:existingOption,existVendor:existingVendor},
+            data:{
+              "_token": "{{ csrf_token() }}",
+              options:selectedOption,
+              vendors:selectedVendor,
+              dataFrom:'edit',
+              existOption:existingOption,
+              existVendor:existingVendor
+            },
             success: function (data) { 
               //console.log(data);
               $('#new-product-variant-block').html(data);

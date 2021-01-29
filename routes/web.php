@@ -64,5 +64,5 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::get('wastage-product-search',['uses'=>'wastage.product.search','uses'=>'Admin\WastageController@ProductSearch']);	
 	Route::resource('customer','Admin\CustomerController');
 	Route::resource('vendor-products','Admin\VendorProdcutsController');
-	
+	Route::post('add-new-address','Admin\CustomerController@AddNewAddressController');
 });
