@@ -141,20 +141,22 @@
  <div class="clearfix"></div>
                             <div class="col-sm-6">
                               <label for="">Country *</label>
-                              {!! Form::text('company[country_id]', null,['class'=>'form-control required']) !!}
+
+                               {!! Form::select('country',$countries,$customer->company->country_id,['class'=>'form-control select2bs4 required', 'id'=>'company_country' ]) !!}
                               <span class="text-danger"></span>
                             </div>
 
-
                             <div class="col-sm-6">
                               <label for="">State *</label>
-                              {!! Form::text('company[state_id]', null,['class'=>'form-control required']) !!}
+                               <select name="company[state_id]" class="form-control select2bs4 required" id="company_state"></select>
+
+                              {{-- {!! Form::text('company[state_id]', null,['class'=>'form-control required']) !!} --}}
                               <span class="text-danger"></span>
                             </div>
 <div class="clearfix"></div>
                             <div class="col-sm-6">
                               <label for="">City *</label>
-                              {!! Form::text('company[city_id]', null,['class'=>'form-control required']) !!}
+                              <select name="company[city_id]" class="form-control select2bs4 required" id="company_city"></select>
                               <span class="text-danger"></span>
                             </div>
 
@@ -180,7 +182,11 @@
                                 <table class="table">
                                   <tr>
                                     <td rowspan="2" style="vertical-align: middle; border:none;">
-                                      <input type="radio" name="">
+                                      @if ($customer->address_id==$address->id)
+                                        <input type="radio" name="customer[address_id]" checked>
+                                      @else
+                                         <input type="radio" name="customer[address_id]" >
+                                      @endif
                                     </td>
                                     <td>
                                         {{ $address->name }}
@@ -238,7 +244,7 @@
                             <div class="form-group">
                               <label for="">Country *</label>
                               <br>
-                              {!! Form::text('address[country_id]', '',['class'=>'form-control required add_country_id']) !!}
+                              {!! Form::text('address[country_id]', '',['class'=>'form-control required add_country_id address_country']) !!}
                               <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -350,6 +356,79 @@
 @endif
 <script type="text/javascript">
 
+      $(document).ready(function(){
+        var country_id = "<?php echo json_decode($customer->company->country_id); ?>";
+        var state_id = "<?php echo json_decode($customer->company->state_id); ?>";
+        getState(country_id,'#company_state',state_id);
+      });
+      //Get City
+      $(document).ready(function(){
+        var state_id = "<?php echo json_decode($customer->company->state_id); ?>";
+        var city_id = "<?php echo json_decode($customer->company->city_id); ?>";
+        getCity(state_id,'#company_city',city_id);
+      });
+
+      $(document).on('change', '#company_country', function(event) {
+          var country_id = $(this).val();
+          getState(country_id,'#company_state',0);
+      });
+      $('#company_state').change(function() {
+        var state_id = $(this).val();
+        getCity(state_id,'#company_city',0);
+      })
+      function getState(countryID,append_id,state_id){
+
+        if(countryID){
+          $.ajax({
+            type:"GET",
+            dataType: 'json',
+            url:"{{url('admin/get-state-list')}}?country_id="+countryID,
+            success:function(res){  
+              if(res){
+                $(append_id).empty();
+                $(append_id).append('<option selected value=""> ---Select--- </option>');
+                $.each(res,function(key,value){
+                  var select_state="";
+                  if(state_id == key) { var select_state = "selected" }
+                  $(append_id).append('<option value="'+key+'" '+select_state+'>'+value+'</option>');
+                });
+                $(append_id).selectpicker('refresh');           
+              }else{
+                $(append_id).empty();
+              }
+            },
+            error: function(res) { alert(res.responseText) }
+          });
+        }else{
+          $(append_id).empty();        
+        }      
+      }
+      function getCity(stateID,append_id,city_id){
+        if(stateID){
+          $.ajax({
+            type:"GET",
+            dataType: 'json',
+            url:"{{url('admin/get-city-list')}}?state_id="+stateID,
+            success:function(res){  
+              if(res){
+                $(append_id).empty();
+                $(append_id).append('<option selected value=""> ---Select--- </option>');
+                $.each(res,function(key,value){
+                  var select_city="";
+                  if(city_id == key) { var select_city = "selected" }
+                  $(append_id).append('<option value="'+key+'" '+select_city+'>'+value+'</option>');
+                });
+                $(append_id).selectpicker('refresh');           
+              }else{
+                $(append_id).empty();
+              }
+            },
+            error: function(res) { alert(res.responseText) }
+          });
+        }else{
+          $(append_id).empty();        
+        }      
+      }
 
   $(document).on('click', '.submit-address', function(event) {
 

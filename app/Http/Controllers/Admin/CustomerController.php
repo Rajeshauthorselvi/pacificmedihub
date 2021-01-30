@@ -53,7 +53,6 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-
         $this->validate(request(),[
             '*.email' => 'unique:users'
         ],[
@@ -128,6 +127,8 @@ class CustomerController extends Controller
         ->where('id','<>',$customer->company_id)
         ->pluck('company_name','id')
         ->toArray();
+        $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        
         return view('admin.customer.edit',$data);
     }
 
