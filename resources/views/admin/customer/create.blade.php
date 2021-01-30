@@ -69,7 +69,7 @@
                           <div class="col-sm-12 customer-sec">
                           <div class="col-sm-6">
                             <label for="vendorName">Customer No *</label>
-                            {!! Form::text('customer[customer_no]',null,['class'=>'form-control required']) !!}
+                            {!! Form::text('customer[customer_no]',$product_id,['class'=>'form-control required','readonly']) !!}
                               <span class="text-danger"></span>
                           </div>
                           <div class="clearfix"></div>

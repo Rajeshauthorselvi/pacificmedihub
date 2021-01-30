@@ -9,6 +9,7 @@ use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
 use App\Models\Countries;
 use App\Models\UserCompanyDetails;
+use App\Models\Settings;
 use Redirect;
 use Arr;
 use Session;
@@ -41,7 +42,24 @@ class CustomerController extends Controller
 
         $data['all_company']=[''=>'Please Select']+UserCompanyDetails::where('parent_company',0)
                              ->pluck('company_name','id')->toArray();
+       $data['product_id']='';
 
+        $product_codee=Settings::where('key','prefix')
+                         ->where('code','customer')
+                        ->value('content');
+
+        if (isset($product_codee)) {
+            $value=unserialize($product_codee);
+
+            $char_val=$value['value'];
+            $explode_val=explode('-',$value['value']);
+            $total_datas=User::where('role_id',7)->count();
+            $total_datas=($total_datas==0)?end($explode_val)+1:$total_datas+1;
+            $data_original=$char_val;
+            $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
+            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
+            $data['product_id']=str_replace($search,$replace, $data_original);
+        }
         return view('admin.customer.create',$data);
     }
 
@@ -128,7 +146,7 @@ class CustomerController extends Controller
         ->pluck('company_name','id')
         ->toArray();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
-        
+
         return view('admin.customer.edit',$data);
     }
 
