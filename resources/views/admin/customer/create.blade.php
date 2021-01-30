@@ -108,7 +108,7 @@
                             </div>
                             <div class="col-sm-6">
                               <label for="">Parent Company</label>
-                              {!! Form::text('company[parent_company]', null,['class'=>'form-control']) !!}
+                              {!! Form::select('company[parent_company]', $all_company, null,['class'=>'form-control']) !!}
                             </div>
                             <div class="clearfix"></div>
                             <div class="col-sm-6">
