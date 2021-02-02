@@ -262,7 +262,7 @@ $(document).on('click', '.save-btn', function(event) {
     $('#prodct-add-sec').autocomplete({
       source: function( request, response) {
         $.ajax({
-          url: "{{ url('admin/product-search') }}",
+          url: "{{ url('admin/rfq-product') }}",
           data: {
             name: request.term,
             product_search_type:'product'

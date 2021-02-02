@@ -41,7 +41,7 @@
         <div class="row">
           <div class="col-md-12">
           {{-- {!! Form::open(['route'=>'customer.store','method'=>'POST','id'=>'form','files'=>true]) !!} --}}
-          {{ Form::model($customer,['method' => 'PATCH', 'route' =>['customer.update',$customer->id],'id'=>'form']) }}
+          {{ Form::model($customer,['method' => 'PATCH', 'route' =>['customer.update',$customer->id],'id'=>'form','files'=>true]) }}
             <div class="card card-outline card-primary">
               <div class="card-header">
                 <h3 class="card-title">Customer</h3>
@@ -164,6 +164,9 @@
                               <label for="">Company Logo JPEG</label>
                               <br>
                               {!! Form::file('company[logo]', null,['class'=>'form-control']) !!}
+                              <br>
+                              <br>
+                              <img src="{{ asset('theme/images/customer/company/'.$customer->company->id.'/'.$customer->company->logo) }}" width="100px" height="100px">
                             </div>
                             <div class="clearfix"></div>
                             <div class="col-sm-6">

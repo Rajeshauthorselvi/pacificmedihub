@@ -13,6 +13,7 @@ use App\Models\Settings;
 use Redirect;
 use Arr;
 use Session;
+use File;
 class CustomerController extends Controller
 {
     /**
@@ -37,6 +38,8 @@ class CustomerController extends Controller
      */
     public function create()
     {
+
+
         $data=array();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
 
@@ -47,7 +50,7 @@ class CustomerController extends Controller
         $product_codee=Settings::where('key','prefix')
                          ->where('code','customer')
                         ->value('content');
-
+                        
         if (isset($product_codee)) {
             $value=unserialize($product_codee);
 
@@ -71,6 +74,8 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+
+
         $this->validate(request(),[
             '*.email' => 'unique:users'
         ],[
@@ -103,6 +108,16 @@ class CustomerController extends Controller
         $company['created_at']=date('Y-m-d H:i:s');
         Arr::forget($company,['logo']);
         $company_id=UserCompanyDetails::insertGetId($company);
+
+        $logo_image=$request->company['logo'];
+        if($logo_image){
+            $photo          = $request->company['logo'];     
+            $filename       = $photo->getClientOriginalName();            
+            $file_extension = $request->company['logo']->getClientOriginalExtension();
+            $logo_image_name = strtotime("now").".".$file_extension;
+            $request->company['logo']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $logo_image_name);
+            UserCompanyDetails::where('id',$company_id)->update(['logo'=>$logo_image_name]);
+        }
         /*Insert Company Details*/
 
         /*Update Company , Address,Bank to users table*/
@@ -176,10 +191,25 @@ class CustomerController extends Controller
         $bank->update($bank_details);
 
         $company_details=$request->company;
+
         $company=UserCompanyDetails::find($company_details['company_id']);
         Arr::forget($company_details,['company_id']);
         $company->update($company_details);
 
+        $logo_image=$request->company['logo'];
+        if($logo_image){
+            $company_id=$request->company['company_id'];
+            $check_image=UserCompanyDetails::where('id',$company_id)->value('logo');
+            File::delete(public_path('theme/images/customer/company/'.$company_id.'/'.$check_image));
+
+            $photo          = $request->company['logo'];     
+            $filename       = $photo->getClientOriginalName();            
+            $file_extension = $request->company['logo']->getClientOriginalExtension();
+            $logo_image_name = strtotime("now").".".$file_extension;
+            $request->company['logo']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $logo_image_name);
+            UserCompanyDetails::where('id',$company_id)->update(['logo'=>$logo_image_name]);
+        
+        }
        
        return Redirect::route('customer.index')->with('success','Customer details updated successfully...!');
 

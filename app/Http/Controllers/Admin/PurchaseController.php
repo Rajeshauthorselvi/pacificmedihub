@@ -450,45 +450,45 @@ class PurchaseController extends Controller
                 $product_variants[$key]['option_id1'] = $variants->option_id;
                 $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
                 $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
-                $product_variants[$key]['option_id2'] = $variants->option_id2;
-                $product_variants[$key]['option_value_id2'] = $variants->option_value_id2;
-                $product_variants[$key]['option_value2'] = $variants->optionValue2->option_value;
-                $product_variants[$key]['option_id3'] = $variants->option_id3;
-                $product_variants[$key]['option_value_id3'] = $variants->option_value_id3;
-                $product_variants[$key]['option_value3'] = $variants->optionValue3->option_value;
+                $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+                $product_variants[$key]['option_value_id2'] = isset($variants->option_value_id2)?$variants->option_value_id2:'';
+                $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+                $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+                $product_variants[$key]['option_value_id3'] = isset($variants->option_value_id3)?$variants->option_value_id3:'';
+                $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
             }
             elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5==NULL))
             {
                 $product_variants[$key]['option_id1'] = $variants->option_id;
                 $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
                 $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
-                $product_variants[$key]['option_id2'] = $variants->option_id2;
-                $product_variants[$key]['option_value_id2'] = $variants->option_value_id2;
-                $product_variants[$key]['option_value2'] = $variants->optionValue2->option_value;
-                $product_variants[$key]['option_id3'] = $variants->option_id3;
-                $product_variants[$key]['option_value_id3'] = $variants->option_value_id3;
-                $product_variants[$key]['option_value3'] = $variants->optionValue3->option_value;
-                $product_variants[$key]['option_id4'] = $variants->option_id4;
-                $product_variants[$key]['option_value_id4'] = $variants->option_value_id4;
-                $product_variants[$key]['option_value4'] = $variants->optionValue4->option_value;
+                $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+                $product_variants[$key]['option_value_id2'] = isset($variants->option_value_id2)?$variants->option_value_id2:'';
+                $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+                $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+                $product_variants[$key]['option_value_id3'] = isset($variants->option_value_id3)?$variants->option_value_id3:'';
+                $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+                $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
+                $product_variants[$key]['option_value_id4'] = isset($variants->option_value_id4)?$variants->option_value_id4:'';
+                $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
             }
             elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5!=NULL))
             {
                 $product_variants[$key]['option_id1'] = $variants->option_id;
                 $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
                 $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
-                $product_variants[$key]['option_id2'] = $variants->option_id2;
-                $product_variants[$key]['option_value_id2'] = $variants->option_value_id2;
-                $product_variants[$key]['option_value2'] = $variants->optionValue2->option_value;
-                $product_variants[$key]['option_id3'] = $variants->option_id3;
-                $product_variants[$key]['option_value_id3'] = $variants->option_value_id3;
-                $product_variants[$key]['option_value3'] = $variants->optionValue3->option_value;
-                $product_variants[$key]['option_id4'] = $variants->option_id4;
-                $product_variants[$key]['option_value_id4'] = $variants->option_value_id4;
-                $product_variants[$key]['option_value4'] = $variants->optionValue4->option_value;
-                $product_variants[$key]['option_id5'] = $variants->option_id5;
-                $product_variants[$key]['option_value_id5'] = $variants->option_value_id5;
-                $product_variants[$key]['option_value5'] = $variants->optionValue5->option_value;
+                $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+                $product_variants[$key]['option_value_id2'] = isset($variants->option_value_id2)?$variants->option_value_id2:'';
+                $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+                $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+                $product_variants[$key]['option_value_id3'] = isset($variants->option_value_id3)?$variants->option_value_id3:'';
+                $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+                $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
+                $product_variants[$key]['option_value_id4'] = isset($variants->option_value_id4)?$variants->option_value_id4:'';
+                $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
+                $product_variants[$key]['option_id5'] = isset($variants->option_id5)?$variants->option_id5:'';
+                $product_variants[$key]['option_value_id5'] = isset($variants->option_value_id5)?$variants->option_value_id5:'';
+                $product_variants[$key]['option_value5'] = isset($variants->optionValue5->option_value)?$variants->optionValue5->option_value:'';
             }
 
             $product_variants[$key]['base_price'] = $variant_details->base_price;
