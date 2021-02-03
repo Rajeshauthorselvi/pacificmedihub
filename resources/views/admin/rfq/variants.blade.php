@@ -116,7 +116,7 @@
                           <?php $total_quantity +=$quantity; ?>
                         @endforeach
                         <tr>
-                          <td colspan="{{ count($options)+3 }}" class="text-right">Total:</td>
+                          <td colspan="{{ count($options)+4 }}" class="text-right">Total:</td>
                           <td class="total_quantity">{{ $total_quantity }}</td>
                           <td class="total_amount">{{ $total_amount }}</td>
                         </tr>

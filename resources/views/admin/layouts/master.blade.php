@@ -39,6 +39,7 @@
   <link rel="stylesheet" href="{{ asset('theme/plugins/codemirror/theme/monokai.css') }}">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('custom_data/css/custom.css') }}">
   
   
 </head>

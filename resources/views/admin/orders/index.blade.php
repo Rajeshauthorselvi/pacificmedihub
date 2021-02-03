@@ -27,9 +27,9 @@
         <div class="row">
           <div class="col-md-12 action-controllers ">
             <div class="col-sm-6 text-left pull-left">
-{{--               <a href="javascript:void(0)" class="btn btn-danger delete-all">
+              <a href="javascript:void(0)" class="btn btn-danger delete-all">
                 <i class="fa fa-trash"></i> Delete (selected)
-              </a> --}}
+              </a>
             </div>
             <div class="col-sm-6 text-right pull-right">
               <a class="btn add-new" href="{{route('rfq.create')}}">
@@ -48,34 +48,49 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Date</th>
+                        <th>Ordered Date</th>
+                        <th>Delivered Date</th>
                         <th>Order No</th>
                         <th>Customer</th>
                         <th>Sales Rep</th>
-                        <th>Quantity</th>
-                        <th>Status</th>
+                        <th>Order Status</th>
+                        <th>Grand Total</th>
+                        <th>Paid</th>
+                        <th>Balance</th>
+                        <th>Payment Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($rfqs as $rfq)
+                      @foreach ($orders as $order)
                         <tr>
                           <td><input type="checkbox" name=""></td>
-                          <td>{{ date('m/d/Y',strtotime($rfq->created_at)) }}</td>
-                          <td>{{ $rfq->order_no }}</td>
-                          <td>{{ $rfq->customer->first_name }}</td>
-                          <td>{{ $rfq->salesrep->emp_name }}</td>
+                          <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
-                            <?php $total_quantity=\App\Models\RFQProducts::TotalDatas($rfq->id); ?>
-                            {{ $total_quantity['quantity'] }}
+                            {{ isset($order->delivered_at)?date('d-m-Y H:i:s',strtotime($order->delivered_at)):'-' }}
                           </td>
-                          <td>{{  $rfq->statusName->status_name  }}</td>
+                          <td>{{ $order->order_no }}</td>
+                          <td>{{ $order->customer->first_name }}</td>
+                          <td>{{ $order->salesrep->emp_name }}</td>
+                          <td><span class="badge badge-info">{{  $order->statusName->status_name  }}</span></td>
+                          <td>
+                            <?php $sub_total=\App\Models\OrderProducts::OrderTotalProduct($order->id); ?>
+                            {{ $sub_total }}
+                          </td>
+                          <td>{{ isset($order->paid_amount)?$order->paid_amount:0 }}</td>
+                          <td>
+                              {{ $sub_total-$order->paid_amount }}
+                          </td>
+                          <td>
+                          <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
+                            {{ $payment_status[$order->payment_status] }}
+                          </td>
                           <td>
                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                                   <ul class="dropdown-menu">
-                                    <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                    <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                    <a href="{{route('orders.show',$order->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
+                                    <a href="{{route('orders.edit',$order->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                    {{--  <a href="#"><li class="dropdown-item">
                                       <form method="POST" action="{{ route('rfq.destroy',$rfq->id) }}">@csrf 
                                         <input name="_method" type="hidden" value="DELETE">

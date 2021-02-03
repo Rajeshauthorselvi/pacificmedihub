@@ -67,6 +67,9 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::post('add-new-address','Admin\CustomerController@AddNewAddressController');
 
 	Route::resource('rfq','Admin\RFQController');
+	Route::get('rfq-delete/{id}',['as'=>'rfq.delete','uses'=>'Admin\RFQController@destroy']);
 
 	Route::get('rfq-product',['as'=>'rfq.product','uses'=>'Admin\RFQController@ProductSearch']);
+
+	Route::resource('orders','Admin\OrderController');
 });

@@ -121,7 +121,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_date">Payment Status *</label>
-                          <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Not Paid']; ?>
+                          <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
                           {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control']) !!}
                         </div>
                     </div>

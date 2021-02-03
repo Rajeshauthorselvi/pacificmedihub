@@ -161,10 +161,10 @@
    ?>
 
                           <tr class="parent_tr">
+                            <td>
                             <input type="hidden" name="variant[row_id][]" value="{{ $variation_details->id }}">
                             <input type="hidden" name="variant[product_id][]" value="{{ $product['product_id'] }}" class="product_id">
                             <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
-                            <td>
                               <div class="form-group">
                                 <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">
                                 <input type="hidden" name="variant[option_value_id1][]" value="{{$variant['option_value_id1']}}">

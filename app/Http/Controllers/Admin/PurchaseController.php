@@ -144,7 +144,9 @@ class PurchaseController extends Controller
        if (isset($variant['option_id3'])) {
            $option_id3=$variant['option_id3'];
            $option_value_id3=$variant['option_value_id3'];
-       }elseif (isset($variant['option_id4'])) {
+       }
+
+       if (isset($variant['option_id4'])) {
            $option_id4=$variant['option_id4'];
            $option_value_id4=$variant['option_value_id4'];
        }
