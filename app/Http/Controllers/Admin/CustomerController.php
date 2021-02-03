@@ -108,9 +108,8 @@ class CustomerController extends Controller
         $company['created_at']=date('Y-m-d H:i:s');
         Arr::forget($company,['logo']);
         $company_id=UserCompanyDetails::insertGetId($company);
-
-        $logo_image=$request->company['logo'];
-        if($logo_image){
+        
+        if(isset($request->company['logo'])){
             $photo          = $request->company['logo'];     
             $filename       = $photo->getClientOriginalName();            
             $file_extension = $request->company['logo']->getClientOriginalExtension();
