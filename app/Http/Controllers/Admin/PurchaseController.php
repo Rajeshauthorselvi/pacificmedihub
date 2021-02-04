@@ -420,12 +420,12 @@ class PurchaseController extends Controller
         }
         return response()->json($names);
     }
-    public function Variants($product_id,$variation_id)
+    public function Variants($product_id,$variation_id=0)
     {
 
         $variant = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->first();
 
-        if (isset($variation_id)) {
+        if ($variation_id!=0) {
 
              $productVariants = ProductVariant::where('product_id',$product_id)
                             ->where('is_deleted',0)
