@@ -1,31 +1,34 @@
-<div class="clearfix"></div>
-<div class="bs-example">
-    <div class="accordion" id="accordionExample">
-        <div class="card">
-            <div class="card-header" id="headingOne">
-                <h2 class="mb-0">
-                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ $product_id }}"><i class="fa fa-plus"></i> {{ $product_name }}</button>                  
-                </h2>
-            </div>
-            <div id="collapse{{ $product_id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                <div class="card-body">
-  
-                  <div class="table-responsive">
-                    <table  id="variantList" class="table table-striped table-bordered table-hover vatiant_table">
-                      <thead>
-                        <tr>
-                          @foreach ($options as $option)
-                            <td class="text-left">{{ $option }}</td>
-                          @endforeach
-                          <td class="text-left">Base Price</td>
-                          <td class="text-left">Retail Price</td>
-                          <td class="text-left">Minimum Selling Price</td>
-                          <td class="text-left">Quantity</td>
-                          <td class="text-left">Sub Total</td>
-                          <td class="text-left"></td>
-                        </tr>
-                      </thead>
-                      <tbody>
+
+      <tr class="accordion-toggle collapsed collapse{{ $product_id }}" id="accordion{{ $product_id }}" data-toggle="collapse" data-parent="#accordion{{ $product_id }}" href="#collapse{{ $product_id }}">
+      <td class="expand-button"></td>
+      <td>{{ $product_name }}</td>
+      <td>Quantity:&nbsp;<span class="total-quantity"></span></td>
+      <td>Total:&nbsp;<span class="total"></span></td>
+      <td>
+        <a href="javascript:void(0)" class="btn btn-danger remove-product-row">
+          <i class="fa fa-trash"></i>
+        </a>
+      </td>
+      </tr>
+      <tr class="hide-table-padding" class="test">
+      <td></td>
+      <td colspan="4">
+      <div id="collapse{{ $product_id }}" class="collapse in p-3">
+        <table class="table table-bordered" style="width: 100%">
+          <thead>
+            <tr>
+              @foreach ($options as $option)
+                <th>{{ $option }}</th>
+              @endforeach
+              <th>Base Price</th>
+              <th>Retail Price</th>
+              <th>Minimum Selling Price</th>
+              <th>Quantity</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
                         <?php $total_amount=$total_quantity=0 ?>
    @foreach($product_variant as $key=>$variant)
  {{--                        @if ($key==0)
@@ -33,9 +36,9 @@
                             <td class="text-center" colspan="{{ $option_count+6 }}">{{ $product_name }}</td>
                           </tr>
                         @endif --}}
-                          <tr>
+                          <tr class="parent_tr">
                             <input type="hidden" name="variant[product_id][]" value="{{ $product_id }}" class="product_id">
-                            <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
+                            <input type="hidden" name="variant[variant_id][]" value="{{$variant['variant_id']}}">
                             <td>
                               <div class="form-group">
                                 <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">
@@ -79,11 +82,9 @@
                                 </div>
                               </td>
                             @endif
-                            <td class="base_price">
-                {{$variant['base_price']}}
-                            </td>
+                            <td> {{$variant['base_price']}} </td>
                             <td>
-                <input type="hidden" name="variant[base_price][]" value="{{$variant['base_price']}}">
+                <input type="hidden" name="variant[base_price][]" class="base_price" value="{{$variant['base_price']}}">
                 <input type="hidden" name="variant[retail_price][]" value="{{$variant['retail_price']}}">
 
                 {{$variant['retail_price']}}
@@ -94,32 +95,27 @@
                             </td>
                             <td>
                               <div class="form-group">
-                                <?php $quantity=1 ?>
-                                <input type="text" class="form-control stock_qty"  name="variant[stock_qty][]" value="{{ $quantity }}">
+                                <?php $quantity=0 ?>
+                                <input type="text" class="form-control stock_qty"  name="variant[stock_qty][]" value="0">
                               </div>
                             </td>
                             <td>
                               <div class="form-group">
-                                <span class="sub_total">{{ $variant['base_price'] }}</span>
-                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $variant['base_price'] }}">
+                                <span class="sub_total">0</span>
+                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="0">
                               </div>
                             </td>
-                            <td><a class="btn btn-danger remove-item" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}"><i class="fa fa-trash"></i></a></td>
+                            <td>
+                              <a class="btn btn-danger remove-item">
+                                <i class="fa fa-trash"></i>
+                              </a>
+                            </td>
                           </tr>
                           <?php $total_amount +=$variant['base_price']; ?>
                           <?php $total_quantity +=$quantity; ?>
                         @endforeach
-                        <tr>
-                          <td colspan="{{ count($options)+3 }}" class="text-right">Total:</td>
-                          <td class="total_quantity">{{ $total_quantity }}</td>
-                          <td class="total_amount">{{ $total_amount }}</td>
-                        </tr>
                       </tbody>
-                    </table>
-                  </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<br>
+        </table>
+      </div>
+      </td>
+      </tr>

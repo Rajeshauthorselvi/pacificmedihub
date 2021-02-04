@@ -58,7 +58,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Purchase Order Number *</label>
-                          {!! Form::text('purchase_order_number',null,['class'=>'form-control']) !!}
+                          {!! Form::text('purchase_order_number',null,['class'=>'form-control','readonly']) !!}
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -72,7 +72,7 @@
                     <div class="col-sm-8">
                         <div class="form-group">
                           <label for="purchase_order_number">Products *</label>
-                          {!! Form::text('product',null, ['class'=>'form-control','id'=>'prodct-add-sec']) !!}
+                          {!! Form::text('product',null, ['class'=>'form-control','id'=>'prodct-add-sec','readonly']) !!}
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -83,177 +83,130 @@
                     </div>
                   </div>
                   <div class="order-item-sec">
-<div class="clearfix"></div>
-<div class="bs-example">
-    <div class="accordion" id="accordionExample">
-      @foreach ($purchase_products as $product_id=>$products)
-        <div class="card">
-            <div class="card-header" id="headingOne">
-                <h2 class="mb-0">
-                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ $product_id }}"><i class="fa fa-plus"></i> {{ $product_name[$product_id] }}</button>                  
-                </h2>
-            </div>
-            <div id="collapse{{ $product_id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                <div class="card-body">
-                  <div class="table-responsive">
-  <table class="table table-bordered purchase-table vatiant_table">
-                      <thead>
-                        <tr>
-                          <th>Product</th>
-                          @foreach($options[$product_id]['options'] as $option)
-                            <th>{{$option}}</th>
-                          @endforeach
-                          <th>Base Price</th>
-                          <th>Retail Price</th>
-                          <th>Minimum Selling Price</th>
-                          <th>Quantity</th>
-                          <th>Sub Total</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php 
-                        $total_amount=$quantity=$all_quantity=$all_amount=0;
-                        ?>
 
-                        @foreach ($products as $key=>$variant)
-                        <?php $option_count=$options[$product_id]['option_count']; ?>
-                        <?php 
-                          
+                  <div class="container my-4">
+                    <div class="table-responsive">
+                      <table class="table">
+                          <thead>
+                            <?php
+                          $total_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id);
+                           ?>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Product Name</th>
 
+                              <th scope="col">
+                                  Total Quantity:&nbsp;
+                                  <span class="all_quantity">{{ $total_products->quantity }}</span>   
+                              </th>
+                              <th>
+                                  Total Amount:&nbsp;
+                                  <span class="all_amount">{{ $total_products->sub_total }}</span>
+                              </th>
+                              <th scope="col"></th>
+                            </tr>
+                           
+                          </thead>
+                        <tbody>
+                           @foreach ($purchase_products as $product)
+                           <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
+                            <td class="expand-button"></td>
+                             <?php
+                                  $total_based_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id,$product['product_id']);
+                               ?>
+                              <td>{{ $product['product_name'] }}</th>
+                              <td>
+                                Quantity:&nbsp;
+                                <span class="total-quantity">{{ $total_based_products->quantity }}</span>
+                              </td>
+                              <td>
+                                Total:&nbsp;
+                                <span class="total">{{ $total_based_products->sub_total }}</span>
+                              </td>
+                          </tr>
+                          <tr class="hide-table-padding">
+                            <td></td>
+                            <td colspan="5">
+                              <div id="collapse{{ $product['product_id'] }}" class="collapse in p-3">
 
-                        $option_id1=isset($variant['option_id1'])?$variant['option_id1']:'';
-                        $product_id=isset($variant['product_id'])?$variant['product_id']:0;
-                    
-                        $product_id=$variant['product_id'];
-                        $option_id2=isset($variant['option_id2'])?$variant['option_id2']:'';
-                        $option_id3=isset($variant['option_id3'])?$variant['option_id3']:'';
-                        $option_id4=isset($variant['option_id4'])?$variant['option_id4']:'';
-                        $option_id5=isset($variant['option_id5'])?$variant['option_id5']:'';
-
-                        $option_value_id1=isset($variant['option_value_id1'])?$variant['option_value_id1']:'';
-                        $option_value_id2=isset($variant['option_value_id2'])?$variant['option_value_id2']:'';
-                        $option_value_id3=isset($variant['option_value_id3'])?$variant['option_value_id3']:'';
-                        $option_value_id4=isset($variant['option_value_id4'])?$variant['option_value_id4']:'';
-                        $option_value_id5=isset($variant['option_value_id5'])?$variant['option_value_id5']:'';
-
-  
-
-                        $total=\App\Models\PurchaseProducts::StockQuantity($product_id,$option_id1, $option_id2, $option_id3, $option_id4, $option_value_id1, $option_value_id2, $option_value_id3, $option_value_id4, $option_value_id5,$option_count,'sub_total',$purchase->id);
-
-
-
-                        $total_quantity=\App\Models\PurchaseProducts::StockQuantity($product_id,$option_id1, $option_id2, $option_id3, $option_id4, $option_value_id1, $option_value_id2, $option_value_id3, $option_value_id4, $option_value_id5,$option_count,'quantity',$purchase->id);
-
-
-                        ?>
+                      <table class="table table-bordered" style="width: 100%">
+                        <thead>
                           <tr>
-                              <td>
-                                {{ $variant['product_name'] }}
-                                <input type="hidden" name="variant[product_id][]" value="{{ $product_id }}" class="product_id">
-                              </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">
-                                <input type="hidden" name="variant[option_value_id1][]" value="{{$variant['option_value_id1']}}">
-                                {{$variant['option_value1']}}
-                              </div>
-                            </td>
+                            @foreach ($product['options'] as $option)
+                              <th>{{ $option }}</th>
+                            @endforeach
+                            <th>Base Price</th>
+                            <th>Retail Price</th>
+                            <th>Minimum Selling Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <?php $total_amount=$total_quantity=$final_price=0 ?>
+                       @foreach($product['product_variant'] as $key=>$variant)
+
+                       <?php 
+                         $option_count=$product['option_count'];
+                         $variation_details=\App\Models\PurchaseProducts::VariationPrice($product['product_id'],$variant['variant_id'],$purchase->id);
+                       ?>
+                        <input type="hidden" name="variant[row_id][]" value="{{ $variation_details->id }}">
+                          <tr class="parent_tr">
+                            <td>{{$variant['option_value1']}}</td>
                             @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
-                              <td>
-                                <div class="form-group">
-                                  <input type="hidden" name="variant[option_id2][]" value="{{$variant['option_id2']}}">
-                                  <input type="hidden" name="variant[option_value_id2][]" value="{{$variant['option_value_id2']}}">
-                                  {{$variant['option_value2']}}
-                                </div>
-                              </td>
+                              <td>{{$variant['option_value2']}}</td>
                             @endif
                             @if($option_count==3||$option_count==4||$option_count==5)
-                              <td>
-                                <div class="form-group">
-                                  <input type="hidden" name="variant[option_id3][]" value="{{$variant['option_id3']}}">
-                                  <input type="hidden" name="variant[option_value_id3][]" value="{{$variant['option_value_id3']}}">
-                                  {{$variant['option_value3']}}
-                                </div>
-                              </td>
+                              <td>{{$variant['option_value3']}}</td>
                             @endif
                             @if($option_count==4||$option_count==5)
-                              <td>
-                                <div class="form-group">
-                                  <input type="hidden" name="variant[option_id4][]" value="{{$variant['option_id4']}}">
-                                  <input type="hidden" name="variant[option_value_id4][]" value="{{$variant['option_value_id4']}}">
-                                  {{$variant['option_value4']}}
-                                </div>
-                              </td>
+                              <td>{{$variant['option_value4']}}</td>
                             @endif
                             @if($option_count==5)
-                              <td>
-                                <div class="form-group">
-                                  <input type="hidden" name="variant[option_id5][]" value="{{$variant['option_id5']}}">
-                                  <input type="hidden" name="variant[option_value_id5][]" value="{{$variant['option_value_id5']}}">
-                                  {{$variant['option_value5']}}
-                                </div>
-                              </td>
+                              <td> {{$variant['option_value5']}} </td>
                             @endif
-              <td class="base_price">
-                {{$variant['base_price']}}
+                            <td> {{$variant['base_price']}}
                             </td>
-                            <td>
-                              <input type="hidden" name="variant[base_price][]" value="{{$variant['base_price']}}">
-                              <input type="hidden" name="variant[retail_price][]" value="{{$variant['retail_price']}}">
-                              {{$variant['retail_price']}}
-                            </td>
-                            <td>
-                              <input type="hidden" name="variant[minimum_selling_price][]" value="{{$variant['minimum_selling_price']}}">
-                              {{$variant['minimum_selling_price']}}
-                            </td>
-                          <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{ $total_quantity }}">
-                              </div>
-                            </td>
+                            <td> {{$variant['retail_price']}}</td>
+                            <td> {{$variant['minimum_selling_price']}} </td>
                             <td>
                               <div class="form-group">
-                                <span class="sub_total">{{ $variant['base_price']*$total_quantity }}</span>
-                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $variant['base_price']*$total_quantity  }}">
+                                  <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{ $variation_details['quantity'] }}">
                               </div>
                             </td>
+                         
                             <td>
-                              <a href="javascript::void(0)" class="btn btn-danger remove-item">
-                                <i class="fa fa-trash"></i>
-                              </a>
+                               <input type="hidden" name="variant[base_price][]" class="base_price" value="{{$variant['base_price']}}"> 
+                              <?php $high_value=$variation_details['base_price']; ?>
+                              <div class="form-group">
+                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $variation_details['sub_total']  }}">
+                                <span class="sub_total">{{ $variation_details['sub_total'] }}</span>
+                              </div>
                             </td>
                           </tr>
-                          <?php $total_amount +=$variant['base_price']*$total_quantity; ?>
-                          <?php $quantity +=$total_quantity; ?>
+                          <?php $total_amount +=$variation_details['sub_total']; ?>
+                          <?php $total_quantity +=$variation_details['quantity']; ?>
                         @endforeach
                         <tr>
-                          <td colspan="{{ count($options[$product_id]['options'])+4 }}" class="text-right">Total: </td>
-                          <td class="total_quantity">
-                            {{ $quantity }}
-                          </td>
-                          <td class="total_amount">
-                           {{ $total_amount }}
-                          </td>
+                          <td colspan="{{ count($product['options'])+3 }}" class="text-right">Total:</td>
+                          <td class="total_quantity">{{ $total_quantity }}</td>
+                          <td class="total_amount">{{ $total_amount }}</td>
                         </tr>
                       </tbody>
-                    </table>
+                      </table>
+
+                              </div>
+                            </td>
+                          </tr>
+                           @endforeach
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
-            </div>
-        </div>
-        <br>
-
-        <?php $all_quantity +=$quantity; ?>
-        <?php $all_amount +=$total_amount; ?>
-      @endforeach
-    </div>
-</div>
-
 
                   </div>
                   <div class="col-sm-12 order-total-sec">
-
+{{-- 
                     <div class="panel panel-default">
                       <div class="panel-body">
                         <table class="table table-bordered total-sec">
@@ -268,7 +221,7 @@
                         </table>
                       </div>
                       </div>
-                    </div>
+                    </div> --}}
                   <div class="tax-sec">
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -291,7 +244,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_date">Payment Status *</label>
-                          <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Not Paid']; ?>
+                          <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
                           {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control']) !!}
                         </div>
                     </div>
@@ -337,7 +290,7 @@
                         Cancel
                       </a>
                       <button class="btn save-btn" type="submit">
-                        Submit
+                        Save
                       </button>
 
                     </div>
@@ -365,19 +318,21 @@
 @push('custom-scripts')
 <script type="text/javascript">
 
-    function SumAllTotal() {
-            $('.order-total-sec').show();
-            var sum = 0;
-            $('.total_amount').each(function(){
-                sum += parseFloat($(this).text());
-            });
-            $('.all_total').html('<b>Grant Total: '+sum+'</b>');
-            var quantity=0;
-            $('.total_quantity').each(function(){
-                quantity += parseFloat($(this).text());
-            });
-            $('.all_quantity').html('<b> Total Quantity: '+quantity+'</b>');
-    }
+      function validateNum(e , field) {
+        var val = field.value;
+        var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
+        var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
+        if (re.test(val)) {
+
+          } else {
+              val = re1.exec(val);
+              if (val) {
+                  field.value = val[0];
+              } else {
+                  field.value = "";
+              }
+          }
+      }
 
 
     $(document).ready(function(){
@@ -404,26 +359,40 @@
         this.value = this.value.replace(/\D/g, '');
       }
       else{
-        var base=$(this).parents('tr');
-          var base_price=base.find('.base_price').text();
+
+          var base=$(this).parents('.parent_tr');
+          var base_price=base.find('.base_price').val();
           var total_price=base_price*$(this).val();
           base.find('.subtotal_hidden').val(total_price);
           base.find('.sub_total').text(total_price);
 
-            var subtotal=$(this).parents('.vatiant_table').find('.subtotal_hidden');
-            var sum = 0;
-            $(subtotal).each(function(){
-                sum += parseFloat(this.value);
-            });
-            $(this).parents('.vatiant_table').find('.total_amount').text(sum);
-            var stock_qty=$(this).parents('.vatiant_table').find('.stock_qty');
-            var quantity=0;
-            $(stock_qty).each(function(){
-                quantity += parseFloat(this.value);
-            });
-            $(this).parents('.vatiant_table').find('.total_quantity').text(quantity);
+
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+
+          var total_quantity=SumTotal('#'+attr_id+' .stock_qty');
+          
+          $('.'+attr_id).find('.total-quantity').text(total_quantity);
+
+          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+          $('.'+attr_id).find('.total').text(total_amount);
+
+
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+
+          $('.all_quantity').text(SumTotal('.stock_qty'));
+          $('.all_amount').text(SumTotal('.subtotal_hidden'));
+
       }
     });
+
+function SumTotal(class_name) {
+  var sum = 0;
+  $(class_name).each(function(){
+      sum += parseFloat(this.value);
+  });
+  return sum;
+}
+
   var path ="{{ url('admin/product-search') }}";
   
     $('#prodct-add-sec').autocomplete({
