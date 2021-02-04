@@ -101,18 +101,20 @@
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Product Name</th>
+
                     <th scope="col">
                         Total Quantity:&nbsp;
                         <span class="all_quantity">{{ $total_products->quantity }}</span>   
                     </th>
-     {{--                <th scope="col">
-                        Total RFQ Price:&nbsp;
-                        <span class="all_rfq_price">{{ $total_products->rfq_price }}</span>  
-                    </th> --}}
+                    <th scope="col">
+                        Price:&nbsp;
+                        <span class="all_rfq_price">{{ $total_products->final_price  }}</span>  
+                    </th>
                     <th>
                         Total Amount:&nbsp;
                         <span class="all_amount">{{ $total_products->sub_total }}</span>
                     </th>
+                    <th scope="col"></th>
                   </tr>
                  
                 </thead>
@@ -125,13 +127,13 @@
                  ?>
                 <td>{{ $product['product_name'] }}</th>
                 <th>Quantity: {{ $total_based_products->quantity }}</th>
-                {{-- <th>RFQ Price: {{ $total_based_products->rfq_price }}</th> --}}
+                <th>Price: {{ $total_based_products->final_price }}</th>
                 <th>Total: {{ $total_based_products->sub_total }}</th>
 
                 </tr>
                 <tr class="hide-table-padding">
                 <td></td>
-                <td colspan="4">
+                <td colspan="5">
                  <div id="collapse{{ $product['product_id'] }}" class="collapse in p-3">
                       <table class="table table-bordered" style="width: 100%">
                         <thead>
@@ -143,12 +145,12 @@
                             <th>Retail Price</th>
                             <th>Minimum Selling Price</th>
                             <th>Quantity</th>
-                            {{-- <th>RFQ Price</th> --}}
+                            <th>Price</th>
                             <th>Subtotal</th>
                           </tr>
                         </thead>
                         <tbody>
-                        <?php $total_amount=$total_quantity=0 ?>
+                        <?php $total_amount=$total_quantity=$final_price=0 ?>
                        @foreach($product['product_variant'] as $key=>$variant)
                        <?php 
                          $option_count=$product['option_count'];
@@ -174,20 +176,22 @@
                             <td>
                               <div class="form-group">{{ $variation_details['quantity'] }}</div>
                             </td>
-{{--                             <td>
-                              <?php $high_value=$variation_details['rfq_price']; ?>
+                            <td>
+                              <?php $high_value=$variation_details['final_price']; ?>
                               {{ $high_value }}
-                            </td> --}}
+                            </td>
                             <td>
                               <div class="form-group">{{ $variation_details['sub_total'] }}</div>
                             </td>
                           </tr>
                           <?php $total_amount +=$variation_details['sub_total']; ?>
+                          <?php $final_price +=$variation_details['final_price']; ?>
                           <?php $total_quantity +=$variation_details['quantity']; ?>
                         @endforeach
                         <tr>
                           <td colspan="{{ count($product['options'])+3 }}" class="text-right">Total:</td>
                           <td class="total_quantity">{{ $total_quantity }}</td>
+                          <td class="final_price">{{ $final_price }}</td>
                           <td class="total_amount">{{ $total_amount }}</td>
                         </tr>
                       </tbody>
@@ -269,7 +273,7 @@
                         Cancel
                       </a>
                       <button class="btn save-btn" type="submit">
-                        Submit
+                        Save
                       </button>
 
                     </div>
@@ -296,24 +300,7 @@
   .date-sec .col-sm-4, .product-sec .col-sm-4 {
     float: left;
   }
-  tr.hide-table-padding>td {
-    padding: 0;
-  }
-  .expand-button {
-    position: relative;
-  }
-  .accordion-toggle .expand-button:after
-  {
-    position: absolute;
-    left:.75rem;
-    top: 50%;
-    transform: translate(0, -50%);
-    content: '-';
-  }
-  .accordion-toggle.collapsed .expand-button:after
-  {
-    content: '+';
-  }
+
   .order-no-sec {
     line-height: 38px;
     font-size: 18px;

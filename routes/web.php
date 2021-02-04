@@ -72,4 +72,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::get('rfq-product',['as'=>'rfq.product','uses'=>'Admin\RFQController@ProductSearch']);
 
 	Route::resource('orders','Admin\OrderController');
+	Route::get('orders-product',['as'=>'orders.product','uses'=>'Admin\OrderController@ProductSearch']);
+
+
+	Route::resource('admin-profile','Admin\AdminProfileController');
 });

@@ -123,7 +123,7 @@
  <div class="clearfix"></div>
                             <div class="col-sm-6">
                               <label for="">Company Email *</label>
-                              {!! Form::text('company[company_email]', null,['class'=>'form-control required']) !!}
+                              {!! Form::email('company[company_email]', null,['class'=>'form-control required']) !!}
                               <span class="text-danger"></span>
                             </div>
  <div class="clearfix"></div>

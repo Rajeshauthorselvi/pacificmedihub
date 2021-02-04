@@ -45,10 +45,6 @@ class OrderController extends Controller
         $rfq_id=$request->rfq_id;
 
 
-        if (!isset($rfq_id)) {
-            return Redirect::route('rfq.index')->with('error','RFQ id is required....');
-        }
-
         $data=array();
         $data['rfqs']=RFQ::with('customer','salesrep','statusName')
                       ->where('rfq.id',$rfq_id)
@@ -160,19 +156,55 @@ class OrderController extends Controller
        ];
        $order_id=Orders::insertGetId($order_data);
 
-       $pfq_products=RFQProducts::where('rfq_id',$request->rfq_id)->get();
-       foreach ($pfq_products as $key => $products) {
-           OrderProducts::insert([
-                'order_id'              => $order_id,
-                'product_id'            => $products->product_id,
-                'product_variation_id'  => $products->product_variant_id,
-                'base_price'            => $products->base_price,
-                'retail_price'          => $products->retail_price,
-                'minimum_selling_price' => $products->minimum_selling_price,
-                'quantity'              => $products->quantity,
-                'sub_total'             => $products->sub_total,
-           ]);
+
+       if ($request->has('rfq_id')) {
+           $pfq_products=RFQProducts::where('rfq_id',$request->rfq_id)->get();
+           foreach ($pfq_products as $key => $products) {
+               OrderProducts::insert([
+                    'order_id'              => $order_id,
+                    'product_id'            => $products->product_id,
+                    'product_variation_id'  => $products->product_variant_id,
+                    'base_price'            => $products->base_price,
+                    'retail_price'          => $products->retail_price,
+                    'minimum_selling_price' => $products->minimum_selling_price,
+                    'quantity'              => $products->quantity,
+                    'sub_total'             => $products->sub_total,
+               ]);
+           }
        }
+       else{
+
+            $quantites=$request->quantity;
+            $variant=$request->variant;
+
+            $product_ids=$variant['product_id'];
+            $variant_id=$variant['id'];
+            $base_price=$variant['base_price'];
+            $retail_price=$variant['retail_price'];
+            $minimum_selling_price=$variant['minimum_selling_price'];
+            $stock_qty=$variant['stock_qty'];
+            $sub_total=$variant['sub_total'];
+            $final_price=$variant['final_price'];
+
+            foreach ($product_ids as $key => $product_id) {
+                if ($stock_qty[$key]!=0) {
+                    $data=[
+                        'order_id'                  => $order_id,
+                        'product_id'                => $product_id,
+                        'product_variation_id'      => $variant_id[$key],
+                        'base_price'                => $base_price[$key],
+                        'retail_price'              => $retail_price[$key],
+                        'minimum_selling_price'     => $minimum_selling_price[$key],
+                        'quantity'                  => $stock_qty[$key],
+                        'sub_total'                 => $sub_total[$key],
+                        'final_price'                 => $final_price[$key]
+                    ];
+                    OrderProducts::insert($data);
+                }
+            }
+
+       }
+
        return Redirect::route('orders.index')->with('success','Order created successfully...!');
 
     }
@@ -228,7 +260,13 @@ class OrderController extends Controller
                 $product_name=Product::where('id',$product->product_id)
                               ->value('name');
                 $options=$this->Options($product->product_id);
-                $product_variant=$this->Variants($product->product_id);
+
+                $all_variants=OrderProducts::where('order_id',$order_id)
+                              ->where('product_id',$product->product_id)
+                              ->pluck('product_variation_id')
+                              ->toArray();
+
+                $product_variant=$this->Variants($product->product_id,$all_variants);
                 $product_data[$product->product_id]=[
                     'order_id'    => $order_id,
                     'product_id'=> $product->product_id,
@@ -291,6 +329,51 @@ class OrderController extends Controller
     {
         //
     }
+
+    public function ProductSearch(Request $request)
+    {
+
+        $search_type=$request->product_search_type;
+        if ($search_type=="product") {
+
+            $product_names=Product::where("name","LIKE","%".$request->input('name')."%")
+                          ->pluck('name','id')
+                          ->toArray();
+            $names=array();
+            if (count($product_names)>0) {
+                foreach ($product_names as $key => $name) {
+                    $names[]=[
+                        'value'=>$key,
+                        'label'  => $name
+                    ];
+                }  
+            }
+            else{
+                    $names=[
+                        'value'=>'',
+                        'label'  => 'No records found'
+                    ]; 
+            }
+            return response()->json($names);
+        }
+        elseif ($search_type=='product_options') {
+            $product_id=$request->product_id;
+
+            if ($product_id=="No records found") {
+                return ['status'=>false,'response'=>'No data found'];
+            }
+
+            $options=$this->Options($product_id);
+            $data['options'] = $options['options'];
+            $data['option_count'] = $options['option_count'];
+            $data['product_id'] = $product_id;
+            $data['product_name']=Product::where('id',$product_id)->value('name');
+            $data['product_variant']=$this->Variants($product_id);
+            $view=view('admin.orders.variants',$data)->render();
+            return $view;
+        }
+
+    }
     public function Variants($product_id,$variation_id=0)
     {
 
@@ -299,14 +382,14 @@ class OrderController extends Controller
         if ($variation_id!=0) {
 
              $productVariants = ProductVariant::where('product_id',$product_id)
-                            ->where('is_deleted',0)->where('id',$variation_id)
+                            ->where('is_deleted',0)
+                            ->whereIn('id',$variation_id)
                             ->get();
-
         }
         else{
-        $productVariants = ProductVariant::where('product_id',$product_id)
-                            ->where('is_deleted',0)->get();
-
+            $productVariants = ProductVariant::where('product_id',$product_id)
+                               ->where('is_deleted',0)
+                               ->get();
         }
 
 

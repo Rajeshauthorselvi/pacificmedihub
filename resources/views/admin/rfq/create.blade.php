@@ -13,7 +13,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('purchase.index')}}">RFQ</a></li>
+              <li class="breadcrumb-item"><a href="{{route('rfq.index')}}">RFQ</a></li>
               <li class="breadcrumb-item active">Add RFQ</li>
             </ol>
           </div><!-- /.col -->
@@ -117,29 +117,19 @@
     }
 
 
-tr.hide-table-padding>td {
-  padding: 0;
-}
-.expand-button {
-  position: relative;
-}
-
-.accordion-toggle .expand-button:after
-{
-  position: absolute;
-  left:.75rem;
-  top: 50%;
-  transform: translate(0, -50%);
-  content: '-';
-}
-.accordion-toggle.collapsed .expand-button:after
-{
-  content: '+';
-}
 </style>
 @push('custom-scripts')
   <script type="text/javascript">
 
+$(document).on('click', '.save-btn', function(event) {
+    
+    var check_variants_exists=$('.vatiant_table').length;
+    if (check_variants_exists==0) {
+      alert('Please select products');
+       event.preventDefault();
+    }
+
+});
   
 
   $(document).on('click', '.remove-item', function(event) {
@@ -233,7 +223,7 @@ function createTable(){
       data +='<td>#</td>';
       data +='<th scope="col">Product Name</th>';
       data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
-      data +='<th>Total RFQ Price:&nbsp;<span class="all_rfq_price"></span></th>';
+      data +='<th>Total Price:&nbsp;<span class="all_rfq_price"></span></th>';
       data +='<th>Total Amount:<span class="all_amount"></span></th>';
       data +='</tr>';
       data +='</thead>';

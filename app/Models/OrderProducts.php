@@ -26,7 +26,7 @@ class OrderProducts extends Model
 
     static function TotalDatas($order_id,$product_id=0)
     {
-    	$total_datas=self::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'));
+    	$total_datas=self::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'),DB::raw('sum(final_price) as final_price'));
 
     		if ($product_id!=0) {
     			$total_datas=$total_datas->where('product_id',$product_id);

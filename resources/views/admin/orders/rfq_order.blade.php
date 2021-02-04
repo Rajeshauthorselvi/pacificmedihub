@@ -93,7 +93,7 @@
                         <span class="all_quantity">{{ $total_products->quantity }}</span>   
                     </th>
                     <th scope="col">
-                        Total RFQ Price:&nbsp;
+                        Total Price:&nbsp;
                         <span class="all_rfq_price">{{ $total_products->rfq_price }}</span>  
                     </th>
                     <th>
@@ -112,7 +112,7 @@
                  ?>
                 <td>{{ $product['product_name'] }}</th>
                 <th>Quantity: {{ $total_based_products->quantity }}</th>
-                <th>RFQ Price: {{ $total_based_products->rfq_price }}</th>
+                <th>Price: {{ $total_based_products->rfq_price }}</th>
                 <th>Total: {{ $total_based_products->sub_total }}</th>
 
                 </tr>
@@ -212,7 +212,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_date">Payment Reference Number</label>
-                          {!! Form::text('payment_reference_no', null,['class'=>'form-control']) !!}
+                          {!! Form::text('payment_ref_no', null,['class'=>'form-control']) !!}
                         </div>
                     </div>
                     <div class="col-sm-4">

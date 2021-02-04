@@ -1,11 +1,14 @@
 
-      <tr class="accordion-toggle collapsed" id="accordion{{ $product_id }}" data-toggle="collapse" data-parent="#accordion{{ $product_id }}" href="#collapse{{ $product_id }}">
+      <tr class="accordion-toggle collapsed collapse{{ $product_id }}" id="accordion{{ $product_id }}" data-toggle="collapse" data-parent="#accordion{{ $product_id }}" href="#collapse{{ $product_id }}">
       <td class="expand-button"></td>
       <td>{{ $product_name }}</td>
-      <td>Quantity:&nbsp;<span class="quantity_{{ $product_id }}"></span></td>
-      <td>Price:&nbsp;<span class="rfq_{{ $product_id }}"></span></td>
-      <td>Total:&nbsp;<span class="total_{{ $product_id }}"></span></td>
-
+      <td>Quantity:&nbsp;<span class="total-quantity"></span></td>
+      <td>Total:&nbsp;<span class="total"></span></td>
+      <td>
+        <a href="javascript:void(0)" class="btn btn-danger remove-product-row">
+          <i class="fa fa-trash"></i>
+        </a>
+      </td>
       </tr>
       <tr class="hide-table-padding" class="test">
       <td></td>
@@ -21,7 +24,7 @@
               <th>Retail Price</th>
               <th>Minimum Selling Price</th>
               <th>Quantity</th>
-              <th>Price</th>
+              <th>Final Price</th>
               <th>Subtotal</th>
               <th></th>
             </tr>
@@ -100,25 +103,32 @@
                                 <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" value="{{ $quantity }}">
                               </div>
                             </td>
+                             <?php $high_value=max($variant['minimum_selling_price'],$variant['base_price'],$variant['retail_price']) ?>
+                            <input type="hidden" class="max_price" value="{{ $high_value }}">
                             <td>
-                              <?php $high_value=max($variant['minimum_selling_price'],$variant['base_price'],$variant['retail_price']) ?>
-                              <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{ $high_value }}">
+                              <input type="text" name="variant[final_price][]" value="0" class="form-control">
                             </td>
                             <td>
+                             
                               <div class="form-group">
-                                <span class="sub_total">{{ $high_value }}</span>
-                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $high_value }}">
+                                <span class="sub_total">0</span>
+                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="0">
                               </div>
                             </td>
-                            <td><a class="btn btn-danger remove-item" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}"><i class="fa fa-trash"></i></a></td>
+                            <td>
+                              <a class="btn btn-danger remove-item" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}">
+                                <i class="fa fa-trash"></i>
+                              </a>
+                            </td>
                           </tr>
                           <?php $total_amount +=$high_value; ?>
                           <?php $total_quantity +=$quantity; ?>
                         @endforeach
                         <tr>
-                          <td colspan="{{ count($options)+4 }}" class="text-right">Total:</td>
-                          <td class="total_quantity">{{ $total_quantity }}</td>
-                          <td class="total_amount">{{ $total_amount }}</td>
+                          <td colspan="{{ count($options)+3 }}" class="text-right">Total:</td>
+                          <td class="total_quantity">0</td>
+                          <td class="final_price"></td>
+                          <td class="total_amount">0</td>
                         </tr>
                       </tbody>
         </table>

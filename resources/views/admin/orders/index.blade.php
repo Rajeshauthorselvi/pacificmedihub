@@ -32,7 +32,7 @@
               </a>
             </div>
             <div class="col-sm-6 text-right pull-right">
-              <a class="btn add-new" href="{{route('rfq.create')}}">
+              <a class="btn add-new" href="{{route('orders.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
               </a>
             </div>
