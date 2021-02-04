@@ -7,12 +7,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">List RFQ</h1>
+            <h1 class="m-0">List Orders</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item active">List Purchase</li>
+              <li class="breadcrumb-item active">List Orders</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -40,7 +40,7 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">All RFQ</h3>
+                <h3 class="card-title">List Orders</h3>
               </div>
               <div class="card">
                 <div class="card-body">
