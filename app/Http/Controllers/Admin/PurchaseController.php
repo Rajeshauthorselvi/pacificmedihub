@@ -81,7 +81,7 @@ class PurchaseController extends Controller
         $order_codee=Settings::where('key','prefix')
                          ->where('code','purchase_no')
                         ->value('content');
-
+        $data['purchase_code']='';
         if (isset($order_codee)) {
             $value=unserialize($order_codee);
 
