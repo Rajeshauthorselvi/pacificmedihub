@@ -33,7 +33,7 @@ class IsSuperAdmin
         }elseif(Auth::user()->role_id==6){
             return redirect()->route('deliveryPerson.login');
         }elseif(Auth::user()->role_id==7){
-            return redirect()->route('customer.login');
+            return redirect()->route('customers.login');
         }else{
             return $next($request);    
         }

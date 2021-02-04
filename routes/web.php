@@ -25,7 +25,7 @@ Route::post('admin','Admin\AuthController@store')->name('admin.store');
 Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::get('admin-dashboard','Admin\DashboardController@index')->name('admin.dashboard');
 	Route::get('admin-logout','Admin\AuthController@logout')->name('admin.logout');
-	Route::resource('product','Admin\ProductController');
+	Route::resource('products','Admin\ProductController');
 	Route::post('product_variant','Admin\ProductController@productVariant');
 	Route::post('delete-product-image',['as'=>'remove.pimage','uses'=>'Admin\ProductController@removeImage']);
 	Route::post('delete-product-variant',['as'=>'delete.variant','uses'=>'Admin\ProductController@removeVariant']);
@@ -62,7 +62,7 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('wastage','Admin\WastageController');
 
 	Route::get('wastage-product-search',['uses'=>'wastage.product.search','uses'=>'Admin\WastageController@ProductSearch']);	
-	Route::resource('customer','Admin\CustomerController');
+	Route::resource('customers','Admin\CustomerController');
 	Route::resource('vendor-products','Admin\VendorProdcutsController');
 	Route::post('add-new-address','Admin\CustomerController@AddNewAddressController');
 

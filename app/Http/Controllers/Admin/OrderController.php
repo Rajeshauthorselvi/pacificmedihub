@@ -325,7 +325,7 @@ class OrderController extends Controller
      * @param  \App\Models\Orders  $orders
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Orders $orders)
+    public function destroy(Request $request,Orders $orders)
     {
         //
     }

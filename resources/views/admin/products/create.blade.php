@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('product.index')}}">Products</a></li>
+              <li class="breadcrumb-item"><a href="{{route('products.index')}}">Products</a></li>
               <li class="breadcrumb-item active">Add Product</li>
             </ol>
           </div><!-- /.col -->
@@ -29,7 +29,7 @@
           @if (Request::get('from')=="vendor" && Request::has('vendor_id'))
            <a href="{{route('vendor-products.index',['vendor_id'=>Request::get('vendor_id')])}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
           @else
-          <a href="{{route('product.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route('products.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
           @endif
         </li>
       </ol>
@@ -41,7 +41,7 @@
                 <h3 class="card-title">Add Product</h3>
               </div>
               <div class="card-body">
-                <form action="{{route('product.store')}}" method="post" enctype="multipart/form-data" id="productForm">
+                <form action="{{route('products.store')}}" method="post" enctype="multipart/form-data" id="productForm">
                   @csrf
                   <div class="product-col-dividers">
                     <div class="col-one col-sm-6">
@@ -215,9 +215,8 @@
                       <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description')}}</textarea>
                     </div>
                   
-
                   <div class="form-group">
-                    <a href="{{route('product.index')}}" class="btn reset-btn">Cancel</a>
+                    <a href="{{route('products.index')}}" class="btn reset-btn">Cancel</a>
                     <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
                   </div>
                 </form>
@@ -229,15 +228,9 @@
     </section>
   </div>
 <style type="text/css">
-  #clear-option,#add-options{
-    float: left;
-  }
-  #add-options{
-    margin-right: 10px;
-  }
-  .hidden{
-    display: none;
-  }
+  #clear-option,#add-options{float: left;}
+  #add-options{margin-right: 10px;}
+  .hidden{display: none;}
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
@@ -349,18 +342,17 @@
           alert('Please add variants');
           return false
         }
-        var empty_field=$('#variantList .form-control').filter(function(){
+        var empty_field = $('#variantList .form-control').filter(function(){
                             return !$(this).val();
-                        }).length;
+                          }).length;
 
-     /*   if (empty_field!=0) {
+        if (empty_field!=0) {
           alert('Please fill all the variants.');
           return false;
         }
-        else{*/
-            $('#productForm').submit();
-        // }
-
+        else{
+          $('#productForm').submit();
+        }
 
       });
 
@@ -426,8 +418,6 @@
             success: function (data) { 
               //console.log(data);
               $('#product-variant-block').html(data);
-/*              createTable(data.options);
-              addOptionValue(0,data)*/
             }
           });
         }else{
@@ -435,7 +425,6 @@
         }
       });
 
-      
       //Clear Options
       $('#clear-option').on('click',function () {
         $('#clear-option').css('display','none');
@@ -446,80 +435,6 @@
         $('.product-variant-selectbox').find('.select2').css({'pointer-events':'auto','opacity':'1'});
         $('#product-variant-block').find('table').remove();
       });
-
-/*function createTable(options){
-  var html='';
-      html += '<div class="table-responsive">';
-      html += '  <table  id="variantList" class="table table-striped table-bordered table-hover">';
-      html += '    <thead>';
-      html += '      <tr>';
-      html += '        <td class="text-left">Vendor</td>';
-      for(option of options){
-        html += '        <td class="text-left">' + option.option_name + '</td>';
-      }
-      html += '        <td class="text-left">Base Price</td>';
-      html += '        <td class="text-left">Retail Price</td>';
-      html += '        <td class="text-left">Minimum Selling Price</td>';
-      html += '        <td class="text-left">Stock Qty</td>';
-      html += '        <td class="text-left">Order By</td>';
-      html += '        <td class="text-left">Display</td>';
-      //html += '        <td></td>';
-      html += '      </tr>';
-      html += '    </thead>';
-      html += '    <tbody>';
-      html += '    </tbody>';
-      html += '  </table>';
-      html += '</div>';
-      $('.product-variant-block').html(html);
-}    
-var option_value_row = 0;
-function addOptionValue(option_row,data) {
-
-  html  = '<tr id="option-value-row' + option_value_row + '">';
-  var totalOptions = data.options.length;
-  var optionValue=data.option_values[option_value_row];
-  var vendors=data.vendors;
-  var totalVendors=data.vendors.length;
-
-  console.log(data.options);
-
-  $.each(vendors, function(index, vendor) {
-        html += '  <td class="text-left"><input type="hidden" name="product_option[' + option_row + '][vendor]" value="'+vendor.id+'" />'+vendor.name+'</td>'
-  });
-  for(var i=1;i<=totalOptions;i++){
-    html += '  <td class="text-left"><input type="hidden" name="product_option[' + option_row + '][product_option_value][' + i + '][product_option_value_id]" value="'+optionValue["optionValueID"+i]+'" /><input type="hidden" name="product_option[' + option_row + '][product_option][' + i + '][product_option_id]" value="'+optionValue["optionID"+i]+'" />'+optionValue["optionValue"+i]+'</td>';
-  }
-      html +='<td><input type="text" class="form-control" name="product_option['+option_row+'][baseprice][' + i + '][product_option_value_id]"></td>';
-      html +='<td><input type="text" class="form-control" name="product_option['+option_row+'][retail_price][' + i + '][product_option_value_id]"></td>';
-      html +='<td><input type="text" class="form-control" name="product_option['+option_row+'][minimum_selling_price][' + i + '][product_option_value_id]"></td>';
-      html +='<td><input type="text" class="form-control" name="product_option['+option_row+'][display_order][' + i + '][product_option_value_id]"></td>';
-      html +='<td><input type="text" class="form-control" name="product_option['+option_row+'][stock_quantity][' + i + '][product_option_value_id]"></td>';
-  // html += '  <td class="text-right"><input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][quantity]" value="" placeholder="Quantity" class="form-control" /></td>';
-  // html += '  <td class="text-left"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][subtract]" class="form-control">';
-  // html += '    <option value="1">Yes</option>';
-  // html += '    <option value="0">No</option>';
-  // html += '  </select></td>';
-  // html += '  <td class="text-right"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][price_prefix]" class="form-control">';
-  // html += '    <option value="+">+</option>';
-  // html += '    <option value="-">-</option>';
-  // html += '  </select>';
-  // html += '  <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][price]" value="" placeholder="Price" class="form-control" /></td>';
-  // html += '  <td class="text-right"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][points_prefix]" class="form-control">';
-  // html += '    <option value="+">+</option>';
-  // html += '    <option value="-">-</option>';
-  // html += '  </select>';
-  // html += '  <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][points]" value="" placeholder="Points" class="form-control" /></td>';
-  // html += '  <td class="text-right"><select name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][weight_prefix]" class="form-control">';
-  // html += '    <option value="+">+</option>';
-  // html += '    <option value="-">-</option>';
-  // html += '  </select>';
-  // html += '  <input type="text" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][weight]" value="" placeholder="Weight" class="form-control" /></td>';
-  // html += '  <td class="text-left"><button type="button" onclick="$(this).tooltip(\'destroy\');$(\'#option-value-row' + option_value_row + '\').remove();" data-toggle="tooltip" rel="tooltip" title="Remove" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
-  html += '</tr>';
-
-  $('#variantList tbody').append(html);
-  option_value_row++;
-}*/
 
     </script>
   @endpush

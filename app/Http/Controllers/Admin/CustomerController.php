@@ -26,6 +26,7 @@ class CustomerController extends Controller
         $data=array();
         $data['all_customers']=User::with('company')
                                ->where('users.role_id',7)
+                               ->where('is_deleted',0)
                                ->get();
 
         return view('admin.customer.index',$data);
@@ -127,7 +128,7 @@ class CustomerController extends Controller
         $update_details->save();
         /*Update Company , address,bank to users table*/
 
-        return Redirect::route('customer.index')->with('success','Customer added successfully...!');
+        return Redirect::route('customers.index')->with('success','Customer added successfully...!');
 
     }   
 
@@ -210,7 +211,7 @@ class CustomerController extends Controller
         
         }
        
-       return Redirect::route('customer.index')->with('success','Customer details updated successfully...!');
+       return Redirect::route('customers.index')->with('success','Customer details updated successfully...!');
 
 
     }
@@ -221,9 +222,18 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+        $check_cus = User::find($id);
+        if($check_cus){
+            $check_cus->is_deleted = 1;
+            $check_cus->deleted_at = date('Y-m-d H:i:s');
+            $check_cus->update();
+            //$cus_cpy = UserCompanyDetails::where('customer_id',$id)->delete();
+            //$cus_bank = UserBankAcccount::where('customer_id',$id)->delete();
+        }
+        if ($request->ajax())  return ['status'=>true];
+        else return redirect()->route('customers.index')->with('error','customer deleted successfully...!');
     }
 
     public function AddNewAddressController(Request $request)

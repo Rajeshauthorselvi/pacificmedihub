@@ -39,7 +39,7 @@
               </a>
             </div>
             <div class="col-sm-6 text-right pull-right">
-              <a class="btn add-new" href="{{route('product.create',['from'=>'vendor','vendor_id'=>Request::get('vendor_id')])}}">
+              <a class="btn add-new" href="{{route('products.create',['from'=>'vendor','vendor_id'=>Request::get('vendor_id')])}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
             </a>
             </div>
@@ -88,9 +88,9 @@
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
                                 <a href="#"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                <a href="{{route('product.edit',[$product['id'],'from'=>'vendor','vendor_id'=>Request::get('vendor_id')])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                <a href="{{route('products.edit',[$product['id'],'from'=>'vendor','vendor_id'=>Request::get('vendor_id')])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                 <a href="#"><li class="dropdown-item">
-                                  <form method="POST" action="{{ route('product.destroy',$product['id']) }}">@csrf 
+                                  <form method="POST" action="{{ route('products.destroy',$product['id']) }}">@csrf 
                                     <input name="_method" type="hidden" value="DELETE">
                                     <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
                                   </form>

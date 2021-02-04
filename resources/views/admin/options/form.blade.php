@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li> 
-              <li class="breadcrumb-item"><a href="{{route('product.index')}}">Products</a></li>
+              <li class="breadcrumb-item"><a href="{{route('products.index')}}">Products</a></li>
               <li class="breadcrumb-item active">Options</li>
             </ol>
           </div><!-- /.col -->
@@ -37,7 +37,7 @@
                   <h3 class="card-title">Add New Product Option</h3>
               </div>
               <div class="card-body">
-                  {!! Form::open(['route'=>'options.store','method'=>'POST','id'=>'form-validate']) !!}
+                  {!! Form::open(['route'=>'options.store','method'=>'POST','class'=>'optionForm',' id'=>'form-validate']) !!}
                   <div class="form-group">
                     <label for="option_name">Option Name</label>
                     {{ Form::text('option_name',null,['class'=>'form-control','id'=>'option_name']) }}
@@ -56,6 +56,9 @@
                         <ul class="chat-screen list-unstyled"></ul>
                        </div>
                     </div>
+                    @if($errors->has('option_values'))
+                      <span class="text-danger">{{ $errors->first('option_values') }}</span>
+                    @endif
                   </div>
                   <div class="form-group">
                     <label for="display_order">Display Order</label>
@@ -72,7 +75,7 @@
                   </div>
                   <div class="form-group">
                     <a href="{{route('options.index')}}" class="btn reset-btn">Cancel</a>
-                    <button type="submit" class="btn save-btn">Save</button>
+                    <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
                   </div>
                 </form>
               </div>
@@ -86,7 +89,6 @@
 
 #printchatbox{color:blue}
 .chat-screen {
-   
     margin: 10px;
     min-height: 80px;
     max-height: 80px;
@@ -121,31 +123,31 @@ li.multipleInput-value {
     <script type="text/javascript">
 
 $('#option').keydown(function(event) {
-
-    if (event.keyCode == 13 || event.keyCode == 9) {
-          var append_val = true;
-          var keypress_val=$(this).val();
-             $(".chat-screen .multipleInput-value").each(function(){
-                 if(keypress_val.trim() == $(this).text().trim())
-                 { 
-                    append_val = false;
-                 }
-             });
-
-      if ($(this).val()!=""  && append_val==true) {
-         $('.chat-screen').append($('<li class="multipleInput-value" > ' + $("#option").val() + '<span><input type="hidden" value="' + $("#option").val() + '" name="option_values[]"></span></li>')
-                      .append($('<a href="javascript:void(0)" class="multipleInput-close" title="Remove"><i class="fa fa-times-circle"></i></a>')
-                                   .click(function(e) {
-                                        $(this).parent().remove();
-                                        e.preventDefault();
-                                   })
-                              )
-                   );
+  if (event.keyCode == 13 || event.keyCode == 9) {
+    var append_val = true;
+    var keypress_val=$(this).val();
+    $(".chat-screen .multipleInput-value").each(function(){
+      if(keypress_val.trim() == $(this).text().trim())
+      { 
+        append_val = false;
       }
+    });
+
+    if ($(this).val()!=""  && append_val==true) {
+      $('.chat-screen').append(
+        $('<li class="multipleInput-value" > ' + $("#option").val() + '<span><input type="hidden" value="'
+        + $("#option").val() + '" name="option_values[]"></span></li>')
+        .append($('<a href="javascript:void(0)" class="multipleInput-close" title="Remove"><i class="fa fa-times-circle"></i></a>')
+          .click(function(e) {
+            $(this).parent().remove();
+            e.preventDefault();
+          })
+        )
+      );
+    }
     else{
-      
       if ($(this).val()!="" ) {
-       alert('This Rater already exists');
+        alert('This Rater already exists');
       }
     }
     $('.remove-message').remove();
@@ -154,39 +156,39 @@ $('#option').keydown(function(event) {
     $(this).val('');
     event.preventDefault();
     return false;
-    }
+  }
 });
+  
 
-
-      //Validate Number
-      function validateNum(e , field) {
-        var val = field.value;
-        var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
-        var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
-        if (re.test(val)) {
+    //Validate Number
+    function validateNum(e , field) {
+      var val = field.value;
+      var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
+      var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
+      if (re.test(val)) {
 
         } else {
-          val = re1.exec(val);
-          if (val) {
-            field.value = val[0];
-          } else {
-            field.value = "";
-          }
+        val = re1.exec(val);
+        if (val) {
+          field.value = val[0];
+        } else {
+          field.value = "";
         }
       }
-      $(function() {
-        $('.validateTxt').keydown(function (e) {
-          if (e.shiftKey || e.ctrlKey || e.altKey) {
+    }
+    $(function() {
+      $('.validateTxt').keydown(function (e) {
+        if (e.shiftKey || e.ctrlKey || e.altKey) {
+          e.preventDefault();
+        } else {
+          var key = e.keyCode;
+          if (!((key == 8) || (key == 32) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90))) {
             e.preventDefault();
-          } else {
-            var key = e.keyCode;
-            if (!((key == 8) || (key == 32) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90))) {
-              e.preventDefault();
-            }
           }
-        });
+        }
       });
-    </script>
+    });
+  </script>
   @endpush
 
 @endsection

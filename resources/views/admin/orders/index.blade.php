@@ -64,7 +64,7 @@
                     <tbody>
                       @foreach ($orders as $order)
                         <tr>
-                          <td><input type="checkbox" name=""></td>
+                          <td><input type="checkbox" name="orders_ids" value="{{$order->id}}"></td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
                             {{ isset($order->delivered_at)?date('d-m-Y H:i:s',strtotime($order->delivered_at)):'-' }}
@@ -114,5 +114,51 @@
     </section>
   </div>
 
+
+  @push('custom-scripts')
+  <script type="text/javascript">
+      
+    $('.select-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('input:checkbox').prop('checked',true);
+        }
+        else{
+          $('input:checkbox').prop('checked',false);
+        }
+    });
+
+
+      $('.delete-all').click(function(event) {
+        var checkedNum = $('input[name="orders_ids"]:checked').length;
+        if (checkedNum==0) {
+          alert('Please select customer');
+        }
+        else{
+          if (confirm('Are you sure want to delete?')) {
+            $('input[name="orders_ids"]:checked').each(function () {
+              var current_val=$(this).val();
+              $.ajax({
+                url: "{{ url('admin/orders/') }}/"+current_val,
+                type: 'DELETE',
+                data:{
+                 "_token": $("meta[name='csrf-token']").attr("content")
+                }
+              })
+              .done(function() {
+                 location.reload(); 
+              })
+              .fail(function() {
+                console.log("Ajax Error :-");
+              });
+            });
+          }
+
+          
+        }
+        
+      });
+
+  </script>
+  @endpush
 
 @endsection

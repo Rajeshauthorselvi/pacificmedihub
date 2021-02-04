@@ -392,7 +392,7 @@ class ProductController extends Controller
                 Session::forget('active_vendor');
                 return Redirect::route('vendor-products.index',['vendor_id'=>$vendor_id])->with('success','New Product Added successfully...!');
             }
-            return redirect()->route('product.index')->with('success','New Product Added successfully...!');
+            return redirect()->route('products.index')->with('success','New Product Added successfully...!');
         }else{
             return Redirect::back()->with('error','Somthing wrong please try again...!'); 
         }
@@ -440,7 +440,7 @@ class ProductController extends Controller
                    ->where('product_variants.is_deleted',0)
                    ->where('display_variant',0)
                    ->first();
-       dd($variant);
+       //dd($variant);
         $options_val=$this->Options($variant,$vendor_id);
         $option_count=$options_val['option_count'];
         $options=$options_val['options'];
@@ -451,8 +451,8 @@ class ProductController extends Controller
         $data['options_id'] = $options_id;
         $data['vendors_id'] = $vendor_id;
 
-        dd($data);
-        exit();
+        // dd($data);
+        // exit();
 
 
         $productVariants = ProductVariant::where('product_id',$id)->where('is_deleted',0)->get();
@@ -971,7 +971,7 @@ class ProductController extends Controller
                 Session::forget('active_vendor');
                 return Redirect::route('vendor-products.index',['vendor_id'=>$vendor_id])->with('success','Product modified successfully...!');
             }
-            return redirect()->route('product.index')->with('success','Product modified successfully...!');
+            return redirect()->route('products.index')->with('success','Product modified successfully...!');
         }else{
             return Redirect::back()->with('error','Somthing wrong please try again...!'); 
         }
@@ -1016,7 +1016,7 @@ class ProductController extends Controller
         }
         
         if ($request->ajax())  return ['status'=>true];
-        else  return redirect()->route('product.index')->with('error','Product deleted successfully.!');
+        else  return redirect()->route('products.index')->with('error','Product deleted successfully.!');
     }
 
     

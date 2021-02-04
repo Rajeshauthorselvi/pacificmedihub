@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('product.index')}}">Products</a></li>
+              <li class="breadcrumb-item"><a href="{{route('products.index')}}">Products</a></li>
               <li class="breadcrumb-item active">Edit Product</li>
             </ol>
           </div><!-- /.col -->
@@ -29,7 +29,7 @@
           @if (Request::get('from')=="vendor" && Request::has('vendor_id'))
            <a href="{{route('vendor-products.index',['vendor_id'=>Request::get('vendor_id')])}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
           @else
-          <a href="{{route('product.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route('products.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
           @endif
         </li>
       </ol>
@@ -41,7 +41,7 @@
                 <h3 class="card-title">Edit Product</h3>
               </div>
               <div class="card-body">
-                <form action="{{route('product.update',$product->id)}}" method="post" enctype="multipart/form-data" id="productForm">
+                <form action="{{route('products.update',$product->id)}}" method="post" enctype="multipart/form-data" id="productForm">
                   @csrf
                   <input name="_method" type="hidden" value="PATCH">
                   <div class="product-col-dividers">
@@ -229,7 +229,7 @@
                     <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description',$product->meta_description)}}</textarea>
                   </div>
                   <div class="form-group">
-                    <a href="{{route('product.index')}}" class="btn reset-btn">Cancel</a>
+                    <a href="{{route('products.index')}}" class="btn reset-btn">Cancel</a>
                     <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
                   </div>
                 </form>

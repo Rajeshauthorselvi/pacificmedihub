@@ -79,7 +79,7 @@
                         <tr>
                           <td>1</td>
                           <input type="hidden" name="product[menu][]" value="List Products">
-                          <input type="hidden" name="product[route][]" value="product.index">
+                          <input type="hidden" name="product[route][]" value="products.index">
                           <td class="name">List Products</td>
                           <td>
                             <div class="form-group clearfix">
@@ -109,7 +109,7 @@
                         <tr>
                           <td>2</td>
                           <input type="hidden" name="product[menu][]" value="Add Product">
-                          <input type="hidden" name="product[route][]" value="product.create">
+                          <input type="hidden" name="product[route][]" value="products.create">
                           <td class="name">Add Product</td>
                           <td>
                             <div class="form-group clearfix">
@@ -753,7 +753,7 @@
                         <tr>
                           <td>1</td>
                           <input type="hidden" name="customer[menu][]" value="List Customer">
-                          <input type="hidden" name="customer[route][]" value="customer.index">
+                          <input type="hidden" name="customer[route][]" value="customers.index">
                           <td class="name">List Cutomers</td>
                           <td>
                             <div class="form-group clearfix">
@@ -783,7 +783,7 @@
                         <tr>
                           <td>2</td>
                           <input type="hidden" name="customer[menu][]" value="Add Customer">
-                          <input type="hidden" name="customer[route][]" value="customer.create">
+                          <input type="hidden" name="customer[route][]" value="customers.create">
                           <td class="name">Add Customer</td>
                           <td>
                             <div class="form-group clearfix">

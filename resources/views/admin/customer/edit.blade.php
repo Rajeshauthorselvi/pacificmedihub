@@ -34,14 +34,14 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('customer.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route('customers.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid toggle-tabs">
         <div class="row">
           <div class="col-md-12">
-          {{-- {!! Form::open(['route'=>'customer.store','method'=>'POST','id'=>'form','files'=>true]) !!} --}}
-          {{ Form::model($customer,['method' => 'PATCH', 'route' =>['customer.update',$customer->id],'id'=>'form','files'=>true]) }}
+          {{-- {!! Form::open(['route'=>'customers.store','method'=>'POST','id'=>'form','files'=>true]) !!} --}}
+          {{ Form::model($customer,['method' => 'PATCH', 'route' =>['customers.update',$customer->id],'id'=>'form','files'=>true]) }}
             <div class="card card-outline card-primary">
               <div class="card-header">
                 <h3 class="card-title">Customer</h3>

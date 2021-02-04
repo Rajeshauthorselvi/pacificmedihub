@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item">Create Customer</li>
+              <li class="breadcrumb-item active">Add Customer</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -34,16 +34,16 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('customer.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route('customers.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid toggle-tabs">
         <div class="row">
           <div class="col-md-12">
-          {!! Form::open(['route'=>'customer.store','method'=>'POST','id'=>'form','files'=>true]) !!}
+          {!! Form::open(['route'=>'customers.store','method'=>'POST','id'=>'form','files'=>true]) !!}
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add New Vendor</h3>
+                <h3 class="card-title">Add New Customer</h3>
               </div>
               <div class="card-body">
                 <ul class="nav nav-tabs flex-nowrap" role="tablist">
@@ -86,7 +86,7 @@
                             <div class="clearfix"></div>
                             <div class="col-sm-6">
                               <label for="">Mobile No *</label>
-                              {!! Form::text('customer[contact_number]', null,['class'=>'form-control required']) !!}
+                              {!! Form::text('customer[contact_number]', null,['class'=>'form-control required', 'onkeyup'=>"validateNum(event,this);"]) !!}
                               <span class="text-danger"></span>
                             </div>
                             <div class="col-sm-6">
@@ -117,7 +117,7 @@
                             </div>
                             <div class="col-sm-6">
                               <label for="">Telephone No*</label>
-                              {!! Form::text('company[telephone]', null,['class'=>'form-control required']) !!}
+                              {!! Form::text('company[telephone]', null,['class'=>'form-control required','onkeyup'=>"validateNum(event,this);"]) !!}
                               <span class="text-danger"></span>
                             </div>
  <div class="clearfix"></div>
@@ -182,7 +182,7 @@
                             </div>
                             <div class="col-sm-6">
                               <label for="">Mobile *</label>
-                              {!! Form::text('address[mobile]', null,['class'=>'form-control required']) !!}
+                              {!! Form::text('address[mobile]', null,['class'=>'form-control required','onkeyup'=>"validateNum(event,this);"]) !!}
                               <span class="text-danger"></span>
                             </div>
                             <div class="clearfix"></div>
@@ -235,7 +235,7 @@
                           </div>
                           <div class="col-sm-5">
                             <label for="accountNumber">Account Number *</label>
-                            {!! Form::text('bank[account_number]',null,['class'=>'form-control required']) !!}
+                            {!! Form::text('bank[account_number]',null,['class'=>'form-control required','onkeyup'=>"validateNum(event,this);"]) !!}
                             <span class="text-danger"></span>
                           </div>
                         </div>
@@ -260,7 +260,7 @@
                           </div>
                           <div class="col-sm-5">
                             <label for="payNow">PayNow Contact No</label>
-                            {!! Form::text('bank[paynow_contact]',null,['class'=>'form-control']) !!}
+                            {!! Form::text('bank[paynow_contact]',null,['class'=>'form-control','onkeyup'=>"validateNum(event,this);"]) !!}
                           </div>
                         </div>
                         <div class="form-group">
@@ -454,6 +454,35 @@ address_city
           $(append_id).empty();        
         }      
       }
+
+      //Validate Number
+      function validateNum(e , field) {
+        var val = field.value;
+        var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
+        var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
+        if (re.test(val)) {
+
+          } else {
+              val = re1.exec(val);
+              if (val) {
+                  field.value = val[0];
+              } else {
+                  field.value = "";
+              }
+          }
+      }
+      $(function() {
+        $('.validateTxt').keydown(function (e) {
+          if (e.shiftKey || e.ctrlKey || e.altKey) {
+            e.preventDefault();
+          } else {
+            var key = e.keyCode;
+            if (!((key == 8) || (key == 32) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90))) {
+              e.preventDefault();
+            }
+          }
+        });
+      });
 
 </script>
 @endpush

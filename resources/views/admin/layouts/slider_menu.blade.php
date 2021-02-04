@@ -15,7 +15,7 @@
           <li class="nav-item @if($current_route=='admin.dashboard') active @endif">
             <a href="{{route('admin.dashboard')}}" class="nav-link"><i class="fas fa-home"></i><p>Dashboard</p></a>
           </li>
-          <li class="nav-item @if($current_route=='product.index'||$current_route=='product.create'||$current_route=='product.edit'||$current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='product-units.index'||$current_route=='product-units.create'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit'||$current_route=='option_values.index'||$current_route=='option_values.create'||$current_route=='option_values.edit') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='products.index'||$current_route=='products.create'||$current_route=='products.edit'||$current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='product-units.index'||$current_route=='product-units.create'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit'||$current_route=='option_values.index'||$current_route=='option_values.create'||$current_route=='option_values.edit') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-list"></i>
               <p>
@@ -23,15 +23,15 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='product.index'||$current_route=='product.create'||$current_route=='product.edit'||$current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='product-units.index'||$current_route=='product-units.create'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit'||$current_route=='option_values.index'||$current_route=='option_values.create'||$current_route=='option_values.edit') block @endif">
-              <li class="nav-item @if($current_route=='product.index'||$current_route=='product.edit') active @endif">
-                <a href="{{route('product.index')}}" class="nav-link">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='products.index'||$current_route=='products.create'||$current_route=='products.edit'||$current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='product-units.index'||$current_route=='product-units.create'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit'||$current_route=='option_values.index'||$current_route=='option_values.create'||$current_route=='option_values.edit') block @endif">
+              <li class="nav-item @if($current_route=='products.index'||$current_route=='products.edit') active @endif">
+                <a href="{{route('products.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List Products</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='product.create') active @endif">
-                <a href="{{route('product.create')}}" class="nav-link">
+              <li class="nav-item @if($current_route=='products.create') active @endif">
+                <a href="{{route('products.create')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Add Product</p>
                 </a>
@@ -141,7 +141,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
+          <li class="nav-item @if($current_route=='rfq.index'||$current_route=='rfq.create'||$current_route=='rfq.edit'||$current_route=='rfq.show') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-clipboard-list"></i>
               <p>
@@ -149,14 +149,14 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='rfq.index'||$current_route=='rfq.create'||$current_route=='rfq.edit'||$current_route=='rfq.show') block @endif">
+              <li class="nav-item @if($current_route=='rfq.index'||$current_route=='rfq.edit'||$current_route=='rfq.show') active @endif">
                 <a href="{{ route('rfq.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List RFQ</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item @if($current_route=='rfq.create') active @endif">
                 <a href="{{ route('rfq.create') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Add RFQ</p>
@@ -164,7 +164,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
+          <li class="nav-item @if($current_route=='orders.index'||$current_route=='orders.create'||$current_route=='orders.edit') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-dolly-flatbed"></i>
               <p>
@@ -172,14 +172,14 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='orders.index'||$current_route=='orders.create'||$current_route=='orders.edit') block @endif">
+              <li class="nav-item @if($current_route=='orders.index') active @endif">
                 <a href="{{ route('orders.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List Orders</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item @if($current_route=='orders.create') active @endif">
                 <a href="{{ route('orders.create') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Add Orders</p>
@@ -188,7 +188,7 @@
             </ul>
           </li>
          
-          <li class="nav-item">
+          <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-users"></i>
               <p>
@@ -196,15 +196,15 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{ route('customer.index') }}" class="nav-link">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit') block @endif">
+              <li class="nav-item @if($current_route=='customers.index') active @endif">
+                <a href="{{ route('customers.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List Customers</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="{{ route('customer.create') }}" class="nav-link">
+              <li class="nav-item @if($current_route=='customers.create') active @endif">
+                <a href="{{ route('customers.create') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Add Customers</p>
                 </a>

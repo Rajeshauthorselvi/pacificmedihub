@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li> 
-              <li class="breadcrumb-item"><a href="{{route('product.index')}}">Products</a></li>
+              <li class="breadcrumb-item"><a href="{{route('products.index')}}">Products</a></li>
               <li class="breadcrumb-item active">Options</li>
             </ol>
           </div><!-- /.col -->
@@ -39,7 +39,7 @@
               </div>
               <div class="card-body">
      
-                  {{ Form::model($option,['method' => 'PATCH', 'route' =>['options.update',$option->id]]) }}
+                  {{ Form::model($option,['method' => 'PATCH', 'class'=>'optionForm' , 'route' =>['options.update',$option->id]]) }}
                   <div class="form-group">
                     <label for="option_name">Option Name</label>
                     {{ Form::text('option_name',null,['class'=>'form-control','id'=>'option_name']) }}
@@ -77,6 +77,9 @@
                         </ul>
                        </div>
                     </div>
+                     @if($errors->has('option_values'))
+                      <span class="text-danger">{{ $errors->first('option_values') }}</span>
+                    @endif
                   </div>
                   <div class="form-group">
                     @if (isset($option->published) && $option->published==1)
@@ -91,7 +94,7 @@
                   </div>
                   <div class="form-group">
                     <a href="{{route('options.index')}}" class="btn reset-btn">Cancel</a>
-                    <button type="submit" class="btn save-btn">Save</button>
+                    <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
                   </div>
                 </form>
               </div>
@@ -180,6 +183,7 @@ $('#option').keydown(function(event) {
     return false;
     }
 });
+
 
       //Validate Number
       function validateNum(e , field) {

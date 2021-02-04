@@ -42,8 +42,8 @@ class OptionController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate(request(), ['option_name' => 'required','display_order' => 'required']); 
-
+        $this->validate(request(), ['option_name' => 'required','option_values' => 'required','display_order' => 'required']); 
+        dd($request->all());
         $input=$request->all();
         Arr::forget($input,['_token','status','options','option_values']);
         $input['published']=($request->status=='on')?1:0;
@@ -103,7 +103,7 @@ class OptionController extends Controller
     {
 
 
-        $this->validate(request(), ['option_name' => 'required','display_order' => 'required']);
+        $this->validate(request(), ['option_name' => 'required','option_values' => 'required','display_order' => 'required']);
         $status=($request->status=='on')?1:0;
         $option=Option::find($id);
         $option->option_name=$request->option_name;

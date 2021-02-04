@@ -6,12 +6,12 @@
 		{!! Form::hidden('emp_id',$id,['class'=>'form-control']) !!}
 	</div>
 	<div class="form-group" style="display:flex;">
-		<div class="col-sm-10" style="padding-left:0">
+		<div class="col-sm-9" style="padding-left:0">
 			{!! Form::label('totalSalary', 'Total Salary') !!}
 			{!! Form::text('total_salary',$total_salary,['class'=>'form-control','id'=>'totalSalary','readonly']) !!}
 		</div>
-		<div class="col-sm-2" style="padding:0;margin-top:30px">
-			<button type="button" class="btn btn-info form-contro change-salary">Change</button>
+		<div class="col-sm-3" style="padding:0;margin-top:30px">
+			<button type="button" class="btn btn-info form-contro change-salary">Please Edit</button>
 		</div>
 	</div>
 	<div class="form-group">
