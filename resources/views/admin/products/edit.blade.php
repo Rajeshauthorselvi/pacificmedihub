@@ -203,14 +203,14 @@
                     <textarea class="summernote" name="product_details">{{old('product_details',$product->long_description)}}</textarea>
                   </div>
 
-                  <div class="form-group">
+                 <!--  <div class="form-group">
                     <label>Treatment Information</label>
                     <textarea class="summernote" name="treatment_information">{{old('treatment_information',$product->treatment_information)}}</textarea>
                   </div>
                   <div class="form-group">
                     <label>Dosage Instructions</label>
                     <textarea class="summernote" name="dosage_instructions">{{old('dosage_instructions',$product->dosage_instructions)}}</textarea>
-                  </div>
+                  </div> -->
 
                   <div class="form-group">
                     <label for="searchEngine">Search Engine Friendly Page Name</label>

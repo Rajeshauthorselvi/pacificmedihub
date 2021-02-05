@@ -84,7 +84,6 @@ class EmployeeController extends Controller
             'account_number' => 'required',
             'bank_name'      => 'required',
             'bank_branch'    => 'required',
-            'ifsc'           => 'required',
             'basic'          => 'required'
         ]);
 
@@ -122,7 +121,7 @@ class EmployeeController extends Controller
         $add_emp->emp_account_number = $request->account_number;
         $add_emp->emp_bank_name = $request->bank_name;
         $add_emp->emp_bank_branch = $request->bank_branch;
-        $add_emp->emp_ifsc_code = $request->ifsc;
+        // $add_emp->emp_ifsc_code = $request->ifsc;
         $add_emp->emp_paynow_contact_number = $request->paynow_no;
         $add_emp->basic = $request->basic;
         $add_emp->hr = $request->hra;
@@ -207,7 +206,6 @@ class EmployeeController extends Controller
             'account_number' => 'required',
             'bank_name'      => 'required',
             'bank_branch'    => 'required',
-            'ifsc'           => 'required',
             'basic'          => 'required'
         ]);
 
@@ -246,7 +244,7 @@ class EmployeeController extends Controller
         $update_emp->emp_account_number = $request->account_number;
         $update_emp->emp_bank_name = $request->bank_name;
         $update_emp->emp_bank_branch = $request->bank_branch;
-        $update_emp->emp_ifsc_code = $request->ifsc;
+        /*$update_emp->emp_ifsc_code = $request->ifsc;*/
         $update_emp->emp_paynow_contact_number = $request->paynow_no;
         $update_emp->basic = $request->basic;
         $update_emp->hr = $request->hra;

@@ -207,11 +207,11 @@
                           </div>
                         </div>
                         <div class="form-group">
-                          <div class="col-sm-5">
+                          <!-- <div class="col-sm-5">
                             <label for="ifsc">IFSC Code *</label>
                             <input type="text" class="form-control" name="ifsc" id="ifsc" value="{{old('ifsc',$employees->emp_ifsc_code)}}">
                             <span class="text-danger" style="display:none">Bank Branch is required</span>
-                          </div>
+                          </div> -->
                           <div class="col-sm-5">
                             <label for="payNow">PayNow Contact No</label>
                             <input type="text" class="form-control contact2" name="paynow_no" onkeyup="validateNum(event,this);" id="payNow" value="{{old('paynow_no',$employees->emp_paynow_contact_number)}}">

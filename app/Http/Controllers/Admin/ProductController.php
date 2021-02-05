@@ -136,8 +136,8 @@ class ProductController extends Controller
         $product->main_image = $image_name;
         $product->short_description = $request->short_description;
         $product->long_description = $request->product_details;
-        $product->treatment_information = $request->treatment_information;
-        $product->dosage_instructions = $request->dosage_instructions;
+        /*$product->treatment_information = $request->treatment_information;
+        $product->dosage_instructions = $request->dosage_instructions;*/
         $product->alert_quantity = $request->alert_qty;
         $product->commission_type = $request->commision_type;
         $product->commission_value = $request->commision_value;
@@ -543,7 +543,7 @@ class ProductController extends Controller
         // dd($data);
         $data['product_images'] = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
         $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['brands'] = Brand::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['brands'] = Brand::where('published',1)->where('is_deleted',0)->orderBy('name','asc')->get();
         $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->pluck('name','id')->toArray();
         $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->pluck('option_name','id')->toArray();
 
@@ -648,8 +648,8 @@ class ProductController extends Controller
         $product->main_image = $image_name;
         $product->short_description = $request->short_description;
         $product->long_description = $request->product_details;
-        $product->treatment_information = $request->treatment_information;
-        $product->dosage_instructions = $request->dosage_instructions;
+        /*$product->treatment_information = $request->treatment_information;
+        $product->dosage_instructions = $request->dosage_instructions;*/
         $product->alert_quantity = $request->alert_qty;
         $product->commission_type = $request->commision_type;
         $product->commission_value = $request->commision_value;

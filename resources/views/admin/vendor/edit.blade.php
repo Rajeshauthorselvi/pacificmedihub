@@ -29,7 +29,7 @@
           <a href="{{route('vendor.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
-      <div class="container-fluid vendor">
+      <div class="container-fluid toggle-tabs vendor">
         <div class="row">
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -84,36 +84,60 @@
                             <label for="vendorGst">Vendor GST No</label>
                             <input type="text" class="form-control" name="vendor_gst" id="vendorGst" value="{{old('vendor_gst',$vendor->gst_no)}}">
                           </div>
+                          <?php 
+                            if(!empty($vendor->gst_image)){$gstImage = "theme/images/vendor/gst/".$vendor->gst_image;
+                          ?>
                           <div class="col-sm-5">
-                            <?php 
-                              if(!empty($vendor->gst_image)){$gstImage = "theme/images/vendor/gst/".$vendor->gst_image;}
-                              else {$gstImage = "theme/images/no_image.jpg";}
-                            ?>
                             <div class="form-group" style="display:block;">
                               <label for="vendorGstImage">Upload GST Certificate Copy(JPEG,PNG,PDF)</label><br>
                               <input type="file" name="vendorGst_image" id="vendorGstImage" accept="image/*" onchange="preview_image1(event)" style="display:none;" value="{{$vendor->gst_image}}">
                               <img title="Click to Change" class="img-vendor" id="output_image1"  onclick="$('#vendorGstImage').trigger('click'); return true;" style="width:100px;height:100px;cursor:pointer;" src="{{asset($gstImage)}}">
                             </div>
                           </div>
+                          <?php
+                            } else {
+                          ?>
+                          <div class="col-sm-5">
+                            <label for="vendorGstImage">Upload GST Certificate Copy(JPEG,PNG,PDF)</label>
+                            <div class="custom-file">
+                              <input type="file" class="custom-file-input" name="vendorGst_image" id="vendorGstImage" accept="image/*" value="{{old('vendorGst_image')}}">
+                              <label class="custom-file-label" for="vendorGstImage">Choose file</label>
+                            </div>
+                          </div>
+                          <?php
+                            }
+                          ?>
                         </div>
 
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                           <div class="col-sm-5">
                             <label for="vendorPan">Vendor PAN No</label>
                             <input type="text" class="form-control" name="vendor_pan" id="vendorPan" value="{{old('vendor_pan',$vendor->pan_no)}}">
                           </div>
+                          <?php 
+                            if(!empty($vendor->pan_image)){$panImage = "theme/images/vendor/pan/".$vendor->pan_image;
+                          ?>
                           <div class="col-sm-5">
-                            <?php 
-                              if(!empty($vendor->pan_image)){$panImage = "theme/images/vendor/pan/".$vendor->pan_image;}
-                              else {$panImage = "theme/images/no_image.jpg";}
-                            ?>
                             <div class="form-group" style="display:block;">
                               <label for="vendorPanImage">Upload PAN Copy(JPEG,PNG,PDF)</label><br>
                               <input type="file" name="vendorPan_image" id="vendorPanImage" accept="image/*" onchange="preview_image2(event)" style="display:none;" value="{{$vendor->pan_image}}">
                               <img title="Click to Change" class="img-vendor" id="output_image2"  onclick="$('#vendorPanImage').trigger('click'); return true;" style="width:100px;height:100px;cursor:pointer;" src="{{asset($panImage)}}">
                             </div>
                           </div>
-                        </div>
+                          <?php 
+                            } else {
+                          ?>
+                          <div class="col-sm-5">
+                            <label for="vendorPanImage">Upload PAN Copy(JPEG,PNG,PDF)</label>
+                            <div class="custom-file">
+                              <input type="file" class="custom-file-input" name="vendorPan_image" id="vendorPanImage" accept="image/*" value="{{old('vendorPan_image')}}">
+                              <label class="custom-file-label" for="vendorPanImage">Choose file</label>
+                            </div>
+                          </div>
+                          <?php
+                            }
+                          ?>
+                        </div> -->
 
                         <div class="form-group">
                           <div class="col-sm-5">
@@ -169,17 +193,29 @@
                         </div>
 
                         <div class="form-group">
+                          <?php 
+                            if(!empty($vendor->logo_image)){$image = "theme/images/vendor/".$vendor->logo_image;
+                          ?>
                           <div class="col-sm-5">
-                            <?php 
-                              if(!empty($vendor->logo_image)){$image = "theme/images/vendor/".$vendor->logo_image;}
-                              else {$image = "theme/images/no_image.jpg";}
-                            ?>
                             <div class="form-group" style="display:block;">
                               <label for="vendorLogo">Vendor Logo (JPEG,PNG)</label><br>
                               <input type="file" name="vendor_logo" id="vendorLogo" accept="image/*" onchange="preview_image(event)" style="display:none;" value="{{$vendor->logo_image}}">
                               <img title="Click to Change" class="img-vendor" id="output_image"  onclick="$('#vendorLogo').trigger('click'); return true;" style="width:100px;height:100px;cursor:pointer;" src="{{asset($image)}}">
                             </div>
                           </div>
+                          <?php 
+                            } else {
+                          ?>
+                          <div class="col-sm-5">
+                            <label for="vendorLogo">Vendor Logo (JPEG,PNG)</label>
+                            <div class="custom-file">
+                              <input type="file" class="custom-file-input" name="vendor_logo" id="vendorLogo" accept="image/*" value="{{old('vendor_logo')}}">
+                              <label class="custom-file-label" for="vendorLogo">Choose file</label>
+                            </div>
+                          </div>
+                          <?php 
+                            } 
+                          ?>
                           <div class="col-sm-5">
                           </div>
                         </div>
@@ -236,26 +272,22 @@
                       <div class="" id="banck_account">
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="accountName">Account Name *</label>
+                            <label for="accountName">Account Name</label>
                             <input type="text" class="form-control" name="account_name" id="accountName" value="{{old('account_name',$vendor->account_name)}}">
-                            <span class="text-danger" style="display:none">Account Name is required</span>
                           </div>
                           <div class="col-sm-5">
-                            <label for="accountNumber">Account Number *</label>
+                            <label for="accountNumber">Account Number</label>
                             <input type="text" class="form-control" name="account_number" id="accountNumber" value="{{old('account_number',$vendor->account_number)}}">
-                            <span class="text-danger" style="display:none">Account Number is required</span>
                           </div>
                         </div>
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="bankName">Bank Name *</label>
+                            <label for="bankName">Bank Name</label>
                             <input type="text" class="form-control" name="bank_name" id="bankName" value="{{old('bank_name',$vendor->bank_name)}}">
-                            <span class="text-danger" style="display:none">Bank Name is required</span>
                           </div>
                           <div class="col-sm-5">
-                            <label for="bankBranch">Bank Branch *</label>
+                            <label for="bankBranch">Bank Branch</label>
                             <input type="text" class="form-control" name="bank_branch" id="bankBranch" value="{{old('bank_branch',$vendor->bank_branch)}}">
-                            <span class="text-danger" style="display:none">Bank Branch is required</span>
                           </div>
                         </div>
                         <div class="form-group">
@@ -363,27 +395,7 @@
           
           return valid;
         }
-        function validateStep3(e){
-          var valid=true;
-          if($("[name='account_name']").val()=="") {
-            $("[name='account_name']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='account_number']").val()=="") {
-            $("[name='account_number']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='bank_name']").val()=="") {
-            $("[name='bank_name']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='bank_branch']").val()=="") {
-            $("[name='bank_branch']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          return valid;
-        }
-
+  
         $(".next-step").click(function (e) {
           var $active = $('.nav-tabs li>.active');
           var stepID = $(e.target).attr('id');
