@@ -11,6 +11,7 @@ use App\Models\PaymentMethod;
 use App\Models\ProductVariantVendor;
 use App\Models\Product;
 use App\Models\Vendor;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 use Session;
 use Redirect;
@@ -76,6 +77,27 @@ class PurchaseController extends Controller
 
         $data['order_status']=[''=>'Please Select']+$order_status;
         $data['payment_method']=[''=>'Please Select']+$payment_method;
+
+        $order_codee=Settings::where('key','prefix')
+                         ->where('code','purchase_no')
+                        ->value('content');
+        $data['purchase_code']='';
+        if (isset($order_codee)) {
+            $value=unserialize($order_codee);
+
+            $char_val=$value['value'];
+            $explode_val=explode('-',$value['value']);
+            $total_datas=Purchase::count();
+            $total_datas=($total_datas==0)?end($explode_val)+1:$total_datas+1;
+            $data_original=$char_val;
+
+            $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
+            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
+            $data['purchase_code']=str_replace($search,$replace, $data_original);
+        }
+
+
+
         return view('admin.purchase.create',$data);
     }
 
@@ -87,6 +109,7 @@ class PurchaseController extends Controller
      */
     public function store(Request $request)
     {
+
 
 
        $this->validate(request(),[
@@ -118,7 +141,6 @@ class PurchaseController extends Controller
             'note' =>$request->note,
        ];
 
-    
        $purchase_id=Purchase::insertGetId($purchase_data);
 
        $product_ids=$request->variant['product_id'];
@@ -130,62 +152,25 @@ class PurchaseController extends Controller
        $retail_price=$variant['retail_price'];
        $minimum_selling_price=$variant['minimum_selling_price'];
        $sub_total=$variant['sub_total'];
-
-
-       if (isset($variant['option_id1'])) {
-           $option_id1=$variant['option_id1'];
-           $option_value_id1=$variant['option_value_id1'];
-       }
-       if(isset($variant['option_id2'])){
-           $option_id2=$variant['option_id2'];
-           $option_value_id2=$variant['option_value_id2'];
-       }
-
-       if (isset($variant['option_id3'])) {
-           $option_id3=$variant['option_id3'];
-           $option_value_id3=$variant['option_value_id3'];
-       }
-
-       if (isset($variant['option_id4'])) {
-           $option_id4=$variant['option_id4'];
-           $option_value_id4=$variant['option_value_id4'];
-       }
-       elseif (isset($variant['option_id5'])) {
-           $option_id5=$variant['option_id5'];
-           $option_value_id5=$variant['option_value_id5'];
-       }
+       $variant_id=$variant['variant_id'];
 
        foreach ($product_ids as $key => $variant) {
-            $data[]=[
-                'purchase_id'   => $purchase_id,
-                'product_id'    => $product_id[$key],
-                'quantity'    => $stock_qty[$key],
-                'base_price'    => $base_price[$key],
-                'retail_price'    => $retail_price[$key],
-                'discount'    => 0,
-                'product_tax'    => 0,
-                'sub_total'    => $sub_total[$key],
-                'minimum_selling_price'    => $minimum_selling_price[$key],
-
-                'option_id'     => isset($option_id1[$key])?$option_id1[$key]:null,
-                'option_value_id' => isset( $option_value_id1[$key])? $option_value_id1[$key]:null,
-
-                'option_id2' => isset( $option_id2[$key])? $option_id2[$key]:null,
-                'option_value_id2' => isset($option_value_id2[$key])?$option_value_id2[$key]:null,
-
-                'option_id3' => isset($option_id3[$key])?$option_id3[$key]:null,
-                'option_value_id3' => isset($option_value_id3[$key])?$option_value_id3[$key]:null,
-
-                'option_id4' => isset($option_id4[$key])?$option_id4[$key][$key]:null,
-                'option_value_id4' => isset($option_value_id4[$key])?$variant['option_value_id4'][$key]:null,
-
-                'option_id5' => isset( $option_id5[$key])? $option_id5[$key]:null,
-                'option_value_id5' => isset($option_value_id5[$key])?$$option_value_id5[$key]:null,
-            ];
-           
+          if ($stock_qty[$key]!=0) {
+              $data=[
+                  'purchase_id'           => $purchase_id,
+                  'product_id'            => $product_id[$key],
+                  'product_variation_id'  => $variant_id[$key],
+                  'base_price'            => $base_price[$key],
+                  'retail_price'          => $retail_price[$key],
+                  'minimum_selling_price' => $minimum_selling_price[$key],
+                  'quantity'              => $stock_qty[$key],
+                  'discount'              => 0,
+                  'product_tax'           => 0,
+                  'sub_total'             => $sub_total[$key],
+              ];
+              DB::table('purchase_products')->insert($data);
+          }
        }
-
-       DB::table('purchase_products')->insert($data);
 
       return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');
     }
@@ -226,19 +211,34 @@ class PurchaseController extends Controller
         $data['order_status']=[''=>'Please Select']+$order_status;
         $data['payment_method']=[''=>'Please Select']+$payment_method;
 
-        $products=PurchaseProducts::where('purchase_id',$purchase->id)
-                  ->groupBy('product_id')->pluck('product_id');
 
-        foreach ($products as $key => $product_id) {
-          $product_name[$product_id]=Product::where('id',$product_id)
-                                     ->value('name');
-          $options[$product_id]=$this->Options($product_id);
-          $product_variant[$product_id]=$this->Variants($product_id);
-        }
- 
-        $data['purchase_products']=$product_variant;
-        // $data['option_count'] = $options['option_count'];
-        $data['options'] = $options;
+
+        $products=PurchaseProducts::where('purchase_id',$purchase->id)->groupBy('product_id')->get();
+
+            $product_data=$product_variant=array();
+            foreach ($products as $key => $product) {
+                $product_name=Product::where('id',$product->product_id)
+                              ->value('name');
+                $options=$this->Options($product->product_id);
+
+                $all_variants=PurchaseProducts::where('purchase_id',$purchase->id)
+                              ->where('product_id',$product->product_id)
+                              ->pluck('product_variation_id')
+                              ->toArray();
+
+                $product_variant=$this->Variants($product->product_id,$all_variants);
+                $product_data[$product->product_id]=[
+                    'row_id'         => $product->id,
+                    'purchase_id'    => $purchase->id,
+                    'product_id'=> $product->product_id,
+                    'product_name'  => $product_name,
+                    'options'       => $options['options'],
+                    'option_count'  => $options['option_count'],
+                    'product_variant'  => $product_variant
+                ];
+            }
+            $data['purchase_products']=$product_data;
+
 
         $data['purchase']=Purchase::find($purchase->id);
         $data['product_name']=$product_name;
@@ -256,7 +256,6 @@ class PurchaseController extends Controller
     public function update(Request $request, Purchase $purchase)
     {
        $purchase_id=$purchase->id;
-
        $this->validate(request(),[
             'purchase_date' => 'required',
             'purchase_order_number' => 'required',
@@ -283,20 +282,23 @@ class PurchaseController extends Controller
 
         Purchase::where('id',$purchase_id)->update($purchase_data);
         
-        PurchaseProducts::where('purchase_id',$purchase_id)->delete();
 
-       $product_ids=$request->variant['product_id'];
+       // $product_ids=$request->variant['product_id'];
        $variant=$request->variant;
-       $product_id=$variant['product_id'];
        $stock_qty=$variant['stock_qty'];
 
-       $base_price=$variant['base_price'];
-       $retail_price=$variant['retail_price'];
-       $minimum_selling_price=$variant['minimum_selling_price'];
        $sub_total=$variant['sub_total'];
 
+       $row_ids=$variant['row_id'];
+       foreach ($row_ids as $key => $row_id) {
+            $data=[
+                'quantity'                  => $stock_qty[$key],
+                'sub_total'                 => $sub_total[$key],
+            ];
+            PurchaseProducts::where('id',$row_id)->update($data);
+        }
 
-       if (isset($variant['option_id1'])) {
+     /*  if (isset($variant['option_id1'])) {
            $option_id1=$variant['option_id1'];
            $option_value_id1=$variant['option_value_id1'];
        }
@@ -316,7 +318,6 @@ class PurchaseController extends Controller
            $option_id5=$variant['option_id5'];
            $option_value_id5=$variant['option_value_id5'];
        }
-       dd($request->all());
        foreach ($product_ids as $key => $variant) {
             $data[]=[
                 'purchase_id'   => $purchase_id,
@@ -347,7 +348,7 @@ class PurchaseController extends Controller
            
        }
 
-       DB::table('purchase_products')->insert($data);
+       DB::table('purchase_products')->insert($data);*/
 
             return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');        
     }
@@ -419,10 +420,24 @@ class PurchaseController extends Controller
         }
         return response()->json($names);
     }
-    public function Variants($product_id)
+    public function Variants($product_id,$variation_id=0)
     {
+
         $variant = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->first();
-        $productVariants = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->get();
+
+        if ($variation_id!=0) {
+
+             $productVariants = ProductVariant::where('product_id',$product_id)
+                            ->where('is_deleted',0)
+                            ->whereIn('id',$variation_id)
+                            ->get();
+        }
+        else{
+            $productVariants = ProductVariant::where('product_id',$product_id)
+                               ->where('is_deleted',0)
+                               ->get();
+        }
+
         $product_variants = array();
         foreach ($productVariants as $key => $variants) {
             

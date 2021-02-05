@@ -59,7 +59,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Purchase Order Number *</label>
-                          {!! Form::text('purchase_order_number',null,['class'=>'form-control']) !!}
+                          {!! Form::text('purchase_order_number',$purchase_code,['class'=>'form-control','readonly']) !!}
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -85,19 +85,6 @@
                   </div>
                   <div class="order-item-sec"></div>
                   <div class="clearfix"></div>
-                  <div class="col-sm-12 order-total-sec">
-
-                    <div class="panel panel-default">
-                      <div class="panel-body">
-                        <table class="table table-bordered total-sec">
-                          <tr>
-                            <td class="all_quantity text-center"></td>
-                            <td class="all_total text-center"></td>
-                          </tr>
-                        </table>
-                      </div>
-                      </div>
-                    </div>
 
                   <div class="tax-sec">
                     <div class="col-sm-4">
@@ -180,53 +167,40 @@
     </section>
   </div>
 <style type="text/css">
-  .order-total-sec{
-    background-color: #f1f1f1;
-    padding-bottom: 5px;
-    padding-top: 26px;
-    padding-right: 20px;
-    padding-left: 20px;
-    box-shadow: none !important;    
-  }
   .total-sec{
     background-color: #fcf8e3;
   }
 </style>
 @push('custom-scripts')
 <script type="text/javascript">
-$('.order-total-sec').hide();
-$(document).on('click', '.save-btn', function(event) {
-  var check_variant_count=$('#variantList').length;
-  if (check_variant_count==0) {
-    event.preventDefault();
-    alert('Please select products');
-  }
+  
+$(document).on('click', '.remove-product-row', function(event) {
+  event.preventDefault();
+  $(this).closest('tr').next('tr').remove();
+  $(this).closest('tr').remove();
 });
+$(document).on('click', '.save-btn', function(event) {
+    
+    var check_variants_exists=$('.parent_tr').length;
+    if (check_variants_exists==0) {
+      alert('Please select products');
+       event.preventDefault();
+    }
+
+});
+  
 
   $(document).on('click', '.remove-item', function(event) {
-    $(this).parents('tr').remove();
-  });
-
-
-    $(document).on('keyup', '.stock_qty', function(event) {
-      if (/\D/g.test(this.value))
-      {
-        this.value = this.value.replace(/\D/g, '');
-      }
-      else{
-        var base=$(this).parents('tr');
-          var base_price=base.find('.base_price').text();
-          var total_price=base_price*$(this).val();
-          base.find('.subtotal_hidden').val(total_price);
-          base.find('.sub_total').text(total_price);
-
+   
+            $(this).parents('tr').remove();
             var subtotal=$(this).parents('.vatiant_table').find('.subtotal_hidden');
             var sum = 0;
             $(subtotal).each(function(){
                 sum += parseFloat(this.value);
             });
-            $(this).parents('.vatiant_table').find('.total_amount').text(sum);
+            return false;
 
+            $(this).parents('.vatiant_table').find('.total_amount').text(sum);
 
             var stock_qty=$(this).parents('.vatiant_table').find('.stock_qty');
             var quantity=0;
@@ -237,10 +211,57 @@ $(document).on('click', '.save-btn', function(event) {
 
             SumAllTotal();
 
+             
+
+       });
+
+
+    $(document).on('keyup', '.stock_qty', function(event) {
+      if (/\D/g.test(this.value))
+      {
+        this.value = this.value.replace(/\D/g, '');
+      }
+      else{
+          var base=$(this).parents('.parent_tr');
+          var base_price=base.find('.base_price').val();
+          var total_price=base_price*$(this).val();
+          base.find('.subtotal_hidden').val(total_price);
+          base.find('.sub_total').text(total_price);
+
+
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+
+          var total_quantity=SumTotal('#'+attr_id+' .stock_qty');
+          $('.'+attr_id).find('.total-quantity').text(total_quantity);
+
+          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+          $('.'+attr_id).find('.total').text(total_amount);
+
+
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+
+          $('.all_quantity').text(SumTotal('.stock_qty'));
+          $('.all_amount').text(SumTotal('.subtotal_hidden'));
+
+
       }
     });
 
+
+function SumTotal(class_name) {
+  var sum = 0;
+  $(class_name).each(function(){
+      sum += parseFloat(this.value);
+  });
+  return sum;
+}
+
+
     function SumAllTotal() {
+
+
+
+
             $('.order-total-sec').show();
             var sum = 0;
             $('.total_amount').each(function(){
@@ -322,44 +343,37 @@ $(document).on('click', '.save-btn', function(event) {
           },
         })
         .done(function(response) {
-          // $('.order-item-sec').append(response);
 
-          if (type=="header") {
             if ($('.vatiant_table').length==0) {
-              // createTable(response['options'])
+              createTable();
             }
-          }
-          else if(type=="options"){
-            $('.order-item-sec').append(response);
-          }
-          SumAllTotal();
+            $('.parent_tbody').append(response);
         });
 
     }
-function createTable(options){
-  var html='';
-      html += '<div class="table-responsive">';
-      html += '  <table  id="variantList" class="table table-striped table-bordered table-hover vatiant_table">';
-      html += '    <thead>';
-      html += '      <tr>';
-      for(option of options){
-        html += '        <td class="text-left">' + option + '</td>';
-      }
-      html += '        <td class="text-left">Base Price</td>';
-      html += '        <td class="text-left">Retail Price</td>';
-      html += '        <td class="text-left">Minimum Selling Price</td>';
-      html += '        <td class="text-left">Quantity</td>';
-      html += '        <td class="text-left">Sub Total</td>';
-      html += '        <td class="text-left"></td>';
-      //html += '        <td></td>';
-      html += '      </tr>';
-      html += '    </thead>';
-      html += '    <tbody>';
-      html += '    </tbody>';
-      html += '  </table>';
-      html += '</div>';
-      $('.order-item-sec').append(html);
+
+
+function createTable(){
+  var data='<div class="container my-4">';
+      data +='<div class="table-responsive vatiant_table">';
+      data +='<table class="table">';
+      data +='<thead>';
+      data +='<tr>';
+      data +='<td>#</td>';
+      data +='<th scope="col">Product Name</th>';
+      data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
+      data +='<th>Total Amount:<span class="all_amount"></span></th>';
+      data +='<th></th>';
+      data +='</tr>';
+      data +='</thead>';
+      data +='<tbody class="parent_tbody">';
+      data +='</tbody>';
+      data +='</table>';
+      data +='</div>';
+      data +='</div>';
+      $('.order-item-sec').html(data);
 }
+
 </script>
 @endpush
   <style type="text/css">

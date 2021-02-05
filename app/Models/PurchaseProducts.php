@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\OptionValue;
+use DB;
 class PurchaseProducts extends Model
 {
     protected $table="purchase_products";
@@ -17,6 +18,26 @@ class PurchaseProducts extends Model
     {
         return $this->belongsTo(OptionValue::class,'option_value_id');
     }
+    static function VariationPrice($product_id,$product_variation_id,$purchase_id)
+    {
+        $variation_price=self::where('product_variation_id',$product_variation_id)
+                 ->where('product_id',$product_id)
+                 ->where('purchase_id',$purchase_id)
+                 ->first();
+        return $variation_price;
+    }
+
+    static function TotalDatas($purchase_id,$product_id=0)
+    {
+      $total_datas=self::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'));
+
+        if ($product_id!=0) {
+          $total_datas=$total_datas->where('product_id',$product_id);
+        }
+        $total_datas=$total_datas->where('purchase_id',$purchase_id)->first();
+        return $total_datas;
+    }
+
 
     static function StockQuantity($product_id,$option_id1='', $option_id2='', $option_id3='', $option_id4='', $option_value_id1='', $option_value_id2='', $option_value_id3='', $option_value_id4='', $option_value_id5,$option_count,$type='',$purchase_id)
     {

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddVariationIdToPurchaseProductsTable extends Migration
+class AddVariationIdToPurchaseProducts extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,7 @@ class AddVariationIdToPurchaseProductsTable extends Migration
     public function up()
     {
         Schema::table('purchase_products', function (Blueprint $table) {
-            $table->integer('qty_received')->nullable();
-            $table->integer('issue_quantity')->nullable();
-            $table->string('reason',255)->nullable();
-
+            $table->integer('product_variation_id')->after('product_id');
         });
     }
 

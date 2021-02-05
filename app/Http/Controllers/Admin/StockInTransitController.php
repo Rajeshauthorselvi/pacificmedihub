@@ -6,11 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Purchase;
 use App\Models\PurchaseProducts;
 use App\Models\OrderStatus;
+use App\Models\ProductVariant;
 use App\Models\PaymentMethod;
+use App\Models\ProductVariantVendor;
 use App\Models\Product;
 use App\Models\Vendor;
-use App\Models\OptionValue;
-use App\Models\ProductVariant;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 use Session;
 use Redirect;
@@ -99,34 +100,34 @@ class StockInTransitController extends Controller
          $data['purchase']=Purchase::find($id);
          // $data['purchase_products']=PurchaseProducts::with('product','optionvalue')->where('purchase_id',$id)->get();
 
-         $product_purchase=PurchaseProducts::where('purchase_id',$id)->get();
+        $products=PurchaseProducts::where('purchase_id',$id)->groupBy('product_id')->get();
 
-         $pro_datas=array();
+            $product_data=$product_variant=array();
+            foreach ($products as $key => $product) {
+                $product_name=Product::where('id',$product->product_id)
+                              ->value('name');
+                $options=$this->Options($product->product_id);
 
-         foreach ($product_purchase as $key => $products) {
-            $product_name=Product::where('id',$products->product_id)->value('name');
+                $all_variants=PurchaseProducts::where('purchase_id',$id)
+                              ->where('product_id',$product->product_id)
+                              ->pluck('product_variation_id')
+                              ->toArray();
 
-             $pro_datas[]=[
-                'product_purchase_id'  => $products->id,
-                'product_id'  => $products->product_id,
-                'product_name'  => $product_name,
-                'option_value_id1'  => $this->OptionValues($products->option_value_id),
-                'option_value_id2'  => $this->OptionValues($products->option_value_id2),
-                'option_value_id3'  => $this->OptionValues($products->option_value_id3),
-                'option_value_id4'  => $this->OptionValues($products->option_value_id4),
-                'option_value_id5'  => $this->OptionValues($products->option_value_id5),
-                'qty_received'  => $products->qty_received,
-                'issue_quantity'  => $products->issue_quantity,
-                'reason'  => $products->reason,
-                'quantity'  => $products->quantity,
-             ];
+                $product_variant=$this->Variants($product->product_id,$all_variants);
+                $product_data[$product->product_id]=[
+                    'row_id'         => $product->id,
+                    'purchase_id'    => $id,
+                    'product_id'=> $product->product_id,
+                    'product_name'  => $product_name,
+                    'options'       => $options['options'],
+                    'option_count'  => $options['option_count'],
+                    'product_variant'  => $product_variant
+                ];
+            }
+            $data['purchase_products']=$product_data;
 
-             $options=$this->Options($products->product_id);
-         }
 
-         $data['options']=$options;
-
-         $data['product_datas']=$pro_datas;
+        $data['product_name']=$product_name;
 
         $order_status=OrderStatus::where('status',1)
                               ->pluck('status_name','id')
@@ -193,7 +194,107 @@ class StockInTransitController extends Controller
             $option_count = 5;
         }
 
-        return $options;
+        return ['options'=>$options,'option_count'=>$option_count];
+    }
+  public function Variants($product_id,$variation_id)
+    {
+
+        $variant = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->first();
+
+        if (isset($variation_id)) {
+
+             $productVariants = ProductVariant::where('product_id',$product_id)
+                            ->where('is_deleted',0)
+                            ->whereIn('id',$variation_id)
+                            ->get();
+        }
+        else{
+            $productVariants = ProductVariant::where('product_id',$product_id)
+                               ->where('is_deleted',0)
+                               ->get();
+        }
+
+        $product_variants = array();
+        foreach ($productVariants as $key => $variants) {
+            
+            $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)->where('product_variant_id',$variants->id)->first();
+
+            $product_variants[$key]['variant_id'] = $variants->id;
+            $product_variants[$key]['product_name']=Product::where('id',$variants->product_id)->value('name');
+            $product_variants[$key]['product_id']=$product_id;
+
+            if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+            {
+                $product_variants[$key]['option_id1'] = $variants->option_id;
+                $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+                $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+            }
+            elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+            {
+                $product_variants[$key]['option_id1'] = $variants->option_id;
+                $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+                $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+                $product_variants[$key]['option_id2'] = $variants->option_id2;
+                $product_variants[$key]['option_value_id2'] = $variants->option_value_id2;
+                $product_variants[$key]['option_value2'] = $variants->optionValue2->option_value;
+            }
+            elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+            {
+                $product_variants[$key]['option_id1'] = $variants->option_id;
+                $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+                $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+                $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+                $product_variants[$key]['option_value_id2'] = isset($variants->option_value_id2)?$variants->option_value_id2:'';
+                $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+                $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+                $product_variants[$key]['option_value_id3'] = isset($variants->option_value_id3)?$variants->option_value_id3:'';
+                $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+            }
+            elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5==NULL))
+            {
+                $product_variants[$key]['option_id1'] = $variants->option_id;
+                $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+                $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+                $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+                $product_variants[$key]['option_value_id2'] = isset($variants->option_value_id2)?$variants->option_value_id2:'';
+                $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+                $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+                $product_variants[$key]['option_value_id3'] = isset($variants->option_value_id3)?$variants->option_value_id3:'';
+                $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+                $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
+                $product_variants[$key]['option_value_id4'] = isset($variants->option_value_id4)?$variants->option_value_id4:'';
+                $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
+            }
+            elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5!=NULL))
+            {
+                $product_variants[$key]['option_id1'] = $variants->option_id;
+                $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+                $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+                $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+                $product_variants[$key]['option_value_id2'] = isset($variants->option_value_id2)?$variants->option_value_id2:'';
+                $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+                $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+                $product_variants[$key]['option_value_id3'] = isset($variants->option_value_id3)?$variants->option_value_id3:'';
+                $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+                $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
+                $product_variants[$key]['option_value_id4'] = isset($variants->option_value_id4)?$variants->option_value_id4:'';
+                $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
+                $product_variants[$key]['option_id5'] = isset($variants->option_id5)?$variants->option_id5:'';
+                $product_variants[$key]['option_value_id5'] = isset($variants->option_value_id5)?$variants->option_value_id5:'';
+                $product_variants[$key]['option_value5'] = isset($variants->optionValue5->option_value)?$variants->optionValue5->option_value:'';
+            }
+
+            $product_variants[$key]['base_price'] = $variant_details->base_price;
+            $product_variants[$key]['retail_price'] = $variant_details->retail_price;
+            $product_variants[$key]['minimum_selling_price'] = $variant_details->minimum_selling_price;
+            $product_variants[$key]['display_order'] = $variant_details->display_order;
+            $product_variants[$key]['stock_quantity'] = $variant_details->stock_quantity;
+            $product_variants[$key]['display_variant'] = $variant_details->display_variant;
+            $product_variants[$key]['vendor_id'] = $variant_details->vendor_id;
+            $product_variants[$key]['vendor_name'] = $variant_details->vendorName->name;
+        }
+
+        return $product_variants;
     }
     /**
      * Update the specified resource in storage.
@@ -211,20 +312,25 @@ class StockInTransitController extends Controller
 
         $quantity_received=$request->qty_received;
 
-        foreach ($quantity_received as $variant_id => $quantity) {
-        $issued_quantity=$request->issue_quantity;
-        $reason=$request->reason;
+       
+       $variant=$request->variant;
 
-            PurchaseProducts::where('id',$variant_id)
-            ->update([
-                'qty_received'  => $quantity,
-                'issue_quantity' => $issued_quantity[$variant_id],
-                'reason'         => $reason[$variant_id]
-            ]);
+       $row_ids=$variant['row_id'];
+       $qty_received=$variant['qty_received'];
+       $issued_qty=$variant['issued_qty'];
+       $reason=$variant['reason'];
+
+       
+       foreach ($row_ids as $key => $row_id) {
+            $data=[
+                'qty_received'      => $qty_received[$key],
+                'issue_quantity'    => $issued_qty[$key],
+                'reason'            => isset($reason[$key])?$reason[$key]:''
+            ];
+           PurchaseProducts::where('id',$row_id)->update($data);
         }
-           
-            Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$request->purchase_status]);
 
+        Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$request->purchase_status]);
             return Redirect::route('stock-in-transit.index')->with('success','Stock-In-Transit modified successfully...!');  
         }
 

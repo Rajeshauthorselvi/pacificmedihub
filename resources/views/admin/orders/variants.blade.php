@@ -40,7 +40,7 @@
                           <tr class="parent_tr">
 
                             <input type="hidden" name="variant[product_id][]" value="{{ $product_id }}" class="product_id">
-                            <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
+                            <input type="hidden" name="variant[idvariant_id][]" value="{{$variant['variant_id']}}">
                             <td>
                               <div class="form-group">
                                 <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">

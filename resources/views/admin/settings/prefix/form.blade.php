@@ -36,6 +36,14 @@
             </div>
             <div class="card card-outline card-primary">
               <div class="card-header">
+                <h3 class="card-title">Purchase No</h3>
+              </div>
+              <div class="card">
+                @include('admin.settings.prefix.purchase_products')
+              </div>
+            </div>
+            <div class="card card-outline card-primary">
+              <div class="card-header">
                 <h3 class="card-title">RFQ No</h3>
               </div>
               <div class="card">
