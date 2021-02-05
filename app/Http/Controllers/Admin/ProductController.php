@@ -15,6 +15,8 @@ use App\Models\PurchaseProducts;
 use App\Models\Option;
 use App\Models\OptionValue;
 use App\Models\Settings;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ProductImport;
 use Redirect;
 use DB;
 use Session;
@@ -1149,5 +1151,22 @@ class ProductController extends Controller
             }             
         }
                  
+    }
+
+    public function ProductImportController()
+    {
+
+        $data=array();
+        return view('admin.products.product_import',$data);
+    }
+    public function ProductImportPostController(Request $request)
+    {
+        $this->validate(request(),[
+            'product_sheet' => 'required'
+        ]);
+
+       Excel::import(new ProductImport, $request->file('product_sheet')); 
+
+        
     }
 }

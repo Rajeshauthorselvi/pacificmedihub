@@ -131,16 +131,16 @@ class PurchaseReturnController extends Controller
 
          foreach ($product_purchase as $key => $products) {
             $product_name=Product::where('id',$products->product_id)->value('name');
-
+            $variants=ProductVariant::where('id',$products->product_variation_id)->first();
              $pro_datas[]=[
                 'product_purchase_id'  => $products->id,
                 'product_id'  => $products->product_id,
                 'product_name'  => $product_name,
-                'option_value_id1'  => $this->OptionValues($products->option_value_id),
-                'option_value_id2'  => $this->OptionValues($products->option_value_id2),
-                'option_value_id3'  => $this->OptionValues($products->option_value_id3),
-                'option_value_id4'  => $this->OptionValues($products->option_value_id4),
-                'option_value_id5'  => $this->OptionValues($products->option_value_id5),
+                'option_value_id1'  => $this->OptionValues($variants->option_value_id),
+                'option_value_id2'  => $this->OptionValues($variants->option_value_id2),
+                'option_value_id3'  => $this->OptionValues($variants->option_value_id3),
+                'option_value_id4'  => $this->OptionValues($variants->option_value_id4),
+                'option_value_id5'  => $this->OptionValues($variants->option_value_id5),
                 'qty_received'  => $products->qty_received,
                 'issue_quantity'  => $products->issue_quantity,
                 'reason'  => $products->reason,
@@ -242,16 +242,16 @@ class PurchaseReturnController extends Controller
          $options = array();
          foreach ($product_purchase as $key => $products) {
             $product_name=Product::where('id',$products->product_id)->value('name');
-
+            $variants=ProductVariant::where('id',$products->product_variation_id)->first();
              $pro_datas[]=[
                 'product_purchase_id'  => $products->id,
                 'product_id'  => $products->product_id,
                 'product_name'  => $product_name,
-                'option_value_id1'  => $this->OptionValues($products->option_value_id),
-                'option_value_id2'  => $this->OptionValues($products->option_value_id2),
-                'option_value_id3'  => $this->OptionValues($products->option_value_id3),
-                'option_value_id4'  => $this->OptionValues($products->option_value_id4),
-                'option_value_id5'  => $this->OptionValues($products->option_value_id5),
+                'option_value_id1'  => $this->OptionValues($variants->option_value_id),
+                'option_value_id2'  => $this->OptionValues($variants->option_value_id2),
+                'option_value_id3'  => $this->OptionValues($variants->option_value_id3),
+                'option_value_id4'  => $this->OptionValues($variants->option_value_id4),
+                'option_value_id5'  => $this->OptionValues($variants->option_value_id5),
                 'qty_received'  => $products->qty_received,
                 'issue_quantity'  => $products->issue_quantity,
                 'reason'  => $products->reason,
