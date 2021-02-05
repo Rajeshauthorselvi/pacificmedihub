@@ -192,9 +192,11 @@ class WastageController extends Controller
      */
     public function destroy(Request $request, Wastage $wastage)
     {
-        Wastage::where('id',$wastage->id)->delete();
-        WastageProducts::where('wastage_id',$wastage->id)->delete();
-
+        $delete_wastage = Wastage::where('id',$wastage->id)->delete();
+        if($delete_wastage){
+            WastageProducts::where('wastage_id',$wastage->id)->delete();    
+        }
+        
         if ($request->ajax())  return ['status'=>true];
         else return Redirect::route('wastage.index')->with('success','Wastage deleted successfully.!');
  

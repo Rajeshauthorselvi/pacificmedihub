@@ -166,213 +166,195 @@
       </div>
     </section>
   </div>
-<style type="text/css">
-  .total-sec{
-    background-color: #fcf8e3;
-  }
-</style>
+  <style type="text/css">
+    .total-sec{background-color: #fcf8e3;}
+  </style>
+
 @push('custom-scripts')
 <script type="text/javascript">
-  
-$(document).on('click', '.remove-product-row', function(event) {
-  event.preventDefault();
-  $(this).closest('tr').next('tr').remove();
-  $(this).closest('tr').remove();
-});
-$(document).on('click', '.save-btn', function(event) {
-    
+  $(document).on('click', '.remove-product-row', function(event) {
+    event.preventDefault();
+    $(this).closest('tr').next('tr').remove();
+    $(this).closest('tr').remove();
+  });
+  $(document).on('click', '.save-btn', function(event) {
     var check_variants_exists=$('.parent_tr').length;
     if (check_variants_exists==0) {
       alert('Please select products');
-       event.preventDefault();
+      event.preventDefault();
     }
-
-});
+  });
   
-
   $(document).on('click', '.remove-item', function(event) {
-   
-            $(this).parents('tr').remove();
-            var subtotal=$(this).parents('.vatiant_table').find('.subtotal_hidden');
-            var sum = 0;
-            $(subtotal).each(function(){
-                sum += parseFloat(this.value);
-            });
-            return false;
 
-            $(this).parents('.vatiant_table').find('.total_amount').text(sum);
+    $(this).closest('tr').remove();
+    var subtotal=$(this).parents('.vatiant_table').find('.subtotal_hidden');
+    var sum = 0;
+    $(subtotal).each(function(){
+      sum += parseFloat(this.value);
+    });
+    return false;
 
-            var stock_qty=$(this).parents('.vatiant_table').find('.stock_qty');
-            var quantity=0;
-            $(stock_qty).each(function(){
-                quantity += parseFloat(this.value);
-            });
-            $(this).parents('.vatiant_table').find('.total_quantity').text(quantity);
+    $(this).parents('.vatiant_table').find('.total_amount').text(sum);
+    var stock_qty=$(this).parents('.vatiant_table').find('.stock_qty');
+    var quantity=0;
+    $(stock_qty).each(function(){
+      quantity += parseFloat(this.value);
+    });
+    $(this).parents('.vatiant_table').find('.total_quantity').text(quantity);
 
-            SumAllTotal();
+    SumAllTotal();
 
-             
-
-       });
+  });
 
 
-    $(document).on('keyup', '.stock_qty', function(event) {
-      if (/\D/g.test(this.value))
-      {
-        this.value = this.value.replace(/\D/g, '');
-      }
-      else{
-          var base=$(this).parents('.parent_tr');
-          var base_price=base.find('.base_price').val();
-          var total_price=base_price*$(this).val();
-          base.find('.subtotal_hidden').val(total_price);
-          base.find('.sub_total').text(total_price);
+  $(document).on('keyup', '.stock_qty', function(event) {
+    if (/\D/g.test(this.value))
+    {
+      this.value = this.value.replace(/\D/g, '');
+    }
+    else{
+      var base=$(this).parents('.parent_tr');
+      var base_price=base.find('.base_price').val();
+      var total_price=base_price*$(this).val();
+      base.find('.subtotal_hidden').val(total_price);
+      base.find('.sub_total').text(total_price);
 
 
-          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+      var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
 
-          var total_quantity=SumTotal('#'+attr_id+' .stock_qty');
-          $('.'+attr_id).find('.total-quantity').text(total_quantity);
+      var total_quantity=SumTotal('#'+attr_id+' .stock_qty');
+      $('.'+attr_id).find('.total-quantity').text(total_quantity);
 
-          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
-          $('.'+attr_id).find('.total').text(total_amount);
-
-
-          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
-
-          $('.all_quantity').text(SumTotal('.stock_qty'));
-          $('.all_amount').text(SumTotal('.subtotal_hidden'));
+      var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+      $('.'+attr_id).find('.total').text(total_amount);
 
 
-      }
+      var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+
+      $('.all_quantity').text(SumTotal('.stock_qty'));
+      $('.all_amount').text(SumTotal('.subtotal_hidden'));
+    }
+  });
+
+  function SumTotal(class_name) {
+    var sum = 0;
+    $(class_name).each(function(){
+      sum += parseFloat(this.value);
+    });
+    return sum;
+  }
+
+
+  function SumAllTotal() {
+    $('.order-total-sec').show();
+    var sum = 0;
+    $('.total_amount').each(function(){
+      sum += parseFloat($(this).text());
     });
 
+    $('.all_total').html('<b>Grant Total: '+sum+'</b>');
 
-function SumTotal(class_name) {
-  var sum = 0;
-  $(class_name).each(function(){
-      sum += parseFloat(this.value);
-  });
-  return sum;
-}
-
-
-    function SumAllTotal() {
-
-
-
-
-            $('.order-total-sec').show();
-            var sum = 0;
-            $('.total_amount').each(function(){
-                sum += parseFloat($(this).text());
-            });
-
-            $('.all_total').html('<b>Grant Total: '+sum+'</b>');
-
-            var quantity=0;
-            $('.total_quantity').each(function(){
-                quantity += parseFloat($(this).text());
-            });
-            $('.all_quantity').html('<b>Total Quantity: '+quantity+'</b>');
-
-    }
+    var quantity=0;
+    $('.total_quantity').each(function(){
+        quantity += parseFloat($(this).text());
+    });
+    $('.all_quantity').html('<b>Total Quantity: '+quantity+'</b>');
+  }
 
   var path ="{{ url('admin/product-search') }}";
 
-    $('#prodct-add-sec').autocomplete({
-      source: function( request, response) {
-        $.ajax({
-          url: "{{ url('admin/rfq-product') }}",
-          data: {
-            name: request.term,
-            product_search_type:'product'
-          },
-          success: function( data ) {
-            response( data );
-          }
-        });
-      },
-      minLength: 3,
-      select: function( event, ui ) {
-
-        var check_length=$('.product_id[value='+ui.item.value+']').length;
-
-        if (check_length>0) {
-            alert('This product already exists');
-            $(this).val('');
-            return false;
+  $('#prodct-add-sec').autocomplete({
+    source: function( request, response) {
+      $.ajax({
+        url: "{{ url('admin/rfq-product') }}",
+        data: {
+          name: request.term,
+          product_search_type:'product'
+        },
+        success: function( data ) {
+          response( data );
         }
-         // ajaxFunction('header',ui)
-         ajaxFunction('options',ui);
-         $('.no-match').hide();
-         $(this).val('');
-         collapseFunction();
-         
-         return false;
+      });
+    },
+    minLength: 3,
+    select: function( event, ui ) {
 
-      },
-      open: function() {
-        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
-      },
-      close: function() {
-        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+      var check_length=$('.product_id[value='+ui.item.value+']').length;
+
+      if (check_length>0) {
+          alert('This product already exists');
+          $(this).val('');
+          return false;
       }
+       // ajaxFunction('header',ui)
+       ajaxFunction('options',ui);
+       $('.no-match').hide();
+       $(this).val('');
+       collapseFunction();
+       
+       return false;
+
+    },
+    open: function() {
+      $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+    },
+    close: function() {
+      $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+    }
+  });
+
+  function collapseFunction() {
+    // Add minus icon for collapse element which is open by default
+    $(".collapse.show").each(function(){
+      $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
     });
+    
+    // Toggle plus minus icon on show hide of collapse element
+    $(".collapse").on('show.bs.collapse', function(){
+      $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+    }).on('hide.bs.collapse', function(){
+      $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+    });
+  }
 
-    function collapseFunction() {
-        // Add minus icon for collapse element which is open by default
-        $(".collapse.show").each(function(){
-          $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
-        });
-        
-        // Toggle plus minus icon on show hide of collapse element
-        $(".collapse").on('show.bs.collapse', function(){
-          $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
-        }).on('hide.bs.collapse', function(){
-          $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
-        });
-  
-    }
-    function ajaxFunction(type,ui) {
-        $.ajax({
-          url: "{{ url('admin/product-search') }}",
-          data: {
-            product_search_type: type,
-            product_id:ui.item.value
-          },
-        })
-        .done(function(response) {
-
-            if ($('.vatiant_table').length==0) {
-              createTable();
-            }
-            $('.parent_tbody').append(response);
-        });
-
-    }
+  function ajaxFunction(type,ui) {
+    $.ajax({
+      url: "{{ url('admin/product-search') }}",
+      data: {
+        product_search_type: type,
+        product_id:ui.item.value
+      },
+    })
+    .done(function(response) {
+      if ($('.vatiant_table').length==0) {
+        createTable();
+      }
+      $('.parent_tbody').append(response);
+    });
+  }
 
 
-function createTable(){
-  var data='<div class="container my-4">';
-      data +='<div class="table-responsive vatiant_table">';
-      data +='<table class="table">';
-      data +='<thead>';
-      data +='<tr>';
-      data +='<td>#</td>';
-      data +='<th scope="col">Product Name</th>';
-      data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
-      data +='<th>Total Amount:<span class="all_amount"></span></th>';
-      data +='<th></th>';
-      data +='</tr>';
-      data +='</thead>';
-      data +='<tbody class="parent_tbody">';
-      data +='</tbody>';
-      data +='</table>';
-      data +='</div>';
-      data +='</div>';
-      $('.order-item-sec').html(data);
-}
+  function createTable(){
+    var data='<div class="container my-4">';
+    data +='<div class="table-responsive vatiant_table">';
+    data +='<table class="table">';
+    data +='<thead>';
+    data +='<tr>';
+    data +='<td>#</td>';
+    data +='<th scope="col">Product Name</th>';
+    data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
+    data +='<th>Total Amount:<span class="all_amount"></span></th>';
+    data +='<th></th>';
+    data +='</tr>';
+    data +='</thead>';
+    data +='<tbody class="parent_tbody">';
+    data +='</tbody>';
+    data +='</table>';
+    data +='</div>';
+    data +='</div>';
+    $('.order-item-sec').html(data);
+  }
 
 </script>
 @endpush

@@ -47,7 +47,7 @@
                 <h3 class="card-title">Edit RFQ</h3>
               </div>
               <div class="card-body">
-              	{!! Form::model($rfqs,['method' => 'PATCH', 'route' =>['rfq.update',$rfqs->id]]) !!}
+              	{!! Form::model($rfqs,['method' => 'PATCH','class'=>'rfq-form','route' =>['rfq.update',$rfqs->id]]) !!}
                   <div class="date-sec">
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -241,8 +241,9 @@
                           <?php $total_quantity +=$variation_details['quantity']; ?>
                         @endforeach
                         <tr>
-                          <td colspan="{{ count($product['options'])+4 }}" class="text-right">Total:</td>
+                          <td colspan="{{ count($product['options'])+3 }}" class="text-right">Total Qty:</td>
                           <td class="total_quantity">{{ $total_quantity }}</td>
+                          <td class="text-right">Total Subtotal:</td>
                           <td class="total_amount">{{ $total_amount }}</td>
                         </tr>
                       </tbody>
@@ -334,6 +335,15 @@ function SumTotal(class_name) {
 
   return sum;
 }
+
+  $('.rfq-form').on('keyup keypress', function(e) {
+    var keyCode = e.keyCode || e.which;
+    if (keyCode === 13) { 
+      e.preventDefault();
+      return false;
+    }
+  });
+
   </script>
 @endpush
  @endsection

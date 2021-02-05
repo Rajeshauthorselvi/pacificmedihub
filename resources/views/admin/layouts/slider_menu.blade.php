@@ -61,18 +61,7 @@
                 </a>
 
               </li> --}}
-             <!--  <li class="nav-item">
-                <a href="" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i>
-                  <p>Product Variant</p>
-                </a>
-              </li>
-              <li class="nav-item @if($current_route=='product-units.index'||$current_route=='product-units.create') active @endif">
-                <a href="{{route('product-units.index')}}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i>
-                  <p>Product Units</p>
-                </a>
-              </li> -->
+             
 
               </li>
 
@@ -106,7 +95,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-boxes"></i>
               <p>
@@ -114,7 +103,7 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index') block @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create') block @endif">
               <li class="nav-item @if($current_route=='stock-in-transit.index') active @endif">
                 <a href="{{ route('stock-in-transit.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
@@ -133,7 +122,7 @@
                   <p>Add Return</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='wastage.index') active @endif">
+              <li class="nav-item @if($current_route=='wastage.index'||$current_route=='wastage.create') active @endif">
                 <a href="{{ route('wastage.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Wastage</p>
@@ -211,7 +200,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item @if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit'||$current_route=='vendor-products.index') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-people-carry"></i>
               <p>
@@ -219,7 +208,7 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit') block @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit'||$current_route=='vendor-products.index') block @endif">
               <li class="nav-item @if($current_route=='vendor.index'||$current_route=='vendor.edit') active @endif">
                 <a href="{{route('vendor.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>

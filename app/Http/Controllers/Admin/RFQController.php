@@ -90,57 +90,53 @@ class RFQController extends Controller
      */
     public function store(Request $request)
     {
-            
+      $this->validate(request(),[
+        'order_no'  =>'required',
+        'status'=>'required',
+        'customer_id'=>'required',
+        'sales_rep_id'=>'required'
+      ]);
 
-        $this->validate(request(),[
-            'order_no'  =>'required',
-            'status'=>'required',
-            'customer_id'=>'required',
-            'sales_rep_id'=>'required'
-        ]);
+      $rfq_details=[
+        'order_no'  => $request->order_no,
+        'status'  => $request->status,
+        'customer_id'  =>$request->customer_id,
+        'sales_rep_id'  =>$request->sales_rep_id,
+        'discount'  => 0,
+        'tax'  =>0,
+        'notes'  =>$request->notes,
+        'created_at'  => date('Y-m-d H:i:s')
+      ];
+      $rfq_id=RFQ::insertGetId($rfq_details);
 
-        $rfq_details=[
-            'order_no'  => $request->order_no,
-            'status'  => $request->status,
-            'customer_id'  =>$request->customer_id,
-            'sales_rep_id'  =>$request->sales_rep_id,
-            'discount'  => 0,
-            'tax'  =>0,
-            'notes'  =>$request->notes,
-            'created_at'  => date('Y-m-d H:i:s')
+      $quantites=$request->quantity;
+      $variant=$request->variant;
+      
+      $product_ids=$variant['product_id'];
+      $variant_id=$variant['id'];
+      $base_price=$variant['base_price'];
+      $retail_price=$variant['retail_price'];
+      $minimum_selling_price=$variant['minimum_selling_price'];
+      $stock_qty=$variant['stock_qty'];
+      $rfq_price=$variant['rfq_price'];
+      $sub_total=$variant['sub_total'];
+
+      foreach ($product_ids as $key => $product_id) {
+        $data=[
+          'rfq_id'                    => $rfq_id,
+          'product_id'                => $product_id,
+          'product_variant_id'        => $variant_id[$key],
+          'base_price'                => $base_price[$key],
+          'retail_price'              => $retail_price[$key],
+          'minimum_selling_price'     => $minimum_selling_price[$key],
+          'quantity'                  => $stock_qty[$key],
+          'rfq_price'                 => $rfq_price[$key],
+          'sub_total'                 => $sub_total[$key]
         ];
-        $rfq_id=RFQ::insertGetId($rfq_details);
+        RFQProducts::insert($data);
+      }
 
-
-        $quantites=$request->quantity;
-        $variant=$request->variant;
-
-        $product_ids=$variant['product_id'];
-        $variant_id=$variant['id'];
-        $base_price=$variant['base_price'];
-        $retail_price=$variant['retail_price'];
-        $minimum_selling_price=$variant['minimum_selling_price'];
-        $stock_qty=$variant['stock_qty'];
-        $rfq_price=$variant['rfq_price'];
-        $sub_total=$variant['sub_total'];
-
-        foreach ($product_ids as $key => $product_id) {
-            $data=[
-                'rfq_id'                    => $rfq_id,
-                'product_id'                => $product_id,
-                'product_variant_id'        => $variant_id[$key],
-                'base_price'                => $base_price[$key],
-                'retail_price'              => $retail_price[$key],
-                'minimum_selling_price'     => $minimum_selling_price[$key],
-                'quantity'                  => $stock_qty[$key],
-                'rfq_price'                 => $rfq_price[$key],
-                'sub_total'                 => $sub_total[$key]
-            ];
-            RFQProducts::insert($data);
-        }
-
-
-        return Redirect::route('rfq.index')->with('success','RFQ added successfully...!');
+      return Redirect::route('rfq.index')->with('success','RFQ added successfully...!');
     }
 
     /**
@@ -151,28 +147,28 @@ class RFQController extends Controller
      */
     public function show($id)
     {
-        $data=array();
-        $products=RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
-        $product_data=$product_variant=array();
-        foreach ($products as $key => $product) {
-        
-            $product_name=Product::where('id',$product->product_id)
-                          ->value('name');
-            $options=$this->Options($product->product_id);
-            $product_variant=$this->Variants($product->product_id);
-            $product_data[$product->product_id]=[
-                'rfq_id'    => $id,
-                'product_id'=> $product->product_id,
-                'product_name'  => $product_name,
-                'options'       => $options['options'],
-                'option_count'  => $options['option_count'],
-                'product_variant'  => $product_variant
-            ];
-        }
-        $data['rfqs']=RFQ::where('id',$id)->first();
-        $data['product_datas']=$product_data;
-        $data['rfq_id']=$id;
-        return view('admin.rfq.view',$data);
+      $data=array();
+      $products=RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
+      $product_data=$product_variant=array();
+      foreach ($products as $key => $product) {
+      
+          $product_name=Product::where('id',$product->product_id)
+                        ->value('name');
+          $options=$this->Options($product->product_id);
+          $product_variant=$this->Variants($product->product_id);
+          $product_data[$product->product_id]=[
+              'rfq_id'    => $id,
+              'product_id'=> $product->product_id,
+              'product_name'  => $product_name,
+              'options'       => $options['options'],
+              'option_count'  => $options['option_count'],
+              'product_variant'  => $product_variant
+          ];
+      }
+      $data['rfqs']=RFQ::where('id',$id)->first();
+      $data['product_datas']=$product_data;
+      $data['rfq_id']=$id;
+      return view('admin.rfq.view',$data);
     }
 
     /**
@@ -183,57 +179,53 @@ class RFQController extends Controller
      */
     public function edit($id)
     {
-        $data=array();
-        $data['rfqs']=RFQ::with('customer','salesrep','statusName')
-                      ->where('rfq.id',$id)
-                      ->first();
-        $order_status=OrderStatus::where('status',1)
-                              ->pluck('status_name','id')
-                              ->toArray();
+      $data=array();
+      $data['rfqs']=RFQ::with('customer','salesrep','statusName')
+                    ->where('rfq.id',$id)
+                    ->first();
+      $order_status=OrderStatus::where('status',1)
+                            ->pluck('status_name','id')
+                            ->toArray();
 
-        $payment_method=PaymentMethod::where('status',1)
-                              ->pluck('payment_method','id')
-                              ->toArray();
-        $customers=User::where('is_deleted',0)
-                         ->where('status',1)
-                         ->where('role_id',7)
-                         ->pluck('first_name','id')
-                         ->toArray();
-        $emplyees=Employee::where('is_deleted',0)
-                         ->where('status',1)
-                         ->where('role_id',4)
-                         ->pluck('emp_name','id')
-                         ->toArray();
-        $data['customers']=[''=>'Please Select']+$customers;
-        $data['sales_rep']=[''=>'Please Select']+$emplyees;
-        $data['order_status']=[''=>'Please Select']+$order_status;
-        $data['payment_method']=[''=>'Please Select']+$payment_method;
+      $payment_method=PaymentMethod::where('status',1)
+                            ->pluck('payment_method','id')
+                            ->toArray();
+      $customers=User::where('is_deleted',0)
+                       ->where('status',1)
+                       ->where('role_id',7)
+                       ->pluck('first_name','id')
+                       ->toArray();
+      $emplyees=Employee::where('is_deleted',0)
+                       ->where('status',1)
+                       ->where('role_id',4)
+                       ->pluck('emp_name','id')
+                       ->toArray();
+      $data['customers']=[''=>'Please Select']+$customers;
+      $data['sales_rep']=[''=>'Please Select']+$emplyees;
+      $data['order_status']=[''=>'Please Select']+$order_status;
+      $data['payment_method']=[''=>'Please Select']+$payment_method;
 
-        $products=RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
-        $product_data=$product_variant=array();
-        foreach ($products as $key => $product) {
-        
-            $product_name=Product::where('id',$product->product_id)
-                          ->value('name');
+      $products=RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
+      $product_data=$product_variant=array();
+    
+      foreach ($products as $key => $product) {
+        $product_name=Product::where('id',$product->product_id)
+                      ->value('name');
+        $options=$this->Options($product->product_id);
+        $product_variant=$this->Variants($product->product_id);
 
-            $options=$this->Options($product->product_id);
+        $product_data[$product->product_id]=[
+            'rfq_id'    => $id,
+            'product_id'=> $product->product_id,
+            'product_name'  => $product_name,
+            'options'       => $options['options'],
+            'option_count'  => $options['option_count'],
+            'product_variant'  => $product_variant
+        ];
 
-            $product_variant=$this->Variants($product->product_id);
-
-            $product_data[$product->product_id]=[
-                'rfq_id'    => $id,
-                'product_id'=> $product->product_id,
-                'product_name'  => $product_name,
-                'options'       => $options['options'],
-                'option_count'  => $options['option_count'],
-                'product_variant'  => $product_variant
-            ];
-
-        }
-        $data['product_datas']=$product_data;
-
-
-        return view('admin.rfq.edit',$data);
+      }
+      $data['product_datas']=$product_data;
+      return view('admin.rfq.edit',$data);
     }
 
     /**
@@ -245,42 +237,41 @@ class RFQController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate(request(),[
-            'order_no'  =>'required',
-            'status'=>'required',
-            'customer_id'=>'required',
-            'sales_rep_id'=>'required'
-        ]);
-        $rfq_details=[
-            'customer_id'  =>$request->customer_id,
-            'sales_rep_id'  =>$request->sales_rep_id,
-            'order_no'  => $request->order_no,
-            'status'  => $request->status,
-            'sales_rep_id'  =>$request->sales_rep_id,
-            'notes'  =>$request->notes,
+      $this->validate(request(),[
+        'order_no'  =>'required',
+        'status'=>'required',
+        'customer_id'=>'required',
+        'sales_rep_id'=>'required'
+      ]);
+      $rfq_details=[
+        'customer_id'  =>$request->customer_id,
+        'sales_rep_id'  =>$request->sales_rep_id,
+        'order_no'  => $request->order_no,
+        'status'  => $request->status,
+        'sales_rep_id'  =>$request->sales_rep_id,
+        'notes'  =>$request->notes,
+      ];
+      RFQ::where('id',$id)->update($rfq_details);
+      $variant=$request->variant;
+      $row_ids=$variant['row_id'];
+      $product_ids=$variant['product_id'];
+      $variant_id=$variant['id'];
+      $base_price=$variant['base_price'];
+      $retail_price=$variant['retail_price'];
+      $minimum_selling_price=$variant['minimum_selling_price'];
+      $stock_qty=$variant['stock_qty'];
+      $rfq_price=$variant['rfq_price'];
+      $sub_total=$variant['sub_total'];
+
+      foreach ($row_ids as $key => $row_id) {
+        $data=[
+          'quantity'   => $stock_qty[$key],
+          'rfq_price'  => $rfq_price[$key],
+          'sub_total'  => $sub_total[$key],
         ];
-        RFQ::where('id',$id)->update($rfq_details);
-        $variant=$request->variant;
-        $row_ids=$variant['row_id'];
-        $product_ids=$variant['product_id'];
-        $variant_id=$variant['id'];
-        $base_price=$variant['base_price'];
-        $retail_price=$variant['retail_price'];
-        $minimum_selling_price=$variant['minimum_selling_price'];
-        $stock_qty=$variant['stock_qty'];
-        $rfq_price=$variant['rfq_price'];
-        $sub_total=$variant['sub_total'];
-
-        foreach ($row_ids as $key => $row_id) {
-            $data=[
-                'quantity'                  => $stock_qty[$key],
-                'rfq_price'                 => $rfq_price[$key],
-                'sub_total'                 => $sub_total[$key],
-
-            ];
-            RFQProducts::where('id',$row_id)->update($data);
-        }
-        return Redirect::route('rfq.index')->with('success','RFQ added successfully...!');
+        RFQProducts::where('id',$row_id)->update($data);
+      }
+      return Redirect::route('rfq.index')->with('success','RFQ added successfully.!');
     }
 
     /**
@@ -289,10 +280,17 @@ class RFQController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        dd('in');
+        $delete_rfq = RFQ::where('id',$id)->delete();
+        if($delete_rfq){
+          RFQProducts::where('rfq_id',$id)->delete();
+        }
+        
+        if ($request->ajax())  return ['status'=>true];
+        else return redirect()->route('rfq.index')->with('error','RFQ deleted successfully.!');
     }
+
     public function ProductSearch(Request $request)
     {
 

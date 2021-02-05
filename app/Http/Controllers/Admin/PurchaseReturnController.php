@@ -239,7 +239,7 @@ class PurchaseReturnController extends Controller
          $product_purchase=PurchaseProducts::where('purchase_id',$id)->get();
 
          $pro_datas=array();
-
+         $options = array();
          foreach ($product_purchase as $key => $products) {
             $product_name=Product::where('id',$products->product_id)->value('name');
 

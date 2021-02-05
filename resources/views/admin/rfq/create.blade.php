@@ -46,7 +46,7 @@
                 <h3 class="card-title">Add RFQ</h3>
               </div>
               <div class="card-body">
-                {!! Form::open(['route'=>'rfq.store','method'=>'POST','id'=>'form-validate']) !!}
+                {!! Form::open(['route'=>'rfq.store','method'=>'POST','class'=>'rfq-form' ,'id'=>'form-validate']) !!}
                   <div class="date-sec">
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -234,6 +234,15 @@ function createTable(){
       data +='</div>';
       $('.product-append-sec').html(data);
 }
+  
+  $('.rfq-form').on('keyup keypress', function(e) {
+    var keyCode = e.keyCode || e.which;
+    if (keyCode === 13) { 
+      e.preventDefault();
+      return false;
+    }
+  });
+
   </script>
 @endpush
 @endsection

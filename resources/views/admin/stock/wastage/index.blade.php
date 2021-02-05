@@ -71,7 +71,7 @@
                                     <a href="#"><li class="dropdown-item">
                                       <form method="POST" action="{{ route('wastage.destroy',$wastage['id']) }}">@csrf 
                                         <input name="_method" type="hidden" value="DELETE">
-                                        <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
+                                        <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
                                       </form>
                                     </li></a>
                                   </ul>

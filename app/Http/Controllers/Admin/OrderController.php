@@ -325,9 +325,15 @@ class OrderController extends Controller
      * @param  \App\Models\Orders  $orders
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,Orders $orders)
+    public function destroy(Request $request,$id)
     {
-        //
+        $delete_order = Orders::where('id',$id)->delete();
+        if($delete_order){
+          OrderProducts::where('order_id',$id)->delete();
+        }
+        
+        if ($request->ajax())  return ['status'=>true];
+        else return redirect()->route('orders.index')->with('error','Order deleted successfully.!');
     }
 
     public function ProductSearch(Request $request)

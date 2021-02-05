@@ -91,12 +91,12 @@
                                   <ul class="dropdown-menu">
                                     <a href="{{route('orders.show',$order->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                     <a href="{{route('orders.edit',$order->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-                                   {{--  <a href="#"><li class="dropdown-item">
-                                      <form method="POST" action="{{ route('rfq.destroy',$rfq->id) }}">@csrf 
+                                    <a href="#"><li class="dropdown-item">
+                                      <form method="POST" action="{{ route('orders.destroy',$order->id) }}">@csrf 
                                         <input name="_method" type="hidden" value="DELETE">
                                         <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
                                       </form>
-                                    </li></a> --}}
+                                    </li></a>
                                   </ul>
                                 </div>
                               </td>
@@ -131,7 +131,7 @@
       $('.delete-all').click(function(event) {
         var checkedNum = $('input[name="orders_ids"]:checked').length;
         if (checkedNum==0) {
-          alert('Please select customer');
+          alert('Please select order');
         }
         else{
           if (confirm('Are you sure want to delete?')) {

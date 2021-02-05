@@ -27,9 +27,9 @@
         <div class="row">
           <div class="col-md-12 action-controllers ">
             <div class="col-sm-6 text-left pull-left">
-{{--               <a href="javascript:void(0)" class="btn btn-danger delete-all">
+              <a href="javascript:void(0)" class="btn btn-danger delete-all">
                 <i class="fa fa-trash"></i> Delete (selected)
-              </a> --}}
+              </a>
             </div>
             <div class="col-sm-6 text-right pull-right">
               <a class="btn add-new" href="{{route('rfq.create')}}">
@@ -60,7 +60,7 @@
                     <tbody>
                       @foreach ($rfqs as $rfq)
                         <tr>
-                          <td><input type="checkbox" name=""></td>
+                          <td><input type="checkbox" name="rfq_ids" value="{{$rfq->id}}"></td>
                           <td>{{ date('m/d/Y',strtotime($rfq->created_at)) }}</td>
                           <td>{{ $rfq->order_no }}</td>
                           <td>{{ $rfq->customer->first_name }}</td>
@@ -76,12 +76,12 @@
                                   <ul class="dropdown-menu">
                                     <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                     <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-                                   {{--  <a href="#"><li class="dropdown-item">
+                                   <a href="#"><li class="dropdown-item">
                                       <form method="POST" action="{{ route('rfq.destroy',$rfq->id) }}">@csrf 
                                         <input name="_method" type="hidden" value="DELETE">
                                         <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
                                       </form>
-                                    </li></a> --}}
+                                    </li></a>
                                   </ul>
                                 </div>
                               </td>
@@ -98,6 +98,50 @@
 
     </section>
   </div>
+  @push('custom-scripts')
+  <script type="text/javascript">
+      
+    $('.select-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('input:checkbox').prop('checked',true);
+        }
+        else{
+          $('input:checkbox').prop('checked',false);
+        }
+    });
 
+
+      $('.delete-all').click(function(event) {
+        var checkedNum = $('input[name="rfq_ids"]:checked').length;
+        if (checkedNum==0) {
+          alert('Please select RFQ');
+        }
+        else{
+          if (confirm('Are you sure want to delete?')) {
+            $('input[name="rfq_ids"]:checked').each(function () {
+              var current_val=$(this).val();
+              $.ajax({
+                url: "{{ url('admin/rfq/') }}/"+current_val,
+                type: 'DELETE',
+                data:{
+                 "_token": $("meta[name='csrf-token']").attr("content")
+                }
+              })
+              .done(function() {
+                 location.reload(); 
+              })
+              .fail(function() {
+                console.log("Ajax Error :-");
+              });
+            });
+          }
+
+          
+        }
+        
+      });
+
+  </script>
+  @endpush
 
 @endsection
