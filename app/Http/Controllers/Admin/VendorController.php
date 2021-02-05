@@ -92,7 +92,7 @@ class VendorController extends Controller
             $gst_image_name = NULL;
         }
 
-        $pan_image= $request->hasFile('vendorPan_image');
+        /*$pan_image= $request->hasFile('vendorPan_image');
         if($pan_image){
             $photo          = $request->file('vendorPan_image');            
             $filename       = $photo->getClientOriginalName();            
@@ -102,7 +102,7 @@ class VendorController extends Controller
         }
         else{
             $pan_image_name = NULL;
-        }
+        }*/
 
         $logo_image= $request->hasFile('vendor_logo');
         if($logo_image){
@@ -125,8 +125,8 @@ class VendorController extends Controller
         $add_vendor->logo_image = $logo_image_name;
         $add_vendor->gst_no = $request->vendor_gst;
         $add_vendor->gst_image = $gst_image_name;
-        $add_vendor->pan_no = $request->vendor_pan;
-        $add_vendor->pan_image = $pan_image_name;
+        /*$add_vendor->pan_no = $request->vendor_pan;
+        $add_vendor->pan_image = $pan_image_name;*/
         $add_vendor->address_line1 = $request->address1;
         $add_vendor->address_line2 = $request->address2;
         $add_vendor->post_code = $request->postcode;
@@ -237,7 +237,7 @@ class VendorController extends Controller
         $add_vendor->email = $request->vendor_email;
         $add_vendor->contact_number = $request->vendor_contact;
         $add_vendor->gst_no = $request->vendor_gst;
-        $add_vendor->pan_no = $request->vendor_pan;
+        /*$add_vendor->pan_no = $request->vendor_pan;*/
         $add_vendor->address_line1 = $request->address1;
         $add_vendor->address_line2 = $request->address2;
         $add_vendor->post_code = $request->postcode;
@@ -267,7 +267,7 @@ class VendorController extends Controller
             $add_vendor->gst_image = $gst_image_name;
         }
  
-        if($request->hasFile('vendorPan_image')){
+        /*if($request->hasFile('vendorPan_image')){
             if (File::exists(public_path('theme/images/vendor/pan/'.$add_vendor->pan_image))) {
                 File::delete(public_path('theme/images/vendor/pan/'.$add_vendor->pan_image));
             }
@@ -277,7 +277,7 @@ class VendorController extends Controller
             $pan_image_name = strtotime("now").".".$file_extension;
             $request->vendorPan_image->move(public_path('theme/images/vendor/pan/'), $pan_image_name);
             $add_vendor->pan_image = $pan_image_name;
-        }
+        }*/
 
         
         if($request->hasFile('vendor_logo')){

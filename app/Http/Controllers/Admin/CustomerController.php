@@ -10,6 +10,7 @@ use App\Models\UserAddress;
 use App\Models\Countries;
 use App\Models\UserCompanyDetails;
 use App\Models\Settings;
+use App\Models\Employee;
 use Redirect;
 use Arr;
 use Session;
@@ -28,7 +29,6 @@ class CustomerController extends Controller
                                ->where('users.role_id',7)
                                ->where('is_deleted',0)
                                ->get();
-
         return view('admin.customer.index',$data);
     }
 
@@ -39,14 +39,16 @@ class CustomerController extends Controller
      */
     public function create()
     {
-
-
         $data=array();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
 
         $data['all_company']=[''=>'Please Select']+UserCompanyDetails::where('parent_company',0)
                              ->pluck('company_name','id')->toArray();
-       $data['product_id']='';
+
+        $data['sales_rep']=[''=>'Please Select']+Employee::where('role_id',4)
+                             ->pluck('emp_name','id')->toArray();
+
+        $data['product_id']='';
 
         $product_codee=Settings::where('key','prefix')
                          ->where('code','customer')
@@ -75,8 +77,6 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-
-
         $this->validate(request(),[
             '*.email' => 'unique:users'
         ],[

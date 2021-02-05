@@ -47,12 +47,15 @@
               </div>
               <div class="card-body">
                 <ul class="nav nav-tabs flex-nowrap" role="tablist">
+                  
                   <li role="presentation" class="nav-item">
-                    <a href="#step1" class="nav-link customer-link active" data-toggle="tab" aria-controls="step1" role="tab" tab-count="1" title="Step 1"> Customer Details </a>
+                    <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Company Details </a>
                   </li>
+                  
                   <li role="presentation" class="nav-item">
-                    <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab customer-link"  tab-count="2" title="Step 2"> Company Details </a>
+                    <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
                   </li>
+
                   <li role="presentation" class="nav-item">
                     <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Delivery Address</a>
                   </li>
@@ -60,229 +63,222 @@
                     <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
                   </li>
                 </ul>
-                  <div class="tab-content py-2">
-                    <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
-                      <div class="col-sm-12">
-                        <div class="customer_details">
+                <div class="tab-content py-2">
 
-                          <div class="clearfix"></div>
-                          <div class="col-sm-12 customer-sec">
-                          <div class="col-sm-6">
-                            <label for="vendorName">Customer No *</label>
-                            {!! Form::text('customer[customer_no]',$product_id,['class'=>'form-control required','readonly']) !!}
-                              <span class="text-danger"></span>
-                          </div>
-                          <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Customer Name *</label>
-                              {!! Form::text('customer[first_name]', null,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">Customer UEN *</label>
-                              {!! Form::text('customer[customer_uen]', null,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Mobile No *</label>
-                              {!! Form::text('customer[contact_number]', null,['class'=>'form-control required', 'onkeyup'=>"validateNum(event,this);"]) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">Email *</label>
-                              {!! Form::email('customer[email]', null,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
+                  <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Company Name *</label>
+                          {!! Form::text('company[company_name]', null,['class'=>'form-control company_name required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Parent Company</label>
+                          {!! Form::select('company[parent_company]', $all_company, null,['class'=>'form-control select2bs4']) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Company GST No</label>
+                          {!! Form::text('company[company_gst]', null,['class'=>'form-control']) !!}
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Company UEN *</label>
+                          {!! Form::text('company[company_uen]', null,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Company Email *</label>
+                          {!! Form::email('company[company_email]', null,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Telephone No*</label>
+                          {!! Form::text('company[telephone]', null,['class'=>'form-control company_contact required','onkeyup'=>"validateNum(event,this);"]) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Address Line1 *</label>
+                          {!! Form::text('company[address_1]', null,['class'=>'form-control company_add1 required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Address Line2</label>
+                          {!! Form::text('company[address_2]', null,['class'=>'form-control company_add2']) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6 csc-sec">
+                          <label for="">Country *</label>
+                          {!! Form::select('company[country_id]',$countries,null,['class'=>'form-control select2bs4 required', 'id'=>'company_country']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6 csc-sec">
+                          <label for="">State *</label>
+                          <select name="company[state_id]" class="form-control select2bs4 required" id="company_state"></select>
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6 csc-sec">
+                          <label for="">City *</label>
+                          <select name="company[city_id]" class="form-control select2bs4 required" id="company_city"></select>
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="companyLogo">Company Logo JPEG</label>
+                          <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="company[logo]" id="companyLogo" accept="image/*">
+                            <label class="custom-file-label" for="companyLogo">Choose file</label>
                           </div>
                         </div>
                       </div>
-                    </div>
-                     <div class="tab-pane company-tabs " tab-count="2" role="tabpanel" id="step2">
-                         <div class="col-sm-12">
-                            <div class="company-details">
-                            <div class="col-sm-6">
-                              <label for="">Company Name *</label>
-                              {!! Form::text('company[company_name]', null,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">Parent Company</label>
-                              {!! Form::select('company[parent_company]', $all_company, null,['class'=>'form-control']) !!}
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Company GST No</label>
-                              {!! Form::text('company[company_gst]', null,['class'=>'form-control']) !!}
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">Telephone No*</label>
-                              {!! Form::text('company[telephone]', null,['class'=>'form-control required','onkeyup'=>"validateNum(event,this);"]) !!}
-                              <span class="text-danger"></span>
-                            </div>
- <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Company Email *</label>
-                              {!! Form::email('company[company_email]', null,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
- <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Address Line1 *</label>
-                              {!! Form::text('company[address_1]', null,['class'=>'form-control required']) !!}
-                               <span class="text-danger"></span>
-                            </div>
-
-                            <div class="col-sm-6">
-                              <label for="">Address Line2</label>
-                              {!! Form::text('company[address_2]', null,['class'=>'form-control']) !!}
-                            </div>
- <div class="clearfix"></div>
-                            <div class="col-sm-6 csc-sec">
-                              <label for="">Country *</label>
-                              {!! Form::select('company[country_id]',$countries,null,['class'=>'form-control select2bs4 required', 'id'=>'company_country']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-
-
-                            <div class="col-sm-6 csc-sec">
-                              <label for="">State *</label>
-                              <select name="company[state_id]" class="form-control select2bs4 required" id="company_state"></select>
-                              <span class="text-danger"></span>
-                            </div>
-<div class="clearfix"></div>
-                            <div class="col-sm-6 csc-sec">
-                              <label for="">City *</label>
-                               <select name="company[city_id]" class="form-control select2bs4 required" id="company_city"></select>
-                              <span class="text-danger"></span>
-                            </div>
-
-                            <div class="col-sm-6">
-                              <label for="">Company Logo JPEG</label>
-                              <br>
-                              {!! Form::file('company[logo]', null,['class'=>'form-control']) !!}
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Sales Rep</label>
-                              <br>
-                              {!! Form::select('company[sales_rep]',[],null,['class'=>'form-control']) !!}
-                            </div>
-                            </div>
-                         </div>
-                     </div>
-                      <div class="tab-pane address-tabs " tab-count="3" role="tabpanel" id="step3">
-
-                         <div class="col-sm-12">
-                            <div class="company-details">
-                            <div class="col-sm-6">
-                              <label for="">Name *</label>
-                              {!! Form::text('address[name]', null,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">Mobile *</label>
-                              {!! Form::text('address[mobile]', null,['class'=>'form-control required','onkeyup'=>"validateNum(event,this);"]) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Address Line *</label>
-                              {!! Form::text('address[address_line1]', null,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-
-                            <div class="col-sm-6">
-                              <label for="">Address Line 2</label>
-                              {!! Form::text('address[address_line2]', null,['class'=>'form-control']) !!}
-                            </div>
- <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Post Code *</label>
-                              {!! Form::text('address[post_code]', null,['class'=>'form-control required']) !!}
-                               <span class="text-danger"></span>
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">Country *</label>
-                              {!! Form::select('address[country_id]',$countries,null,['class'=>'form-control select2bs4 required address_country']) !!}
-                              <span class="text-danger"></span>
-                            </div>
- <div class="clearfix"></div>
-
-                            <div class="col-sm-6">
-                              <label for="">State *</label>
-                                <select name="address[state_id]" class="form-control select2bs4 required address_state"></select>
-                             
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">City *</label>
-                                <select name="address[city_id]" class="form-control select2bs4 required address_city"></select>
-                              <span class="text-danger"></span>
-                            </div>
-
-                            </div>
-                         </div>
-
-                      </div>
-                      <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
-                         <div class="col-sm-12">
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="accountName">Account Name *</label>
-                            {!! Form::text('bank[account_name]',null,['class'=>'form-control required']) !!}
-                            <span class="text-danger"></span>
-                          </div>
-                          <div class="col-sm-5">
-                            <label for="accountNumber">Account Number *</label>
-                            {!! Form::text('bank[account_number]',null,['class'=>'form-control required','onkeyup'=>"validateNum(event,this);"]) !!}
-                            <span class="text-danger"></span>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="bankName">Bank Name *</label>
-                            {!! Form::text('bank[bank_name]',null,['class'=>'form-control required']) !!}
-                            <span class="text-danger"></span>
-                          </div>
-                          <div class="col-sm-5">
-                            <label for="bankBranch">Bank Branch *</label>
-                            {!! Form::text('bank[bank_branch]',null,['class'=>'form-control required']) !!}
-                            <span class="text-danger"></span>
-                          </div>
-
-                        </div>
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="ifsc">IFSC *</label>
-                            {!! Form::text('bank[ifsc_code]',null,['class'=>'form-control required','id'=>'ifsc']) !!}
-                            <span class="text-danger"></span>
-                          </div>
-                          <div class="col-sm-5">
-                            <label for="payNow">PayNow Contact No</label>
-                            {!! Form::text('bank[paynow_contact]',null,['class'=>'form-control','onkeyup'=>"validateNum(event,this);"]) !!}
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="Place">Place</label>
-                            {!! Form::text('bank[place]',null,['class'=>'form-control']) !!}
-                          </div>                          
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Sales Rep</label>
+                          {!! Form::select('company[sales_rep]',$sales_rep,null,['class'=>'form-control select2bs4']) !!}
                         </div>
                       </div>
-
-                      </div>
-                    <div class="clearfix"></div>
-                    <br>
-                    <div class="submit-sec">
-                      <a href="javascript:void(0)" class="btn reset-btn prev">
-                        Previous
-                      </a>
-                      <a href="javascript:void(0)" class="btn save-btn next">
-                        Next
-                      </a>
                     </div>
                   </div>
+
+                  <div class="tab-pane customer-tabs" tab-count="2" role="tabpanel" id="step2">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="vendorName">Customer No *</label>
+                          {!! Form::text('customer[customer_no]',$product_id,['class'=>'form-control required','readonly']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">POC Name *</label>
+                          {!! Form::text('customer[first_name]', null,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Contact No *</label>
+                          {!! Form::text('customer[contact_number]', null,['class'=>'form-control required', 'onkeyup'=>"validateNum(event,this);"]) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Email *</label>
+                          {!! Form::email('customer[email]', null,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="tab-pane address-tabs " tab-count="3" role="tabpanel" id="step3">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Name *</label>
+                          {!! Form::text('address[name]', null,['class'=>'form-control del_add_name required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Contact No *</label>
+                          {!! Form::text('address[mobile]', null,['class'=>'form-control del_add_contact required','onkeyup'=>"validateNum(event,this);"]) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Address Line *</label>
+                          {!! Form::text('address[address_line1]', null,['class'=>'form-control del_add_1 required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Address Line 2</label>
+                          {!! Form::text('address[address_line2]', null,['class'=>'form-control del_add_2']) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Post Code *</label>
+                          {!! Form::text('address[post_code]', null,['class'=>'form-control required']) !!}
+                           <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Country *</label>
+                          {!! Form::select('address[country_id]',$countries,null,['class'=>'form-control select2bs4 required address_country']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">State *</label>
+                            <select name="address[state_id]" class="form-control select2bs4 required address_state"></select>
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">City *</label>
+                            <select name="address[city_id]" class="form-control select2bs4 required address_city"></select>
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="accountName">Account Name</label>
+                          {!! Form::text('bank[account_name]',null,['class'=>'form-control']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="accountNumber">Account Number</label>
+                          {!! Form::text('bank[account_number]',null,['class'=>'form-control','onkeyup'=>"validateNum(event,this);"]) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="bankName">Bank Name</label>
+                          {!! Form::text('bank[bank_name]',null,['class'=>'form-control']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="bankBranch">Bank Branch</label>
+                          {!! Form::text('bank[bank_branch]',null,['class'=>'form-control']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="ifsc">IFSC</label>
+                          {!! Form::text('bank[ifsc_code]',null,['class'=>'form-control','id'=>'ifsc']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="payNow">PayNow Contact No</label>
+                          {!! Form::text('bank[paynow_contact]',null,['class'=>'form-control','onkeyup'=>"validateNum(event,this);"]) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="Place">Place</label>
+                          {!! Form::text('bank[place]',null,['class'=>'form-control']) !!}
+                        </div>                          
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="submit-sec">
+                    <a href="javascript:void(0)" class="btn reset-btn prev">Previous</a>
+                    <a href="javascript:void(0)" class="btn save-btn next">Next</a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -293,66 +289,86 @@
   </div>
 
 
-@push('custom-scripts')
-<script type="text/javascript">
+  @push('custom-scripts')
+  <script type="text/javascript">
 
-  $(".prev").click(function (e) {
-       var active = $('.nav-tabs li>.active');
-        console.log(active);
-        prevTab(active);
-  });
-      function prevTab(elem) {
-       $(elem).parent().prev().find('a[data-toggle="tab"]').click();
-      }
-  $(document).on('click', '.next', function(event) {
-    
-    var check_active_tab=$('.tab-pane.active').attr('id');
-
-    var length_empty=$('.tab-pane.active .required').filter(function(){return !$(this).val(); }).length;
-
-    var active = $('.nav-tabs li>.active');
-    var stepID = $(active).attr('tab-count');
-
-    var next_node=parseInt(stepID)+1;
-    if (next_node==4) {
-        $('.save-btn').text('Submit');
+    $(".prev").click(function (e) {
+      var active = $('.nav-tabs li>.active');
+      console.log(active);
+      prevTab(active);
+    });
+    function prevTab(elem) {
+      $(elem).parent().prev().find('a[data-toggle="tab"]').click();
     }
 
-    var error_count=0;
-    $('#'+check_active_tab+' .required').each(function(index, el) {
-      var type=$(this).attr('type');
-      var current_val=$(this).val();
-      if (current_val=="" && type=="text") {
-        $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
-          error_count += 1;
-      }
-      else if(current_val=="" && type=="email"){
-          $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
-          error_count += 1;
-      }
-      else if (current_val=="" && type=="select") {
-          $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
-          error_count += 1;
-      }
-      else if(current_val!=""  && type=="email" && !validateEmail(current_val)){
-          $(this).next('.text-danger').html('<span class="text-danger">This email is not valid</span>');
-          error_count += 1;
-      }
-      else if (current_val==null && type==undefined) {
-        $(this).parents('.csc-sec').find('.text-danger').html('<span class="text-danger">This field is required</span>');
-      }
-      else if (current_val=="" && type==undefined) {
-        $(this).parents('.csc-sec').find('.text-danger').html('<span class="text-danger">This field is required</span>');
-      }
-      else if (current_val!=null && type==undefined) {
-         $(this).parents('.csc-sec').find('.text-danger').html('');
-      }
-      else{
-        $(this).next('.text-danger').html('');
+    $(document).on('click', '.next', function(event) {
+    
+      var check_active_tab=$('.tab-pane.active').attr('id');
+
+      var length_empty=$('.tab-pane.active .required').filter(function(){return !$(this).val(); }).length;
+
+      var active = $('.nav-tabs li>.active');
+      var stepID = $(active).attr('tab-count');
+
+      var next_node = parseInt(stepID)+1;
+      if (next_node==4) {
+        $('.save-btn').text('Submit');
       }
 
-    });
+      var error_count=0;
+      $('#'+check_active_tab+' .required').each(function(index, el) {
+        var type=$(this).attr('type');
+        var current_val=$(this).val();
+        if (current_val=="" && type=="text") {
+          $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
+            error_count += 1;
+        }
+        else if(current_val=="" && type=="email"){
+            $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
+            error_count += 1;
+        }
+        else if (current_val=="" && type=="select") {
+            $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
+            error_count += 1;
+        }
+        else if(current_val!=""  && type=="email" && !validateEmail(current_val)){
+            $(this).next('.text-danger').html('<span class="text-danger">This email is not valid</span>');
+            error_count += 1;
+        }
+        else if (current_val==null && type==undefined) {
+          $(this).parents('.csc-sec').find('.text-danger').html('<span class="text-danger">This field is required</span>');
+        }
+        else if (current_val=="" && type==undefined) {
+          $(this).parents('.csc-sec').find('.text-danger').html('<span class="text-danger">This field is required</span>');
+        }
+        else if (current_val!=null && type==undefined) {
+           $(this).parents('.csc-sec').find('.text-danger').html('');
+        }
+        else{
+          $(this).next('.text-danger').html('');
+        }
+      });
 
+      var company_name = $('.company_name').val();
+      var company_add1 = $('.company_add1').val();
+      var company_add2 = $('.company_add2').val();
+      var company_contact = $('.company_contact').val();
+
+      $('.del_add_name').val(company_name);
+      $('.del_add_1').val(company_add1);
+      $('.del_add_2').val(company_add2);
+      $('.del_add_contact').val(company_contact);
+
+
+      var country = $('#company_country').val();
+      var state = $('#company_state').val();
+      var city = $('#address_city').val();
+
+      $('.address_country').val(country).change();
+      
+      getState(country,'.address_state');
+      getCity(state,'.address_city');
+      
       if (length_empty==0 && error_count==0) {
         if (stepID!=4) {
           active.parent().next().find('.nav-link').removeClass('disabled');
@@ -363,96 +379,92 @@
         }
       }
 
-    
-  });
 
-     function nextTab(elem) {
-        $(elem).parent().next().find('a[data-toggle="tab"]').click();
-      }
+    });
 
-       function validateEmail($email) {
-        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-        return emailReg.test( $email );
-      }
+    function nextTab(elem) {
+      $(elem).parent().next().find('a[data-toggle="tab"]').click();
+    }
 
-/*
+    function validateEmail($email) {
+      var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+      return emailReg.test( $email );
+    }
 
-address_city
-*/
+    /* address_city */
+    $(document).on('change', '#company_country', function(event) {
+        var country_id = $(this).val();
+        getState(country_id,'#company_state');
+    });
 
-      $(document).on('change', '#company_country', function(event) {
-          var country_id = $(this).val();
-          getState(country_id,'#company_state');
-      });
+    $(document).on('change', '.address_country', function(event) {
+        var country_id = $(this).val();
+        getState(country_id,'.address_state');
+    });
 
-      $(document).on('change', '.address_country', function(event) {
-          var country_id = $(this).val();
-          getState(country_id,'.address_state');
-      });
-
-      function getState(countryID,append_id){
-        var state_id = "{{old('State')}}" ;        
-        if(countryID){
-          $.ajax({
-            type:"GET",
-            dataType: 'json',
-            url:"{{url('admin/get-state-list')}}?country_id="+countryID,
-            success:function(res){  
-              if(res){
-                $("").empty();
-                $(append_id).append('<option selected value=""> ---Select--- </option>');
-                $.each(res,function(key,value){
-                  var select_state="";
-                  if(state_id == key) { var select_state = "selected" }
-                  $(append_id).append('<option value="'+key+'" '+select_state+'>'+value+'</option>');
-                });
-                $(append_id).selectpicker('refresh');           
-              }else{
-                $(append_id).empty();
-              }
-            },
-            error: function(res) { alert(res.responseText) }
-          });
-        }else{
-          $(append_id).empty();        
-        }      
-      }
-      //Get City
-      $('#company_state').change(function() {
-        var state_id = $(this).val();
-        getCity(state_id,'#company_city');
-      })
-      //Get City
-      $('.address_state').change(function() {
-        var state_id = $(this).val();
-        getCity(state_id,'.address_city');
-      })
-      function getCity(stateID,append_id){
-        var city_id = "{{old('State')}}" ;        
-        if(stateID){
-          $.ajax({
-            type:"GET",
-            dataType: 'json',
-            url:"{{url('admin/get-city-list')}}?state_id="+stateID,
-            success:function(res){  
-              if(res){
-                $(append_id).empty();
-                $(append_id).append('<option selected value=""> ---Select--- </option>');
-                $.each(res,function(key,value){
-                  var select_city="";
-                  if(city_id == key) { var select_city = "selected" }
-                  $(append_id).append('<option value="'+key+'" '+select_city+'>'+value+'</option>');
-                });
-                $(append_id).selectpicker('refresh');           
-              }else{
-                $(append_id).empty();
-              }
-            },
-            error: function(res) { alert(res.responseText) }
-          });
-        }else{
-          $(append_id).empty();        
-        }      
+    function getState(countryID,append_id){
+      var state_id = "{{old('State')}}" ;        
+      if(countryID){
+        $.ajax({
+          type:"GET",
+          dataType: 'json',
+          url:"{{url('admin/get-state-list')}}?country_id="+countryID,
+          success:function(res){  
+            if(res){
+              $("").empty();
+              $(append_id).append('<option selected value=""> ---Select--- </option>');
+              $.each(res,function(key,value){
+                var select_state="";
+                if(state_id == key) { var select_state = "selected" }
+                $(append_id).append('<option value="'+key+'" '+select_state+'>'+value+'</option>');
+              });
+              $(append_id).selectpicker('refresh');           
+            }else{
+              $(append_id).empty();
+            }
+          },
+          error: function(res) { alert(res.responseText) }
+        });
+      }else{
+        $(append_id).empty();        
+      }      
+    }
+    //Get City
+    $('#company_state').change(function() {
+      var state_id = $(this).val();
+      getCity(state_id,'#company_city');
+    })
+    //Get City
+    $('.address_state').change(function() {
+      var state_id = $(this).val();
+      getCity(state_id,'.address_city');
+    })
+    function getCity(stateID,append_id){
+      var city_id = "{{old('State')}}" ;        
+      if(stateID){
+        $.ajax({
+          type:"GET",
+          dataType: 'json',
+          url:"{{url('admin/get-city-list')}}?state_id="+stateID,
+          success:function(res){  
+            if(res){
+              $(append_id).empty();
+              $(append_id).append('<option selected value=""> ---Select--- </option>');
+              $.each(res,function(key,value){
+                var select_city="";
+                if(city_id == key) { var select_city = "selected" }
+                $(append_id).append('<option value="'+key+'" '+select_city+'>'+value+'</option>');
+              });
+              $(append_id).selectpicker('refresh');           
+            }else{
+              $(append_id).empty();
+            }
+          },
+          error: function(res) { alert(res.responseText) }
+        });
+      }else{
+        $(append_id).empty();        
+      }      
       }
 
       //Validate Number
@@ -462,14 +474,14 @@ address_city
         var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
         if (re.test(val)) {
 
+        } else {
+          val = re1.exec(val);
+          if (val) {
+            field.value = val[0];
           } else {
-              val = re1.exec(val);
-              if (val) {
-                  field.value = val[0];
-              } else {
-                  field.value = "";
-              }
+            field.value = "";
           }
+        }
       }
       $(function() {
         $('.validateTxt').keydown(function (e) {
@@ -484,11 +496,6 @@ address_city
         });
       });
 
-</script>
-@endpush
-<style type="text/css">
-  .tab-pane .col-sm-6{
-    float: left;
-  }
-</style>
+  </script>
+  @endpush
 @endsection

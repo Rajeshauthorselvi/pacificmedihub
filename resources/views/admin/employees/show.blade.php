@@ -71,11 +71,11 @@
                       <div class="form-group">
                         <div class="col-sm-5">
                           {!! Form::label('dept', 'Department *') !!}
-                          {!! Form::text('dept_id',$employees->emp_department,['readonly','class'=>'form-control', 'id'=>'dept']) !!}
+                          {!! Form::text('dept_id',$employees->department->dept_name,['readonly','class'=>'form-control', 'id'=>'dept']) !!}
                         </div>
                         <div class="col-sm-5">
                           {!! Form::label('designation', 'Designation *') !!}
-                          {!! Form::text('designation',$employees->department->dept_name,['readonly','class'=>'form-control','id'=>'designation']) !!}
+                          {!! Form::text('designation',$employees->emp_designation,['readonly','class'=>'form-control','id'=>'designation']) !!}
                         </div>
                       </div>
 

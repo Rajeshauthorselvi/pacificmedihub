@@ -93,7 +93,7 @@
                           </div>
                         </div>
 
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                           <div class="col-sm-5">
                             <label for="vendorPan">Vendor PAN No</label>
                             <input type="text" class="form-control" name="vendor_pan" id="vendorPan" value="{{old('vendor_pan')}}">
@@ -105,7 +105,7 @@
                               <label class="custom-file-label" for="vendorPanImage">Choose file</label>
                             </div>
                           </div>
-                        </div>
+                        </div> -->
 
                         <div class="form-group">
                           <div class="col-sm-5">
@@ -258,26 +258,22 @@
                       <div class="" id="banck_account">
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="accountName">Account Name *</label>
+                            <label for="accountName">Account Name</label>
                             <input type="text" class="form-control" name="account_name" id="accountName" value="{{old('account_name')}}">
-                            <span class="text-danger" style="display:none">Account Name is required</span>
                           </div>
                           <div class="col-sm-5">
-                            <label for="accountNumber">Account Number *</label>
+                            <label for="accountNumber">Account Number</label>
                             <input type="text" class="form-control" name="account_number" id="accountNumber" value="{{old('account_number')}}">
-                            <span class="text-danger" style="display:none">Account Number is required</span>
                           </div>
                         </div>
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="bankName">Bank Name *</label>
+                            <label for="bankName">Bank Name</label>
                             <input type="text" class="form-control" name="bank_name" id="bankName" value="{{old('bank_name')}}">
-                            <span class="text-danger" style="display:none">Bank Name is required</span>
                           </div>
                           <div class="col-sm-5">
-                            <label for="bankBranch">Bank Branch *</label>
+                            <label for="bankBranch">Bank Branch</label>
                             <input type="text" class="form-control" name="bank_branch" id="bankBranch" value="{{old('bank_branch')}}">
-                            <span class="text-danger" style="display:none">Bank Branch is required</span>
                           </div>
                         </div>
                         <div class="form-group">
@@ -379,26 +375,6 @@
         function validateStep2(e){
           var valid=true;
           
-          return valid;
-        }
-        function validateStep3(e){
-          var valid=true;
-          if($("[name='account_name']").val()=="") {
-            $("[name='account_name']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='account_number']").val()=="") {
-            $("[name='account_number']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='bank_name']").val()=="") {
-            $("[name='bank_name']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='bank_branch']").val()=="") {
-            $("[name='bank_branch']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
           return valid;
         }
 

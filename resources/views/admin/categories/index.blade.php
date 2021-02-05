@@ -49,7 +49,7 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Category Name</th><th>Published</th><th>Display order</th><th>Actions</th>
+                        <th>Category Name</th><th>Number of Products</th><th>Published</th><th>Display order</th><th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -66,7 +66,10 @@
                           <?php
                             if($category->published==1){$published = "fa-check";}
                             else{$published = "fa-ban";}
+
+                            $products = App\Models\Product::where('category_id',$category->id)->count();
                           ?>
+                          <td>{{$products}}</td>
                           <td><i class="fas {{$published}}"></i></td>
                           <td>{{$category->display_order}}</td>
                           <td>
