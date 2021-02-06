@@ -705,7 +705,10 @@ class ProductController extends Controller
         $product->meta_description = $request->meta_description;
         $product->update();
          $order_exists=PurchaseProducts::where('product_id',$product->id)->exists();
-        if (!$order_exists) {
+
+
+
+        if (!$order_exists && $request->has('new_variant')) {
             ProductVariant::where('product_id',$product->id)->delete();
             ProductVariantVendor::where('product_id',$product->id)->delete();
         }
