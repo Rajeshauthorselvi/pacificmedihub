@@ -79,4 +79,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 
 
 	Route::resource('admin-profile','Admin\AdminProfileController');
+
+
+	Route::get('product-import',['as'=>'product.import','uses'=>'Admin\ProductController@ProductImportController']);
+	Route::post('post-product-import',['as'=>'post.product.import','uses'=>'Admin\ProductController@ProductImportPostController']);
 });
