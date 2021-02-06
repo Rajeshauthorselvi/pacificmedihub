@@ -67,17 +67,13 @@ class VendorController extends Controller
         $this->validate(request(), [
             'vendor_name'    => 'required',
             'vendor_uen'     => 'required',
-            'email'   => 'required|email|unique:vendors',
+            'email'          => 'required|email|unique:vendors',
             'vendor_contact' => 'required',
             'address1'       => 'required',
             'postcode'       => 'required',
             'country'        => 'required',
             'state'          => 'required',
-            'city'           => 'required',
-            'account_name'   => 'required',
-            'account_number' => 'required',
-            'bank_name'      => 'required',
-            'bank_branch'    => 'required'
+            'city'           => 'required'
         ]);
 
         $gst_image= $request->hasFile('vendorGst_image');
@@ -163,13 +159,15 @@ class VendorController extends Controller
                     $i = $i + 1;
                 }
                 foreach ($poc_data as $key => $value) {
-                    $add_poc = new VendorPoc;
-                    $add_poc->vendor_id = $add_vendor->id;
-                    $add_poc->name = $value['name'];
-                    $add_poc->email = $value['email'];
-                    $add_poc->contact_no = $value['contact'];
-                    $add_poc->timestamps = false;
-                    $add_poc->save();
+                    if($value['name']!=null){
+                        $add_poc = new VendorPoc;
+                        $add_poc->vendor_id = $add_vendor->id;
+                        $add_poc->name = $value['name'];
+                        $add_poc->email = $value['email'];
+                        $add_poc->contact_no = $value['contact'];
+                        $add_poc->timestamps = false;
+                        $add_poc->save();
+                    }
                 }
             }
             return redirect()->route('vendor.index')->with('success','New Vendor Added successfully...!');
@@ -223,11 +221,7 @@ class VendorController extends Controller
             'postcode'       => 'required',
             'country'        => 'required',
             'state'          => 'required',
-            'city'           => 'required',
-            'account_name'   => 'required',
-            'account_number' => 'required',
-            'bank_name'      => 'required',
-            'bank_branch'    => 'required'
+            'city'           => 'required'
         ]);
 
 
@@ -294,26 +288,27 @@ class VendorController extends Controller
          $add_vendor->save();
 
          
-            if($request->poc){
+        if($request->poc){
 
-                VendorPoc::where('vendor_id',$id)->delete();
-                $poc_data = [];
-                $i = 0;
-                foreach ($request->poc['name'] as $name) {
-                    $poc_data[$i]['name'] = $name;
-                    $i = $i + 1;
-                }
-                $i = 0;
-                foreach ($request->poc['email'] as $email) {
-                    $poc_data[$i]['email'] = $email;
-                    $i = $i + 1;
-                }
-                $i = 0;
-                foreach ($request->poc['contact'] as $contact) {
-                    $poc_data[$i]['contact'] = $contact;
-                    $i = $i + 1;
-                }
-                foreach ($poc_data as $key => $value) {
+            VendorPoc::where('vendor_id',$id)->delete();
+            $poc_data = [];
+            $i = 0;
+            foreach ($request->poc['name'] as $name) {
+                $poc_data[$i]['name'] = $name;
+                $i = $i + 1;
+            }
+            $i = 0;
+            foreach ($request->poc['email'] as $email) {
+                $poc_data[$i]['email'] = $email;
+                $i = $i + 1;
+            }
+            $i = 0;
+            foreach ($request->poc['contact'] as $contact) {
+                $poc_data[$i]['contact'] = $contact;
+                $i = $i + 1;
+            }
+            foreach ($poc_data as $key => $value) {
+                if($value['name']!=null){
                     $add_poc = new VendorPoc;
                     $add_poc->vendor_id = $add_vendor->id;
                     $add_poc->name = $value['name'];
@@ -323,10 +318,9 @@ class VendorController extends Controller
                     $add_poc->save();
                 }
             }
+        }
 
-       
-
-        return Redirect::route('vendor.index')->with('success','Vendor details modified successfully...!');
+        return Redirect::route('vendor.index')->with('info','Vendor details modified successfully...!');
     }
 
     /**

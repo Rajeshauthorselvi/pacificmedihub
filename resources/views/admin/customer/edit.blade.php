@@ -49,10 +49,10 @@
               <div class="card-body">
                 <ul class="nav nav-tabs flex-nowrap" role="tablist">
                   <li role="presentation" class="nav-item">
-                    <a href="#step1" class="nav-link customer-link active" data-toggle="tab" aria-controls="step1" role="tab" tab-count="1" title="Step 1"> Customer Details </a>
+                    <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Company Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link"  tab-count="2" title="Step 2"> Company Details </a>
+                    <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
                     <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Delivery Address</a>
@@ -61,281 +61,278 @@
                     <a href="#step4" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
                   </li>
                 </ul>
-                  <div class="tab-content py-2">
-                    <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
-                      <div class="col-sm-12">
-                        <div class="customer_details">
-
-                          <div class="clearfix"></div>
-                          <div class="col-sm-12 customer-sec">
-                          <div class="col-sm-5">
-                            <label for="vendorName">Customer No *</label>
-                            {!! Form::text('customer[customer_no]',$customer->customer_no,['class'=>'form-control required','readonly']) !!}
-                              <span class="text-danger"></span>
-                          </div>
-                            <div class="col-sm-6">
-                              <label for="">Customer Name *</label>
-                              {!! Form::text('customer[first_name]',$customer->first_name,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">Customer UEN *</label>
-                              {!! Form::text('customer[customer_uen]', $customer->customer_uen,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Mobile No *</label>
-                              {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">Email *</label>
-                              {!! Form::email('customer[email]',  $customer->email,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                          </div>
+                <div class="tab-content py-2">
+                  <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        {!! Form::hidden('company[company_id]',$customer->company->id) !!}
+                        <div class="col-sm-6">
+                          <label for="">Company Name *</label>
+                          {!! Form::text('company[company_name]', null,['class'=>'form-control company_name required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Parent Company</label>
+                          {!! Form::select('company[parent_company]', $all_company,$customer->company->parent_company,['class'=>'form-control select2bs4']) !!}
                         </div>
                       </div>
-                    </div>
-                     <div class="tab-pane company-tabs " tab-count="2" role="tabpanel" id="step2">
-                         <div class="col-sm-12">
-                            <div class="company-details">
-                              {!! Form::hidden('company[company_id]',$customer->company->id) !!}
-                            <div class="col-sm-6">
-                              <label for="">Company Name *</label>
-                              {!! Form::text('company[company_name]', null,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">Parent Company</label>
-                              {!! Form::select('company[parent_company]', $all_company,null,['class'=>'form-control']) !!}
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Company GST No</label>
-                              {!! Form::text('company[company_gst]', null,['class'=>'form-control']) !!}
-                            </div>
-                            <div class="col-sm-6">
-                              <label for="">Telephone No *</label>
-                              {!! Form::text('company[telephone]', null,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
- <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Company Email *</label>
-                              {!! Form::text('company[company_email]', null,['class'=>'form-control required']) !!}
-                              <span class="text-danger"></span>
-                            </div>
- <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Address Line1 *</label>
-                              {!! Form::text('company[address_1]', null,['class'=>'form-control required']) !!}
-                               <span class="text-danger"></span>
-                            </div>
-
-                            <div class="col-sm-6">
-                              <label for="">Address Line2</label>
-                              {!! Form::text('company[address_2]', null,['class'=>'form-control']) !!}
-                            </div>
- <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Country *</label>
-
-                               {!! Form::select('country',$countries,$customer->company->country_id,['class'=>'form-control select2bs4 required', 'id'=>'company_country' ]) !!}
-                              <span class="text-danger"></span>
-                            </div>
-
-                            <div class="col-sm-6">
-                              <label for="">State *</label>
-                               <select name="company[state_id]" class="form-control select2bs4 required" id="company_state"></select>
-
-                              {{-- {!! Form::text('company[state_id]', null,['class'=>'form-control required']) !!} --}}
-                              <span class="text-danger"></span>
-                            </div>
-<div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">City *</label>
-                              <select name="company[city_id]" class="form-control select2bs4 required" id="company_city"></select>
-                              <span class="text-danger"></span>
-                            </div>
-
-                            <div class="col-sm-6">
-                              <label for="">Company Logo JPEG</label>
-                              <br>
-                              {!! Form::file('company[logo]', null,['class'=>'form-control']) !!}
-                              <br>
-                              <br>
-                              <img src="{{ asset('theme/images/customer/company/'.$customer->company->id.'/'.$customer->company->logo) }}" width="100px" height="100px">
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="col-sm-6">
-                              <label for="">Sales Rep</label>
-                              <br>
-                              {!! Form::select('company[sales_rep]',[],null,['class'=>'form-control']) !!}
-                            </div>
-                            </div>
-                         </div>
-                     </div>
-                      <div class="tab-pane address-tabs " tab-count="3" role="tabpanel" id="step3">
-                        <div class="address-list-sec col-sm-6">
-                          @foreach ($customer->alladdress as $address)
-                          <div class="col-sm-12">
-                              <div class="list">
-                                <table class="table">
-                                  <tr>
-                                    <td rowspan="2" style="vertical-align: middle; border:none;">
-                                      @if ($customer->address_id==$address->id)
-                                        <input type="radio" name="customer[address_id]" checked>
-                                      @else
-                                         <input type="radio" name="customer[address_id]" >
-                                      @endif
-                                    </td>
-                                    <td>
-                                        {{ $address->name }}
-                                        <br>
-                                        {{ $address->mobile }}
-                                    </td>
-                                    <td>
-                                      <a href="" class="btn btn-primary">
-                                        Edit
-                                      </a>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>{{ $address->address_line1 }}</td>
-                                  </tr>
-                                </table>
-
-                              </div>
-                          </div>
-                          <br>
-                          @endforeach
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Company GST No</label>
+                          {!! Form::text('company[company_gst]', null,['class'=>'form-control']) !!}
                         </div>
-                         <div class="col-sm-6">
-                            <div class="address-details">
-                              <h3>Add New Address</h3>
-                              <div class="form-group">
-                                <label for="">Name *</label>
-                                  {!! Form::text('address[name]', '',['class'=>'form-control required add_name']) !!}
-                                  <span class="text-danger"></span>
-                              </div>
-
-                              <div class="form-group">
-                                <label for="">Mobile *</label>
-                                <br>
-                                {!! Form::text('address[mobile]', '',['class'=>'form-control required add_mobile']) !!}
-                                <span class="text-danger"></span>
-                              </div>
-                            <div class="form-group">
-                              <label for="">Address Line *</label>
-                              <br>
-                              {!! Form::text('address[address_line1]', '',['class'=>'form-control required add_line_1']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                              <label for="">Address Line 2</label>
-                              <br>
-                              {!! Form::text('address[address_line2]', '',['class'=>'form-control add_line_2']) !!}
-                            </div>
-                            <div class="form-group">
-                              <label for="">Post Code *</label>
-                              <br>
-                              {!! Form::text('address[post_code]', '',['class'=>'form-control required add_post_code']) !!}
-                               <span class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                              <label for="">Country *</label>
-                              <br>
-                              {!! Form::text('address[country_id]', '',['class'=>'form-control required add_country_id address_country']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                              <label for="">State *</label>
-                              <br>
-                              {!! Form::text('address[state_id]', '',['class'=>'form-control required add_state_id']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                              <label for="">City *</label>
-                              <br>
-                              {!! Form::text('address[city_id]', '',['class'=>'form-control required add_city_id']) !!}
-                              <span class="text-danger"></span>
-                            </div>
-                              <div class="submit-address btn save-btn">
-                                Add New
-                              </div>
-                            </div>
-                         </div>
-
-                      </div>
-                      <div class="tab-pane account-tabs " tab-count="4" role="tabpanel" id="step4">
-                        <div class="col-sm-12">
-                           {!! Form::hidden('bank[account_id]',$customer->bank->id) !!}
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="accountName">Account Name *</label>
-                            {!! Form::text('bank[account_name]',$customer->bank->account_name,['class'=>'form-control required']) !!}
-                            <span class="text-danger"></span>
-                          </div>
-                          <div class="col-sm-5">
-                            <label for="accountNumber">Account Number *</label>
-                            {!! Form::text('bank[account_number]',null,['class'=>'form-control required']) !!}
-                            <span class="text-danger"></span>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="bankName">Bank Name *</label>
-                            {!! Form::text('bank[bank_name]',null,['class'=>'form-control required']) !!}
-                            <span class="text-danger"></span>
-                          </div>
-                          <div class="col-sm-5">
-                            <label for="bankBranch">Bank Branch *</label>
-                            {!! Form::text('bank[bank_branch]',null,['class'=>'form-control required']) !!}
-                            <span class="text-danger"></span>
-                          </div>
-
-                        </div>
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="ifsc">IFSC *</label>
-                            {!! Form::text('bank[ifsc_code]',null,['class'=>'form-control required','id'=>'ifsc']) !!}
-                            <span class="text-danger"></span>
-                          </div>
-                          <div class="col-sm-5">
-                            <label for="payNow">PayNow Contact No</label>
-                            {!! Form::text('bank[paynow_contact]',null,['class'=>'form-control']) !!}
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="Place">Place</label>
-                            {!! Form::text('bank[place]',null,['class'=>'form-control']) !!}
-                          </div>                          
+                        <div class="col-sm-6">
+                          <label for="">Company UEN *</label>
+                          {!! Form::text('company[company_uen]', null,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
                         </div>
                       </div>
-
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Company Email *</label>
+                          {!! Form::text('company[company_email]', null,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Telephone No *</label>
+                          {!! Form::text('company[telephone]', null,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
                       </div>
-                    <div class="clearfix"></div>
-                    <br>
-                    <div class="submit-sec">
-                      <a href="javascript:void(0)" class="btn reset-btn prev">
-                        Previous
-                      </a>
-                      <a href="javascript:void(0)" class="btn save-btn next">
-                        Next
-                      </a>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Address Line1 *</label>
+                          {!! Form::text('company[address_1]', null,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Address Line2</label>
+                          {!! Form::text('company[address_2]', null,['class'=>'form-control']) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Country *</label>
+                          {!! Form::select('country',$countries,$customer->company->country_id,['class'=>'form-control select2bs4 required', 'id'=>'company_country' ]) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">State *</label>
+                           <select name="company[state_id]" class="form-control select2bs4 required" id="company_state"></select>
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">City *</label>
+                          <select name="company[city_id]" class="form-control select2bs4 required" id="company_city"></select>
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Sales Rep</label>
+                          {!! Form::select('company[sales_rep]',$sales_rep,$customer->company->sales_rep,['class'=>'form-control select2bs4']) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="companyLogo">Company Logo JPEG</label>
+                          <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="company[logo]" id="companyLogo" accept="image/*">
+                            <label class="custom-file-label" for="companyLogo">Choose file</label>
+                          </div>
+                          <br><br>
+                          <img src="{{asset('theme/images/customer/company/'.$customer->company->id.'/' .$customer->company->logo)}}" width="100px" height="100px">
+                        </div>
+                      </div>
                     </div>
                   </div>
+
+                  <div class="tab-pane customer-tabs" tab-count="2" role="tabpanel" id="step2">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="vendorName">Customer No *</label>
+                          {!! Form::text('customer[customer_no]',$customer->customer_no,['class'=>'form-control required','readonly']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">POC Name *</label>
+                          {!! Form::text('customer[first_name]',$customer->first_name,['class'=>'form-control required']) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Contact No *</label>
+                          {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Email *</label>
+                          {!! Form::email('customer[email]',  $customer->email,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                   
+                  <div class="tab-pane address-tabs " tab-count="3" role="tabpanel" id="step3">
+                    <div class="address-list-sec col-sm-6">
+                      @foreach ($customer->alladdress as $address)
+                        <div class="col-sm-12">
+                          <div class="list">
+                            <table class="table">
+                              <tr>
+                                <td rowspan="2" style="vertical-align: middle; border:none;">
+                                  @if ($customer->address_id==$address->id)
+                                    <input type="radio" name="customer[address_id]" checked>
+                                  @else
+                                    <input type="radio" name="customer[address_id]" >
+                                  @endif
+                                </td>
+                                <td>{{ $address->name }}<br>{{ $address->mobile }}</td>
+                                <td>
+                                  <button type="button" class="btn btn-info edit">Edit</button>
+                                  
+                                  <!-- <button type="button" class="btn btn-info edit" address-id="{{$customer['address_id']}}" data-toggle="modal" data-target="#edit-address">Edit</button> -->
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>{{ $address->address_line1 }}</td>
+                              </tr>
+                            </table>
+                          </div>
+                        </div>
+                        <br>
+                      @endforeach
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="address-details">
+                        <h3>Add New Address</h3>
+                        <div class="form-group">
+                          <label for="">Name *</label>
+                          {!! Form::text('address[name]', '',['class'=>'form-control required add_name']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                          <label for="">Mobile *</label>
+                          {!! Form::text('address[mobile]', '',['class'=>'form-control required add_mobile']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                          <label for="">Address Line *</label>
+                          {!! Form::text('address[address_line1]', '',['class'=>'form-control required add_line_1']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                          <label for="">Address Line 2</label>
+                          {!! Form::text('address[address_line2]', '',['class'=>'form-control add_line_2']) !!}
+                        </div>
+                        <div class="form-group">
+                          <label for="">Post Code *</label>
+                          {!! Form::text('address[post_code]', '',['class'=>'form-control required add_post_code']) !!}
+                           <span class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                          <label for="">Country *</label>
+                          {!! Form::text('address[country_id]', '',['class'=>'form-control required add_country_id address_country']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                          <label for="">State *</label>
+                          {!! Form::text('address[state_id]', '',['class'=>'form-control required add_state_id']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                          <label for="">City *</label>
+                          {!! Form::text('address[city_id]', '',['class'=>'form-control required add_city_id']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="submit-address btn save-btn">Add New</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
+                    <div class="col-sm-12">
+                      {!! Form::hidden('bank[account_id]',$customer->bank->id) !!}
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="accountName">Account Name</label>
+                          {!! Form::text('bank[account_name]',$customer->bank->account_name,['class'=>'form-control']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="accountNumber">Account Number</label>
+                          {!! Form::text('bank[account_number]',null,['class'=>'form-control','onkeyup'=>"validateNum(event,this);"]) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="bankName">Bank Name</label>
+                          {!! Form::text('bank[bank_name]',null,['class'=>'form-control']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="bankBranch">Bank Branch</label>
+                          {!! Form::text('bank[bank_branch]',null,['class'=>'form-control']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="ifsc">IFSC</label>
+                          {!! Form::text('bank[ifsc_code]',null,['class'=>'form-control','id'=>'ifsc']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="payNow">PayNow Contact No</label>
+                          {!! Form::text('bank[paynow_contact]',null,['class'=>'form-control','onkeyup'=>"validateNum(event,this);"]) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="Place">Place</label>
+                          {!! Form::text('bank[place]',null,['class'=>'form-control']) !!}
+                        </div>                          
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="submit-sec">
+                    <a href="javascript:void(0)" class="btn reset-btn prev">Previous</a>
+                    <a href="javascript:void(0)" class="btn save-btn next">Next</a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        {!! Form::close() !!}
+          {!! Form::close() !!}
         </div>
       </div>
     </section>
   </div>
+
+  <div class="modal fade" id="edit-address">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Customer Address</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="edit-form-block"></div>
+        </div>
+            
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
 
 <style type="text/css">
   .address-tabs .form-group{
@@ -350,6 +347,22 @@
   }
 </style>
 @push('custom-scripts')
+  <script type="text/javascript">
+    $('.edit').click(function(){
+      var addId = $(this).attr('address-id');
+      $.ajax({
+        url:"{{ url('admin/edit-address-form') }}?add_id="+addId,
+        type:"GET",
+        success: function (data) { 
+          //console.log(data);
+          $('#edit-form-block').html(data);
+        }
+      });
+    });
+  </script>
+
+
+
 @if (Session::has('from'))
   <script type="text/javascript">
     $(document).ready(function() {

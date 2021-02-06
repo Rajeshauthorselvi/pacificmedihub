@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Department;
+use App\Models\Role;
 use Session;
 use Redirect;
 use Arr;
@@ -31,6 +32,8 @@ class DepartmentController extends Controller
     public function create()
     {
         $data['type']='create';
+        $data['roles'] = Role::where('is_delete',0)->whereNotIn('name',['Super Admin','Admin','Customer'])->get();
+        //dd($data);
         return view('admin.department.form',$data);
     }
 
@@ -42,12 +45,14 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
+        
         $this->validate(request(), [
             'dept_id' => 'required',
-            'dept_name' => 'required'
+            'dept_name' => 'required|unique:departments'
         ],[
             'dept_id.required' => 'Department ID is required',
-            'dept_name.required' => 'Department Name is required'
+            'dept_name.required' => 'Department Name is required',
+            'dept_name.unique' => 'Department Name has already been taken'
         ]); 
 
         $input=$request->all();
@@ -77,6 +82,7 @@ class DepartmentController extends Controller
     public function edit(Department $department)
     {
         $data['dept']=Department::find($department->id);
+        $data['roles'] = Role::where('is_delete',0)->whereNotIn('name',['Super Admin','Admin','Customer'])->get();
         $data['type']="edit";
         return view('admin.department.form',$data);
     }
@@ -95,13 +101,15 @@ class DepartmentController extends Controller
             'dept_name' => 'required'
         ],[
             'dept_id.required' => 'Department ID is required',
-            'dept_name.required' => 'Department Name is required'
+            'dept_name.required' => 'Department Name is required',
+            'dept_name.unique' => 'Department Name has already been taken'
         ]); 
 
        $status=($request->status=='on')?1:0;
        $dept=Department::find($department->id);
        $dept->dept_id=$request->dept_id;
        $dept->dept_name=$request->dept_name;
+       $dept->role_id=$request->role_id;
        $dept->status=$status;
        $dept->save();
 

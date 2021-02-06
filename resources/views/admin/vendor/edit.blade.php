@@ -395,6 +395,11 @@
           
           return valid;
         }
+        function validateStep3(e){
+          var valid=true;
+          
+          return valid;
+        }
   
         $(".next-step").click(function (e) {
           var $active = $('.nav-tabs li>.active');

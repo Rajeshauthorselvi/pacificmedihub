@@ -40,7 +40,9 @@
               <div class="card-header">
                 @if ($type=="edit")
                   <h3 class="card-title">Edit Department</h3>
+                  <?php $role_id = $dept->role_id; ?>
                 @else     
+                  <?php $role_id = ""; ?>
                   <h3 class="card-title">Add New Department</h3>
                 @endif
               </div>
@@ -59,7 +61,17 @@
                   </div>
                   <div class="form-group">
                     <label for="dept_name">Department Name</label>
-                    {{ Form::text('dept_name',null,['class'=>'form-control','id'=>'dept_name']) }}
+                    <select class="form-control select2bs4" name="dept_name" id="dept_name">
+                      <option value="">--Select--</option>
+                      @foreach($roles as $role)
+                        @if ($type=="create")
+                          <option value="{{$role->name}}" role-id="{{$role->id}}" {{ (collect(old('dept_name'))->contains($role->name)) ? 'selected' : '' }}>{{$role->name}}</option>
+                        @else
+                          <option value="{{$role->name}}" role-id="{{$role->id}}" @if($role->id==$dept->role_id) selected="selected" @endif {{ (collect(old('dept_name'))->contains($role->name)) ? 'selected' : '' }}>{{$role->name}}</option>
+                        @endif
+                      @endforeach
+                      <input type="hidden" name="role_id" id="roleId" value="{{old('role_id',$role_id)}}">
+                    </select>
                     @if($errors->has('dept_name'))
                       <span class="text-danger">{{ $errors->first('dept_name') }}</span>
                     @endif
@@ -88,4 +100,14 @@
     </section>
   </div>
 
+  @push('custom-scripts')
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#dept_name').change(function(){
+          var roleId = $('option:selected', this).attr('role-id');
+          $('#roleId').val(roleId);
+        });
+      });
+    </script>
+  @endpush
 @endsection

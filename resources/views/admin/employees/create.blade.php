@@ -63,7 +63,7 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             {!! Form::label('employeeId', 'Employee ID') !!}
-                            {!! Form::text('emp_id',$employee_id,['class'=>'form-control','id'=>'employeeId']) !!}
+                            {!! Form::text('emp_id',$employee_id,['readonly','class'=>'form-control','id'=>'employeeId']) !!}
                           </div>
                           <div class="col-sm-5">
                             {!! Form::label('employeeName', 'Employee Name *') !!}
@@ -180,34 +180,26 @@
                       <div class="" id="banck_account">
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="accountName">Account Name *</label>
+                            <label for="accountName">Account Name</label>
                             <input type="text" class="form-control" name="account_name" id="accountName" value="{{old('account_name')}}">
                             <span class="text-danger" style="display:none">Account Name is required</span>
                           </div>
                           <div class="col-sm-5">
-                            <label for="accountNumber">Account Number *</label>
+                            <label for="accountNumber">Account Number</label>
                             <input type="text" class="form-control" name="account_number" onkeyup="validateNum(event,this);" id="accountNumber" value="{{old('account_number')}}">
-                            <span class="text-danger" style="display:none">Account Number is required</span>
                           </div>
                         </div>
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="bankName">Bank Name *</label>
+                            <label for="bankName">Bank Name</label>
                             <input type="text" class="form-control" name="bank_name" id="bankName" value="{{old('bank_name')}}">
-                            <span class="text-danger" style="display:none">Bank Name is required</span>
                           </div>
                           <div class="col-sm-5">
-                            <label for="bankBranch">Bank Branch *</label>
+                            <label for="bankBranch">Bank Branch</label>
                             <input type="text" class="form-control" name="bank_branch" id="bankBranch" value="{{old('bank_branch')}}">
-                            <span class="text-danger" style="display:none">Bank Branch is required</span>
                           </div>
                         </div>
                         <div class="form-group">
-                          <!-- <div class="col-sm-5">
-                            <label for="ifsc">IFSC Code *</label>
-                            <input type="text" class="form-control" name="ifsc" id="ifsc" value="{{old('ifsc')}}">
-                            <span class="text-danger" style="display:none">Bank Branch is required</span>
-                          </div> -->
                           <div class="col-sm-5">
                             <label for="payNow">PayNow Contact No</label>
                             <input type="text" class="form-control contact2" name="paynow_no" onkeyup="validateNum(event,this);" id="payNow" value="{{old('paynow_no')}}">
@@ -233,28 +225,18 @@
                             <span class="text-danger" style="display:none">Basic is required</span>
                           </div>
                           <div class="col-sm-5">
-                            <label for="esi">ESI</label>
-                            <input type="text" class="form-control" name="esi" id="esi" value="{{old('esi')}}">
+                            <label for="sdl">SDL</label>
+                            <input type="text" class="form-control" name="sdl" id="sdl" value="{{old('sdl')}}">
                           </div>
                         </div>
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="hra">HRA</label>
-                            <input type="text" class="form-control" name="hra" id="bankName" value="{{old('hra')}}">
+                            <label for="cpfSelf">CPF (Self)</label>
+                            <input type="text" class="form-control" name="cpf_self" id="cpfSelf" value="{{old('cpf_self')}}">
                           </div>
                           <div class="col-sm-5">
-                            <label for="pf">PF</label>
-                            <input type="text" class="form-control" name="pf" id="pf" value="{{old('pf')}}">
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="da">DA</label>
-                            <input type="text" class="form-control" name="da" id="da" value="{{old('da')}}">
-                          </div>
-                          <div class="col-sm-5">
-                            <label for="Conveyance">Conveyance</label>
-                            <input type="text" class="form-control" name="conveyance" id="Conveyance" value="{{old('conveyance')}}">
+                            <label for="cpfEmp">CPF (Employer)</label>
+                            <input type="text" class="form-control" name="cpf_emp" id="cpfEmp" value="{{old('cpf_emp')}}">
                           </div>
                         </div>
                       </div>
@@ -344,7 +326,7 @@
         function validateStep1(e){
           var valid=true;
           fieldsToValidate=['customer','order_type'];
-          //$(e.target).closest('.tab-pane.active').find('span.text-danger').hide();
+          $(e.target).closest('.tab-pane.active').find('span.text-danger').hide();
           if($("[name='emp_name']").val()=="") {
             $("[name='emp_name']").closest('.form-group').find('span.text-danger').show();
             valid=false;
@@ -381,26 +363,6 @@
         }
         function validateStep2(e){
           var valid=true;
-          if($("[name='account_name']").val()=="") {
-            $("[name='account_name']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='account_number']").val()=="") {
-            $("[name='account_number']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='bank_name']").val()=="") {
-            $("[name='bank_name']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='bank_branch']").val()=="") {
-            $("[name='bank_branch']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='ifsc']").val()=="") {
-            $("[name='ifsc']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
           return valid;
         }
         function validateStep3(e){

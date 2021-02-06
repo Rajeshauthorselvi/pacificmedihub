@@ -80,10 +80,6 @@ class EmployeeController extends Controller
             'address1'       => 'required',
             'postcode'       => 'required',
             'country_id'     => 'required',
-            'account_name'   => 'required',
-            'account_number' => 'required',
-            'bank_name'      => 'required',
-            'bank_branch'    => 'required',
             'basic'          => 'required'
         ]);
 
@@ -101,8 +97,11 @@ class EmployeeController extends Controller
 
         if($request->emp_status){$status = 1;}else{$status = 0;}
 
+        $role = Department::where('id',$request->dept_id)->first();
+        
         $add_emp = new Employee;
         $add_emp->emp_id = $request->emp_id;
+        $add_emp->role_id = $role->role_id;
         $add_emp->emp_name = $request->emp_name;
         $add_emp->emp_department = $request->dept_id;
         $add_emp->emp_designation = $request->designation;
@@ -124,11 +123,9 @@ class EmployeeController extends Controller
         // $add_emp->emp_ifsc_code = $request->ifsc;
         $add_emp->emp_paynow_contact_number = $request->paynow_no;
         $add_emp->basic = $request->basic;
-        $add_emp->hr = $request->hra;
-        $add_emp->da = $request->da;
-        $add_emp->conveyance = $request->conveyance;
-        $add_emp->esi = $request->esi;
-        $add_emp->pf = $request->pf;
+        $add_emp->self_cpf = $request->cpf_self;
+        $add_emp->emp_cpf = $request->cpf_emp;
+        $add_emp->sdl = $request->sdl;
         $add_emp->basic_commission_type = $request->commision_type;
         $add_emp->basic_commission_value = $request->commision_value;
         $add_emp->target_value = $request->target_value;
@@ -142,11 +139,9 @@ class EmployeeController extends Controller
             $salary_history = new EmpSalaryHistory;
             $salary_history->emp_id = $add_emp->id;
             $salary_history->basic = $request->basic;
-            $salary_history->hr = $request->hra;
-            $salary_history->da = $request->da;
-            $salary_history->conveyance = $request->conveyance;
-            $salary_history->esi = $request->esi;
-            $salary_history->pf = $request->pf;
+            $salary_history->self_cpf = $request->cpf_self;
+            $salary_history->emp_cpf = $request->cpf_emp;
+            $salary_history->sdl = $request->sdl;
             $salary_history->modified_date = date('Y-m-d');
             $salary_history->save();
 
@@ -202,10 +197,6 @@ class EmployeeController extends Controller
             'address1'       => 'required',
             'postcode'       => 'required',
             'country_id'     => 'required',
-            'account_name'   => 'required',
-            'account_number' => 'required',
-            'bank_name'      => 'required',
-            'bank_branch'    => 'required',
             'basic'          => 'required'
         ]);
 
@@ -247,11 +238,9 @@ class EmployeeController extends Controller
         /*$update_emp->emp_ifsc_code = $request->ifsc;*/
         $update_emp->emp_paynow_contact_number = $request->paynow_no;
         $update_emp->basic = $request->basic;
-        $update_emp->hr = $request->hra;
-        $update_emp->da = $request->da;
-        $update_emp->conveyance = $request->conveyance;
-        $update_emp->esi = $request->esi;
-        $update_emp->pf = $request->pf;
+        $update_emp->self_cpf = $request->cpf_self;
+        $update_emp->emp_cpf = $request->cpf_emp;
+        $update_emp->sdl = $request->sdl;
         $update_emp->basic_commission_type = $request->commision_type;
         $update_emp->basic_commission_value = $request->commision_value;
         $update_emp->target_value = $request->target_value;
@@ -267,11 +256,9 @@ class EmployeeController extends Controller
                 $salary_history = new EmpSalaryHistory;
                 $salary_history->emp_id = $update_emp->id;
                 $salary_history->basic = $request->basic;
-                $salary_history->hr = $request->hra;
-                $salary_history->da = $request->da;
-                $salary_history->conveyance = $request->conveyance;
-                $salary_history->esi = $request->esi;
-                $salary_history->pf = $request->pf;
+                $salary_history->self_cpf = $request->cpf_self;
+                $salary_history->emp_cpf = $request->cpf_emp;
+                $salary_history->sdl = $request->sdl;
                 $salary_history->modified_date = date('Y-m-d');
                 $salary_history->save();
             }
@@ -309,14 +296,12 @@ class EmployeeController extends Controller
             $employee[$key]['id'] = $emp->id;
             $employee[$key]['name'] = $emp->emp_name;
             $employee[$key]['basic_salary'] = $emp->basic;
-            $employee[$key]['hra'] = $emp->hr;
-            $employee[$key]['da'] = $emp->da;
-            $employee[$key]['conveyance'] = $emp->conveyance;
-            $employee[$key]['esi'] = $emp->esi;
-            $employee[$key]['pf'] = $emp->pf;
-            $salary = $emp->basic+$emp->hr+$emp->da+$emp->conveyance;
-            $deduction = $emp->esi+$emp->pf;
-            $total_salary = $salary - $deduction;
+            $employee[$key]['self_cpf'] = $emp->self_cpf;
+            $employee[$key]['emp_cpf'] = $emp->emp_cpf;
+            $employee[$key]['sdl'] = $emp->sdl;
+            $salary = $emp->basic;
+
+            $total_salary = $salary;
             if($salaryStatus){
                 $paid_date = date('d/m/Y',strtotime($salaryStatus->paid_date));
                 if($salaryStatus->status==1) {

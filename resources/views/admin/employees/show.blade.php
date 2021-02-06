@@ -158,29 +158,25 @@
                     <div class="" id="banck_account">
                       <div class="form-group">
                         <div class="col-sm-5">
-                          <label for="accountName">Account Name *</label>
+                          <label for="accountName">Account Name</label>
                           <input type="text" class="form-control" name="account_name" id="accountName" readonly value="{{$employees->emp_account_name}}">
                         </div>
                         <div class="col-sm-5">
-                          <label for="accountNumber">Account Number *</label>
+                          <label for="accountNumber">Account Number</label>
                           <input type="text" class="form-control" name="account_number" id="accountNumber" readonly value="{{$employees->emp_account_number}}">
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-5">
-                          <label for="bankName">Bank Name *</label>
+                          <label for="bankName">Bank Name</label>
                           <input type="text" class="form-control" name="bank_name" id="bankName" readonly value="{{$employees->emp_bank_name}}">
                         </div>
                         <div class="col-sm-5">
-                          <label for="bankBranch">Bank Branch *</label>
+                          <label for="bankBranch">Bank Branch</label>
                           <input type="text" class="form-control" name="bank_branch" id="bankBranch" readonly value="{{$employees->emp_bank_branch}}">
                         </div>
                       </div>
                       <div class="form-group">
-                        <div class="col-sm-5">
-                          <label for="ifsc">IFSC Code *</label>
-                          <input type="text" class="form-control" name="ifsc" id="ifsc" readonly value="{{$employees->emp_ifsc_code}}">
-                        </div>
                         <div class="col-sm-5">
                           <label for="payNow">PayNow Contact No</label>
                           <input type="text" class="form-control contact2" name="paynow_no" id="payNow" readonly value="{{$employees->emp_paynow_contact_number}}">
@@ -197,28 +193,18 @@
                           <input type="text" class="form-control" name="basic" id="basic" readonly value="{{$employees->basic}}">
                         </div>
                         <div class="col-sm-5">
-                          <label for="esi">ESI</label>
-                          <input type="text" class="form-control" name="esi" id="esi" readonly value="{{$employees->esi}}">
+                          <label for="sdl">SDL</label>
+                          <input type="text" class="form-control" name="sdl" readonly value="{{$employees->sdl}}">
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-5">
-                          <label for="hra">HRA</label>
-                          <input type="text" class="form-control" name="hra" id="bankName" readonly value="{{$employees->hr}}">
+                          <label for="cpfSelf">CPF (Self)</label>
+                          <input type="text" class="form-control" name="cpf_self" id="cpfSelf" readonly value="{{$employees->self_cpf}}">
                         </div>
                         <div class="col-sm-5">
-                          <label for="pf">PF</label>
-                          <input type="text" class="form-control" name="pf" id="pf" readonly value="{{$employees->pf}}">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-5">
-                          <label for="da">DA</label>
-                          <input type="text" class="form-control" name="da" id="da" readonly value="{{$employees->da}}">
-                        </div>
-                        <div class="col-sm-5">
-                          <label for="Conveyance">Conveyance</label>
-                          <input type="text" class="form-control" name="conveyance" id="Conveyance" readonly value="{{$employees->conveyance}}">
+                          <label for="cpfEmp">CPF (Employer)</label>
+                          <input type="text" class="form-control" name="cpf_emp" id="cpfEmp" readonly value="{{$employees->emp_cpf}}">
                         </div>
                       </div>
                     </div>
