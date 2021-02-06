@@ -666,6 +666,7 @@ class ProductController extends Controller
             'product_code' => 'required',
             'category'     => 'required'
         ]);
+         $product_id=$id;
 
         if($request->published){$published = 1;}else{$published = 0;}
         if($request->homepage){$homepage = 1;}else{$homepage = 0;}
@@ -928,7 +929,7 @@ class ProductController extends Controller
           
                     if(($value['id'])>0){
                         $update_variant = ProductVariant::find($value['id']);
-                        $update_variant->product_id = $product->id;
+                        $update_variant->product_id = $product_id;
                         $update_variant->option_id = $value['option_id1'];
                         $update_variant->option_value_id = $value['option_value_id1'];
                         $update_variant->option_id2 = isset($value['option_id2'])?$value['option_id2']:null;
