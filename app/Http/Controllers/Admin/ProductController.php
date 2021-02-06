@@ -708,10 +708,10 @@ class ProductController extends Controller
 
 
 
-        if (!$order_exists && $request->has('new_variant')) {
+/*        if (!$order_exists && $request->has('new_variant')) {
             ProductVariant::where('product_id',$product->id)->delete();
             ProductVariantVendor::where('product_id',$product->id)->delete();
-        }
+        }*/
         
         if ($request->has('new_variant')) {
 
