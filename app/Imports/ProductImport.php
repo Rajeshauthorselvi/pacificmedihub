@@ -4,7 +4,7 @@ namespace App\Imports;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
- 
+ use App\Models\Brand;
 class ProductImport implements WithMultipleSheets
 {
     /**
@@ -12,8 +12,9 @@ class ProductImport implements WithMultipleSheets
     */
     public function sheets(): array
     {
+    		
         return [
-            'ProductDetails' => new ProductSheetImport(),
+            'ProductDetails' => new ProductSheetImport()
             // 'ProductVariants' => new ProductVariationsSheetImport(),
         ];
     }

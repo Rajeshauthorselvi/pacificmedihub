@@ -436,12 +436,16 @@ class ProductController extends Controller
                     ->distinct()
                     ->pluck('vendor_id')
                     ->toArray();
+        $data['product'] = Product::find($id);
+        $variant = ProductVariant::where('product_id',$id)->where('is_deleted',0)->first();
+        $options = array();
+        $options_id = array();
 
-        $variant = ProductVariant::select('product_variants.*')
-                   ->leftjoin('product_variant_vendors as pvv','pvv.product_variant_id','product_variants.id')
-                   ->where('product_variants.is_deleted',0)
-                   ->where('display_variant',0)
-                   ->first();
+        $vendor_id = ProductVariantVendor::select('vendor_id')->where('product_id',$id)->distinct()->pluck('vendor_id')->toArray();
+       $variant = ProductVariant::where('product_id',$id)
+                  ->where('disabled',0)
+                  ->where('is_deleted',0)
+                  ->first();
        //dd($variant);
         $options_val=$this->Options($variant,$vendor_id);
         $option_count=$options_val['option_count'];
@@ -452,12 +456,66 @@ class ProductController extends Controller
         $data['get_options'] = $options;
         $data['options_id'] = $options_id;
         $data['vendors_id'] = $vendor_id;
+        $product_variants=$this->Variants($id);
+        $data['product_variant'] =$product_variants;
 
-        // dd($data);
-        // exit();
+        $old_variant = ProductVariant::where('product_id',$id)
+                  ->where('disabled',1)
+                  ->where('is_deleted',0)
+                  ->first();
+
+        $data['old_product_variant']=array();
+        if (isset($old_variant)) {
+            $old_product_variants=$this->Variants($id,'old');
+            $old_options_val=$this->Options($old_variant,$vendor_id);
+
+            $option_count=$old_options_val['option_count'];
+            $options=$old_options_val['options'];
+            $options_id=$old_options_val['options_id'];;
 
 
-        $productVariants = ProductVariant::where('product_id',$id)->where('is_deleted',0)->get();
+            $data['old_option_count'] = $option_count;
+            $data['old_options'] = $options;
+            $data['old_options_id'] = $options_id;
+            $data['old_vendors_id'] = $vendor_id;
+            $data['old_product_variant'] = $old_product_variants;
+        }
+
+
+
+        $data['product_images'] = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
+        $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['brands'] = Brand::where('published',1)->where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->pluck('name','id')->toArray();
+        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->pluck('option_name','id')->toArray();
+
+        $data['order_exists']=PurchaseProducts::where('product_id',$id)->exists();
+        return view('admin/products/edit',$data);
+    }
+
+    public function Variants($product_id=0,$type='')
+    {
+         if ($type!='') {
+            $variant = ProductVariant::where('product_id',$product_id)
+                       ->where('is_deleted',0)
+                       ->where('disabled',1)
+                       ->first();
+            $productVariants = ProductVariant::where('product_id',$product_id)
+                               ->where('is_deleted',0)
+                               ->where('disabled',1)
+                               ->get();
+         }
+         else{
+            $variant = ProductVariant::where('product_id',$product_id)
+                       ->where('is_deleted',0)
+                       ->where('disabled',0)
+                       ->first();
+
+            $productVariants = ProductVariant::where('product_id',$product_id)
+                                ->where('disabled',0)
+                               ->where('is_deleted',0)
+                               ->get();
+         }
         $product_variants = array();
         foreach ($productVariants as $key => $variants) {
             
@@ -535,22 +593,8 @@ class ProductController extends Controller
             $product_variants[$key]['vendor_name'] = $variant_details->vendorName->name;
         }
 
-        $data['option_count'] = $option_count;
-        $data['get_options'] = $options;
-        $data['options_id'] = $options_id;
-        $data['vendors_id'] = $vendor_id;
-        $data['product_variant'] = $product_variants;
-        // dd($data);
-        $data['product_images'] = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
-        $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['brands'] = Brand::where('published',1)->where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->pluck('name','id')->toArray();
-        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->pluck('option_name','id')->toArray();
-
-        $data['order_exists']=PurchaseProducts::where('product_id',$id)->exists();
-        return view('admin/products/edit',$data);
+        return $product_variants;
     }
-
 
     public function Options($variant,$vendor_id)
     {
@@ -660,6 +704,20 @@ class ProductController extends Controller
         $product->meta_keyword = $request->meta_keyword;
         $product->meta_description = $request->meta_description;
         $product->update();
+         $order_exists=PurchaseProducts::where('product_id',$product->id)->exists();
+        if (!$order_exists) {
+            ProductVariant::where('product_id',$product->id)->delete();
+            ProductVariantVendor::where('product_id',$product->id)->delete();
+        }
+        
+        if ($request->has('new_variant')) {
+
+            $this->AddNewVariants($request->new_variant,$product->id);
+            return redirect()->route('products.index')->with('success','Product modified successfully...!');
+        }
+
+       
+
 
         if($product->id){
             if($request->variant){
@@ -979,6 +1037,69 @@ class ProductController extends Controller
         }
     }
 
+
+    public function AddNewVariants($variants,$product_id)
+    {
+        ProductVariant::where('product_id',$product_id)->update(['disabled'=>1]);
+        ProductVariantVendor::where('product_id',$product_id)->update(['display_variant'=>0]);
+
+        $ids=$variants['id'];
+        $option_id1=isset($variants['option_id1'])?$variants['option_id1']:'';
+        $option_value_id1=isset($variants['option_value_id1'])?$variants['option_value_id1']:'';
+        $option_id2=isset($variants['option_id2'])?$variants['option_id2']:'';
+        $option_value_id2=isset($variants['option_value_id2'])?$variants['option_value_id2']:'';
+        $option_id3=isset($variants['option_id3'])?$variants['option_id3']:'';
+        $option_value_id3=isset($variants['option_value_id3'])?$variants['option_value_id3']:'';
+        $option_id4=isset($variants['option_id4'])?$variants['option_id4']:'';
+        $option_value_id4=isset($variants['option_value_id4'])?$variants['option_value_id4']:'';
+        $option_id5=isset($variants['option_id5'])?$variants['option_id5']:'';
+        $option_value_id5=isset($variants['option_value_id5'])?$variants['option_value_id5']:'';
+
+        $base_price=$variants['base_price'];
+        $retail_price=$variants['retail_price'];
+        $minimum_price=$variants['minimum_price'];
+        $stock_qty=$variants['stock_qty'];
+        $vendor_id=$variants['vendor_id'];
+        $display_order=$variants['display_order'];
+        $display=$variants['display'];
+
+        foreach ($ids as $key => $id) {
+            $add = new ProductVariant();
+            $add->product_id = $product_id;
+            $add->option_id = $option_id1[$key];
+            $add->option_value_id = $option_value_id1[$key];
+
+            $add->option_id2 = isset($option_id2[$key])?$option_id2[$key]:'';
+            $add->option_value_id2 = isset($option_value_id2[$key])?$option_value_id2[$key]:'';
+
+            $add->option_id3 = isset($option_id3[$key])?$option_id3[$key]:'';
+            $add->option_value_id3 = isset($option_value_id3[$key])?$option_value_id3[$key]:'';
+
+            $add->option_id4 = isset($option_id4[$key])?$option_id4[$key]:'';
+            $add->option_value_id4 = isset($option_value_id4[$key])?$option_value_id4[$key]:'';
+
+            $add->option_id5 = isset($option_id5[$key])?$option_id5[$key]:'';
+            $add->option_value_id5 = isset($option_value_id5[$key])?$option_value_id5[$key]:'';
+            $add->created_at = date('Y-m-d H:i:s');
+            $add->save();
+
+                        if($add){
+                            $vendor = new ProductVariantVendor();
+                            $vendor->product_id = $product_id;
+                            $vendor->product_variant_id = $add->id;
+                            $vendor->base_price = $base_price[$key];
+                            $vendor->retail_price = $retail_price[$key];
+                            $vendor->minimum_selling_price = $minimum_price[$key];
+                            $vendor->display_variant = $display[$key];
+                            $vendor->display_order = $display_order[$key];
+                            $vendor->stock_quantity = $stock_qty[$key];
+                            $vendor->vendor_id = $vendor_id[$key];
+                            $vendor->timestamps = false;
+                            $vendor->save();
+                        }
+        }
+
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -1050,7 +1171,7 @@ class ProductController extends Controller
     public function productVariant(Request $request)
     {
         $options = json_decode($request->options,true);
-        $vendors = json_decode($request->vendors,true);
+        $vendors=$complete_vendors = json_decode($request->vendors,true);
 
         if ($request->has('existOption')) {
             $existOption = json_decode($request->existOption,true);
@@ -1061,9 +1182,8 @@ class ProductController extends Controller
             $existing_vendor=json_decode($request->existVendor,true);
             $diff_vendor=array_diff($vendors, $existing_vendor);
         }
-
-        if (isset($diff_vendor)&& count($diff_vendor)) {
-             $vendors=$diff_vendor;
+        if (isset($diff_options)&& count($diff_options)==0 && count($vendors)>0) {
+            $vendors=$diff_vendor;
         }
 
         $vendor_data = array();
@@ -1075,6 +1195,7 @@ class ProductController extends Controller
             $exist_vendors = json_decode($request->existVendor,true);
         }
         $variant_options=[];
+
         foreach ($vendors as $vendor) {
             $vendor_data[]=Vendor::find($vendor);
             $get_options = Option::whereIn('id',$options)->get();
@@ -1082,12 +1203,24 @@ class ProductController extends Controller
             $variant_options[] = DB::select($sql);
         }
 
+
         $data['vendors'] = $vendor_data;
         $data['option_values'] = $variant_options;
         $data['options']= $get_options;
         $data['option_count'] = count($options);
 
-        return view('admin.products.variants',$data);
+
+        if (isset($diff_options)&& count($diff_options)==0 && count($vendors)>0) {
+            return view('admin.products.variants',$data);
+        }
+        else{
+               if($request->dataFrom=="edit"){
+                    return view('admin.products.edit_variants',$data);
+                }
+                else{
+                    return view('admin.products.variants',$data);
+                }
+        }
         // return response()->json($data); 
         
 

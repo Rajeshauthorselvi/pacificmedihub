@@ -187,14 +187,37 @@
                     @endforeach
                     
                   </div>
-
                   <div class="product-variant-block">
                     <label>Product Variants</label>
                     <?php inputFields($get_options,$product_variant,$option_count); ?>
-                    
+                      
                   </div>
+                  @if (isset($old_options) && count($old_product_variant)>0)
+                  <div class="clearfix"></div>
+                  <br>
+                      <div class="bs-example">
+                          <div class="accordion" id="accordionExample">
+                              <div class="card">
+                                  <div class="card-header" id="headingOne">
+                                      <h2 class="mb-0">
+                                          <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"><i class="fa fa-plus"></i> Old Variants</button>                  
+                                      </h2>
+                                  </div>
+                                  <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                      <div class="card-body">
+                                        <div class="product-variant-block-old">
+                                            <label>Old Variants</label>
+                                            <?php inputFields($old_options,$old_product_variant,$old_option_count,'old'); ?>
+                                        </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  <div class="clearfix"></div>
+                  <br>
+                  @endif
 
-                  
                   <label class="new-product-variant-lable" style="display:none">New Product Variants</label>
                   <div id="new-product-variant-block"></div>
 
@@ -240,8 +263,10 @@
       </div>
     </section>
   </div>
-  @php function inputFields($get_options,$product_variant,$option_count) { @endphp
-<table class="list" id="variantList">
+  @php function inputFields($get_options,$product_variant,$option_count,$type='') { @endphp
+
+@php if($type=="old") $class="old_variant"; else $class=""; @endphp
+<table class="list {{ $class }}" id="variantList">
                       <thead>
                         <tr>
                           
@@ -249,7 +274,16 @@
                            echo '<th>'.$option.'</th>';
                           }
                           @endphp
-                          <th>Base Price</th><th>Retail Price</th><th>Minimum Selling Price</th><th>Stock Qty</th><th>Vendor</th><th>Order By</th><th>Display</th><th>Remove</th>
+                          <th>Base Price</th>
+                          <th>Retail Price</th>
+                          <th>Minimum Selling Price</th>
+                          <th>Stock Qty</th>
+                          <th>Vendor</th>
+                          <th>Order By</th>
+                          <th>Display</th>
+                          @php if($type!="old"){ @endphp
+                          <th>Remove</th>
+                          @php } @endphp
                         </tr>
                       </thead>
                       <tbody>
@@ -263,7 +297,7 @@
                                 {{$variant['option_value1']}}
                               </div>
                             </td>
-                            @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
+                            @if($option_count==2)
                               <td>
                                 <div class="form-group">
                                   <input type="hidden" name="variant[option_id2][]" value="{{$variant['option_id2']}}">
@@ -341,7 +375,13 @@
                                 </select>
                               </div>
                             </td>
-                            <td><a class="btn btn-danger remove-variant-individual" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}"><i class="far fa-trash-alt"></i></a></td>
+                            @php if($type!="old"){ @endphp
+                            <td>
+                              <a class="btn btn-danger remove-variant-individual" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}">
+                                <i class="far fa-trash-alt"></i>
+                              </a>
+                            </td>
+                            @php } @endphp 
                           </tr>
                         @php } @endphp
                       </tbody>
@@ -370,6 +410,26 @@
     }
 </style>
   @push('custom-scripts')
+  <script>
+
+    $('.old_variant input').attr('disabled',true);
+    $('.old_variant select').attr('disabled',true);
+
+
+    $(document).ready(function(){
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.show").each(function(){
+          $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+        });
+        
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function(){
+          $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+        }).on('hide.bs.collapse', function(){
+          $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+        });
+    });
+</script>
     <script type="text/javascript">
 
       //Add Variant
@@ -388,6 +448,9 @@
       });
 
       $('#add-options').on('click',function(){
+      var existing_options = <?php echo json_encode($options_id); ?>;
+      var existing_vendors = <?php echo json_encode($vendors_id); ?>;
+
         var order_exists='{{ $order_exists }}';
         if (order_exists) {
           if (!confirm('The product contain orders, adding new variant will result in disabling exiting variants.Do you want to make change?')) {
@@ -395,25 +458,25 @@
           }
         }
         else{
+
           if(!confirm('Existing variants will be removed. Do you want to make change?')){
               return false;
-          }
-          else{
-            $('.product-variant-block').remove();
           }
         }
 
           $('.product-variant-block .display_variant').val(0).attr("selected", "selected");
           var existing_options = <?php echo json_encode($options_id); ?>;
+
           var existingOption = JSON.stringify(existing_options);
 
           var existing_vendors = <?php echo json_encode($vendors_id); ?>;
+
+          
           var existingVendor = JSON.stringify(existing_vendors);
 
           var options = $('#productVariant option:selected');
         
         if(options.length > 0  && options.length <=5 ){
-
 
           var selectedOption = JSON.stringify($('#productVariant').val());
           var selectedVendor = JSON.stringify($('#VendorSupplier').val());
@@ -422,7 +485,6 @@
             return false;
           }
           else{
-            // alert($('#VendorSupplier').val());
             $('.product-variant-selectbox').find('.select2').css({'pointer-events':'none','opacity':'0.5'});
             $('#add-options').css({'pointer-events':'none','opacity':'0.5'});
             $('#clear-option').css('display','block');
@@ -444,6 +506,7 @@
               //console.log(data);
               $('#new-product-variant-block').html(data);
               $('.new-product-variant-lable').css('display','block');
+             scroll_to();
               /*createTable(data.options);
               addOptionValue(0,data)*/
             }
@@ -453,7 +516,11 @@
         }
       });
 
-      
+      function scroll_to(div){
+      $('html, body').animate({
+        scrollTop: $("#new-product-variant-block").offset().top
+      },1000);
+    }
       //Clear Options
       $('#clear-option').on('click',function () {
         $('#clear-option').css('display','none');
