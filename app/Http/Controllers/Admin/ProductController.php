@@ -920,17 +920,17 @@ class ProductController extends Controller
                     $i = $i + 1;
                 }
 
-                $check_order_exists=PurchaseProducts::where('product_id',$product->id)
+/*                $check_order_exists=PurchaseProducts::where('product_id',$product->id)
                     ->exists();
                 if (!$check_order_exists) {
                     ProductVariant::where('product_id',$product->id)->delete();
-                }
+                }*/
                 foreach ($variant_data as $key=>$value) {
           
                     if(($value['id'])>0){
                         $update_variant = ProductVariant::find($value['id']);
                         $update_variant->product_id = $product_id;
-                        
+
                         $update_variant->option_id = $value['option_id1'];
                         $update_variant->option_value_id = $value['option_value_id1'];
                         $update_variant->option_id2 = isset($value['option_id2'])?$value['option_id2']:null;
