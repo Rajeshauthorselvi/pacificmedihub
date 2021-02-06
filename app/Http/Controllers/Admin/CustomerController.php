@@ -160,8 +160,10 @@ class CustomerController extends Controller
         ->where('id','<>',$customer->company_id)
         ->pluck('company_name','id')
         ->toArray();
+        $data['sales_rep']=[''=>'Please Select']+Employee::where('role_id',4)
+                             ->pluck('emp_name','id')->toArray();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
-
+        //dd($data);
         return view('admin.customer.edit',$data);
     }
 
@@ -196,8 +198,8 @@ class CustomerController extends Controller
         Arr::forget($company_details,['company_id']);
         $company->update($company_details);
 
-        $logo_image=$request->company['logo'];
-        if($logo_image){
+        $logo_image=isset($request->company['logo'])?$request->company['logo']:null;
+        if($logo_image!=null){
             $company_id=$request->company['company_id'];
             $check_image=UserCompanyDetails::where('id',$company_id)->value('logo');
             File::delete(public_path('theme/images/customer/company/'.$company_id.'/'.$check_image));
@@ -238,11 +240,17 @@ class CustomerController extends Controller
 
     public function AddNewAddressController(Request $request)
     {
-        
         $address=$request->except(['_token']);
         $address_id=UserAddress::insertGetId($address);
         $address['address_id']=$address_id;
         Session::flash('from', 'address');
         return ['status'=>true];
+    }
+
+    public function editAddressForm(Request $request)
+    {
+        /*dd($request->all());
+
+        return view('admin.customer.edit_address',$data);*/
     }
 }

@@ -1015,8 +1015,8 @@ class ProductController extends Controller
             }
         }
         
-        if ($request->ajax())  return ['status'=>true];
-        else  return redirect()->route('products.index')->with('error','Product deleted successfully.!');
+        if ($request->ajax()) return ['status'=>true];
+        else return redirect()->route('products.index')->with('error','Product deleted successfully.!');
     }
 
     

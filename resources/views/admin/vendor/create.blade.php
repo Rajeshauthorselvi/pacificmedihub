@@ -144,7 +144,7 @@
                           </div>
                           <div class="col-sm-5">
                             <label for="Country">Country *</label>
-                            {!! Form::select('country',$countries,null,['class'=>'form-control select2bs4', 'id'=>'Country']) !!}
+                            {!! Form::select('country',$countries,196,['class'=>'form-control select2bs4', 'id'=>'Country']) !!}
                             <span class="text-danger" style="display:none">Country is required</span>
                           </div>
                         </div>
@@ -188,12 +188,12 @@
                             <td><span class="counts">1</span></td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control" name="poc[name][]" value="{{old('name')}}">
+                                <input type="text" class="form-control" name="poc[name][]">
                               </div>
                             </td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control validate-email1" name="poc[email][]" value="{{old('email')}}">
+                                <input type="text" class="form-control validate-email1" name="poc[email][]">
                                 <span class="email-error1" style="display:none;color:red;">Invalid email</span>
                               </div>
                             </td>
@@ -207,18 +207,18 @@
                             <td><span class="counts">2</span></td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control" name="poc[name][]" value="{{old('name')}}">
+                                <input type="text" class="form-control" name="poc[name][]">
                               </div>
                             </td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control validate-email2" name="poc[email][]" value="{{old('email')}}">
+                                <input type="text" class="form-control validate-email2" name="poc[email][]">
                                 <span class="email-error2" style="display:none;color:red;">Invalid email</span>
                               </div>
                             </td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control" name="poc[contact][]" id="contact2" value="{{old('contact')}}">
+                                <input type="text" class="form-control" name="poc[contact][]" id="contact2">
                               </div>
                             </td>
                           </tr>
@@ -226,18 +226,18 @@
                             <td><span class="counts">3</span></td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control" name="poc[name][]" value="{{old('name')}}">
+                                <input type="text" class="form-control" name="poc[name][]">
                               </div>
                             </td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control validate-email3" name="poc[email][]" value="{{old('email')}}">
+                                <input type="text" class="form-control validate-email3" name="poc[email][]">
                                 <span class="email-error3" style="display:none;color:red;">Invalid email</span>
                               </div>
                             </td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control" name="poc[contact][]" id="contact3" value="{{old('contact')}}">
+                                <input type="text" class="form-control" name="poc[contact][]" id="contact3">
                               </div>
                             </td>
                           </tr>
@@ -378,6 +378,12 @@
           return valid;
         }
 
+        function validateStep3(e){
+          var valid=true;
+          
+          return valid;
+        }
+
         $(".next-step").click(function (e) {
           var $active = $('.nav-tabs li>.active');
           var stepID = $(e.target).attr('id');
@@ -480,6 +486,18 @@
         }
       });
 
+
+      $(document).ready(function() {
+        var country_id = 196;
+        getState(country_id);
+      });
+
+      $(document).ready(function() {
+
+        var state_id = 3186;
+        getCity(state_id);
+      });
+
       //Get State
       $('#Country').change(function() {
         var country_id = $(this).val();
@@ -495,7 +513,7 @@
             success:function(res){  
               if(res){
                 $("#State").empty();
-                $("#State").append('<option selected value=""> ---Select--- </option>');
+                // $("#State").append('<option selected value=""> ---Select--- </option>');
                 $.each(res,function(key,value){
                   var select_state="";
                   if(state_id == key) { var select_state = "selected" }
@@ -528,7 +546,7 @@
             success:function(res){  
               if(res){
                 $("#City").empty();
-                $("#City").append('<option selected value=""> ---Select--- </option>');
+                //$("#City").append('<option selected value=""> ---Select--- </option>');
                 $.each(res,function(key,value){
                   var select_city="";
                   if(city_id == key) { var select_city = "selected" }

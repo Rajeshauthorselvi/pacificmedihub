@@ -46,11 +46,9 @@
                       <tr>
                       	<th>Name</th>
                         <th>Basic Salary</th>
-                        <th>HRA</th>
-                        <th>DA</th>
-                        <th>Conveyance</th>
-                        <th>ESI</th>
-                        <th>PF</th>
+                        <th>SDL</th>
+                        <th>CPF (Self)</th>
+                        <th>CPF (Employer)</th>
                         <th>Total Salary</th>
                         <th>Paid Date</th>
                       	<th>Status</th>
@@ -63,11 +61,10 @@
                           <input type="hidden" name="emp_id" value="{{$emp['id']}}">
                           <td>{{$emp['name']}}</td>
                           <td>{{$emp['basic_salary']}}</td>
-                          <td>{{$emp['hra']}}</td>
-                          <td>{{$emp['da']}}</td>
-                          <td>{{$emp['conveyance']}}</td>
-                          <td>{{$emp['esi']}}</td>
-                          <td>{{$emp['pf']}}</td>
+                          <td>{{$emp['sdl']}}</td>
+                          <td>{{$emp['self_cpf']}}</td>
+                          <td>{{$emp['emp_cpf']}}</td>
+                          
                           <td>{{$emp['total_salary']}}</td>
                           <td>{{$emp['paid_date']}}</td>
                           <td>
