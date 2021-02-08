@@ -87,3 +87,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::get('product-import',['as'=>'product.import','uses'=>'Admin\ProductController@ProductImportController']);
 	Route::post('post-product-import',['as'=>'post.product.import','uses'=>'Admin\ProductController@ProductImportPostController']);
 });
+
+
+
+Route::resource('home','HomeController');
+Route::get('/','HomeController@index');
