@@ -142,7 +142,7 @@
           </li>
           
           <!-- Customer/POC -->
-          <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit'||$current_route=='customers.show') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-users"></i>
               <p>
@@ -150,7 +150,7 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit') block @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit'||$current_route=='customers.show') block @endif">
               <li class="nav-item @if($current_route=='customers.index') active @endif">
                 <a href="{{ route('customers.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
@@ -166,7 +166,7 @@
             </ul>
           </li>
           
-          <li class="nav-item @if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit'||$current_route=='vendor-products.index') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit'||$current_route=='vendor.show'||$current_route=='vendor-products.index') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link">
               <i class="fas fa-people-carry"></i>
               <p>
@@ -174,8 +174,8 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit'||$current_route=='vendor-products.index') block @endif">
-              <li class="nav-item @if($current_route=='vendor.index'||$current_route=='vendor.edit') active @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit'||$current_route=='vendor-products.index'||$current_route=='vendor.show') block @endif">
+              <li class="nav-item @if($current_route=='vendor.index'||$current_route=='vendor.edit'||$current_route=='vendor.show') active @endif">
                 <a href="{{route('vendor.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>List Vendors</p>

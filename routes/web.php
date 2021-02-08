@@ -65,6 +65,7 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('customers','Admin\CustomerController');
 
 	Route::get('edit-address-form','Admin\CustomerController@editAddressForm');
+	Route::post('save-address-form','Admin\CustomerController@saveAddressForm')->name('save.address');
 
 	Route::resource('vendor-products','Admin\VendorProdcutsController');
 	Route::post('add-new-address','Admin\CustomerController@AddNewAddressController');
@@ -73,6 +74,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::get('rfq-delete/{id}',['as'=>'rfq.delete','uses'=>'Admin\RFQController@destroy']);
 
 	Route::get('rfq-product',['as'=>'rfq.product','uses'=>'Admin\RFQController@ProductSearch']);
+
+	Route::get('search-purchase-no','Admin\PurchaseReturnController@searchPurchaseNo');
 
 	Route::resource('orders','Admin\OrderController');
 	Route::get('orders-product',['as'=>'orders.product','uses'=>'Admin\OrderController@ProductSearch']);

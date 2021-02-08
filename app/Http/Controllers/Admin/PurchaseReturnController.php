@@ -78,22 +78,22 @@ class PurchaseReturnController extends Controller
         $sub_total=$request->sub_total;
           $data= [ 
                 'purchase_or_order_id'  => (int)$request->purchase_id,
-                'customer_or_vendor_id' =>  $purchase->vendor_id,
+                'customer_or_vendor_id' => $purchase->vendor_id,
                 'order_type'            => 1,
                 'payment_status'        => 1,
                 'return_status'         => 1,
-                'return_notes'           => $request->return_notes,
-                'staff_notes'           =>$request->staff_notes,
-                'created_at'            =>date('Y-m-d H:i:s')
+                'return_notes'          => $request->return_notes,
+                'staff_notes'           => $request->staff_notes,
+                'created_at'            => date('Y-m-d H:i:s')
             ];
 
         $return_id=PurchaseReturn::insertGetId($data);
         foreach ($quantites as $key => $quantity) {
             $data=[
-                'purchase_return_id'    =>$return_id,
-                'product_id'            =>$request->product_id,
-                'purchase_variation_id' =>$key,
-                'return_quantity'       =>$quantity,
+                'purchase_return_id'    => $return_id,
+                'product_id'            => $request->product_id,
+                'purchase_variation_id' => $key,
+                'return_quantity'       => $quantity,
                 'return_sub_total'      => $sub_total[$key]
             ];
         PurchaseProductReturn::insert($data);
@@ -319,5 +319,20 @@ class PurchaseReturnController extends Controller
     public function destroy(PurchaseReturn $purchaseReturn)
     {
         //
+    }
+
+    public function searchPurchaseNo(Request $request)
+    {
+        $purchase = Purchase::where("purchase_order_number","LIKE","%".$request->name."%")
+                          ->pluck('purchase_order_number','id')
+                          ->toArray();        
+        $result=array();
+        foreach ($purchase as $key => $value) {
+            $result[]=[
+                'value'=>$value,
+                'label'  => $value
+            ];
+        }
+        return response()->json($result);
     }
 }

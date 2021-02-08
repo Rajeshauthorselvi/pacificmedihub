@@ -13,4 +13,29 @@ class UserCompanyDetails extends Model
     {
     	return self::where('parent_company',$company_id)->value('company_name');
     }
+
+    public function getCountry()
+    {
+        return $this->belongsTo('App\Models\Countries','country_id');
+    }
+
+    public function getState()
+    {
+        return $this->belongsTo('App\Models\State','state_id');
+    }
+
+    public function getCity()
+    {
+        return $this->belongsTo('App\Models\City','city_id');
+    }
+
+    public function getSalesRep()
+    {
+    	return $this->belongsTo('App\Models\Employee','sales_rep');	
+    }
+
+    public function getParentCompany()
+    {
+    	return $this->belongsTo('App\Models\UserCompanyDetails','parent_company');	
+    }
 }

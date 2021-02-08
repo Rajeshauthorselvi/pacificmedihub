@@ -1,6 +1,5 @@
 @extends('admin.layouts.master')
 @section('main_container')
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -143,12 +142,12 @@
                     </div>
                     </div>
                   </div>
-                    <div class="col-sm-12">
+                    <!-- <div class="col-sm-12">
                         <div class="form-group">
                           <label for="purchase_date">Note</label>
                           {!! Form::textarea('note', null,['class'=>'form-control summernote','rows'=>5]) !!}
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-sm-12 submit-sec">
                       <a href="{{ route('purchase.index') }}" class="btn  reset-btn">
                         Cancel
