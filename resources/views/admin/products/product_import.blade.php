@@ -34,6 +34,13 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
+          <div class="col-md-12 action-controllers ">
+            <div class="col-sm-6 text-right pull-right">
+            <a href="{{ url('admin/product-sample-sheet') }}" class="btn btn-info">
+              <i class="fa fa-download"></i> Download Sample Sheet
+            </a>
+            </div>
+          </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
@@ -42,7 +49,9 @@
               <div class="card">
                 <div class="card-body">
                   {!! Form::open(['route'=>'post.product.import','files'=>true,'method'=>'POST']) !!}
-                   <div class="alert alert-info"> Note: Please start product id from <b>{{ $last_product_id+1 }}</b></div>
+                   <div class="alert alert-info col-sm-4">
+                      Note: Please start product id from <b>{{ $last_product_id+1 }}</b>
+                   </div>
                     <div class="form-group">
                       <label>Upload File</label>
                       {!! Form::file('product_sheet',['class'=>'form-control']) !!}

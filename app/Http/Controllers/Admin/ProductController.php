@@ -20,6 +20,7 @@ use App\Imports\ProductImport;
 use Redirect;
 use DB;
 use Session;
+use Response;
 
 class ProductController extends Controller
 {
@@ -717,7 +718,7 @@ class ProductController extends Controller
 
         $order_exists=PurchaseProducts::where('product_id',$product->id)->exists();
 
-        
+
         if ($request->has('existOption')) {
             $existOption = json_decode($request->existOption,true);
             $diff_options=array_diff($options, $existOption);
@@ -1339,5 +1340,12 @@ class ProductController extends Controller
 
         }
       return Redirect::back()->with('success','Products details imported successfully...!');
+    }
+
+    public function DownloadSampleImportSheet()
+    {
+        $attachment="PacificMediHub Import Sheet.xlsx";
+        $path=public_path('theme/sample_datas/').$attachment;
+        return Response::download($path, $attachment);
     }
 }
