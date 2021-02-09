@@ -62,7 +62,8 @@ class ProductSheetImport implements ToCollection, WithHeadingRow, WithValidation
     {
         return [
             // Above is alias for as it always validates in batches
-            'productid'=>'required|unique:products,id'
+            'productid'=>'required|unique:products,id',
+            'categoryname'=>'required|exists:categories,name'
         ];
     }
 }

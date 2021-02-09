@@ -731,16 +731,10 @@ class ProductController extends Controller
 
 
         if (!$order_exists && $request->has('new_variant')) {
-
-            dd('in');
-            /*ProductVariant::where('product_id',$product->id)->delete();
-            ProductVariantVendor::where('product_id',$product->id)->delete();*/
+            ProductVariant::where('product_id',$product->id)->delete();
+            ProductVariantVendor::where('product_id',$product->id)->delete();
         }
 
-        dd('else');
-
-        exit();
-        
         if ($request->has('new_variant')) {
             $this->AddNewVariants($request->new_variant,$product->id);
             return redirect()->route('products.index')->with('success','Product modified successfully...!');
