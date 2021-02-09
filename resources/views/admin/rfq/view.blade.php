@@ -12,6 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{route('rfq.index')}}">RFQ</a></li>
               <li class="breadcrumb-item active">List RFQ</li>
             </ol>
           </div><!-- /.col -->
@@ -23,6 +24,11 @@
     @include('flash-message')
     <!-- Main content -->
     <section class="content">
+      <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item active">
+          <a href="{{route('rfq.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+        </li>
+      </ol>
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">

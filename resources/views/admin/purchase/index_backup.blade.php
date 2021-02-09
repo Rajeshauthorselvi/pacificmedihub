@@ -7,13 +7,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Categories</h1>
+            <h1 class="m-0">List Purchase</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('products.index')}}">Products</a></li>
-              <li class="breadcrumb-item active">Categories</li>
+              <li class="breadcrumb-item active">List Purchase</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -33,7 +32,7 @@
               </a>
             </div>
             <div class="col-sm-6 text-right pull-right">
-              <a class="btn add-new" href="{{route('categories.create')}}">
+              <a class="btn add-new" href="{{route('purchase.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
               </a>
             </div>
@@ -41,7 +40,7 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">All Categories</h3>
+                <h3 class="card-title">All Purchase</h3>
               </div>
               <div class="card">
                 <div class="card-body">
@@ -49,43 +48,44 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Category Name</th><th>Number of Products</th><th>Published</th><th>Display order</th><th>Actions</th>
+                        <th>Purchase Date</th>
+                        <th>PO No</th>
+                        <th>Vendor</th>
+                        <th>Quantity</th>
+                        <th>Grand Total</th>
+                        <th>Paid</th>
+                        <th>Balance</th>
+                        <th>Payment Status</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach($categories as $category)
+                      @foreach ($orders as $order)
                         <tr>
-                          <td><input type="checkbox" value="{{ $category->id }}" name="category-ids"></td>
-                          <?php
-                            $category_name = $category->name;
-                            if($category->parent_category_id!=NULL){
-                              $category_name = $category->parent->name.'  >>  '.$category->name;
-                            }
-                          ?>
-                          <td>{{$category_name}}</td>
-                          <?php
-                            if($category->published==1){$published = "fa-check";}
-                            else{$published = "fa-ban";}
-
-                            $products = App\Models\Product::where('category_id',$category->id)->count();
-                          ?>
-                          <td>{{$products}}</td>
-                          <td><i class="fas {{$published}}"></i></td>
-                          <td>{{$category->display_order}}</td>
+                          <td><input type="checkbox" name="currency_id" value="{{ $order['purchase_id'] }}"></td>
+                          <td>{{ date('d-m-Y',strtotime($order['purchase_date'])) }}</td>
+                          <td>{{ $order['po_number'] }}</td>
+                          <td>{{ $order['vendor'] }}</td>
+                          <td>{{ $order['quantity'] }}</td>
+                          <td>{{ $order['grand_total'] }}</td>
+                          <td>{{ ($order['amount']!="")?$order['amount']:'0.00' }}</td>
+                          <td>{{ $order['balance'] }}</td>
+                          <td>{{ $order['payment_status'] }}</td>
                           <td>
-                            <div class="input-group-prepend">
-                              <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
-                              <ul class="dropdown-menu">
-                                <a href="{{route('categories.edit',$category->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-                                <a href="#"><li class="dropdown-item">
-                                  <form method="POST" action="{{ route('categories.destroy',$category->id) }}">@csrf 
-                                    <input name="_method" type="hidden" value="DELETE">
-                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
-                                  </form>
-                                </li></a>
-                              </ul>
-                            </div>
-                          </td>
+                                <div class="input-group-prepend">
+                                  <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
+                                  <ul class="dropdown-menu">
+                                    <a href="{{route('purchase.show',$order['purchase_id'])}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
+                                    <a href="{{route('purchase.edit',$order['purchase_id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                    <a href="#"><li class="dropdown-item">
+                                      <form method="POST" action="{{ route('purchase.destroy',$order['purchase_id']) }}">@csrf 
+                                        <input name="_method" type="hidden" value="DELETE">
+                                        <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
+                                      </form>
+                                    </li></a>
+                                  </ul>
+                                </div>
+                              </td>
                         </tr>
                       @endforeach
                     </tbody>
@@ -96,10 +96,16 @@
           </div>
         </div>
       </div>
+
     </section>
   </div>
 
   @push('custom-scripts')
+
+  <!-- Datatable CSS -->
+  <link href='//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css' rel='stylesheet' type='text/css'>
+
+
   <script type="text/javascript">
       
     $('.select-all').change(function() {
@@ -113,16 +119,16 @@
 
 
       $('.delete-all').click(function(event) {
-        var checkedNum = $('input[name="category-ids"]:checked').length;
+        var checkedNum = $('input[name="currency_id"]:checked').length;
         if (checkedNum==0) {
-          alert('Please select category');
+          alert('Please select purchase');
         }
         else{
           if (confirm('Are you sure want to delete?')) {
-            $('input[name="category-ids"]:checked').each(function () {
+            $('input[name="currency_id"]:checked').each(function () {
               var current_val=$(this).val();
               $.ajax({
-                url: "{{ url('admin/categories/') }}/"+current_val,
+                url: "{{ url('admin/purchase/') }}/"+current_val,
                 type: 'DELETE',
                 data:{
                  "_token": $("meta[name='csrf-token']").attr("content")
@@ -144,5 +150,4 @@
 
   </script>
   @endpush
-
 @endsection

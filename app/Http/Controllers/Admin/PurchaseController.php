@@ -183,6 +183,49 @@ class PurchaseController extends Controller
      */
     public function show(Purchase $purchase)
     {
+      $data=array();
+
+      $order_status = OrderStatus::where('status',1)
+                            ->pluck('status_name','id')
+                            ->toArray();
+      $payment_method = PaymentMethod::where('status',1)
+                            ->pluck('payment_method','id')
+                            ->toArray();
+      $vendors = Vendor::where('is_deleted',0)
+                            ->where('status',1)
+                            ->pluck('name','id')
+                            ->toArray();
+      $data['vendors'] = [''=>'Please Select']+$vendors;
+      $data['order_status']=[''=>'Please Select']+$order_status;
+      $data['payment_method']=[''=>'Please Select']+$payment_method;
+
+      $products=PurchaseProducts::where('purchase_id',$purchase->id)->groupBy('product_id')->get();
+      $product_data=$product_variant=array();
+      foreach ($products as $key => $product) {
+        $product_name=Product::where('id',$product->product_id)
+                      ->value('name');
+        $options=$this->Options($product->product_id);
+
+        $all_variants=PurchaseProducts::where('purchase_id',$purchase->id)
+                      ->where('product_id',$product->product_id)
+                      ->pluck('product_variation_id')
+                      ->toArray();
+
+        $product_variant=$this->Variants($product->product_id,$all_variants);
+        $product_data[$product->product_id]=[
+            'row_id'         => $product->id,
+            'purchase_id'    => $purchase->id,
+            'product_id'=> $product->product_id,
+            'product_name'  => $product_name,
+            'options'       => $options['options'],
+            'option_count'  => $options['option_count'],
+            'product_variant'  => $product_variant
+        ];
+      }
+      $data['purchase_products']=$product_data;
+      $data['purchase']=Purchase::find($purchase->id);
+      $data['product_name']=$product_name;
+      return view('admin.purchase.show',$data);
     }
 
     /**

@@ -33,9 +33,9 @@
                 <p>Total New Quotations</p>
               </div>
               <div class="icon">
-                <span>3</span>
+                <span>{{$rfq_count}}</span>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('rfq.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -47,9 +47,9 @@
                 <p>Total New Orders</p>
               </div>
               <div class="icon">
-                <span>5</span>
+                <span>{{$orders_count}}</span>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -61,9 +61,9 @@
                 <p>Total Pending Orders</p>
               </div>
               <div class="icon">
-                <span>5</span>
+                <span>{{$pending_order_count}}</span>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <div class="col-lg-3 col-6">
@@ -77,9 +77,9 @@
                 <p>Total Vendors</p>
               </div>
               <div class="icon">
-                <span>10</span>
+                <span>{{$vendor_count}}</span>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('vendor.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -91,9 +91,9 @@
                 <p>Total Customers</p>
               </div>
               <div class="icon">
-                <span>25</span>
+                <span>{{$customer_count}}</span>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('customers.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -105,9 +105,9 @@
                 <p>Total Low Stocks</p>
               </div>
               <div class="icon">
-                <span>5</span>
+                <span>0</span>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('stock-in-transit.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->

@@ -23,7 +23,6 @@
               <th>Quantity</th>
               <th>Price</th>
               <th>Subtotal</th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -106,11 +105,12 @@
                             </td>
                             <td>
                               <div class="form-group">
-                                <span class="sub_total">{{ $high_value }}</span>
-                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $high_value }}">
+                                <!-- <span class="sub_total">{{ $high_value }}</span>
+                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $high_value }}"> -->
+                                <span class="sub_total">0</span>
+                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="0">
                               </div>
                             </td>
-                            <td><a class="btn btn-danger remove-item" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}"><i class="fa fa-trash"></i></a></td>
                           </tr>
                           <?php $total_amount +=$high_value; ?>
                           <?php $total_quantity +=$quantity; ?>

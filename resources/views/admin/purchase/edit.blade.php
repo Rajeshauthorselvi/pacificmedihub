@@ -43,7 +43,7 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Purchase</h3>
+                <h3 class="card-title">Edit Purchase</h3>
               </div>
               <div class="card-body">
                   {{ Form::model($purchase,['method' => 'PATCH', 'route' =>['purchase.update',$purchase->id]]) }}
@@ -113,7 +113,7 @@
                              <?php
                                   $total_based_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id,$product['product_id']);
                                ?>
-                              <td>{{ $product['product_name'] }}</th>
+                              <td>{{ $product['product_name'] }}</td>
                               <td>
                                 Quantity:&nbsp;
                                 <span class="total-quantity">{{ $total_based_products->quantity }}</span>
