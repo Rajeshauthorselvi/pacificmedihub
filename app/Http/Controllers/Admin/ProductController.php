@@ -86,11 +86,21 @@ class ProductController extends Controller
             $char_val=$value['value'];
             $explode_val=explode('-',$value['value']);
             $total_datas=Product::count();
-            $total_datas=($total_datas==0)?end($explode_val)+1:$total_datas+1;
-            $data_original=$char_val;
+            if ($total_datas==0) {
+                $total_datas=1;
+            }
+            else{
+                if (is_numeric(end($explode_val))) {
+                    $total_datas=end($explode_val)+1;
+                }
+                else{
+                    $total_datas="";
+                }
 
+            }
+            $data_original=$char_val;
             $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
+            $replace=[date('d'), date('m'), date('Y'), $total_datas];
             $data['product_id']=str_replace($search,$replace, $data_original);
         }
 
@@ -458,6 +468,8 @@ class ProductController extends Controller
         $data['vendors_id'] = $vendor_id;
         $product_variants=$this->Variants($id);
         $data['product_variant'] =$product_variants;
+
+        // dd($data);
 
         $old_variant = ProductVariant::where('product_id',$id)
                   ->where('disabled',1)
@@ -1295,6 +1307,8 @@ class ProductController extends Controller
     {
 
         $data=array();
+        $data['last_product_id']=Product::orderBy('id','DESC')->latest()->value('id');
+
         return view('admin.products.product_import',$data);
     }
     public function ProductImportPostController(Request $request)
@@ -1303,8 +1317,17 @@ class ProductController extends Controller
             'product_sheet' => 'required'
         ]);
 
-       Excel::import(new ProductImport, $request->file('product_sheet')); 
+        try {
+             Excel::import(new ProductImport, $request->file('product_sheet')); 
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errors=[];
+            foreach ($e->failures() as $failure) {
+                $errors[] = "Error(s) in column " . $failure->attribute() . " at row " . $failure->row() . " with the message : <strong>" . implode($failure->errors()) ."</strong>";
+            }
+            return redirect()->back()->withErrors($errors);
 
-        
+        }
+      return Redirect::back()->with('success','Products details imported successfully...!');
     }
 }
