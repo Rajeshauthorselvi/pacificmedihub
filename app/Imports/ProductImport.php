@@ -14,8 +14,8 @@ class ProductImport implements WithMultipleSheets
     {
     		
         return [
-            'ProductDetails' => new ProductSheetImport()
-            // 'ProductVariants' => new ProductVariationsSheetImport(),
+            'ProductDetails' => new ProductSheetImport(),
+            'ProductVariants' => new ProductVariationsSheetImport()
         ];
     }
 }

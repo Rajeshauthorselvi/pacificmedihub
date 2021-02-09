@@ -25,7 +25,7 @@
     <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
+                <li>{!!  $error  !!}</li>
             @endforeach
         </ul>
     </div>
@@ -42,9 +42,11 @@
               <div class="card">
                 <div class="card-body">
                   {!! Form::open(['route'=>'post.product.import','files'=>true,'method'=>'POST']) !!}
+                   <div class="alert alert-info"> Note: Please start product id from <b>{{ $last_product_id+1 }}</b></div>
                     <div class="form-group">
                       <label>Upload File</label>
                       {!! Form::file('product_sheet',['class'=>'form-control']) !!}
+                      <span class="text-danger">{{ $errors->first('product_sheet') }}</span>
                     </div>
                   <div class="form-group">
                     <a href="{{route('products.index')}}" class="btn reset-btn">Cancel</a>

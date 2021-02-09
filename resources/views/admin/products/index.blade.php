@@ -35,6 +35,9 @@
               <a class="btn add-new" href="{{route('products.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
             </a>
+            <a href="{{ url('admin/product-import') }}" class="btn btn-success">
+              <i class="fa fa-upload"></i> Import Products
+            </a>
             </div>
           </div>
           <div class="col-md-12">

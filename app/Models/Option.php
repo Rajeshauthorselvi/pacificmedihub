@@ -8,6 +8,7 @@ use DB;
 class Option extends Model
 {
     protected $table = 'product_options';
+    protected $fillable=['option_name'];
 
     static function  optionvalue($option_id)
     {
