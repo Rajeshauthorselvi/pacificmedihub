@@ -28,4 +28,19 @@ class Vendor extends Model
     					  
     	return $total_due_amount;
     }
+
+    public function getCountry()
+    {
+        return $this->belongsTo('App\Models\Countries','country');
+    }
+
+    public function getState()
+    {
+        return $this->belongsTo('App\Models\State','state');
+    }
+
+    public function getCity()
+    {
+        return $this->belongsTo('App\Models\City','city');
+    }
 }

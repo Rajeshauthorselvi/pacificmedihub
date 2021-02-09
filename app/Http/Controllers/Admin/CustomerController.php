@@ -15,6 +15,7 @@ use Redirect;
 use Arr;
 use Session;
 use File;
+
 class CustomerController extends Controller
 {
     /**
@@ -140,7 +141,13 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        //
+        $data=array();
+        $data['customer'] = User::with('alladdress','company','bank')
+                            ->where('users.role_id',7)
+                            ->where('id',$id)
+                            ->first();
+        // dd($data);
+        return view('admin/customer/show',$data);
     }
 
     /**
@@ -183,8 +190,8 @@ class CustomerController extends Controller
         ]);
 
         $users=$request->customer;
-        $customer=User::find($id);
-        $customer->update($users);
+        //dd($users);
+        $customer=User::where('id',$id)->update($users);
 
 
         $bank_details=$request->bank;
@@ -240,6 +247,7 @@ class CustomerController extends Controller
 
     public function AddNewAddressController(Request $request)
     {
+        //dd($request->all());
         $address=$request->except(['_token']);
         $address_id=UserAddress::insertGetId($address);
         $address['address_id']=$address_id;
@@ -249,8 +257,35 @@ class CustomerController extends Controller
 
     public function editAddressForm(Request $request)
     {
-        /*dd($request->all());
+        $data = array();
+        $address = UserAddress::find($request->add_id);
+        $data['id'] = $address->id;
+        $data['cus_id'] = $address->customer_id;
+        $data['name'] = $address->name;
+        $data['mobile'] = $address->mobile;
+        $data['address_line1'] = $address->address_line1;
+        $data['address_line2'] = $address->address_line2;
+        $data['post_code'] = $address->post_code;
+        $data['country_id'] = $address->country_id;
+        $data['state_id'] = $address->state_id;
+        $data['city_id'] = $address->city_id;
+        $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        return view('admin.customer.edit_address',$data);
+    }
 
-        return view('admin.customer.edit_address',$data);*/
+    public function saveAddressForm(Request $request)
+    {
+        $address = UserAddress::find($request->add_id);
+        $address->name = $request->name;
+        $address->mobile = $request->mobile;
+        $address->address_line1 = $request->address1;
+        $address->address_line2 = $request->address2;
+        $address->post_code = $request->postcode;
+        $address->country_id = $request->country_id;
+        $address->state_id = $request->state_id;
+        $address->city_id = $request->city_id;
+        $address->update();
+        Session::flash('from', 'address');
+        return redirect()->route('customers.edit',$request->cus_id)->with('info','Address Modified successfully.!');
     }
 }

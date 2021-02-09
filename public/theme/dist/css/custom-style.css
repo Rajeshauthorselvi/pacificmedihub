@@ -266,4 +266,5 @@ width: 100%;
     color: #fff;
     background: #3287c7;
     border-radius: 3px;
+    z-index: 999;
 }

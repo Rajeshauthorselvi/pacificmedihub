@@ -1,6 +1,5 @@
 @extends('admin.layouts.master')
 @section('main_container')
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -189,8 +188,8 @@
                         @endforeach
                         <tr>
                           <td colspan="{{ count($product['options'])+3 }}" class="text-right">Total:</td>
-                          <td class="total_quantity">{{ $total_quantity }}</td>
-                          <td class="total_amount">{{ $total_amount }}</td>
+                          <td><span class="total-quantity">{{ $total_quantity }}</span></td>
+                          <td><span class="total">{{ $total_amount }}</span></td>
                         </tr>
                       </tbody>
                       </table>
@@ -279,12 +278,12 @@
                     </div>
                     </div>
                   </div>
-                    <div class="col-sm-12">
+                    <!-- <div class="col-sm-12">
                         <div class="form-group">
                           <label for="purchase_date">Note</label>
                           {!! Form::textarea('note', null,['class'=>'form-control summernote','rows'=>5]) !!}
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-sm-12 submit-sec">
                       <a href="{{ route('purchase.index') }}" class="btn  reset-btn">
                         Cancel
@@ -364,8 +363,7 @@
           var base_price=base.find('.base_price').val();
           var total_price=base_price*$(this).val();
           base.find('.subtotal_hidden').val(total_price);
-          base.find('.sub_total').text(total_price);
-
+          base.find('.sub_total').text(total_price);          
 
           var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
 
@@ -376,8 +374,8 @@
           var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
           $('.'+attr_id).find('.total').text(total_amount);
 
-
           var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+          
 
           $('.all_quantity').text(SumTotal('.stock_qty'));
           $('.all_amount').text(SumTotal('.subtotal_hidden'));

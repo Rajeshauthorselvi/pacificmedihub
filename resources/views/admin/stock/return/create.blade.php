@@ -132,6 +132,32 @@
         
       });
 
+
+      $('#po_number').autocomplete({
+        source: function( request, response) {
+          $.ajax({
+            url: "{{ url('admin/search-purchase-no') }}",
+            dataType: 'JSON',
+            data: {
+              name: request.term
+            },
+            success: function( data ) {
+              response(data);
+            }
+          });
+        },
+        minLength: 3,
+        open: function() {
+          $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+          $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+      });
+
+      
+
+
       //Validate Number
       function validateNum(e , field) {
         var val = field.value;

@@ -40,7 +40,6 @@
       <div class="container-fluid toggle-tabs">
         <div class="row">
           <div class="col-md-12">
-          {{-- {!! Form::open(['route'=>'customers.store','method'=>'POST','id'=>'form','files'=>true]) !!} --}}
           {{ Form::model($customer,['method' => 'PATCH', 'route' =>['customers.update',$customer->id],'id'=>'form','files'=>true]) }}
             <div class="card card-outline card-primary">
               <div class="card-header">
@@ -174,10 +173,12 @@
                       </div>
                     </div>
                   </div>
-
                    
                   <div class="tab-pane address-tabs " tab-count="3" role="tabpanel" id="step3">
-                    <div class="address-list-sec col-sm-6">
+                    <div class="add-new-address">
+                      <button type="button" class="btn btn-info add" address-id="{{$customer['id']}}" data-toggle="modal" data-target="#add-address">Add New Address</button>
+                    </div>
+                    <div class="address-list-sec col-sm-12">
                       @foreach ($customer->alladdress as $address)
                         <div class="col-sm-12">
                           <div class="list">
@@ -185,76 +186,32 @@
                               <tr>
                                 <td rowspan="2" style="vertical-align: middle; border:none;">
                                   @if ($customer->address_id==$address->id)
-                                    <input type="radio" name="customer[address_id]" checked>
+                                    <input type="radio" name="customer[address_id]" checked value="{{$address->id}}">
                                   @else
-                                    <input type="radio" name="customer[address_id]" >
+                                    <input type="radio" name="customer[address_id]" value="{{$address->id}}">
                                   @endif
                                 </td>
-                                <td>{{ $address->name }}<br>{{ $address->mobile }}</td>
                                 <td>
-                                  <button type="button" class="btn btn-info edit">Edit</button>
-                                  
-                                  <!-- <button type="button" class="btn btn-info edit" address-id="{{$customer['address_id']}}" data-toggle="modal" data-target="#edit-address">Edit</button> -->
+                                  {{ $address->name }}<br>{{ $address->mobile }}<br>
+                                  {{ $address->address_line1 }}<br>{{ $address->address_line2 }}<br>
+                                  {{ $address->country->name }}, {{ $address->state->name }}, {{ $address->city->name }}
+                                  <br>{{ $address->post_code }}
+                                </td>
+                                <td>
+                                  <button type="button" class="btn btn-info edit" address-id="{{$address['id']}}" data-toggle="modal" data-target="#edit-address">Edit</button>
                                 </td>
                               </tr>
-                              <tr>
-                                <td>{{ $address->address_line1 }}</td>
-                              </tr>
+                              
                             </table>
                           </div>
                         </div>
                         <br>
                       @endforeach
                     </div>
-                    <div class="col-sm-6">
-                      <div class="address-details">
-                        <h3>Add New Address</h3>
-                        <div class="form-group">
-                          <label for="">Name *</label>
-                          {!! Form::text('address[name]', '',['class'=>'form-control required add_name']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                          <label for="">Mobile *</label>
-                          {!! Form::text('address[mobile]', '',['class'=>'form-control required add_mobile']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                          <label for="">Address Line *</label>
-                          {!! Form::text('address[address_line1]', '',['class'=>'form-control required add_line_1']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                          <label for="">Address Line 2</label>
-                          {!! Form::text('address[address_line2]', '',['class'=>'form-control add_line_2']) !!}
-                        </div>
-                        <div class="form-group">
-                          <label for="">Post Code *</label>
-                          {!! Form::text('address[post_code]', '',['class'=>'form-control required add_post_code']) !!}
-                           <span class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                          <label for="">Country *</label>
-                          {!! Form::text('address[country_id]', '',['class'=>'form-control required add_country_id address_country']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                          <label for="">State *</label>
-                          {!! Form::text('address[state_id]', '',['class'=>'form-control required add_state_id']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                          <label for="">City *</label>
-                          {!! Form::text('address[city_id]', '',['class'=>'form-control required add_city_id']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                        <div class="submit-address btn save-btn">Add New</div>
-                      </div>
-                    </div>
                   </div>
 
                   <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12" style="display:flow-root">
                       {!! Form::hidden('bank[account_id]',$customer->bank->id) !!}
                       <div class="form-group">
                         <div class="col-sm-6">
@@ -299,11 +256,10 @@
                       </div>
                     </div>
                   </div>
-                  
-                  <div class="submit-sec">
-                    <a href="javascript:void(0)" class="btn reset-btn prev">Previous</a>
-                    <a href="javascript:void(0)" class="btn save-btn next">Next</a>
-                  </div>
+                </div>
+                <div class="submit-sec">
+                  <a href="javascript:void(0)" class="btn reset-btn prev">Previous</a>
+                  <a href="javascript:void(0)" class="btn save-btn next">Next</a>
                 </div>
               </div>
             </div>
@@ -314,8 +270,9 @@
     </section>
   </div>
 
+  <!-- Edit Address Box -->
   <div class="modal fade" id="edit-address">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Edit Customer Address</h4>
@@ -334,6 +291,80 @@
   </div>
   <!-- /.modal -->
 
+  <!-- Add Address Box -->
+  <div class="modal fade" id="add-address">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Add New Customer Address</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="address-details">
+            <div class="form-group" style="display:flex;">
+              <div class="col-sm-6" style="padding-left:0">
+                {!! Form::label('name', 'Name *') !!}
+                {!! Form::text('address[name]', '',['class'=>'form-control required add_name']) !!}
+                <span class="text-danger name" style="display:none">Name is required</span>
+              </div>
+
+              <div class="col-sm-6" style="padding:0;">
+                {!! Form::label('mobile', 'Contact No *') !!}
+                {!! Form::text('address[mobile]', '',['class'=>'form-control required add_mobile']) !!}
+                <span class="text-danger mobile" style="display:none">Contact Number is required</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              {!! Form::label('address1', 'Address Line 1 *') !!}
+              {!! Form::text('address[address_line1]', '',['class'=>'form-control required add_line_1']) !!}
+              <span class="text-danger address1" style="display:none">Address Line 1 is required</span>
+            </div>
+            <div class="form-group">
+              {!! Form::label('address2', 'Address Line 2') !!}
+              {!! Form::text('address[address_line2]', '',['class'=>'form-control add_line_2']) !!}
+            </div>
+            <div class="form-group" style="display:flex;">
+              <div class="col-sm-6" style="padding-left:0">
+                {!! Form::label('postcode', 'Post Code *') !!}
+                {!! Form::text('address[post_code]', '',['class'=>'form-control required add_post_code']) !!}
+                <span class="text-danger postcode" style="display:none">Post Code is required</span>
+              </div>
+
+              <div class="col-sm-6" style="padding:0;">
+                {!! Form::label('addresss_country', 'Country *') !!}
+                {!! Form::select('address[country_id]',$countries,null,['class'=>'form-contol select2bs4 required add_country_id', 'id'=>'addresss_country']) !!}
+                <span class="text-danger country" style="display:none">Country is required</span>
+              </div>
+            </div>
+            <div class="form-group" style="display:flex;">
+              <div class="col-sm-6" style="padding-left:0">
+                {!! Form::label('addresss_state', 'State *') !!}
+                <select name="address[state_id]" class="form-control select2bs4 required add_state_id" id="addresss_state"></select>
+                <span class="text-danger state" style="display:none">State is required</span>
+              </div>
+              <div class="col-sm-6" style="padding:0;">
+                {!! Form::label('addresss_city', 'City *') !!}
+                <select name="address[city_id]" class="form-control select2bs4 required add_city_id" id="addresss_city"></select>
+                <span class="text-danger city" style="display:none">City is required</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn reset-btn" data-dismiss="modal">Cancel</button>
+              <button type="submit" id="submit-btn" class="btn save-btn submit-address">Save</button>
+            </div>
+          </div>
+        </div>
+            
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+
 <style type="text/css">
   .address-tabs .form-group{
     display: inherit !important;
@@ -345,9 +376,16 @@
   .table td, .table th{
     border: none;
   }
+  .add-new-address {
+    width: 97%;
+    margin: auto;
+    padding-bottom: 5px;
+  }
+
 </style>
 @push('custom-scripts')
   <script type="text/javascript">
+
     $('.edit').click(function(){
       var addId = $(this).attr('address-id');
       $.ajax({
@@ -446,56 +484,137 @@
         }      
       }
 
-  $(document).on('click', '.submit-address', function(event) {
-
-    var length_empty=$('.address-details .required').filter(function(){return !$(this).val(); }).length;
-     var error_count=0;
-      $('.address-details .required').each(function(index, el) {
-      var type=$(this).attr('type');
-      var current_val=$(this).val();
-          if (current_val=="" && type=="text") {
-              $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
-                error_count += 1;
-            }
-            else if (current_val=="" && type=="select") {
-                $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
-                error_count += 1;
-            }
-            else{
-              $(this).next('.text-danger').remove();
-            }
-      });
-      if (length_empty==0 && error_count==0) {
-          $.ajax({
-            url: '{{ url("admin/add-new-address") }}',
-            type: 'POST',
-            data: {
-              "_token": "{{ csrf_token() }}",
-              'name':$('.add_name').val(),
-              'mobile':$('.add_mobile').val(),
-              'address_line1':$('.add_line_1').val(),
-              'address_line2':$('.add_line_2').val(),
-              'post_code':$('.add_post_code').val(),
-              'country_id':$('.add_country_id').val(),
-              'state_id':$('.add_state_id').val(),
-              'city_id':$('.add_city_id').val(),
-              'customer_id':{{ $customer->id }}
-            },
-          })
-          .done(function() {
-             location.reload(); 
-          })
-          .fail(function() {
-            console.log("error");
-          })
-          .always(function() {
-            console.log("complete");
-          });
-          
+      function addressValidate(){
+        var valid=true;
+        if ($(".add_name").val()=="") {
+            $(".add_name").closest('.form-group').find('span.text-danger.name').show();
+            valid = false;
+        }
+        if ($(".add_mobile").val()=="") {
+            $(".add_mobile").closest('.form-group').find('span.text-danger.mobile').show();
+            valid = false;
+        }
+        if ($(".add_line_1").val()=="") {
+            $(".add_line_1").closest('.form-group').find('span.text-danger.address1').show();
+            valid = false;
+        }
+        if ($(".add_post_code").val()=="") {
+            $(".add_post_code").closest('.form-group').find('span.text-danger.postcode').show();
+            valid = false;
+        }
+        if ($("#addresss_country").val()=="") {
+            $("#addresss_country").closest('.form-group').find('span.text-danger.country').show();
+            valid = false;
+        }
+        if ($("#addresss_state").val()=="") {
+            $("#addresss_state").closest('.form-group').find('span.text-danger.state').show();
+            valid = false;
+        }
+        if ($("#addresss_city").val()=="") {
+            $("#addresss_city").closest('.form-group').find('span.text-danger.city').show();
+            valid = false;
+        }
+        return valid;
       }
 
-  });
+    $(document).on('click', '.submit-address', function(event) {
+      if(addressValidate()){
+        $.ajax({
+          url: '{{ url("admin/add-new-address") }}',
+          type: 'POST',
+          data: {
+            '_token': '{{ csrf_token() }}',
+            'name':$('.add_name').val(),
+            'mobile':$('.add_mobile').val(),
+            'address_line1':$('.add_line_1').val(),
+            'address_line2':$('.add_line_2').val(),
+            'post_code':$('.add_post_code').val(),
+            'country_id':$('.add_country_id').val(),
+            'state_id':$('.add_state_id').val(),
+            'city_id':$('.add_city_id').val(),
+            'customer_id':{{ $customer->id }}
+          },
+        })
+        .done(function() {
+          location.reload(); 
+        })
+        .fail(function() {
+          console.log("error");
+        })
+        .always(function() {
+          console.log("complete");
+        });        
+      }
+    });
 
+
+  //Get State
+      $('#addresss_country').change(function() {
+        var get_country_id = $(this).val();
+        addressGetState(get_country_id);
+      })
+      function addressGetState(countryID){
+        var get_state_id = "";        
+        if(countryID){
+          $.ajax({
+            type:"GET",
+            dataType: 'json',
+            url:"{{url('admin/get-state-list')}}?country_id="+countryID,
+            success:function(res){  
+              if(res){
+                $("#addresss_state").empty();
+                $("#addresss_state").append('<option selected value=""> ---Select--- </option>');
+                $.each(res,function(key,value){
+                  var select_state="";
+                  if(get_state_id == key) { var select_state = "selected" }
+                  $("#addresss_state").append('<option value="'+key+'" '+select_state+'>'+value+'</option>');
+                });
+                $('#addresss_state').selectpicker('refresh');           
+              }else{
+                $("#addresss_state").empty();
+              }
+            },
+            error: function(res) { alert(res.responseText) }
+          });
+        }else{
+          $("#addresss_state").empty();        
+        }      
+      }
+
+      //Get City
+      $('#addresss_state').change(function() {
+        var get_state_id = $(this).val();
+        addressGetCity(get_state_id);
+      })
+      function addressGetCity(stateID){
+        var get_city_id = "";
+        if(stateID){
+          $.ajax({
+            type:"GET",
+            dataType: 'json',
+            url:"{{url('admin/get-city-list')}}?state_id="+stateID,
+            success:function(res){  
+              if(res){
+                $("#addresss_city").empty();
+                $("#addresss_city").append('<option selected value=""> ---Select--- </option>');
+                $.each(res,function(key,value){
+                  var select_city="";
+                  if(get_city_id == key) { var select_city = "selected" }
+                  $("#addresss_city").append('<option value="'+key+'" '+select_city+'>'+value+'</option>');
+                });
+                $('#addresss_city').selectpicker('refresh');           
+              }else{
+                $("#addresss_city").empty();
+              }
+            },
+            error: function(res) { alert(res.responseText) }
+          });
+        }else{
+          $("#addresss_city").empty();        
+        }      
+      }
+
+ 
   $(".prev").click(function (e) {
        var active = $('.nav-tabs li>.active');
         console.log(active);

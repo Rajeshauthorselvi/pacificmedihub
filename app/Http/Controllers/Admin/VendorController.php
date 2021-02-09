@@ -184,7 +184,11 @@ class VendorController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = array();
+        $data['vendor'] = Vendor::find($id);
+        $data['vendor_poc'] = VendorPoc::where('vendor_id',$id)->get();
+        $data['count'] = 1;
+        return view('admin/vendor/show',$data);
     }
 
     /**
