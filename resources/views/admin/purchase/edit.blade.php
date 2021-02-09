@@ -167,7 +167,7 @@
                             <td> {{$variant['base_price']}}
                             </td>
                             <td> {{$variant['retail_price']}}</td>
-                            <td> {{$variant['minimum_selling_price']}} </td>
+                            <td><span class="test"> {{$variant['minimum_selling_price']}} </span></td>
                             <td>
                               <div class="form-group">
                                   <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{ $variation_details['quantity'] }}">
@@ -278,12 +278,12 @@
                     </div>
                     </div>
                   </div>
-                    <!-- <div class="col-sm-12">
+                    <div class="col-sm-12">
                         <div class="form-group">
                           <label for="purchase_date">Note</label>
                           {!! Form::textarea('note', null,['class'=>'form-control summernote','rows'=>5]) !!}
                         </div>
-                    </div> -->
+                    </div>
                     <div class="col-sm-12 submit-sec">
                       <a href="{{ route('purchase.index') }}" class="btn  reset-btn">
                         Cancel
@@ -346,6 +346,10 @@
         }).on('hide.bs.collapse', function(){
           $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
         });
+
+        $('.collapse').on('hide.bs.collapse', function (e) {
+          console.log('Collapse Alert' + e.currentTarget.id);
+        })
     });
   
   $(document).on('click', '.remove-item', function(event) {
@@ -366,20 +370,18 @@
           base.find('.sub_total').text(total_price);          
 
           var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+          var attr=$(this).parents('tbody').find('.collapse.show');
+          var total_quantity=SumTotal('.collapse.show .stock_qty');
+          console.log(total_quantity);
 
-          var total_quantity=SumTotal('#'+attr_id+' .stock_qty');
-          
-          $('.'+attr_id).find('.total-quantity').text(total_quantity);
-
+          $('.collapse.show').find('.total-quantity').text(total_quantity);
+          $('[href="#'+attr_id+'"]').find('.total-quantity').text(total_quantity);
           var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
-          $('.'+attr_id).find('.total').text(total_amount);
-
-          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
-          
+          $('.collapse.show').find('.total').text(total_amount);
+          $('[href="#'+attr_id+'"]').find('.total').text(total_amount);
 
           $('.all_quantity').text(SumTotal('.stock_qty'));
           $('.all_amount').text(SumTotal('.subtotal_hidden'));
-
       }
     });
 

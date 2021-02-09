@@ -48,13 +48,14 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Vendor Name</th><th>Email</th><th>Mobile No</th><th>Total Purchase</th><th>Total Purchase Amount</th><th>Due Amount</th><th>Status</th><th>Actions</th>
+                        <th>Vendor Code</th><th>Vendor Name</th><th>Email</th><th>Mobile No</th><th>Total Purchase</th><th>Total Purchase Amount</th><th>Due Amount</th><th>Status</th><th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       @foreach($vendors as $vendor)
                         <tr>
                           <td><input type="checkbox" value="{{ $vendor->id }}" name="vendor-ids"></td>
+                          <td>{{$vendor->code}}</td>
                           <td>{{$vendor->name}}</td>
                           <td>{{$vendor->email}}</td>
                           <td>{{$vendor->contact_number}}</td>
