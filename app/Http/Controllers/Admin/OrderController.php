@@ -215,9 +215,56 @@ class OrderController extends Controller
      * @param  \App\Models\Orders  $orders
      * @return \Illuminate\Http\Response
      */
-    public function show(Orders $orders)
+    public function show(Orders $orders,$order_id)
     {
-        //
+        $data['order']=Orders::with('customer','salesrep','statusName')
+                      ->where('orders.id',$order_id)
+                      ->first();
+        $order_status=OrderStatus::where('status',1)
+                              ->pluck('status_name','id')
+                              ->toArray();
+        $payment_method=PaymentMethod::where('status',1)
+                              ->pluck('payment_method','id')
+                              ->toArray();
+        $customers=User::where('is_deleted',0)
+                         ->where('status',1)
+                         ->where('role_id',7)
+                         ->pluck('first_name','id')
+                         ->toArray();
+        $emplyees=Employee::where('is_deleted',0)
+                         ->where('status',1)
+                         ->where('role_id',4)
+                         ->pluck('emp_name','id')
+                         ->toArray();
+        $data['customers']=[''=>'Please Select']+$customers;
+        $data['sales_rep']=[''=>'Please Select']+$emplyees;
+        $data['order_status']=[''=>'Please Select']+$order_status;
+        $data['payment_method']=[''=>'Please Select']+$payment_method;
+
+        $products=OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
+        $product_data=$product_variant=array();
+        foreach ($products as $key => $product) {
+            $product_name=Product::where('id',$product->product_id)
+                          ->value('name');
+            $options=$this->Options($product->product_id);
+
+            $all_variants=OrderProducts::where('order_id',$order_id)
+                          ->where('product_id',$product->product_id)
+                          ->pluck('product_variation_id')
+                          ->toArray();
+
+            $product_variant=$this->Variants($product->product_id,$all_variants);
+            $product_data[$product->product_id]=[
+                'order_id'    => $order_id,
+                'product_id'=> $product->product_id,
+                'product_name'  => $product_name,
+                'options'       => $options['options'],
+                'option_count'  => $options['option_count'],
+                'product_variant'  => $product_variant
+            ];
+        }
+        $data['product_datas']=$product_data;
+        return view('admin.orders.show',$data);
     }
 
     /**

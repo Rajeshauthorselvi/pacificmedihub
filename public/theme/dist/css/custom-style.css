@@ -138,6 +138,10 @@ width: 100%;
 .sidebar-mini .sidebar-light-primary .os-theme-light > .os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
     background: rgba(50, 135, 199,.1);
 }
+.inner-menu .nav.nav-treeview .nav-item{
+    padding-left: 15px;
+}
+}
 
 /* Dashboard */
 .content-wrapper .content-header {

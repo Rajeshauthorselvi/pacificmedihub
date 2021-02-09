@@ -142,12 +142,12 @@
                     </div>
                     </div>
                   </div>
-                    <!-- <div class="col-sm-12">
+                    <div class="col-sm-12">
                         <div class="form-group">
                           <label for="purchase_date">Note</label>
                           {!! Form::textarea('note', null,['class'=>'form-control summernote','rows'=>5]) !!}
                         </div>
-                    </div> -->
+                    </div>
                     <div class="col-sm-12 submit-sec">
                       <a href="{{ route('purchase.index') }}" class="btn  reset-btn">
                         Cancel

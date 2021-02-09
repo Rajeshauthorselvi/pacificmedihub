@@ -25,7 +25,6 @@
               <th>Minimum Selling Price</th>
               <th>Quantity</th>
               <th>Subtotal</th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -105,11 +104,7 @@
                                 <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="0">
                               </div>
                             </td>
-                            <td>
-                              <a class="btn btn-danger remove-item">
-                                <i class="fa fa-trash"></i>
-                              </a>
-                            </td>
+                            
                           </tr>
                           <?php $total_amount +=$variant['base_price']; ?>
                           <?php $total_quantity +=$quantity; ?>

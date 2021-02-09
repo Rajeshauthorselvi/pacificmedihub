@@ -48,6 +48,7 @@
                     <thead>
                       <tr>
                       	<th><input type="checkbox" class="select-all"></th>
+                        <th>Customer Number</th>
                         <th>Customer Name</th>
                         <th>Company Name</th>
                         <th>Parent Company</th>
@@ -65,6 +66,7 @@
                     			<td>
                     				<input type="checkbox" name="customer_ids" value="{{ $customer->id }}">
                     			</td>
+                          <th>{{$customer->customer_no}}</th>
                     			<td> {{ $customer->first_name.' '.$customer->last_name }} </td>
                     			<td>{{ $customer->company->company_name }}</td>
                     			<td>

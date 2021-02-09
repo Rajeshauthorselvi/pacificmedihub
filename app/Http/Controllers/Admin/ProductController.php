@@ -62,8 +62,6 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-
-
         if ($request->has('from') && $request->has('vendor_id')) {
             Session::put('active_vendor','yes');
             Session::put('vendor_id',$request->get('vendor_id'));
@@ -408,7 +406,71 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $data['product'] = Product::find($id);
+
+        $options = array();
+        $options_id = array();
+
+        $vendor_id = ProductVariantVendor::select('vendor_id')
+                    ->where('product_id',$id)
+                    ->distinct()
+                    ->pluck('vendor_id')
+                    ->toArray();
+        $data['product'] = Product::find($id);
+        $variant = ProductVariant::where('product_id',$id)->where('is_deleted',0)->first();
+        $options = array();
+        $options_id = array();
+
+        $vendor_id = ProductVariantVendor::select('vendor_id')->where('product_id',$id)->distinct()->pluck('vendor_id')->toArray();
+       $variant = ProductVariant::where('product_id',$id)
+                  ->where('disabled',0)
+                  ->where('is_deleted',0)
+                  ->first();
+       //dd($variant);
+        $options_val=$this->Options($variant,$vendor_id);
+        $option_count=$options_val['option_count'];
+        $options=$options_val['options'];
+        $options_id=$options_val['options_id'];
+
+        $data['option_count'] = $option_count;
+        $data['get_options'] = $options;
+        $data['options_id'] = $options_id;
+        $data['vendors_id'] = $vendor_id;
+        $product_variants=$this->Variants($id);
+        $data['product_variant'] =$product_variants;
+
+        $old_variant = ProductVariant::where('product_id',$id)
+                  ->where('disabled',1)
+                  ->where('is_deleted',0)
+                  ->first();
+
+        $data['old_product_variant']=array();
+        if (isset($old_variant)) {
+            $old_product_variants=$this->Variants($id,'old');
+            $old_options_val=$this->Options($old_variant,$vendor_id);
+
+            $option_count=$old_options_val['option_count'];
+            $options=$old_options_val['options'];
+            $options_id=$old_options_val['options_id'];;
+
+
+            $data['old_option_count'] = $option_count;
+            $data['old_options'] = $options;
+            $data['old_options_id'] = $options_id;
+            $data['old_vendors_id'] = $vendor_id;
+            $data['old_product_variant'] = $old_product_variants;
+        }
+
+
+
+        $data['product_images'] = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
+        $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['brands'] = Brand::where('published',1)->where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->pluck('name','id')->toArray();
+        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->pluck('option_name','id')->toArray();
+
+        $data['order_exists']=PurchaseProducts::where('product_id',$id)->exists();
+        return view('admin/products/show',$data);
     }
 
     /**
@@ -419,8 +481,6 @@ class ProductController extends Controller
      */
     public function edit(Request $request,$id)
     {
-
-
         if ($request->has('from') && $request->has('vendor_id')) {
             Session::put('active_vendor','yes');
             Session::put('vendor_id',$request->get('vendor_id'));
