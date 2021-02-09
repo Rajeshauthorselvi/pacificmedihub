@@ -28,7 +28,7 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
     	$data=array();
         foreach ($rows as $key => $row) {
 
-        	$vendor_details=Vendor::where('name','like','%'.$row['vendorname'].'%')->first();
+        	
         	if (isset($row['productid'])) {
         		$option_1_id=$this->OptionId($row['option1']);
         		$option_2_id=$this->OptionId($row['option2']);
@@ -59,6 +59,8 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
         			'disabled'			=> 0
         		];
 	        	$variant_id=ProductVariant::insertGetId($variant_details);
+	        	
+	        	$vendor_details=Vendor::where('name','like','%'.$row['vendorname'].'%')->first();
 	        	$variant_vendor_details=[
 	        		'product_id' 			=> $row['productid'],
 	        		'product_variant_id' 	=> $variant_id,
@@ -86,7 +88,7 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
 	    		$option_id=Option::insertGetId(
 	    			[
 	    				'option_name'=>$option,
-	    				'published'	 => 'yes',
+	    				'published'	 => 1,
 	    				'created_at' => date('Y-m-d H:i:s'),
 	    				'is_deleted' => 0,
 	    			]

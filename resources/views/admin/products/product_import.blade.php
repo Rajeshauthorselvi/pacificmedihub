@@ -21,15 +21,15 @@
     <!-- /.content-header -->
     <span class="hr"></span>
     @include('flash-message')
- @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{!!  $error  !!}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+     @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{!!  $error  !!}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">

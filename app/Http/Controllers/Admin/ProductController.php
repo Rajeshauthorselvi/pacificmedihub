@@ -485,15 +485,12 @@ class ProductController extends Controller
             $options=$old_options_val['options'];
             $options_id=$old_options_val['options_id'];;
 
-
             $data['old_option_count'] = $option_count;
             $data['old_options'] = $options;
             $data['old_options_id'] = $options_id;
             $data['old_vendors_id'] = $vendor_id;
             $data['old_product_variant'] = $old_product_variants;
         }
-
-
 
         $data['product_images'] = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
         $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
@@ -717,23 +714,36 @@ class ProductController extends Controller
         $product->meta_keyword = $request->meta_keyword;
         $product->meta_description = $request->meta_description;
         $product->update();
-         $order_exists=PurchaseProducts::where('product_id',$product->id)->exists();
+
+        $order_exists=PurchaseProducts::where('product_id',$product->id)->exists();
+
+        
+        if ($request->has('existOption')) {
+            $existOption = json_decode($request->existOption,true);
+            $diff_options=array_diff($options, $existOption);
+        }
+
+        if ($request->has('existVendor')) {
+            $existing_vendor=json_decode($request->existVendor,true);
+            $diff_vendor=array_diff($vendors, $existing_vendor);
+        }
 
 
+        if (!$order_exists && $request->has('new_variant')) {
 
-/*        if (!$order_exists && $request->has('new_variant')) {
-            ProductVariant::where('product_id',$product->id)->delete();
-            ProductVariantVendor::where('product_id',$product->id)->delete();
-        }*/
+            dd('in');
+            /*ProductVariant::where('product_id',$product->id)->delete();
+            ProductVariantVendor::where('product_id',$product->id)->delete();*/
+        }
+
+        dd('else');
+
+        exit();
         
         if ($request->has('new_variant')) {
-
             $this->AddNewVariants($request->new_variant,$product->id);
             return redirect()->route('products.index')->with('success','Product modified successfully...!');
         }
-
-       
-
 
         if($product->id){
             if($request->variant){

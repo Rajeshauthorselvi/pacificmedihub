@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Comming Soon</title>
+</head>
 <style>
 body, html {
   height: 100%;
@@ -7,7 +10,7 @@ body, html {
 }
 
 .bgimg {
-  background-image: url('/theme/images/background_image/26363.jpg');
+  background-image: url('./theme/images/background_image/26363.jpg');
   height: 100%;
   background-position: center;
   background-size: cover;
