@@ -76,7 +76,13 @@
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                                   <ul class="dropdown-menu">
                                     <a href="{{route('purchase.show',$order['purchase_id'])}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                    <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment</li></a>
+
+                                    <a href="javascript:void(0)" class="add-payment" purchase-id="{{ $order['purchase_id'] }}">
+                                      <li class="dropdown-item">
+                                        <i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment
+                                      </li>
+                                    </a>
+
                                     <a href="{{route('purchase.edit',$order['purchase_id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                     <a href="javascript:void(0)"><li class="dropdown-item">
                                       <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
@@ -109,10 +115,43 @@
 
     </section>
   </div>
-
+<div class="modal fade" id="payment_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Payment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <form action="{{route('update.purchase.payment')}}" method="post" enctype="multipart/form-data" id="productForm">
+        @csrf
+          <div class="modal-body">
+            <input type="hidden" name="purchase_id" value="">
+            <div class="form-group">
+              <label>Payment</label>
+               <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
+              {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control']) !!}
+            </div>
+          
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
   @push('custom-scripts')
   <script type="text/javascript">
       
+    $(document).on('click', '.add-payment', function(event) {
+      event.preventDefault();
+        $('#payment_model').modal('show')
+    });
+
+
     $('.select-all').change(function() {
         if ($(this). prop("checked") == true) {
           $('input:checkbox').prop('checked',true);

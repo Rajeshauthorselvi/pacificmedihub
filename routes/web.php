@@ -89,6 +89,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 
 	Route::get('product-sample-sheet','Admin\ProductController@DownloadSampleImportSheet');
 
+	Route::post('update_purchase_payment',['as'=>'update.purchase.payment','uses'=>'PurchaseController@UpdatePurchasePayment']);
+
 });
 
 
