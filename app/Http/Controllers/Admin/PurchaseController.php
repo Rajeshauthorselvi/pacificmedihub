@@ -92,7 +92,7 @@ class PurchaseController extends Controller
             $data_original=$char_val;
 
             $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
+            $replace=[date('d'), date('m'), date('Y'), $total_datas ];
             $data['purchase_code']=str_replace($search,$replace, $data_original);
         }
 
