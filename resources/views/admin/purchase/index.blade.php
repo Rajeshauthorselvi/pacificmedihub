@@ -76,7 +76,17 @@
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                                   <ul class="dropdown-menu">
                                     <a href="{{route('purchase.show',$order['purchase_id'])}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
+                                    <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment</li></a>
                                     <a href="{{route('purchase.edit',$order['purchase_id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                    <a href="javascript:void(0)"><li class="dropdown-item">
+                                      <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
+                                    </li></a>
+                                    <a href="{{route('purchase.edit',$order['purchase_id'])}}"><li class="dropdown-item">
+                                      <i class="fa fa-envelope"></i>&nbsp;&nbsp;Email
+                                    </li></a>
+                                    <a href="javascript:void(0)"><li class="dropdown-item">
+                                      <i class="fa fa-print"></i>&nbsp;&nbsp;Print
+                                    </li></a>
                                     <a href="#"><li class="dropdown-item">
                                       <form method="POST" action="{{ route('purchase.destroy',$order['purchase_id']) }}">@csrf 
                                         <input name="_method" type="hidden" value="DELETE">
