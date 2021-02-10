@@ -120,7 +120,9 @@
                         </div>
                         <div class="col-sm-5">
                           <label for="">Sales Rep</label>
-                          {!! Form::text('salesrep',$customer->company->getSalesRep->emp_name,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
+                          @php 
+                            $sales_rep = isset($customer->company->getSalesRep->emp_name)?$customer->company->getSalesRep->emp_name:'' @endphp
+                          {!! Form::text('salesrep',$sales_rep,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
                         </div>
                       </div>
                       <?php 

@@ -210,19 +210,20 @@
                         </div>
                         <div class="col-sm-6">
                           <label for="">Country *</label>
-                          {!! Form::select('address[country_id]',$countries,null,['class'=>'form-control select2bs4 required address_country']) !!}
+                          {!! Form::text(null,null,['class'=>'form-control del_add_country required']) !!}
+                          {!! Form::hidden('address[country_id]', null,['class'=>'form-control del_add_country_id required']) !!}
                           <span class="text-danger"></span>
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">State *</label>
-                            <select name="address[state_id]" class="form-control select2bs4 required address_state"></select>
+                          {!! Form::text('address[state_id]', null,['class'=>'form-control del_add_state required']) !!}
                           <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">City *</label>
-                            <select name="address[city_id]" class="form-control select2bs4 required address_city"></select>
+                          {!! Form::text('address[city_id]', null,['class'=>'form-control del_add_city required']) !!}
                           <span class="text-danger"></span>
                         </div>
                       </div>
@@ -355,20 +356,18 @@
       var company_add2 = $('.company_add2').val();
       var company_contact = $('.company_contact').val();
 
+      var country = $('#company_country').val();
+      var state = $('#company_state').val();
+      var city = $('#company_state').val();
+
       $('.del_add_name').val(company_name);
       $('.del_add_1').val(company_add1);
       $('.del_add_2').val(company_add2);
       $('.del_add_contact').val(company_contact);
+      $('.del_add_country').val(country);
+      $('.del_add_state').val(state);
+      $('.del_add_city').val(city);
 
-
-      // var country = $('#company_country').val();
-      // $('.address_country').val(country).change();
-
-      // var state = $('#company_state').val();
-      // var city = $('#address_city').val();
-      
-      // getState(country,'.address_state');
-      // getCity(state,'.address_city');
       
       if (length_empty==0 && error_count==0) {
         if (stepID!=4) {
