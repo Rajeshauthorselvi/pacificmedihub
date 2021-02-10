@@ -86,8 +86,6 @@
                         @endif
                       </div>
 
-                      
-
                       <div class="form-group">
                         <label for="shortDescription">Product Short Details</label>
                         <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description',$product->short_description)}}</textarea>
@@ -265,173 +263,153 @@
   </div>
   @php function inputFields($get_options,$product_variant,$option_count,$type='') { @endphp
 
-@php if($type=="old") $class="old_variant"; else $class=""; @endphp
-<table class="list {{ $class }}" id="variantList">
-                      <thead>
-                        <tr>
-                          
-                          @php foreach($get_options as $option){
-                           echo '<th>'.$option.'</th>';
-                          }
-                          @endphp
-                          <th>Base Price</th>
-                          <th>Retail Price</th>
-                          <th>Minimum Selling Price</th>
-                          <th>Stock Qty</th>
-                          <th>Vendor</th>
-                          <th>Order By</th>
-                          <th>Display</th>
-                          @php if($type!="old"){ @endphp
-                          <th>Remove</th>
-                          @php } @endphp
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @php foreach($product_variant as $variant){ @endphp
-                          <tr>
-                            <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
-                            <td>
-                              <div class="form-group">
-                                <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">
-                                <input type="hidden" name="variant[option_value_id1][]" value="{{$variant['option_value_id1']}}">
-                                {{$variant['option_value1']}}
-                              </div>
-                            </td>
-                            @if($option_count==2)
-                              <td>
-                                <div class="form-group">
-                                  <input type="hidden" name="variant[option_id2][]" value="{{$variant['option_id2']}}">
-                                  <input type="hidden" name="variant[option_value_id2][]" value="{{$variant['option_value_id2']}}">
-                                  {{$variant['option_value2']}}
-                                </div>
-                              </td>
-                            @endif
-                            @if($option_count==3||$option_count==4||$option_count==5)
-                              <td>
-                                <div class="form-group">
-                                  <input type="hidden" name="variant[option_id3][]" value="{{$variant['option_id3']}}">
-                                  <input type="hidden" name="variant[option_value_id3][]" value="{{$variant['option_value_id3']}}">
-                                  {{$variant['option_value3']}}
-                                </div>
-                              </td>
-                            @endif
-                            @if($option_count==4||$option_count==5)
-                              <td>
-                                <div class="form-group">
-                                  <input type="hidden" name="variant[option_id4][]" value="{{$variant['option_id4']}}">
-                                  <input type="hidden" name="variant[option_value_id4][]" value="{{$variant['option_value_id4']}}">
-                                  {{$variant['option_value4']}}
-                                </div>
-                              </td>
-                            @endif
-                            @if($option_count==5)
-                              <td>
-                                <div class="form-group">
-                                  <input type="hidden" name="variant[option_id5][]" value="{{$variant['option_id5']}}">
-                                  <input type="hidden" name="variant[option_value_id5][]" value="{{$variant['option_value_id5']}}">
-                                  {{$variant['option_value5']}}
-                                </div>
-                              </td>
-                            @endif
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control base_price" onkeyup="validateNum(event,this);" name="variant[base_price][]" value="{{$variant['base_price']}}">
-                                <span class="text-danger" style="display:none">Base Price is required</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control retail_price" onkeyup="validateNum(event,this);" name="variant[retail_price][]" value="{{$variant['retail_price']}}">
-                                <span class="text-danger" style="display:none">Retail Price is required</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[minimum_price][]" value="{{$variant['minimum_selling_price']}}">
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{$variant['stock_quantity']}}">
-                                <span class="text-danger" style="display:none">Stock Qty is required</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="hidden" name="variant[vendor_id][]" value="{{$variant['vendor_id']}}">
-                                {{$variant['vendor_name']}}
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]" value="{{$variant['display_order']}}">
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <select class="form-control display_variant" name="variant[display][]">
-                                  <option @if($variant['display_variant']==0) selected="selected" @endif value="0" selected>No</option>
-                                  <option @if($variant['display_variant']==1) selected="selected" @endif value="1">Yes</option>
-                                </select>
-                              </div>
-                            </td>
-                            @php if($type!="old"){ @endphp
-                            <td>
-                              <a class="btn btn-danger remove-variant-individual" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}">
-                                <i class="far fa-trash-alt"></i>
-                              </a>
-                            </td>
-                            @php } @endphp 
-                          </tr>
-                        @php } @endphp
-                      </tbody>
-                    </table>
-    @php } @endphp
+    @php if($type=="old") $class="old_variant"; else $class=""; @endphp
+    <table class="list {{ $class }}" id="variantList">
+      <thead>
+        <tr>
+          @php 
+            foreach($get_options as $option){ echo '<th>'.$option.'</th>'; }
+          @endphp
+          <th>Base Price</th>
+          <th>Retail Price</th>
+          <th>Minimum Selling Price</th>
+          <th>Stock Qty</th>
+          <th>Vendor</th>
+          <th>Order By</th>
+          <th>Display</th>
+          @php if($type!="old"){ @endphp
+            <th>Remove</th>
+          @php } @endphp
+        </tr>
+      </thead>
+      <tbody>
+        @php foreach($product_variant as $variant){ @endphp
+          <tr>
+            <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
+            <td>
+              <div class="form-group">
+                <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">
+                <input type="hidden" name="variant[option_value_id1][]" value="{{$variant['option_value_id1']}}">
+                {{$variant['option_value1']}}
+              </div>
+            </td>
+            @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
+              <td>
+                <div class="form-group">
+                  <input type="hidden" name="variant[option_id2][]" value="{{$variant['option_id2']}}">
+                  <input type="hidden" name="variant[option_value_id2][]" value="{{$variant['option_value_id2']}}">
+                  {{$variant['option_value2']}}
+                </div>
+              </td>
+            @endif
+            @if($option_count==3||$option_count==4||$option_count==5)
+              <td>
+                <div class="form-group">
+                  <input type="hidden" name="variant[option_id3][]" value="{{$variant['option_id3']}}">
+                  <input type="hidden" name="variant[option_value_id3][]" value="{{$variant['option_value_id3']}}">
+                  {{$variant['option_value3']}}
+                </div>
+              </td>
+            @endif
+            @if($option_count==4||$option_count==5)
+              <td>
+                <div class="form-group">
+                  <input type="hidden" name="variant[option_id4][]" value="{{$variant['option_id4']}}">
+                  <input type="hidden" name="variant[option_value_id4][]" value="{{$variant['option_value_id4']}}">
+                  {{$variant['option_value4']}}
+                </div>
+              </td>
+            @endif
+            @if($option_count==5)
+              <td>
+                <div class="form-group">
+                  <input type="hidden" name="variant[option_id5][]" value="{{$variant['option_id5']}}">
+                  <input type="hidden" name="variant[option_value_id5][]" value="{{$variant['option_value_id5']}}">
+                  {{$variant['option_value5']}}
+                </div>
+              </td>
+            @endif
+            <td>
+              <div class="form-group">
+                <input type="text" class="form-control base_price" onkeyup="validateNum(event,this);" name="variant[base_price][]" value="{{$variant['base_price']}}">
+                <span class="text-danger" style="display:none">Base Price is required</span>
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" class="form-control retail_price" onkeyup="validateNum(event,this);" name="variant[retail_price][]" value="{{$variant['retail_price']}}">
+                <span class="text-danger" style="display:none">Retail Price is required</span>
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[minimum_price][]" value="{{$variant['minimum_selling_price']}}">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][]" value="{{$variant['stock_quantity']}}">
+                <span class="text-danger" style="display:none">Stock Qty is required</span>
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="hidden" name="variant[vendor_id][]" value="{{$variant['vendor_id']}}">
+                {{$variant['vendor_name']}}
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]" value="{{$variant['display_order']}}">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <select class="form-control display_variant" name="variant[display][]">
+                  <option @if($variant['display_variant']==0) selected="selected" @endif value="0" selected>No</option>
+                  <option @if($variant['display_variant']==1) selected="selected" @endif value="1">Yes</option>
+                </select>
+              </div>
+            </td>
+            @php if($type!="old"){ @endphp
+              <td>
+                <a class="btn btn-danger remove-variant-individual" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}">
+                  <i class="far fa-trash-alt"></i>
+                </a>
+              </td>
+            @php } @endphp 
+          </tr>
+        @php } @endphp
+      </tbody>
+    </table>
+  @php } @endphp
 
 
   <style type="text/css">
-    #clear-option,#add-options{
-      float: left;
-    }
-    #add-options{
-      margin-right: 10px;
-    }
-    .hidden{
-      display: none;
-    }
-    .list input{
-      width: 50%;
-      display: inline-block;
-      text-align: center;
-    }
-    .list td{
-      text-align: center;
-      /*display: inline-block;*/
-    }
+    #clear-option,#add-options{float: left;}
+    #add-options{margin-right: 10px;}
+    .hidden{display: none;}
+    .list input{width: 50%;display: inline-block;text-align: center;}
+    .list td{text-align: center;/*display: inline-block;*/}
 </style>
   @push('custom-scripts')
-  <script>
-
-    $('.old_variant input').attr('disabled',true);
-    $('.old_variant select').attr('disabled',true);
-
-
-    $(document).ready(function(){
+    <script>
+      $('.old_variant input').attr('disabled',true);
+      $('.old_variant select').attr('disabled',true);
+      $(document).ready(function(){
         // Add minus icon for collapse element which is open by default
         $(".collapse.show").each(function(){
           $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
         });
-        
         // Toggle plus minus icon on show hide of collapse element
         $(".collapse").on('show.bs.collapse', function(){
           $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
         }).on('hide.bs.collapse', function(){
           $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
         });
-    });
-</script>
+      });
+    </script>
     <script type="text/javascript">
-
       //Add Variant
       $('#productVariant').on('change',function(){
         if($('#productVariant option:selected').val()==null) {
@@ -448,36 +426,55 @@
       });
 
       $('#add-options').on('click',function(){
-      var existing_options = <?php echo json_encode($options_id); ?>;
-      var existing_vendors = <?php echo json_encode($vendors_id); ?>;
-
-        var order_exists='{{ $order_exists }}';
-        if (order_exists) {
-          if (!confirm('The product contain orders, adding new variant will result in disabling exiting variants.Do you want to make change?')) {
-              return false;
-          }
-        }
-        else{
-
-          if(!confirm('Existing variants will be removed. Do you want to make change?')){
-              return false;
-          }
-        }
-
-          $('.product-variant-block .display_variant').val(0).attr("selected", "selected");
-          var existing_options = <?php echo json_encode($options_id); ?>;
-
-          var existingOption = JSON.stringify(existing_options);
-
-          var existing_vendors = <?php echo json_encode($vendors_id); ?>;
-
+        var existing_options = <?php echo json_encode($options_id); ?>;
+        var existing_vendors = <?php echo json_encode($vendors_id); ?>;
+        var db_exist_options_id = JSON.stringify(existing_options);
+        var exist_options_id = '['+$('#productVariant').val()+']';
+        var db_exist_vendors_id = JSON.stringify(existing_vendors);
+        var exist_vendors_id = '['+$('#VendorSupplier').val()+']';
           
-          var existingVendor = JSON.stringify(existing_vendors);
 
-          var options = $('#productVariant option:selected');
-        
+        if((db_exist_options_id==exist_options_id) && (db_exist_vendors_id==exist_vendors_id)){
+          alert('This variants are already Existing');
+        }else{
+          if(db_exist_options_id==exist_options_id){
+            createVendorBlock();
+          }else{
+            var order_exists='{{ $order_exists }}';
+            if (order_exists) {
+              if (!confirm('The product contain orders, adding new variant will result in disabling exiting variants.Do you want to make change?')) {
+                return false;
+              }else{
+                $('.product-variant-block .display_variant').val(0).attr("selected", "selected");
+                createVendorBlock();
+              }
+            }
+            else{
+              if(!confirm('Existing variants will be removed. Do you want to make change?')){
+                return false;
+              }else{
+                $('.product-variant-block').css('display','none');
+                createVendorBlock('delete');
+              }
+            }
+          }
+        }
+      });
+
+      function createVendorBlock(value)
+      {
+        var existing_options = <?php echo json_encode($options_id); ?>;
+        var existingOption = JSON.stringify(existing_options);
+        var existing_vendors = <?php echo json_encode($vendors_id); ?>;
+        var existingVendor = JSON.stringify(existing_vendors);
+        var options = $('#productVariant option:selected');
+
+        var delete_request = false;
+        if(value){
+          delete_request = true;
+        }
+
         if(options.length > 0  && options.length <=5 ){
-
           var selectedOption = JSON.stringify($('#productVariant').val());
           var selectedVendor = JSON.stringify($('#VendorSupplier').val());
           if($('#VendorSupplier').val().length==0 && $('#productVariant').val()){
@@ -499,6 +496,7 @@
               options:selectedOption,
               vendors:selectedVendor,
               dataFrom:'edit',
+              deleteRequest:delete_request,
               existOption:existingOption,
               existVendor:existingVendor
             },
@@ -506,7 +504,7 @@
               //console.log(data);
               $('#new-product-variant-block').html(data);
               $('.new-product-variant-lable').css('display','block');
-             scroll_to();
+              scroll_to();
               /*createTable(data.options);
               addOptionValue(0,data)*/
             }
@@ -514,7 +512,9 @@
         }else{
           alert('Please select maximum of 5 options only.!');
         }
-      });
+      }
+
+
 
       function scroll_to(div){
       $('html, body').animate({
