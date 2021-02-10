@@ -129,7 +129,7 @@
                 	</div>
                 </td>
                 <td>
-                	<input type="hidden" name="new_variant[vendor_id][]" value="{{$vendor_id}}">
+                	<input type="hidden" name="new_variant[vendor_id][]" class="vendor_id" value="{{$vendor_id}}">
 					{{$vendor_name}}
                 </td>
                 <td>
