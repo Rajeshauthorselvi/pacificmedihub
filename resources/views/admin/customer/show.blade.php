@@ -64,9 +64,16 @@
                           {!! Form::text('company[company_name]', null,['class'=>'form-control','readonly']) !!}
                           <span class="text-danger"></span>
                         </div>
+                        <?php
+                          if($customer->company->parent_company==0){
+                            $parent = '';
+                          }else{
+                            $parent = $customer->company->company_name;
+                          }
+                        ?>
                         <div class="col-sm-5">
                           <label for="">Parent Company</label>
-                          {!! Form::text('country_id',\App\Models\UserCompanyDetails::ParentCompany($customer->company_id),['readonly','class'=>'form-control', 'id'=>'Country']) !!}
+                          {!! Form::text('null',$parent,['readonly','class'=>'form-control']) !!}
                         </div>
                       </div>
                       <div class="form-group">

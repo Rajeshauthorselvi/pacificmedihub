@@ -29,6 +29,7 @@ class CustomerController extends Controller
         $data['all_customers']=User::with('company')
                                ->where('users.role_id',7)
                                ->where('is_deleted',0)
+                               ->orderBy('created_at','desc')
                                ->get();
         return view('admin.customer.index',$data);
     }
@@ -88,6 +89,7 @@ class CustomerController extends Controller
         $users=$request->customer;
         $users['role_id']=7;
         $users['status']=1;
+        $users['created_at']=date('Y-m-d H:i:s');
         $customer_id=User::insertGetId($users);
         /*Insert Customer Details*/
 

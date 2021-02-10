@@ -210,19 +210,22 @@
                         </div>
                         <div class="col-sm-6">
                           <label for="">Country *</label>
-                          {!! Form::select('address[country_id]',$countries,null,['class'=>'form-control select2bs4 required address_country']) !!}
+                          {!! Form::text('null',null,['class'=>'form-control required address_country']) !!}
+                          {!! Form::hidden('address[country_id]',null,['class'=>'form-control required address_country_id']) !!}
                           <span class="text-danger"></span>
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">State *</label>
-                            <select name="address[state_id]" class="form-control select2bs4 required address_state"></select>
+                          {!! Form::text('null',null,['class'=>'form-control required address_state']) !!}
+                          {!! Form::hidden('address[state_id]',null,['class'=>'form-control required address_state_id']) !!}
                           <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">City *</label>
-                            <select name="address[city_id]" class="form-control select2bs4 required address_city"></select>
+                          {!! Form::text('null',null,['class'=>'form-control required address_city']) !!}
+                          {!! Form::hidden('address[city_id]',null,['class'=>'form-control required address_city_id']) !!}
                           <span class="text-danger"></span>
                         </div>
                       </div>
@@ -361,14 +364,21 @@
       $('.del_add_contact').val(company_contact);
 
 
-      // var country = $('#company_country').val();
-      // $('.address_country').val(country).change();
+      var country = $('#company_country option:selected').text();
+      var country_id = $('#company_country').val();
 
-      // var state = $('#company_state').val();
-      // var city = $('#address_city').val();
-      
-      // getState(country,'.address_state');
-      // getCity(state,'.address_city');
+      var state = $('#company_state option:selected').text();
+      var state_id = $('#company_state').val();
+
+      var city = $('#company_city option:selected').text();
+      var city_id = $('#company_city').val();
+
+      $('.address_country').val(country);
+      $('.address_country_id').val(country_id);
+      $('.address_state').val(state);
+      $('.address_state_id').val(state_id);
+      $('.address_city').val(city);
+      $('.address_city_id').val(city_id);
       
       if (length_empty==0 && error_count==0) {
         if (stepID!=4) {

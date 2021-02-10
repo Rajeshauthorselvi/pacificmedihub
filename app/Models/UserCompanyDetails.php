@@ -33,9 +33,4 @@ class UserCompanyDetails extends Model
     {
     	return $this->belongsTo('App\Models\Employee','sales_rep');	
     }
-
-    public function getParentCompany()
-    {
-    	return $this->belongsTo('App\Models\UserCompanyDetails','parent_company');	
-    }
 }
