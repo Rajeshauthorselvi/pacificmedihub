@@ -40,6 +40,7 @@ class PurchaseController extends Controller
             $product_details=PurchaseProducts::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'))
                 ->where('purchase_id',$purchase->id)
                 ->first();
+            $order_status=DB::table('order_status')->where('id',$purchase->purchase_status)->value('status_name');
             if($purchase->payment_status==1){
                 $payment_status='Paid';
               }
@@ -58,10 +59,10 @@ class PurchaseController extends Controller
                 'grand_total' => $product_details->sub_total,
                 'amount' => $purchase->amount,
                 'balance' => ($product_details->sub_total)-($purchase->amount),
-                'payment_status' => $payment_status
+                'payment_status' => $payment_status,
+                'order_status'  =>$order_status
             ];
         }
-
         $data['orders']=$orders;
         return view('admin.purchase.index',$data);
     }
