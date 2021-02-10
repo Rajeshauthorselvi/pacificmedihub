@@ -322,17 +322,27 @@ class StockInTransitController extends Controller
 
        if ($request->purchase_status==2) {
          foreach ($row_ids as $key => $row_id) {
-            // $product_data=DB::table('purchase_products')->where('id',$row_id)->value('quantity');
+            $purchase_data=DB::table('purchase_products')->where('id',$row_id)->first();
+          
+            $variant_data=DB::table('product_variant_vendors')
+                          ->where('product_variant_id',$purchase_data->product_variation_id)
+                          ->first();
+            $total_quantity=$variant_data->stock_quantity+$qty_received[$key];
+
               $data=[
                   'qty_received'      => $qty_received[$key],
                   'issue_quantity'    => $issued_qty[$key],
-                  'reason'            => isset($reason[$key])?$reason[$key]:'',
-                  // 'quantity'          => $product_data+$qty_received[$key]
+                  'reason'            => isset($reason[$key])?$reason[$key]:''
+                  // 'quantity'          => $total_quantity
               ];
+
+              DB::table('product_variant_vendors')
+              ->where('product_variant_id',$purchase_data->product_variation_id)
+              ->update(['stock_quantity'=>$total_quantity]);
+
              PurchaseProducts::where('id',$row_id)->update($data);
           }
        }
-       
 
         Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$request->purchase_status]);
             return Redirect::route('stock-in-transit.index')->with('success','Stock-In-Transit modified successfully...!');  
