@@ -72,7 +72,11 @@
                     			<td>{{ isset($customer->company->company_name)?$customer->company->company_name:'' }}</td>
                     			<td>
                             <?php
-                            $parent=\App\Models\UserCompanyDetails::ParentCompany($customer->company_id);
+                              if($customer->company->parent_company==0){
+                                $parent = '-';
+                              }else{
+                                $parent = $customer->company->company_name;
+                              }
                              ?>
                             {{ isset($parent)?$parent:'-' }}
                           </td>
@@ -80,7 +84,11 @@
                     			<td>{{ $customer->contact_number }}</td>
                     			<td>0</td>
                           <td>0</td>
-                    			<td>{{ ($customer->status==1)?'Approved':'Disapproved' }}</td>
+                          <?php
+                            if($customer->status==1){$status = "fa-check";}
+                            else{$status = "fa-ban";}
+                          ?>
+                          <td><i class="fas {{$status}}"></i></td>
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>

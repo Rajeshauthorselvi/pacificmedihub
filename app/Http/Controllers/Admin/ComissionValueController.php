@@ -53,6 +53,7 @@ class ComissionValueController extends Controller
         $input=$request->all();
         Arr::forget($input,['_token','status']);
         $input['published']=($request->status=='on')?1:0;
+        $input['created_at'] = date('Y-m-d H:i:s');
         CommissionValue::insert($input);
         return Redirect::route('comission_value.index')->with('success','Commission value added successfully...!');
 
