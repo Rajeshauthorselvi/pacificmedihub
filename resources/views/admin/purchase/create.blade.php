@@ -78,7 +78,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Vendor *</label>
-                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control']) !!}
+                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control vendors']) !!}
                         </div>
                     </div>
                   </div>
@@ -286,6 +286,25 @@
           $(this).val('');
           return false;
       }
+
+      $.ajax({
+        url: '{{ url('admin/search-vendor') }}'+'/'+ui.item.value,
+        type: 'GET',
+      })
+      .done(function(response) {
+        $('.vendors').empty();
+        $.each(response.products, function(key, value) {
+             var $option = $("<option/>", {
+                value: key,
+                text: value
+              });
+              $('.vendors').append($option);
+        });
+      })
+      .fail(function() {
+        alert('Ajax Error:--');
+      });
+      
        // ajaxFunction('header',ui)
        ajaxFunction('options',ui);
        $('.no-match').hide();

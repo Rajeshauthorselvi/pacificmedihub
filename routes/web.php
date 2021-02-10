@@ -89,7 +89,13 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 
 	Route::get('product-sample-sheet','Admin\ProductController@DownloadSampleImportSheet');
 
-	Route::post('update_purchase_payment',['as'=>'update.purchase.payment','uses'=>'PurchaseController@UpdatePurchasePayment']);
+	Route::get('view_purchase_payment/{purchase_id}',['as'=>'view.purchase.payment','uses'=>'Admin\PurchaseController@ViewPurchasePayment']);
+
+	Route::post('update_purchase_payment',['as'=>'edit.purchase.payment','uses'=>'Admin\PurchaseController@UpdatePurchasePayment']);
+
+	Route::post('create_purchase_payment',['as'=>'create.purchase.payment','uses'=>'Admin\PurchaseController@CreatePurchasePayment']);
+
+	Route::get('search-vendor/{product_id}','Admin\PurchaseController@FindVendors');
 
 });
 

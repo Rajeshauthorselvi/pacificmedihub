@@ -12,6 +12,7 @@ use App\Models\ProductVariantVendor;
 use App\Models\Product;
 use App\Models\Vendor;
 use App\Models\Settings;
+use App\Models\PaymentHistory;
 use Illuminate\Http\Request;
 use Session;
 use Redirect;
@@ -30,6 +31,10 @@ class PurchaseController extends Controller
         $purchases=Purchase::orderBy('id','DESC')->get();
         $data=array();
         $orders=array();
+        $payment_method=PaymentMethod::where('status',1)
+                              ->pluck('payment_method','id')
+                              ->toArray();
+        $data['payment_method']=[''=>'Please Select']+$payment_method;
         foreach ($purchases as $key => $purchase) {
             $vendor_name=Vendor::find($purchase->vendor_id)->name;
             $product_details=PurchaseProducts::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'))
@@ -463,6 +468,16 @@ class PurchaseController extends Controller
         }
         return response()->json($names);
     }
+    public function FindVendors($product_id)
+    {
+      $product_variant=DB::table('product_variant_vendors as pvv')
+                       ->leftjoin('vendors as v','pvv.vendor_id','v.id')
+                       ->where('pvv.product_id',$product_id)
+                       ->pluck('name','v.id')
+                       ->toArray();
+
+      return ['products'=>$product_variant];
+    }
     public function Variants($product_id,$variation_id=0)
     {
 
@@ -620,5 +635,29 @@ class PurchaseController extends Controller
                            ->value('option_value');
 
         return $option_value_name;
+    }
+    public function CreatePurchasePayment(Request $request)
+    {
+        $data=[
+          'ref_id'          => $request->id,
+          'reference_no'    => $request->reference_no,
+          'payment_from'    => $request->payment_from,
+          'amount'          => $request->amount,
+          'payment_notes'   => $request->payment_notes,
+          'created_at'      => date('Y-m-d H:i:s'),
+          'payment_id'      => $request->payment_id,
+        ];
+        PaymentHistory::insert($data);
+        return Redirect::back()->with('success','Payment added successfully...!');
+    }
+
+    public function ViewPurchasePayment($purchase_id)
+    {
+        $all_payment_history=PaymentHistory::with('PaymentMethod')
+                             ->where('ref_id',$purchase_id)
+                             ->get()
+                             ->toArray();
+
+        return $all_payment_history;
     }
 }

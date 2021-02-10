@@ -68,14 +68,25 @@
                           <td>{{ $order['vendor'] }}</td>
                           <td>{{ $order['quantity'] }}</td>
                           <td>{{ $order['grand_total'] }}</td>
-                          <td>{{ ($order['amount']!="")?$order['amount']:'0.00' }}</td>
-                          <td>{{ $order['balance'] }}</td>
+                          <?php 
+                              $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($order['purchase_id'],$order['grand_total']);
+                            ?>
+                          <td>{{ $balance_amount['paid_amount'] }}</td>
+                          <td class="balance">
+                            {{ $balance_amount['balance_amount'] }}
+                          </td>
                           <td>{{ $order['payment_status'] }}</td>
                           <td>
                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                                   <ul class="dropdown-menu">
                                     <a href="{{route('purchase.show',$order['purchase_id'])}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
+
+                                    <a href="javascript:void(0)" class="view-payment" purchase-id="{{ $order['purchase_id'] }}">
+                                      <li class="dropdown-item">
+                                        <i class="fa fa-credit-card"></i>&nbsp;&nbsp;View Payments
+                                      </li>
+                                    </a>
 
                                     <a href="javascript:void(0)" class="add-payment" purchase-id="{{ $order['purchase_id'] }}">
                                       <li class="dropdown-item">
@@ -116,7 +127,7 @@
     </section>
   </div>
 <div class="modal fade" id="payment_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Update Payment</h5>
@@ -124,32 +135,154 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-        <form action="{{route('update.purchase.payment')}}" method="post" enctype="multipart/form-data" id="productForm">
+        <form action="{{route('create.purchase.payment')}}" method="post" enctype="multipart/form-data" id="payment_form">
         @csrf
           <div class="modal-body">
             <input type="hidden" name="purchase_id" value="">
+            <div class="col-sm-12">
+              <div class="form-group col-sm-6">
+                <label>Payment Type *</label>
+                {!! Form::select('payment_id',$payment_method, null,['class'=>'form-control required']) !!}
+                <span class="text-danger"></span>
+              </div>
+              <div class="form-group col-sm-6">
+                <label>Date *</label>
+                <input type="text" name="created_at" class="form-control" readonly value="{{ date('Y-m-d H:i:s') }}">
+              </div>
+              <div class="clearfix"></div>
+              <div class="form-group col-sm-6">
+                <label>Reference No</label>
+                <input type="text" name="reference_no" class="form-control">
+              </div>
+              <div class="form-group  col-sm-6">
+                <label>Amount</label>
+                <input type="text" name="amount" class="form-control balance_cmount required">
+                <span class="text-danger"></span>
+              </div>
+            <input type="hidden" name="payment_from" value="1">
+            <input type="hidden" name="id" class="model_purchase_id" value="0">
             <div class="form-group">
-              <label>Payment</label>
-               <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
-              {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control']) !!}
+              <div class="clearfix"></div>
+              <label>Notes</label>
+              {!! Form::textarea('payment_notes',null,['class'=>'form-control summernote']) !!}
+            </div>
             </div>
           
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="submit" class="btn btn-primary addpayment">Add Payment</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </form>
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="edit_payment_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Payment History</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        @csrf
+          <div class="modal-body">
+            <table class="table table-bordered">
+              <thead>
+                  <th>Date</th>
+                  <th>Reference No</th>
+                  <th>Amount</th>
+                  <th>Paid By</th>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+    </div>
+  </div>
+</div>
+
+<style type="text/css">
+  #payment_model .col-sm-6,#edit_payment_model .col-sm-6{
+    float: left;
+  }
+</style>
   @push('custom-scripts')
   <script type="text/javascript">
-      
-    $(document).on('click', '.add-payment', function(event) {
-      event.preventDefault();
-        $('#payment_model').modal('show')
+    
+
+    $(document).on('click', '.addpayment', function(event) {
+      var error_count=0;
+      $('#payment_form .required').each(function(index, el) {
+        event.preventDefault();
+          var type=$(this).attr('type');
+          var current_val=$(this).val();
+          if (current_val=="" && type=="text") {
+            $(this).next('.text-danger').html('This field is required');
+              error_count += 1;
+          } 
+          else if (current_val=="" && type==undefined) {
+            $(this).next('.text-danger').html('This field is required');
+          } 
+      });    
+      var length_empty=$('#payment_form .required').filter(function(){return !$(this).val(); }).length;
+      if (length_empty==0 && error_count==0)   {
+          $('#payment_form').submit();
+      }
+        
     });
+
+    $(document).on('click', '.add-payment', function(event) {
+        event.preventDefault();
+        var balance_amount=$(this).parents('tr').find('.balance').text();
+        var balance_amount=parseInt(balance_amount);
+
+        if (balance_amount==0) {
+          alert('Payment status is already paid for the purchase.');
+          return false;
+        }
+        $('.balance_cmount').val(balance_amount);
+        var purchase_id=$(this).attr('purchase-id');
+        $('.model_purchase_id').val(purchase_id);
+        $('#payment_model').modal('show');
+    });
+
+
+    $(document).on('click', '.view-payment', function(event) {
+        event.preventDefault();
+        var purchase_id=$(this).attr('purchase-id');
+
+        $.ajax({
+          url: '{{ url('admin/view_purchase_payment') }}'+'/'+purchase_id,
+        })
+        .done(function(response) {
+            $.each(response, function(index, val) {
+                var html ="<tr>";
+                    html +="<td>"+moment(val.created_at).format('DD-MM-yyyy HH:mm')+"</td>";
+                    if (val.reference_no==null) {
+                      html +="<td>-</td>";
+                    }
+                    else{
+                      html +="<td>"+  val.reference_no+"</td>";
+                    }
+                    html +="<td>"+val.amount+"</td>";
+                    html +="<td>"+val.payment_method.payment_method+"</td>";
+                    html +="<tr>";
+
+                    $('.modal-body tbody').append(html);
+            });
+        });
+
+
+        var balance_amount=$(this).parents('tr').find('.balance').text();
+        $('#edit_payment_model .balance_cmount').val(parseInt(balance_amount));
+        var purchase_id=$(this).attr('purchase-id');
+        $('#edit_payment_model .model_purchase_id').val(purchase_id);
+        $('#edit_payment_model').modal('show');
+    });
+
+    
 
 
     $('.select-all').change(function() {
