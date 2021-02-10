@@ -88,7 +88,7 @@ class PurchaseController extends Controller
             $char_val=$value['value'];
             $explode_val=explode('-',$value['value']);
             $total_datas=Purchase::count();
-            $total_datas=($total_datas==0)?end($explode_val)+1:$total_datas+1;
+            $total_datas=($total_datas==0)?end($explode_val):$total_datas+1;
             $data_original=$char_val;
 
             $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
