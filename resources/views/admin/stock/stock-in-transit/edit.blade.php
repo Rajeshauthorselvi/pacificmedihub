@@ -76,14 +76,14 @@
                               <th scope="col">#</th>
                               <th scope="col">Product Name</th>
 
-                              <th scope="col">
+                           {{--    <th scope="col">
                                   Total Quantity:&nbsp;
                                   <span class="all_quantity">{{ $total_products->quantity }}</span>   
                               </th>
                               <th>
                                   Total Amount:&nbsp;
                                   <span class="all_amount">{{ $total_products->sub_total }}</span>
-                              </th>
+                              </th> --}}
                               <th scope="col"></th>
                             </tr>
                            
@@ -96,14 +96,14 @@
                                   $total_based_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id,$product['product_id']);
                                ?>
                               <td>{{ $product['product_name'] }}</th>
-                              <td>
+                              {{-- <td>
                                 Quantity:&nbsp;
                                 <span class="total-quantity">{{ $total_based_products->quantity }}</span>
                               </td>
                               <td>
                                 Total:&nbsp;
                                 <span class="total">{{ $total_based_products->sub_total }}</span>
-                              </td>
+                              </td> --}}
                           </tr>
                           <tr class="hide-table-padding">
                             <td></td>
@@ -164,11 +164,11 @@
                           <?php $total_amount +=$variation_details['sub_total']; ?>
                           <?php $total_quantity +=$variation_details['quantity']; ?>
                         @endforeach
-                        <tr>
+            {{--             <tr>
                           <td colspan="{{ count($product['options'])+1 }}" class="text-right">Total:</td>
                           <td class="total_quantity">{{ $total_quantity }}</td>
                           <td class="total_amount">{{ $total_amount }}</td>
-                        </tr>
+                        </tr> --}}
                       </tbody>
                       </table>
 

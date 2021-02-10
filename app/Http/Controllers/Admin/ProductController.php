@@ -529,8 +529,8 @@ class ProductController extends Controller
         $data['vendors_id'] = $vendor_id;
         $product_variants=$this->Variants($id);
         $data['product_variant'] =$product_variants;
+        Session::put('existing_vendors',$vendor_id);
 
-        // dd($data);
 
         $old_variant = ProductVariant::where('product_id',$id)
                   ->where('disabled',1)
@@ -1253,7 +1253,25 @@ class ProductController extends Controller
     public function productVariant(Request $request)
     {
         $options = json_decode($request->options,true);
-        $vendors=$complete_vendors = json_decode($request->vendors,true);
+        $vendors=json_decode($request->vendors,true);
+
+        $vendors=$a =array_map(function($value){return intval($value);},$vendors);
+        $existing_vendors=$b=Session::get('existing_vendors');
+
+        if ($existing_vendors >= $vendors) {
+            $part_1=$existing_vendors;
+            $part_2=$vendors;
+        }
+        else{
+            $part_2=$existing_vendors;
+            $part_1=$vendors;  
+        }
+
+
+
+        $nomatch = array_diff_assoc($part_1,$part_2);
+        $deleted_vendor=array_diff_assoc($existing_vendors,$nomatch);
+        dd($deleted_vendor,$nomatch,$existing_vendors,$request->existVendor);
 
         if ($request->has('existOption')) {
             $existOption = json_decode($request->existOption,true);

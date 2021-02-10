@@ -19,7 +19,7 @@
                   @endforeach
                             
                           <td class="text-left">Quantity</td>
-                          <td class="text-left"></td>
+                          {{-- <td class="text-left"></td> --}}
                         </tr>
                       </thead>
                       <tbody>
@@ -76,7 +76,7 @@
                             <td>
                               <div class="form-group">
                                 <input type="hidden" name="variant[product_id][{{$variant['variant_id']}}]" value="{{$variant['product_id']}}">
-                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][{{$variant['variant_id']}}]" value="1">
+                                <input type="text" class="form-control stock_qty" onkeyup="validateNum(event,this);" name="variant[stock_qty][{{$variant['variant_id']}}]" value="0">
                               </div>
                             </td>
   {{--                           <td>
@@ -84,7 +84,7 @@
                                 <span class="sub_total">{{ $variant['base_price'] }}</span>
                               </div>
                             </td> --}}
-                            <td><a class="btn btn-danger remove-item" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}"><i class="fa fa-trash"></i></a></td>
+                            {{-- <td><a class="btn btn-danger remove-item" variant-id="{{$variant['variant_id']}}" route-url="{{route('delete.variant')}}"><i class="fa fa-trash"></i></a></td> --}}
                           </tr>
                         @endforeach
 

@@ -448,23 +448,8 @@
       });
 
       $('#add-options').on('click',function(){
-      var existing_options = <?php echo json_encode($options_id,true); ?>;
-      var existing_vendors = <?php echo json_encode($vendors_id,true); ?>;
-
-      
-      var selectedOption = JSON.stringify($('#productVariant').val());
-      var selectedVendor = JSON.stringify($('#VendorSupplier').val());
-
-      
-      var existing_options = JSON.stringify(<?php echo json_encode($options_id,true); ?>);
-
-      console.log(existing_options);
-      // alert(existing_vendors);
-      console.log(selectedOption);
-      // console.log(selectedVendor);
-
-      return false;
-
+      var existing_options = <?php echo json_encode($options_id); ?>;
+      var existing_vendors = <?php echo json_encode($vendors_id); ?>;
 
         var order_exists='{{ $order_exists }}';
         if (order_exists) {
@@ -482,17 +467,19 @@
           $('.product-variant-block .display_variant').val(0).attr("selected", "selected");
           var existing_options = <?php echo json_encode($options_id); ?>;
 
+          var existingOption = JSON.stringify(existing_options);
+
+          var existing_vendors = <?php echo json_encode($vendors_id); ?>;
+
           
+          var existingVendor = JSON.stringify(existing_vendors);
 
+          var options = $('#productVariant option:selected');
         
-
-
-        var current_vendor = JSON.stringify(existing_vendors);
-
-        var options = $('#productVariant option:selected');
         if(options.length > 0  && options.length <=5 ){
 
-
+          var selectedOption = JSON.stringify($('#productVariant').val());
+          var selectedVendor = JSON.stringify($('#VendorSupplier').val());
           if($('#VendorSupplier').val().length==0 && $('#productVariant').val()){
             alert('Please select Vendor/Supplier.!');
             return false;

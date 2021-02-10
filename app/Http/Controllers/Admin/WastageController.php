@@ -80,26 +80,27 @@ class WastageController extends Controller
        $wastage_id=Wastage::insertGetId($wastage);
 
         foreach ($variant['stock_qty'] as $variant_id => $stock_quantity) {
+            if ($stock_quantity>0) {
+                $product_id=$variant['product_id'][$variant_id];
 
-            $product_id=$variant['product_id'][$variant_id];
+                $watage_products=WastageProducts::insert([
+                    'wastage_id'    => $wastage_id,
+                    'product_id'    => $product_id,
+                    'product_variation_id'    => $variant_id,
+                    'quantity'    => $stock_quantity,
+                    'created_at'    => date('Y-m-d H:i:s')
+                ]);
 
-            $watage_products=WastageProducts::insert([
-                'wastage_id'    => $wastage_id,
-                'product_id'    => $product_id,
-                'product_variation_id'    => $variant_id,
-                'quantity'    => $stock_quantity,
-                'created_at'    => date('Y-m-d H:i:s')
-            ]);
+                $avalible_quantity=ProductVariantVendor::where('product_variant_id',$variant_id)
+                                ->where('product_id',$product_id)
+                                ->value('stock_quantity');
 
-            $avalible_quantity=ProductVariantVendor::where('product_variant_id',$variant_id)
-                            ->where('product_id',$product_id)
-                            ->value('stock_quantity');
+                $total_quantity=$avalible_quantity-$stock_quantity;
 
-            $total_quantity=$avalible_quantity-$stock_quantity;
-
-            ProductVariantVendor::where('product_variant_id',$variant_id)
-            ->where('product_id',$product_id)
-            ->update(['stock_quantity'=>$total_quantity]);
+                ProductVariantVendor::where('product_variant_id',$variant_id)
+                ->where('product_id',$product_id)
+                ->update(['stock_quantity'=>$total_quantity]);
+            }
         }
 
         return Redirect::route('wastage.index')->with('success','Wastage added successfully.!');
