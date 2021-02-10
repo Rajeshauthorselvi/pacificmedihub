@@ -74,6 +74,8 @@
                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                                   <ul class="dropdown-menu">
+
+                                    <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                     <a href="{{route('return.edit',$return['id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
              
                                   </ul>
