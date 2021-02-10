@@ -33,7 +33,7 @@ class ProductSheetImport implements ToCollection, WithHeadingRow, WithValidation
     		$data=[
     			'id'	=> $row['productid'],
     			'name'	=> $row['productname'],
-    			'code'	=>'This is testing',
+    			'code'	=>$row['code'],
     			'sku'	=> isset($row['sku'])?$row['sku']:'',
     			'category_id'	=>$category->id,
     			'brand_id'		=> $brand_id,
