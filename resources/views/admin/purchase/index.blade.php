@@ -67,7 +67,7 @@
                           <td>{{ $order['po_number'] }}</td>
                           <td>{{ $order['vendor'] }}</td>
                           <td>{{ $order['quantity'] }}</td>
-                          <td>{{ $order['grand_total'] }}</td>
+                          <td class="total_amount">{{ $order['grand_total'] }}</td>
                           <?php 
                               $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($order['purchase_id'],$order['grand_total']);
                             ?>
@@ -138,7 +138,6 @@
         <form action="{{route('create.purchase.payment')}}" method="post" enctype="multipart/form-data" id="payment_form">
         @csrf
           <div class="modal-body">
-            <input type="hidden" name="purchase_id" value="">
             <div class="col-sm-12">
               <div class="form-group col-sm-6">
                 <label>Payment Type *</label>
@@ -161,6 +160,7 @@
               </div>
             <input type="hidden" name="payment_from" value="1">
             <input type="hidden" name="id" class="model_purchase_id" value="0">
+            <input type="hidden" name="total_payment" class="total-amount" value="">
             <div class="form-group">
               <div class="clearfix"></div>
               <label>Notes</label>
@@ -170,7 +170,7 @@
           
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary addpayment">Add Payment</button>
+            <button type="submit" class="btn btn-primary addpayment-submit">Add Payment</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </form>
@@ -212,7 +212,7 @@
   <script type="text/javascript">
     
 
-    $(document).on('click', '.addpayment', function(event) {
+    $(document).on('click', '.addpayment-submit', function(event) {
       var error_count=0;
       $('#payment_form .required').each(function(index, el) {
         event.preventDefault();
@@ -238,13 +238,18 @@
         var balance_amount=$(this).parents('tr').find('.balance').text();
         var balance_amount=parseInt(balance_amount);
 
+        var total_amount=$(this).parents('tr').find('.total_amount').text();
+        var total_amount=parseInt(total_amount);
+
         if (balance_amount==0) {
           alert('Payment status is already paid for the purchase.');
           return false;
         }
+        $('.total-amount').val(total_amount);
         $('.balance_cmount').val(balance_amount);
         var purchase_id=$(this).attr('purchase-id');
         $('.model_purchase_id').val(purchase_id);
+
         $('#payment_model').modal('show');
     });
 
@@ -252,6 +257,7 @@
     $(document).on('click', '.view-payment', function(event) {
         event.preventDefault();
         var purchase_id=$(this).attr('purchase-id');
+
 
         $.ajax({
           url: '{{ url('admin/view_purchase_payment') }}'+'/'+purchase_id,
@@ -274,12 +280,8 @@
             });
         });
 
+          $('#edit_payment_model').modal('show');
 
-        var balance_amount=$(this).parents('tr').find('.balance').text();
-        $('#edit_payment_model .balance_cmount').val(parseInt(balance_amount));
-        var purchase_id=$(this).attr('purchase-id');
-        $('#edit_payment_model .model_purchase_id').val(purchase_id);
-        $('#edit_payment_model').modal('show');
     });
 
     

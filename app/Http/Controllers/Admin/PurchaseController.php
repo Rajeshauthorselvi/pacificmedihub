@@ -40,7 +40,15 @@ class PurchaseController extends Controller
             $product_details=PurchaseProducts::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'))
                 ->where('purchase_id',$purchase->id)
                 ->first();
-
+            if($purchase->payment_status==1){
+                $payment_status='Paid';
+              }
+            elseif($purchase->payment_status==3){
+              $payment_status='Not Paid';
+            }
+            else{
+              $payment_status='Partly Paid';
+            }
             $orders[]=[
                 'purchase_date'=>$purchase->purchase_date,
                 'purchase_id'=>$purchase->id,
@@ -50,7 +58,7 @@ class PurchaseController extends Controller
                 'grand_total' => $product_details->sub_total,
                 'amount' => $purchase->amount,
                 'balance' => ($product_details->sub_total)-($purchase->amount),
-                'payment_status' => ($purchase->payment_status==1)?'Paid':'Not Paid'
+                'payment_status' => $payment_status
             ];
         }
 
@@ -638,6 +646,7 @@ class PurchaseController extends Controller
     }
     public function CreatePurchasePayment(Request $request)
     {
+
         $data=[
           'ref_id'          => $request->id,
           'reference_no'    => $request->reference_no,
@@ -648,6 +657,18 @@ class PurchaseController extends Controller
           'payment_id'      => $request->payment_id,
         ];
         PaymentHistory::insert($data);
+
+
+        $total_amount=$request->total_payment;
+        $total_paid=$request->amount;
+        $balance_amount=$total_amount-$total_paid;
+        if ($balance_amount==0) 
+          $payment_status=1;
+        else
+          $payment_status=2; 
+
+
+        Purchase::where('id',$request->id)->update(['payment_status'=>$payment_status]);
         return Redirect::back()->with('success','Payment added successfully...!');
     }
 
