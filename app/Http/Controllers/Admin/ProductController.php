@@ -1255,7 +1255,7 @@ class ProductController extends Controller
         $options = json_decode($request->options,true);
         $vendors=json_decode($request->vendors,true);
 
-        $vendors=$a =array_map(function($value){return intval($value);},$vendors);
+/*        $vendors=$a =array_map(function($value){return intval($value);},$vendors);
         $existing_vendors=$b=Session::get('existing_vendors');
 
         if ($existing_vendors >= $vendors) {
@@ -1271,7 +1271,7 @@ class ProductController extends Controller
 
         $nomatch = array_diff_assoc($part_1,$part_2);
         $deleted_vendor=array_diff_assoc($existing_vendors,$nomatch);
-        dd($deleted_vendor,$nomatch,$existing_vendors,$request->existVendor);
+        dd($deleted_vendor,$nomatch,$existing_vendors,$request->existVendor);*/
 
         if ($request->has('existOption')) {
             $existOption = json_decode($request->existOption,true);

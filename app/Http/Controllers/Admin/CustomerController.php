@@ -64,7 +64,7 @@ class CustomerController extends Controller
             $total_datas=($total_datas==0)?end($explode_val)+1:$total_datas+1;
             $data_original=$char_val;
             $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace=[date('d'), date('m'), date('Y'), $total_datas];
+            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
             $data['product_id']=str_replace($search,$replace, $data_original);
         }
         return view('admin.customer.create',$data);
