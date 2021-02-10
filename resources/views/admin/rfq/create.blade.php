@@ -63,7 +63,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Status *</label>
-                          {!! Form::select('status',$order_status, null,['class'=>'form-control']) !!}
+                          {!! Form::select('status',$order_status, null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                   </div>
@@ -77,13 +77,13 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="customer_id">Customer *</label>
-                          {!! Form::select('customer_id',$customers, null,['class'=>'form-control','id'=>'customer']) !!}
+                          {!! Form::select('customer_id',$customers, null,['class'=>'form-control select2bs4','id'=>'customer']) !!}
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="sales_rep_id">Sales Rep *</label>
-                          {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control']) !!}
+                          {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                   </div>

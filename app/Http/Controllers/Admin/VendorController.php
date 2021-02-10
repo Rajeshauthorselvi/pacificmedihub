@@ -75,7 +75,7 @@ class VendorController extends Controller
             'state'          => 'required',
             'city'           => 'required'
         ]);
-
+        
         $gst_image= $request->hasFile('vendorGst_image');
         if($gst_image){
             $photo          = $request->file('vendorGst_image');            
@@ -113,7 +113,7 @@ class VendorController extends Controller
         }
 
         $add_vendor = new Vendor;
-        $add_vendor->code = $request->vendor_code;
+        $add_vendor->code = $request->code;
         $add_vendor->uen = $request->vendor_uen;
         $add_vendor->name = $request->vendor_name;
         $add_vendor->email = $request->email;

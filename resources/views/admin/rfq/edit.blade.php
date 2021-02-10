@@ -13,7 +13,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('rfq.index')}}">Purchase</a></li>
+              <li class="breadcrumb-item"><a href="{{route('rfq.index')}}">RFQ</a></li>
               <li class="breadcrumb-item active">Edit RFQ</li>
             </ol>
           </div><!-- /.col -->

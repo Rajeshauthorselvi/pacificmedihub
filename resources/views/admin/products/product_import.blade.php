@@ -12,6 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{route('products.index')}}">Products</a></li>
               <li class="breadcrumb-item active">Import Products</li>
             </ol>
           </div><!-- /.col -->
@@ -44,7 +45,7 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Products By Excel</h3>
+                <h3 class="card-title">Add Products by Excel</h3>
               </div>
               <div class="card">
                 <div class="card-body">
@@ -54,7 +55,11 @@
                    </div>
                     <div class="form-group">
                       <label>Upload File</label>
-                      {!! Form::file('product_sheet',['class'=>'form-control']) !!}
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="product_sheet" id="productImport" value="{{old('product_sheet')}}">
+                        <label class="custom-file-label" for="productImport">Choose file</label>
+                      </div>
+                      {{-- {!! Form::file('product_sheet',['class'=>'form-control']) !!} --}}
                       <span class="text-danger">{{ $errors->first('product_sheet') }}</span>
                     </div>
                   <div class="form-group">

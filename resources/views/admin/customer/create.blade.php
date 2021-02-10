@@ -12,6 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{route('customers.index')}}">Customer</a></li>
               <li class="breadcrumb-item active">Add Customer</li>
             </ol>
           </div><!-- /.col -->
@@ -360,14 +361,14 @@
       $('.del_add_contact').val(company_contact);
 
 
-      var country = $('#company_country').val();
-      var state = $('#company_state').val();
-      var city = $('#address_city').val();
+      // var country = $('#company_country').val();
+      // $('.address_country').val(country).change();
 
-      $('.address_country').val(country).change();
+      // var state = $('#company_state').val();
+      // var city = $('#address_city').val();
       
-      getState(country,'.address_state');
-      getCity(state,'.address_city');
+      // getState(country,'.address_state');
+      // getCity(state,'.address_city');
       
       if (length_empty==0 && error_count==0) {
         if (stepID!=4) {

@@ -6,12 +6,26 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\State;
 use App\Models\City;
+use App\Models\RFQ;
+use App\Models\Orders;
+use App\Models\Vendor;
+use App\User;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-    	return view('admin/dashboard');
+        $data = array();
+        $data['rfq_count'] = RFQ::where('status',1)->count();
+        $data['orders_count'] = Orders::where('created_at', '>', Carbon::now()->startOfWeek())
+                                    ->where('created_at', '<', Carbon::now()->endOfWeek())
+                                    ->count();
+        $data['pending_order_count'] = Orders::where('order_status',1)->count();
+        $data['vendor_count'] = Vendor::where('is_deleted',0)->count();
+        $data['customer_count'] = User::where('role_id',7)->where('is_deleted',0)->count();
+        //dd($data);
+    	return view('admin/dashboard',$data);
     }
 
     public function getStateList(Request $request)
