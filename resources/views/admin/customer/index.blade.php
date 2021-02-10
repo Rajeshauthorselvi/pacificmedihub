@@ -69,7 +69,7 @@
                     			</td>
                           <th>{{$customer->customer_no}}</th>
                     			<td> {{ $customer->first_name.' '.$customer->last_name }} </td>
-                    			<td>{{ $customer->company->company_name }}</td>
+                    			<td>{{ isset($customer->company->company_name)?$customer->company->company_name:'' }}</td>
                     			<td>
                             <?php
                             $parent=\App\Models\UserCompanyDetails::ParentCompany($customer->company_id);

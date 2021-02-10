@@ -245,7 +245,7 @@
                           <button type="button" class="btn btn-outline-primary prev-step">Previous</button>
                         </li>
                         <li class="list-inline-item">
-                          <button type="button" id="validateStep2" class="btn btn-primary next-step">Next</button>
+                          <button type="button" id="validateStep3" class="btn btn-primary next-step">Next</button>
                         </li>
                       </ul>
                     </div>
@@ -291,7 +291,7 @@
                           <button type="button" class="btn btn-outline-primary prev-step">Previous</button>
                         </li>
                         <li class="list-inline-item">
-                          <button type="button" id="validateStep3" class="btn btn-primary btn-info-full next-step">Submit</button>
+                          <button type="button" id="validateStep4" class="btn btn-primary btn-info-full next-step">Submit</button>
                         </li>
                       </ul>
                     </div>
@@ -374,13 +374,18 @@
           return valid;
         }
 
+        function validateStep4(e){
+          var valid=true;
+          return valid;
+        }
+
         $(".next-step").click(function (e) {
           var $active = $('.nav-tabs li>.active');
           var stepID = $(e.target).attr('id');
           var formFields=$(e.target).closest('.tab-pane.active').find('input,select');
           var fieldsToValidate=[];
-          if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) ){
-            if(stepID=="validateStep3"){
+          if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) || (stepID=="validateStep4" && validateStep4(e))){
+            if(stepID=="validateStep4"){
               $(e.target).closest('form').submit();
               return;
             }
