@@ -28,7 +28,7 @@ class StockInTransitController extends Controller
     {
         $data=array();
 
-        $purchases=Purchase::orderBy('id','DESC')->get();
+        $purchases=Purchase::where('purchase_status','<>',2)->orderBy('id','DESC')->get();
         $data=array();
         $orders=array();
         foreach ($purchases as $key => $purchase) {
@@ -320,15 +320,19 @@ class StockInTransitController extends Controller
        $issued_qty=$variant['issued_qty'];
        $reason=$variant['reason'];
 
+       if ($request->purchase_status==2) {
+         foreach ($row_ids as $key => $row_id) {
+            // $product_data=DB::table('purchase_products')->where('id',$row_id)->value('quantity');
+              $data=[
+                  'qty_received'      => $qty_received[$key],
+                  'issue_quantity'    => $issued_qty[$key],
+                  'reason'            => isset($reason[$key])?$reason[$key]:'',
+                  // 'quantity'          => $product_data+$qty_received[$key]
+              ];
+             PurchaseProducts::where('id',$row_id)->update($data);
+          }
+       }
        
-       foreach ($row_ids as $key => $row_id) {
-            $data=[
-                'qty_received'      => $qty_received[$key],
-                'issue_quantity'    => $issued_qty[$key],
-                'reason'            => isset($reason[$key])?$reason[$key]:''
-            ];
-           PurchaseProducts::where('id',$row_id)->update($data);
-        }
 
         Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$request->purchase_status]);
             return Redirect::route('stock-in-transit.index')->with('success','Stock-In-Transit modified successfully...!');  

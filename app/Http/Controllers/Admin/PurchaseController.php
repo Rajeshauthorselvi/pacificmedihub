@@ -12,6 +12,7 @@ use App\Models\ProductVariantVendor;
 use App\Models\Product;
 use App\Models\Vendor;
 use App\Models\Settings;
+use App\Models\PaymentHistory;
 use Illuminate\Http\Request;
 use Session;
 use Redirect;
@@ -30,12 +31,24 @@ class PurchaseController extends Controller
         $purchases=Purchase::orderBy('id','DESC')->get();
         $data=array();
         $orders=array();
+        $payment_method=PaymentMethod::where('status',1)
+                              ->pluck('payment_method','id')
+                              ->toArray();
+        $data['payment_method']=[''=>'Please Select']+$payment_method;
         foreach ($purchases as $key => $purchase) {
             $vendor_name=Vendor::find($purchase->vendor_id)->name;
             $product_details=PurchaseProducts::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'))
                 ->where('purchase_id',$purchase->id)
                 ->first();
-
+            if($purchase->payment_status==1){
+                $payment_status='Paid';
+              }
+            elseif($purchase->payment_status==3){
+              $payment_status='Not Paid';
+            }
+            else{
+              $payment_status='Partly Paid';
+            }
             $orders[]=[
                 'purchase_date'=>$purchase->purchase_date,
                 'purchase_id'=>$purchase->id,
@@ -45,7 +58,7 @@ class PurchaseController extends Controller
                 'grand_total' => $product_details->sub_total,
                 'amount' => $purchase->amount,
                 'balance' => ($product_details->sub_total)-($purchase->amount),
-                'payment_status' => ($purchase->payment_status==1)?'Paid':'Not Paid'
+                'payment_status' => $payment_status
             ];
         }
 
@@ -88,11 +101,11 @@ class PurchaseController extends Controller
             $char_val=$value['value'];
             $explode_val=explode('-',$value['value']);
             $total_datas=Purchase::count();
-            $total_datas=($total_datas==0)?end($explode_val)+1:$total_datas+1;
+            $total_datas=($total_datas==0)?end($explode_val):$total_datas+1;
             $data_original=$char_val;
 
             $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
+            $replace=[date('d'), date('m'), date('Y'), $total_datas ];
             $data['purchase_code']=str_replace($search,$replace, $data_original);
         }
 
@@ -463,6 +476,16 @@ class PurchaseController extends Controller
         }
         return response()->json($names);
     }
+    public function FindVendors($product_id)
+    {
+      $product_variant=DB::table('product_variant_vendors as pvv')
+                       ->leftjoin('vendors as v','pvv.vendor_id','v.id')
+                       ->where('pvv.product_id',$product_id)
+                       ->pluck('name','v.id')
+                       ->toArray();
+
+      return ['products'=>$product_variant];
+    }
     public function Variants($product_id,$variation_id=0)
     {
 
@@ -620,5 +643,42 @@ class PurchaseController extends Controller
                            ->value('option_value');
 
         return $option_value_name;
+    }
+    public function CreatePurchasePayment(Request $request)
+    {
+
+        $data=[
+          'ref_id'          => $request->id,
+          'reference_no'    => $request->reference_no,
+          'payment_from'    => $request->payment_from,
+          'amount'          => $request->amount,
+          'payment_notes'   => $request->payment_notes,
+          'created_at'      => date('Y-m-d H:i:s'),
+          'payment_id'      => $request->payment_id,
+        ];
+        PaymentHistory::insert($data);
+
+
+        $total_amount=$request->total_payment;
+        $total_paid=$request->amount;
+        $balance_amount=$total_amount-$total_paid;
+        if ($balance_amount==0) 
+          $payment_status=1;
+        else
+          $payment_status=2; 
+
+
+        Purchase::where('id',$request->id)->update(['payment_status'=>$payment_status]);
+        return Redirect::back()->with('success','Payment added successfully...!');
+    }
+
+    public function ViewPurchasePayment($purchase_id)
+    {
+        $all_payment_history=PaymentHistory::with('PaymentMethod')
+                             ->where('ref_id',$purchase_id)
+                             ->get()
+                             ->toArray();
+
+        return $all_payment_history;
     }
 }
