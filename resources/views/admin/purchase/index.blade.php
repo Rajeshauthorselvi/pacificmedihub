@@ -265,6 +265,7 @@
           url: '{{ url('admin/view_purchase_payment') }}'+'/'+purchase_id,
         })
         .done(function(response) {
+            $('.modal-body tbody tr').remove();
             $.each(response, function(index, val) {
                 var html ="<tr>";
                     html +="<td>"+moment(val.created_at).format('DD-MM-yyyy HH:mm')+"</td>";

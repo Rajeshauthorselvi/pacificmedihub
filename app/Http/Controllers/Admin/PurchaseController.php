@@ -186,6 +186,25 @@ class PurchaseController extends Controller
           }
        }
 
+        $data=[
+          'ref_id'          => $purchase_id,
+          'reference_no'    => $request->payment_reference_no,
+          'payment_from'    => 1,
+          'amount'          => $request->amount,
+          'payment_notes'   => $request->payment_note,
+          'created_at'      => date('Y-m-d H:i:s'),
+          'payment_id'      => $request->paying_by,
+        ];
+        PaymentHistory::insert($data);
+        $total_amount=$request->total_payment;
+        $total_paid=$request->amount;
+        $balance_amount=$total_amount-$total_paid;
+        if ($balance_amount==0) 
+          $payment_status=1;
+        else
+          $payment_status=2; 
+
+        Purchase::where('id',$request->id)->update(['payment_status'=>$payment_status]);
       return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');
     }
 

@@ -320,10 +320,10 @@ class StockInTransitController extends Controller
        $issued_qty=$variant['issued_qty'];
        $reason=$variant['reason'];
 
-       if ($request->purchase_status==2) {
+       
          foreach ($row_ids as $key => $row_id) {
             $purchase_data=DB::table('purchase_products')->where('id',$row_id)->first();
-          
+
             $variant_data=DB::table('product_variant_vendors')
                           ->where('product_variant_id',$purchase_data->product_variation_id)
                           ->first();
@@ -335,13 +335,13 @@ class StockInTransitController extends Controller
                   'reason'            => isset($reason[$key])?$reason[$key]:''
                   // 'quantity'          => $total_quantity
               ];
+              PurchaseProducts::where('id',$row_id)->update($data);
 
-              DB::table('product_variant_vendors')
-              ->where('product_variant_id',$purchase_data->product_variation_id)
-              ->update(['stock_quantity'=>$total_quantity]);
-
-             PurchaseProducts::where('id',$row_id)->update($data);
-          }
+              if ($request->purchase_status==2) {
+                DB::table('product_variant_vendors')
+                ->where('product_variant_id',$purchase_data->product_variation_id)
+                ->update(['stock_quantity'=>$total_quantity]);
+              }
        }
 
         Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$request->purchase_status]);
