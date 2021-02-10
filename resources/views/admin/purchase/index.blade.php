@@ -55,6 +55,7 @@
                         <th>Grand Total</th>
                         <th>Paid</th>
                         <th>Balance</th>
+                        <th>Purchase Status</th>
                         <th>Payment Status</th>
                         <th>Action</th>
                       </tr>
@@ -75,6 +76,7 @@
                           <td class="balance">
                             {{ $balance_amount['balance_amount'] }}
                           </td>
+                          <td>{{ $order['order_status'] }}</td>
                           <td>{{ $order['payment_status'] }}</td>
                           <td>
                                 <div class="input-group-prepend">
