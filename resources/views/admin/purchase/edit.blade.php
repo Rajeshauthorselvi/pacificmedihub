@@ -303,7 +303,7 @@
   </div>
 <style type="text/css">
   .order-total-sec{
-    background-color: #f1f1f1;
+    /*background-color: #f1f1f1;*/
     padding-bottom: 5px;
     padding-top: 26px;
     padding-right: 20px;

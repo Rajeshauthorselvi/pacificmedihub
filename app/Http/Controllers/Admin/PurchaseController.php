@@ -186,6 +186,7 @@ class PurchaseController extends Controller
           }
        }
 
+       if ($request->amount!="") {
         $data=[
           'ref_id'          => $purchase_id,
           'reference_no'    => $request->payment_reference_no,
@@ -205,6 +206,7 @@ class PurchaseController extends Controller
           $payment_status=2; 
 
         Purchase::where('id',$request->id)->update(['payment_status'=>$payment_status]);
+       }
       return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');
     }
 

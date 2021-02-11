@@ -88,17 +88,50 @@
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
+
       $('.notes-sec').hide();
       $('.submit-sec').hide();
 
       $(document).on('keyup', '.return_quantity', function(event) {
-          var current_val=$(this).val();
-          var parent=$(this).parents('tr');
-          var base_price=parent.find('.base_price').val();
 
-          var sub_total=current_val*base_price;
-          parent.find('.sub_total').val(sub_total);
-          parent.find('.total-text').text(sub_total);
+
+           if (/\D/g.test(this.value)){
+              this.value = this.value.replace(/\D/g, '');
+              return false
+            }
+            var max_quantity=$(this).attr('max-count');
+            var current_val = $(this).val();
+            if ((current_val !== '') && (current_val.indexOf('.') === -1)) {
+                var current_val=Math.max(Math.min(current_val, parseInt(max_quantity)), -90);
+                $(this).val(current_val);
+            }
+        
+          // var current_val=$(this).val();
+            var parent=$(this).parents('.parent_tr');
+            var base_price=parent.find('.purchase_price').val();
+            var sub_total=parseInt(current_val)*parseInt(base_price);
+            parent.find('.sub_total').val(sub_total);
+
+            parent.find('.sub_total_text').text(sub_total);
+
+            var all_total=$(this).parents('.table').find('.sub_total_text');
+            var all_quantity=$(this).parents('.table').find('.return_quantity');
+
+             var total = 0;
+            $.each(all_total, function(index, val) {
+               total += parseInt($(this).text());
+            });
+          $(".total-amount").html(total);
+
+
+          var quantity = 0;
+          $(all_quantity).each(function(){
+              quantity += parseInt($(this).val());
+          });
+          $(".total-quantity").html(quantity);
+
+
+
       });
 
       $(document).on('click', '.search-btn', function(event) {
