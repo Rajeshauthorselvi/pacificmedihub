@@ -87,7 +87,6 @@ class PurchaseReturnController extends Controller
                 'staff_notes'           => $request->staff_notes,
                 'created_at'            => date('Y-m-d H:i:s')
             ];
-dd($data);
         $return_id=PurchaseReturn::insertGetId($data);
         foreach ($quantites as $key => $quantity) {
             $data=[
