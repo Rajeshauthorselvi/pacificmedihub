@@ -266,21 +266,29 @@
         })
         .done(function(response) {
             $('.modal-body tbody tr').remove();
-            $.each(response, function(index, val) {
-                var html ="<tr>";
-                    html +="<td>"+moment(val.created_at).format('DD-MM-yyyy HH:mm')+"</td>";
-                    if (val.reference_no==null) {
-                      html +="<td>-</td>";
-                    }
-                    else{
-                      html +="<td>"+  val.reference_no+"</td>";
-                    }
-                    html +="<td>"+val.amount+"</td>";
-                    html +="<td>"+val.payment_method.payment_method+"</td>";
-                    html +="<tr>";
+            if (response.length>0) {
+              $.each(response, function(index, val) {
+                  var html ="<tr>";
+                      html +="<td>"+moment(val.created_at).format('DD-MM-yyyy HH:mm')+"</td>";
+                      if (val.reference_no==null) {
+                        html +="<td>-</td>";
+                      }
+                      else{
+                        html +="<td>"+  val.reference_no+"</td>";
+                      }
+                      html +="<td>"+val.amount+"</td>";
+                      html +="<td>"+val.payment_method.payment_method+"</td>";
+                      html +="<tr>";
 
-                    $('.modal-body tbody').append(html);
-            });
+                      $('.modal-body tbody').append(html);
+              });
+            }
+            else{
+              var html ="<tr>";
+                  html +="<td colspan='5' class='text-center'>No record found</td>";
+                  html +="<tr>";
+                  $('.modal-body tbody').append(html);
+            }
         });
 
           $('#edit_payment_model').modal('show');

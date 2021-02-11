@@ -26,7 +26,12 @@ class PurchaseProducts extends Model
                  ->first();
         return $variation_price;
     }
+    static function ProductPrice($product_id,$variant_id)
+    {
+      $product_price=DB::table('product_variant_vendors')->where('product_id',$product_id)->where('product_variant_id',$variant_id)->value('base_price');
 
+      return $product_price;
+    }
     static function TotalDatas($purchase_id,$product_id=0)
     {
       $total_datas=self::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'));
