@@ -50,9 +50,6 @@
                   <div class="form-group">
                     <label for="description">Description</label>
                     <textarea class="form-control" rows="3" name="category_description" id="description">{{old('category_description')}}</textarea>
-                    @if($errors->has('category_description'))
-                      <span class="text-danger">{{ $errors->first('category_description') }}</span>
-                    @endif
                   </div>
                   <div class="form-group">
                     <label>Parent Category</label>
@@ -74,9 +71,6 @@
                     <div class="custom-file">
                       <input type="file" class="custom-file-input" name="category_image" id="categoryImage" accept="image/*" value="{{old('category_image')}}">
                       <label class="custom-file-label" for="categoryImage">Choose file</label>
-                      @if($errors->has('category_image'))
-                        <span class="text-danger">{{ $errors->first('category_image') }}</span>
-                      @endif
                     </div>
                   </div>
                   <div class="form-group clearfix">
@@ -96,8 +90,11 @@
                     <input type="number" class="form-control" name="display_order" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" id="displayOrder" value="{{old('display_order')}}">
                   </div>
                   <div class="form-group">
-                    <label for="searchEngine">Search Engine Friendly Page Name</label>
+                    <label for="searchEngine">Search Engine Friendly Page Name *</label>
                     <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
+                    @if($errors->has('search_engine'))
+                      <span class="text-danger">{{ $errors->first('search_engine') }}</span>
+                    @endif
                   </div>
                   <div class="form-group">
                     <label for="metaTile">Meta Title</label>

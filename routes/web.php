@@ -97,6 +97,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 
 	Route::get('search-vendor/{product_id}','Admin\PurchaseController@FindVendors');
 
+	Route::get('product-commission-value','Admin\ProductController@productCommissionValue');
+
 });
 
 

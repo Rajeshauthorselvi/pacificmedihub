@@ -118,8 +118,14 @@
                         <div class="col-sm-6" style="padding-left:0">
                           <label for="productBrand">Commission Type</label>
                           <select class="form-control commission select2bs4" name="commision_type">
-                            <option @if($product->commission_type==0) selected="selected" @endif value="0">Percentage (%)</option>
-                            <option @if($product->commission_type==1) selected="selected" @endif value="1">Fixed (amount)</option>
+                            <option selected="selected" value="">Select Brand</option>
+                            @foreach($commissions as $commission)
+                              <?php 
+                                if($commission->commission_type=='f') $type = 'Fixed (amount)';
+                                else $type = 'Percentage (%)';
+                              ?>
+                              <option @if($product->commission_type==$commission->id) selected="selected" @endif value="{{$commission->id}}" {{ (collect(old('commision_type'))->contains($commission->id)) ? 'selected':'' }}>{{$type}}</option>
+                            @endforeach
                           </select>
                         </div>
                         <div class="col-sm-6" style="padding:0">
@@ -127,8 +133,6 @@
                           <input type="text" class="form-control" name="commision_value" id="commissionValue" onkeyup="validateNum(event,this);" value="{{old('commision_value',$product->commission_value)}}">
                         </div>
                       </div>
-                      
-                      
 
                       <div class="form-group clearfix">
                         <div class="icheck-info d-inline">
@@ -641,6 +645,18 @@
       $(function ($) {
         $('.commission.select2bs4').select2({
           minimumResultsForSearch: -1
+        });
+      });
+
+      $('.commission').on('change',function(){
+        var commissionTypeId = $('.commission').val();
+        $.ajax({
+          url:"{{ url('admin/product-commission-value') }}",
+          type:"GET",
+          data:{"_token": "{{ csrf_token() }}",id:commissionTypeId},
+          success: function (data) { 
+            $('#commissionValue').val(data);
+          }
         });
       });
 

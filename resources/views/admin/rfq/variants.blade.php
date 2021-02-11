@@ -2,9 +2,9 @@
   <tr class="accordion-toggle collapsed" id="accordion{{ $product_id }}" data-toggle="collapse" data-parent="#accordion{{ $product_id }}" href="#collapse{{ $product_id }}">
     <td class="expand-button"></td>
     <td>{{ $product_name }}</td>
-    <td>Quantity:&nbsp;<span class="quantity_{{ $product_id }}"></span></td>
+    <td>Quantity:&nbsp;<span class="quantity_{{ $product_id }} total_quantity"></span></td>
     <td>Price:&nbsp;<span class="rfq_{{ $product_id }}"></span></td>
-    <td>Total:&nbsp;<span class="total_{{ $product_id }}"></span></td>
+    <td>Total:&nbsp;<span class="total_{{ $product_id }} total"></span></td>
   </tr>
 
   <tr class="hide-table-padding" class="test">
@@ -96,28 +96,31 @@
                   </div>
                 </td>
                 <td>
-                  <?php $high_value=max($variant['minimum_selling_price'],$variant['base_price'],$variant['retail_price']) ?>
-                              <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{ $high_value }}">
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <!-- <span class="sub_total">{{ $high_value }}</span>
-                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $high_value }}"> -->
-                                <span class="sub_total">0</span>
-                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="0">
-                              </div>
-                            </td>
-                          </tr>
-                          <?php $total_amount +=$high_value; ?>
-                          <?php $total_quantity +=$quantity; ?>
-                        @endforeach
-                        <tr>
-                          <td colspan="{{ count($options)+4 }}" class="text-right">Total:</td>
-                          <td class="total_quantity">{{ $total_quantity }}</td>
-                          <td class="total_amount">{{ $total_amount }}</td>
-                        </tr>
-                      </tbody>
+                  <?php 
+                    $high_value=max($variant['minimum_selling_price'],$variant['base_price'],$variant['retail_price']) 
+                  ?>
+                  <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{$high_value}}">
+                </td>
+                <td>
+                  <div class="form-group">
+                    <!-- <span class="sub_total">{{ $high_value }}</span>
+                    <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $high_value }}"> -->
+                    <span class="sub_total">0</span>
+                    <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="0">
+                  </div>
+                </td>
+              </tr>
+              <?php $total_amount +=$high_value; ?>
+              <?php $total_quantity +=$quantity; ?>
+            @endforeach
+            <tr>
+              <td colspan="{{ count($options)+4 }}" class="text-right">Total:</td>
+              <td class="total_quantity">{{ $total_quantity }}</td>
+              <!-- <td class="total_amount total">{{ $total_amount }}</td> -->
+              <td class="total_amount total">0</td>
+            </tr>
+          </tbody>
         </table>
       </div>
-      </td>
-      </tr>
+    </td>
+  </tr>

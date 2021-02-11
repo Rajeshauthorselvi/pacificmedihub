@@ -23,16 +23,16 @@
     <!-- /.content-header -->
     <span class="hr"></span>
     @include('flash-message')
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif    
-<section class="content">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif    
+    <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
           <a href="{{route('rfq.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
@@ -195,7 +195,18 @@ $(document).on('click', '.save-btn', function(event) {
          var total_price=base_price*$(this).val();
           base.find('.subtotal_hidden').val(total_price);
           base.find('.sub_total').text(total_price);
-         
+            
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+          var attr=$(this).parents('tbody').find('.collapse.show');
+          var total_quantity=SumTotal('.collapse.show .stock_qty');
+          console.log(total_quantity);
+
+          $('.collapse.show').find('.total_quantity').text(total_quantity);
+          $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);
+          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+          $('.collapse.show').find('.total').text(total_amount);
+          $('[href="#'+attr_id+'"]').find('.total').text(total_amount);
+
           $('.all_quantity').text(SumTotal('.stock_qty'));
           $('.all_amount').text(SumTotal('.subtotal_hidden'));
       }

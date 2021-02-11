@@ -17,6 +17,7 @@ use App\Models\OptionValue;
 use App\Models\Settings;
 use App\Models\RFQ;
 use App\Models\RFQProducts;
+use App\Models\CommissionValue;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductImport;
 use Redirect;
@@ -34,9 +35,7 @@ class ProductController extends Controller
     public function index()
     {
         $get_products = Product::where('is_deleted',0)->orderBy('created_at','desc')->get();
-
         $products = array();
-
         foreach($get_products as $key => $product){
             $variant_details = ProductVariantVendor::where('product_id',$product->id)->orderBy('id','asc')->first();
             $total_quantity = ProductVariantVendor::where('product_id',$product->id)->sum('stock_quantity');
@@ -67,21 +66,18 @@ class ProductController extends Controller
             Session::put('active_vendor','yes');
             Session::put('vendor_id',$request->get('vendor_id'));
         }
-
-        $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['brands'] = Brand::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->get();
-        //dd($data);
-       $data['product_id']='';
-
-        $product_codee=Settings::where('key','prefix')
-                         ->where('code','product_code')
-                        ->value('content');
-
+        $data['categories']      = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['brands']          = Brand::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['vendors']         = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')
+                                        ->get();
+        //Commission Id 2 is a Product Commission
+        $data['commissions']     = CommissionValue::where('commission_id',2)->where('published',1)
+                                        ->where('is_deleted',0)->get();
+        $data['product_id']      = '';
+        $product_codee = Settings::where('key','prefix')->where('code','product_code')->value('content');
         if (isset($product_codee)) {
             $value=unserialize($product_codee);
-
             $char_val=$value['value'];
             $explode_val=explode('-',$value['value']);
             $total_datas=Product::count();
@@ -95,14 +91,12 @@ class ProductController extends Controller
                 else{
                     $total_datas="";
                 }
-
             }
             $data_original=$char_val;
             $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
             $replace=[date('d'), date('m'), date('Y'), $total_datas];
             $data['product_id']=str_replace($search,$replace, $data_original);
         }
-
         return view('admin/products/create',$data);
     }
 
@@ -114,7 +108,6 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
         $this->validate(request(), [
             'product_name' => 'required',
             'product_code' => 'required',
@@ -474,13 +467,16 @@ class ProductController extends Controller
 
 
 
-        $data['product_images'] = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
-        $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['brands'] = Brand::where('published',1)->where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->pluck('name','id')->toArray();
-        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->pluck('option_name','id')->toArray();
-
-        $data['order_exists']=PurchaseProducts::where('product_id',$id)->exists();
+        $data['product_images']  = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
+        $data['categories']      = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['brands']          = Brand::where('published',1)->where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['vendors']         = Vendor::where('is_deleted',0)->orderBy('name','asc')->pluck('name','id')->toArray();
+        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')
+                                        ->pluck('option_name','id')->toArray();
+        //Commission Id 2 is a Product Commission
+        $data['commissions']     = CommissionValue::where('commission_id',2)->where('published',1)
+                                        ->where('is_deleted',0)->get();
+        $data['order_exists']    = PurchaseProducts::where('product_id',$id)->exists();
         return view('admin/products/show',$data);
     }
 
@@ -553,13 +549,16 @@ class ProductController extends Controller
             $data['old_product_variant'] = $old_product_variants;
         }
 
-        $data['product_images'] = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
-        $data['categories'] = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['brands'] = Brand::where('published',1)->where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->pluck('name','id')->toArray();
-        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->pluck('option_name','id')->toArray();
-
-        $data['order_exists']=PurchaseProducts::where('product_id',$id)->exists();
+        $data['product_images']  = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
+        $data['categories']      = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['brands']          = Brand::where('published',1)->where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['vendors']         = Vendor::where('is_deleted',0)->orderBy('name','asc')->pluck('name','id')->toArray();
+        $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')
+                                        ->pluck('option_name','id')->toArray();
+        //Commission Id 2 is a Product Commission
+        $data['commissions']     = CommissionValue::where('commission_id',2)->where('published',1)
+                                        ->where('is_deleted',0)->get();
+        $data['order_exists']    = PurchaseProducts::where('product_id',$id)->exists();
         return view('admin/products/edit',$data);
     }
 
@@ -1269,15 +1268,17 @@ class ProductController extends Controller
             $existOption = json_decode($request->existOption,true);
             $diff_options=array_diff($options, $existOption);
         }
-
+        
         if ($request->has('existVendor')) {
             $existing_vendor=json_decode($request->existVendor,true);
             $diff_vendor=array_diff($vendors, $existing_vendor);
+
+            if(array_diff($vendors, $existing_vendor)){
+                $vendors=$diff_vendor;
+            }
         }
 
-        if(array_diff($vendors, $existing_vendor)){
-            $vendors=$diff_vendor;
-        }
+        
 
         // if (isset($diff_options)&& count($diff_options)==0 && count($vendors)>0) {
         //     $vendors=$diff_vendor;
@@ -1418,5 +1419,12 @@ class ProductController extends Controller
         $attachment="PacificMediHub Import Sheet.xlsx";
         $path=public_path('theme/sample_datas/').$attachment;
         return Response::download($path, $attachment);
+    }
+
+    public function productCommissionValue(Request $request)
+    {
+        $commission = CommissionValue::find($request->id);
+        $value = $commission->commission_value;
+        return $value;
     }
 }

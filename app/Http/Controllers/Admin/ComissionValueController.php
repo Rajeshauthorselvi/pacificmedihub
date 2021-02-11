@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CommissionValue;
 use App\Models\Commissions;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Session;
 use Redirect;
@@ -119,10 +120,24 @@ class ComissionValueController extends Controller
      */
     public function destroy(Request $request,CommissionValue $comissionValue)
     {
-    
-       $comission_value=CommissionValue::find($comissionValue->id);
-       $comission_value->is_deleted=3;
-       $comission_value->save();
+        $comission = CommissionValue::find($comissionValue->id);
+        $comission->is_deleted=1;
+        $comission->deleted_at=date('Y-m-d H:i:s');
+        $comission->update();
+
+        $commission_id = $comission->commission_id;
+        if($commission_id==2){
+
+           $products = Product::where('commission_type',$comissionValue->id)->get();
+           foreach($products as $product){
+            if(($product->commission_value==$comission->commission_value)&&($product->commission_type==$comission->id)){
+                $get_product = Product::find($product->id);
+                $get_product->commission_type = NULL;
+                $get_product->commission_value = NULL;
+                $get_product->update();
+            }
+           }
+        }
 
         if ($request->ajax())  return ['status'=>true];
         else
