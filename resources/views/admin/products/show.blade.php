@@ -203,16 +203,16 @@
         <tr>
           @php 
             foreach($get_options as $option){
-             echo '<th>'.$option.'</th>';
+             echo '<th class="option-head">'.$option.'</th>';
             }
           @endphp
-          <th>Base Price</th>
-          <th>Retail Price</th>
-          <th>Minimum Selling Price</th>
-          <th>Stock Qty</th>
-          <th>Vendor</th>
-          <th>Order By</th>
-          <th>Display</th>
+          <th class="input-box">Base Price</th>
+          <th class="input-box">Retail Price</th>
+          <th class="input-box">Minimum Selling Price</th>
+          <th class="input-box">Stock Qty</th>
+          <th class="vendor-name">Vendor</th>
+          <th class="input-box">Order By</th>
+          <th class="input-box">Display</th>
           @php 
             if($type!="old"){ @endphp
           @php } @endphp
@@ -276,8 +276,10 @@
 
 
   <style type="text/css">
-    .list input{width: 50%;display: inline-block;text-align: center;}
+    
     .list td{text-align: center;}
+    #variantList{width: 100%}
+    #variantList .input-box{width: 100px}
   </style>
   @push('custom-scripts')
     <script type="text/javascript">

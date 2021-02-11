@@ -272,17 +272,17 @@
       <thead>
         <tr>
           @php 
-            foreach($get_options as $option){ echo '<th>'.$option.'</th>'; }
+            foreach($get_options as $option){ echo '<th class="option-head">'.$option.'</th>'; }
           @endphp
-          <th>Base Price</th>
-          <th>Retail Price</th>
-          <th>Minimum Selling Price</th>
-          <th>Stock Qty</th>
-          <th>Vendor</th>
-          <th>Order By</th>
-          <th>Display</th>
+          <th class="input-box">Base Price</th>
+          <th class="input-box">Retail Price</th>
+          <th class="input-box">Minimum Selling Price</th>
+          <th class="input-box">Stock Qty</th>
+          <th class="vendor-name">Vendor</th>
+          <th class="input-box">Order By</th>
+          <th class="input-box">Display</th>
           @php if($type!="old"){ @endphp
-            <th>Remove</th>
+            <th class="input-box">Remove</th>
           @php } @endphp
         </tr>
       </thead>
@@ -393,8 +393,9 @@
     #clear-option,#add-options{float: left;}
     #add-options{margin-right: 10px;}
     .hidden{display: none;}
-    .list input{width: 50%;display: inline-block;text-align: center;}
-    .list td{text-align: center;/*display: inline-block;*/}
+    .list td{text-align: center;}
+    #variantList{width: 100%}
+    #variantList .input-box{width: 100px}
 </style>
   @push('custom-scripts')
     <script>
@@ -436,7 +437,14 @@
         var exist_options_id = '['+$('#productVariant').val()+']';
         var db_exist_vendors_id = JSON.stringify(existing_vendors);
         var exist_vendors_id = '['+$('#VendorSupplier').val()+']';
-          
+
+        // if((db_exist_options_id==exist_options_id) && (db_exist_vendors_id!=exist_vendors_id)){
+        //   if (!confirm("Removed Vendor's variants will be disabled. Do you want to make change?")) {
+        //     return false;
+        //   }else{
+        //     createVendorBlock();
+        //   }
+        // }
 
         if((db_exist_options_id==exist_options_id) && (db_exist_vendors_id==exist_vendors_id)){
           alert('This variants are already Existing');
@@ -473,9 +481,9 @@
         var existingVendor = JSON.stringify(existing_vendors);
         var options = $('#productVariant option:selected');
 
-        var delete_request = false;
+        var delete_request = 0;
         if(value){
-          delete_request = true;
+          delete_request = 1;
         }
 
         if(options.length > 0  && options.length <=5 ){

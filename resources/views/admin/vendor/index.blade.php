@@ -59,15 +59,14 @@
                           <td>{{$vendor->name}}</td>
                           <td>{{$vendor->email}}</td>
                           <td>{{$vendor->contact_number}}</td>
-                         
                           <td>{{ \App\Models\Vendor::TotalVendorOrder($vendor->id) }}</td> 
                           <td>{{ \App\Models\Vendor::TotalVendorSales($vendor->id) }}</td> 
                           <td>{{ \App\Models\Vendor::DueAmount($vendor->id) }}</td> 
-                          <?php 
-                            if($vendor->status==0) $status = "Not Approved";
-                            elseif($vendor->status==1) $status = "Approved";
+                          <?php
+                            if($vendor->status==1){$status = "fa-check";}
+                            else{$status = "fa-ban";}
                           ?>
-                          <td>{{$status}}</td>
+                          <td><i class="fas {{$status}}"></i></td>
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>

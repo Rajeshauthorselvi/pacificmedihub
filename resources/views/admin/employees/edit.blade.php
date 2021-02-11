@@ -168,7 +168,7 @@
                             <input type="file" name="emp_image" id="empImage" accept="image/*" onchange="preview_image(event)" style="display:none;" value="{{$employees->emp_image}}">
                             <img title="Click to Change" class="img-employee" id="output_image" onclick="$('#empImage').trigger('click'); return true;" style="width:125px;height:100px;cursor:pointer;" src="{{asset($image)}}">
                           </div>
-                          <div class="col-sm-5">
+                          <div class="col-sm-5" style="margin-top: 40px">
                             <div class="icheck-info d-inline">
                               <input type="checkbox" name="emp_status" id="Status" @if((old('emp_status')=='on')||$employees->status==1) checked @endif>
                               <label for="Status">Status</label>

@@ -1158,20 +1158,20 @@ class ProductController extends Controller
             $add->created_at = date('Y-m-d H:i:s');
             $add->save();
 
-                        if($add){
-                            $vendor = new ProductVariantVendor();
-                            $vendor->product_id = $product_id;
-                            $vendor->product_variant_id = $add->id;
-                            $vendor->base_price = $base_price[$key];
-                            $vendor->retail_price = $retail_price[$key];
-                            $vendor->minimum_selling_price = $minimum_price[$key];
-                            $vendor->display_variant = $display[$key];
-                            $vendor->display_order = $display_order[$key];
-                            $vendor->stock_quantity = $stock_qty[$key];
-                            $vendor->vendor_id = $vendor_id[$key];
-                            $vendor->timestamps = false;
-                            $vendor->save();
-                        }
+            if($add){
+                $vendor = new ProductVariantVendor();
+                $vendor->product_id = $product_id;
+                $vendor->product_variant_id = $add->id;
+                $vendor->base_price = $base_price[$key];
+                $vendor->retail_price = $retail_price[$key];
+                $vendor->minimum_selling_price = $minimum_price[$key];
+                $vendor->display_variant = $display[$key];
+                $vendor->display_order = $display_order[$key];
+                $vendor->stock_quantity = $stock_qty[$key];
+                $vendor->vendor_id = $vendor_id[$key];
+                $vendor->timestamps = false;
+                $vendor->save();
+            }
         }
 
     }
@@ -1273,12 +1273,28 @@ class ProductController extends Controller
             $existing_vendor=json_decode($request->existVendor,true);
             $diff_vendor=array_diff($vendors, $existing_vendor);
 
+
+            $removed_vendors=array_merge(array_diff($existing_vendor,$vendors),array_diff($vendors, $existing_vendor));
+            $removed_vendors_id = array_diff($removed_vendors,$vendors);
+
+            /*if(count($removed_vendors_id)>0){
+                $product_variants = ProductVariantVendor::whereIn('vendor_id',$removed_vendors_id)->get();
+                foreach ($product_variants as $key => $value) {
+                    $variant = ProductVariant::where('id',$value->id)->first();
+                    $variant->disabled=1;
+                    $variant->update();
+                    $variant_vendor = ProductVariantVendor::where('product_variant_id',$value->id)->first();
+                    $variant_vendor->display_variant = 0;
+                    $variant_vendor->update();
+                }
+            }*/
+
             if(array_diff($vendors, $existing_vendor)){
                 $vendors=$diff_vendor;
             }
         }
 
-        
+
 
         // if (isset($diff_options)&& count($diff_options)==0 && count($vendors)>0) {
         //     $vendors=$diff_vendor;
@@ -1314,7 +1330,7 @@ class ProductController extends Controller
         //     return view('admin.products.variants',$data);
         // }
         // else{
-               if($request->dataFrom=="edit" && $request->deleteRequest==true){
+               if($request->dataFrom=="edit" && $request->deleteRequest==1){
                     return view('admin.products.edit_variants',$data);
                 }
                 else{

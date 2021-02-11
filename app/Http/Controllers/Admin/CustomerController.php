@@ -88,7 +88,7 @@ class CustomerController extends Controller
         /*Insert Customer Details*/
         $users=$request->customer;
         $users['role_id']=7;
-        $users['status']=1;
+        $users['status']=($request->customer['status']=='on')?1:0;
         $users['created_at']=date('Y-m-d H:i:s');
         $customer_id=User::insertGetId($users);
         /*Insert Customer Details*/
@@ -192,9 +192,8 @@ class CustomerController extends Controller
         ]);
 
         $users=$request->customer;
-        //dd($users);
+        $users['status']=($request->customer['status']=='on')?1:0;
         $customer=User::where('id',$id)->update($users);
-
 
         $bank_details=$request->bank;
         $bank=UserBankAcccount::find($bank_details['account_id']);

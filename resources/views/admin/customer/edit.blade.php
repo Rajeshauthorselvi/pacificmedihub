@@ -128,9 +128,22 @@
                           <select name="company[city_id]" class="form-control select2bs4 required" id="company_city"></select>
                           <span class="text-danger"></span>
                         </div>
+                         <div class="col-sm-6">
+                          <label for="">Post Code *</label>
+                          {!! Form::text('company[post_code]', null,['class'=>'form-control required company_postcode']) !!}
+                           <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Sales Rep</label>
                           {!! Form::select('company[sales_rep]',$sales_rep,$customer->company->sales_rep,['class'=>'form-control select2bs4']) !!}
+                        </div>
+                        <div class="col-sm-6" style="margin-top:40px">
+                          <div class="icheck-info d-inline">
+                            <input type="checkbox" name="customer[status]" id="Status" @if($customer->status==1) checked @endif>
+                            <label for="Status">Status</label>
+                          </div>
                         </div>
                       </div>
                       <div class="form-group">
@@ -240,16 +253,9 @@
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="ifsc">IFSC</label>
-                          {!! Form::text('bank[ifsc_code]',null,['class'=>'form-control','id'=>'ifsc']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                        <div class="col-sm-6">
                           <label for="payNow">PayNow Contact No</label>
                           {!! Form::text('bank[paynow_contact]',null,['class'=>'form-control','onkeyup'=>"validateNum(event,this);"]) !!}
                         </div>
-                      </div>
-                      <div class="form-group">
                         <div class="col-sm-6">
                           <label for="Place">Place</label>
                           {!! Form::text('bank[place]',null,['class'=>'form-control']) !!}

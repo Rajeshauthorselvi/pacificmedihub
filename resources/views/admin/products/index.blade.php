@@ -64,7 +64,7 @@
                             if(!empty($product['image'])){$img_url="theme/images/products/main/".$product['image'];} 
                             else{$img_url="theme/images/no_image.jpg";}
                           ?>
-                          <td><img class="brand-img" style="width:50%;height:auto;" src="{{ asset($img_url)}}"></td>
+                          <td style="width:25px"><img class="brand-img" style="width:50px;height:auto;" src="{{ asset($img_url)}}"></td>
                           <td>{{$product['name']}}</td>
                           <td>{{$product['code']}}</td>
                           <td>{{$product['sku']}}</td>

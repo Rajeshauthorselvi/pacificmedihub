@@ -76,22 +76,12 @@
                             <span class="text-danger" style="display:none">Vendor UEN is required</span>
                           </div>
                           <div class="col-sm-5">
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <div class="col-sm-5">
                             <label for="vendorGst">Vendor GST No</label>
                             <input type="text" class="form-control" name="vendor_gst" id="vendorGst" value="{{old('vendor_gst')}}">
                           </div>
-                          <div class="col-sm-5">
-                            <label for="vendorGstImage">Upload GST Certificate Copy(JPEG,PNG,PDF)</label>
-                            <div class="custom-file">
-                              <input type="file" class="custom-file-input" name="vendorGst_image" id="vendorGstImage" accept="image/*" value="{{old('vendorGst_image')}}">
-                              <label class="custom-file-label" for="vendorGstImage">Choose file</label>
-                            </div>
-                          </div>
                         </div>
+
+                        
 
                         <!-- <div class="form-group">
                           <div class="col-sm-5">
@@ -138,28 +128,28 @@
 
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="PostCode">Post Code *</label>
-                            <input type="text" class="form-control" name="postcode" id="PostCode" value="{{old('postcode')}}">
-                            <span class="text-danger" style="display:none">Post Code is required</span>
-                          </div>
-                          <div class="col-sm-5">
                             <label for="Country">Country *</label>
                             {!! Form::select('country',$countries,196,['class'=>'form-control select2bs4', 'id'=>'Country']) !!}
                             <span class="text-danger" style="display:none">Country is required</span>
                           </div>
+                          <div class="col-sm-5">
+                            <label for="State">State *</label>
+                            <select name="state" class="form-control select2bs4" id="State"></select>
+                          </div>
                         </div>
 
                         <div class="form-group">
+                          
                           <div class="col-sm-5">
-                            <label for="State">State</label>
-                            <select name="state" class="form-control select2bs4" id="State"></select>
-                          </div>
-                          <div class="col-sm-5">
-                            <label for="City">City</label>
+                            <label for="City">City *</label>
                             <select name="city" class="form-control select2bs4" id="City"></select>
                           </div>
+                          <div class="col-sm-5">
+                            <label for="PostCode">Post Code *</label>
+                            <input type="text" class="form-control" name="postcode" id="PostCode" value="{{old('postcode')}}">
+                            <span class="text-danger" style="display:none">Post Code is required</span>
+                          </div>
                         </div>
-
                         <div class="form-group">
                           <div class="col-sm-5">
                             <label for="vendorLogo">Vendor Logo (JPEG,PNG)</label>
@@ -169,6 +159,19 @@
                             </div>
                           </div>
                           <div class="col-sm-5">
+                            <label for="vendorGstImage">Upload GST Certificate Copy(JPEG,PNG,PDF)</label>
+                            <div class="custom-file">
+                              <input type="file" class="custom-file-input" name="vendorGst_image" id="vendorGstImage" accept="image/*" value="{{old('vendorGst_image')}}">
+                              <label class="custom-file-label" for="vendorGstImage">Choose file</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="col-sm-5">
+                            <div class="icheck-info d-inline">
+                              <input type="checkbox" name="vendor_status" id="Status" checked>
+                              <label for="Status">Status</label>
+                            </div>
                           </div>
                         </div>
 
