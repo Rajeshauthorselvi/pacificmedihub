@@ -234,7 +234,7 @@ function createTable(){
       data +='<td>#</td>';
       data +='<th scope="col">Product Name</th>';
       data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
-      data +='<th>Total Price:&nbsp;<span class="all_rfq_price"></span></th>';
+      // data +='<th>Total Price:&nbsp;<span class="all_rfq_price"></span></th>';
       data +='<th>Total Amount:<span class="all_amount"></span></th>';
       data +='</tr>';
       data +='</thead>';
