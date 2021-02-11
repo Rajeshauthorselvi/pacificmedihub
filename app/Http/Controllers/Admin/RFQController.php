@@ -92,7 +92,6 @@ class RFQController extends Controller
     public function store(Request $request)
     {
 
-      dd($request->all());
       $this->validate(request(),[
         'order_no'  =>'required',
         'status'=>'required',

@@ -106,10 +106,10 @@
                         Total Quantity:&nbsp;
                         <span class="all_quantity">{{ $total_products->quantity }}</span>   
                     </th>
-						        <th scope="col">
+						       {{--  <th scope="col">
                         Total Price:&nbsp;
                         <span class="all_rfq_price">{{ $total_products->rfq_price }}</span>  
-                    </th>
+                    </th> --}}
                     <th>
                         Total Amount:&nbsp;
                         <span class="all_amount">{{ $total_products->sub_total }}</span>
@@ -124,10 +124,10 @@
                 <?php
                 $total_based_products=\App\Models\RFQProducts::TotalDatas($rfqs->id,$product['product_id']);
                  ?>
-								<td>{{ $product['product_name'] }}</th>
-								<th>Quantity: {{ $total_based_products->quantity }}</th>
-								<th>Price: {{ $total_based_products->rfq_price }}</th>
-                <th>Total: {{ $total_based_products->sub_total }}</th>
+								<td>{{ $product['product_name'] }}</td>
+								<td>Quantity: {{ $total_based_products->quantity }}</td>
+								{{-- <th>Price: {{ $total_based_products->rfq_price }}</th> --}}
+                <td>Total: {{ $total_based_products->sub_total }}</td>
 
 								</tr>
 								<tr class="hide-table-padding">
@@ -321,7 +321,34 @@ tr.hide-table-padding>td {
           $('.all_amount').text(SumTotal('.subtotal_hidden'));
       }
     });
-    
+    $(document).on('keyup', '.rfq_price', function(event) {
+      if (/\D/g.test(this.value))
+      {
+        this.value = this.value.replace(/\D/g, '');
+      }
+      else{
+         var base=$(this).parents('.parent_tr');
+         var base_price=base.find('.stock_qty').val();
+         var total_price=base_price*$(this).val();
+         
+          base.find('.subtotal_hidden').val(total_price);
+          base.find('.sub_total').text(total_price);
+            
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+          var attr=$(this).parents('tbody').find('.collapse.show');
+          var total_quantity=SumTotal('.collapse.show .stock_qty');
+          console.log(total_quantity);
+
+          $('.collapse.show').find('.total_quantity').text(total_quantity);
+          $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);
+          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+          $('.collapse.show').find('.total').text(total_amount);
+          $('[href="#'+attr_id+'"]').find('.total').text(total_amount);
+
+          $('.all_quantity').text(SumTotal('.stock_qty'));
+          $('.all_amount').text(SumTotal('.subtotal_hidden'));
+      }
+    });
 $(document).on('keyup', '.rfq_price', function(event) {
   $('.all_rfq_price').text(SumTotal('.rfq_price'));
 });
