@@ -40,11 +40,10 @@ class CategoriesController extends Controller
     public function store(Request $request)
     {
         $this->validate(request(), [
-            'category_name'         => 'required',
-            'category_image'        => 'required',
-            'category_description'  => 'required'
+            'category_name'  => 'required',
+            'search_engine'  => 'required'
         ]);
-        
+        dd($request->all());
         if($request->category_published){$published = 1;}else{$published = 0;}
         if($request->category_homepage){$homepage = 1;}else{$homepage = 0;}
 
@@ -112,8 +111,8 @@ class CategoriesController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate(request(), [
-            'category_name'         => 'required',
-            'category_description'  => 'required'
+            'category_name'  => 'required',
+            'search_engine'  => 'required'
         ]);
         
         if($request->category_published){$published = 1;}else{$published = 0;}
