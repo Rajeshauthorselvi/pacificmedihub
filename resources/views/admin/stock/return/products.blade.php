@@ -78,7 +78,8 @@
 							<th>Purchase Price</th>
 							<th>Total Quantity</th>
 							<th>Reason</th>
-							<th>Return Quantity</th>
+							<th>Damage Quantity</th>
+							<th>Missed Quantity</th>
 							<th>Subtotal</th>
 						</thead>
                         <tbody>
@@ -119,12 +120,19 @@
                             <td>{{ $variation_details['reason'] }}</td>
                             <td>
                             	<?php $max_price=$product_price*$variation_details['issue_quantity']; ?>
-                              	<input type="text" name="quantity[{{ $variation_details['id'] }}]" class="form-control return_quantity" value="{{ $variation_details['issue_quantity'] }}" max-count="{{ $variation_details['quantity'] }}" max-count="{{ $variation_details['quantity'] }}">
+
+                              	<input type="text" name="damage_quantity[{{ $variation_details['id'] }}]" class="form-control return_quantity" value="{{ $variation_details['damage_quantity'] }}" max-count="{{ $variation_details['quantity'] }}" max-count="{{ $variation_details['quantity'] }}">
+
+
                               	<input type="hidden" name="purchase_id" value="{{ $purchase_id }}">
+
                               	<input type="hidden" name="sub_total[{{ $variation_details['id'] }}]" class="sub_total" value="{{ $product_price*$variation_details['issue_quantity'] }}">
+                              	
                               	<input type="hidden" name="product_id" value="{{ $variant['product_id'] }}">
                               </td>
-                              
+                              <td>
+                              	<input type="text" name="missed_quantity[{{ $variation_details['id'] }}]" class="form-control return_quantity" value="{{ $variation_details['missed_quantity'] }}" max-count="{{ $variation_details['quantity'] }}" max-count="{{ $variation_details['quantity'] }}">
+                              </td>
                               <td>
                               	<span class="sub_total_text">
                               		{{ $max_price }}
