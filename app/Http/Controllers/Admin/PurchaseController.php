@@ -77,6 +77,7 @@ class PurchaseController extends Controller
         $data=array();
 
         $order_status=OrderStatus::where('status',1)
+                              ->whereIn('id',[1,2,8])
                               ->pluck('status_name','id')
                               ->toArray();
 
@@ -274,6 +275,7 @@ class PurchaseController extends Controller
         $data=array();
 
         $order_status=OrderStatus::where('status',1)
+                              ->whereIn('id',[1,2,8])
                               ->pluck('status_name','id')
                               ->toArray();
 

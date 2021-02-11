@@ -31,13 +31,12 @@ class PurchaseReturnController extends Controller
         foreach ($returns as $key => $return) {
             $purchase=Purchase::where('id',$return->purchase_or_order_id)
                       ->value('purchase_order_number'); 
-
-            $total_quantity=PurchaseProductReturn::where('purchase_return_id',$return->id)->sum('return_quantity');
-
+            $total_quantity=PurchaseProductReturn::where('purchase_return_id',$return->id)
+            ->sum(\DB::raw('damage_quantity + missed_quantity'));
             $sub_total=PurchaseProductReturn::where('purchase_return_id',$return->id)->sum('return_sub_total');
-
             $vendor=Vendor::where('id',$return->customer_or_vendor_id)
                       ->value('name');
+            $order_status=OrderStatus::where('id',$return->return_status)->value('status_name');
             $data_return[]=[
                 'id'    => $return->id,
                 'date'  => date('d-m-Y',strtotime($return->created_at)),
@@ -47,7 +46,8 @@ class PurchaseReturnController extends Controller
                 'total_quantity' =>$total_quantity,
                 'sub_total' =>$sub_total,
                 'payment_status' =>1,
-                'return_status' =>1,
+                'return_status' =>3,
+                'order_status'  => $order_status
             ];
         }
         $data['returns']=$data_return;
@@ -75,8 +75,10 @@ class PurchaseReturnController extends Controller
     {
         $purchase=Purchase::where('id',$request->purchase_id)->first();
 
-        $quantites=$request->quantity;
+        $damage_quantity=$request->damage_quantity;
+        $missed_quantity=$request->missed_quantity;
         $sub_total=$request->sub_total;
+        $product_id=$request->product_id;
           $data= [ 
                 'purchase_or_order_id'  => (int)$request->purchase_id,
                 'customer_or_vendor_id' => $purchase->vendor_id,
@@ -88,12 +90,13 @@ class PurchaseReturnController extends Controller
                 'created_at'            => date('Y-m-d H:i:s')
             ];
         $return_id=PurchaseReturn::insertGetId($data);
-        foreach ($quantites as $key => $quantity) {
+        foreach ($damage_quantity as $key => $quantity) {
             $data=[
                 'purchase_return_id'    => $return_id,
-                'product_id'            => $request->product_id,
+                'product_id'            => $product_id[$key],
                 'purchase_variation_id' => $key,
-                'return_quantity'       => $quantity,
+                'damage_quantity'       => $quantity,
+                'missed_quantity'       => $missed_quantity[$key],
                 'return_sub_total'      => $sub_total[$key]
             ];
         PurchaseProductReturn::insert($data);
@@ -313,17 +316,17 @@ class PurchaseReturnController extends Controller
     {
         $data=array();
         $data['purchase_detail']=$purchase_detail=PurchaseReturn::where('id',$id)->first();
+         $data['status']=[''=>'Please Select']+OrderStatus::whereIn('id',[5,6,7])->pluck('status_name','id')->toArray();
 
-        $data['return_sub_total']=PurchaseProductReturn::where('purchase_return_id',$id)
-                         ->pluck('return_sub_total','purchase_variation_id')
+        $data['damage_quantity']=PurchaseProductReturn::where('purchase_return_id',$id)
+                         ->pluck('damage_quantity','purchase_variation_id')
                          ->toArray();
-        $data['return_quantity']=PurchaseProductReturn::where('purchase_return_id',$id)
-                         ->pluck('return_quantity','purchase_variation_id')
+        $data['missed_quantity']=PurchaseProductReturn::where('purchase_return_id',$id)
+                         ->pluck('missed_quantity','purchase_variation_id')
                          ->toArray();
         $data['return_subtotal']=PurchaseProductReturn::where('purchase_return_id',$id)
                     ->pluck('return_sub_total','purchase_variation_id')
                     ->toArray();
-
         $purchase_id=$purchase_detail->purchase_or_order_id;
 
         $products=PurchaseProducts::where('purchase_id',$purchase_id)
@@ -361,45 +364,6 @@ $data['vendor_name']=Vendor::where('id',$purchase_detail->customer_or_vendor_id)
             $data['purchase_id']=$purchase_id;
             $data['purchase_return_id']=$purchase_detail->id;
 
-/* $data['vendor_name']=Vendor::where('id',$purchase_detail->customer_or_vendor_id)
-                                 ->value('name');
-                                 
-            $data['purchase']=$purchase_detail;
-            $data['purchase_date']=$purchase_detail->purchase_date;
-            $id=$purchase_detail->id;
-
-         $product_purchase=PurchaseProducts::where('purchase_id',$id)->get();
-
-         $pro_datas=array();
-         $options = array();
-         foreach ($product_purchase as $key => $products) {
-            $product_name=Product::where('id',$products->product_id)->value('name');
-            $variants=ProductVariant::where('id',$products->product_variation_id)->first();
-             $pro_datas[]=[
-                'product_purchase_id'  => $products->id,
-                'product_id'  => $products->product_id,
-                'product_name'  => $product_name,
-                'option_value_id1'  => $this->OptionValues($variants->option_value_id),
-                'option_value_id2'  => $this->OptionValues($variants->option_value_id2),
-                'option_value_id3'  => $this->OptionValues($variants->option_value_id3),
-                'option_value_id4'  => $this->OptionValues($variants->option_value_id4),
-                'option_value_id5'  => $this->OptionValues($variants->option_value_id5),
-                'qty_received'  => $products->qty_received,
-                'issue_quantity'  => $products->issue_quantity,
-                'reason'  => $products->reason,
-                'quantity'  => $products->quantity,
-                'base_price'  => $products->base_price,
-                'retail_price'  => $products->retail_price,
-                'minimum_selling_price'  => $products->minimum_selling_price,
-                'quantity'  => $products->quantity,
-             ];
-             $options=$this->Options($products->product_id);
-         }
-
-         $data['options']=$options;
-
-         $data['product_datas']=$pro_datas;
-         */
         return view('admin.stock.return.edit',$data);
     }
 
@@ -412,17 +376,18 @@ $data['vendor_name']=Vendor::where('id',$purchase_detail->customer_or_vendor_id)
      */
     public function update(Request $request, PurchaseReturn $purchaseReturn,$return_id)
     {
-
-        $quantites=$request->quantity;
+        $damage_quantity=$request->damage_quantity;
+        $missed_quantity=$request->missed_quantity;
         $sub_total=$request->sub_total;
         $product_id=$request->product_id;
         PurchaseReturn::where('purchase_or_order_id',$request->purchase_id)
             ->update([ 
                 'return_notes'           => $request->return_notes,
-                'staff_notes'           =>$request->staff_notes
+                'staff_notes'           =>$request->staff_notes,
+                'return_status'         => isset($request->return_status)?$request->return_status:1,
             ]);
 
-        foreach ($quantites as $key => $quantity) {
+        foreach ($damage_quantity as $key => $quantity) {
             $data=[
                 'purchase_return_id'    =>$return_id,
                 'product_id'            =>$product_id[$key],
@@ -436,7 +401,8 @@ $data['vendor_name']=Vendor::where('id',$purchase_detail->customer_or_vendor_id)
                 'purchase_variation_id' =>$key
             ])
             ->update([
-                'return_quantity'       =>$quantity,
+                'damage_quantity'       => $quantity,
+                'missed_quantity'       => $missed_quantity[$key],
                 'return_sub_total'      => $sub_total[$key]
             ]);
         }
