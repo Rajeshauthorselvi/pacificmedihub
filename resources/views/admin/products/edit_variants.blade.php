@@ -3,17 +3,17 @@
 	<thead>
 		<tr>
 			@foreach($options as $option)
-			<th>
+			<th class="option-head">
 				{{$option->option_name}}
 			</th>
 			@endforeach
-			<th>Base Price</th>
-			<th>Retail Price</th>
-			<th>Minimum Selling Price</th>
-			<th>Stock Qty</th>
-			<th>Vendor</th>
-			<th>Order By</th>
-			<th>Display</th>
+			<th class="input-box">Base Price</th>
+			<th class="input-box">Retail Price</th>
+			<th class="input-box">Minimum Selling Price</th>
+			<th class="input-box">Stock Qty</th>
+			<th class="vendor-name">Vendor</th>
+			<th class="input-box">Order By</th>
+			<th class="input-box">Display</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -139,7 +139,7 @@
                 </td>
                 <td>
                 	<div class="form-group">
-                		<select class="form-control select2bs4" name="new_variant[display][]">
+                		<select class="form-control display select2bs4" name="new_variant[display][]">
                             <option value="1" selected>Yes</option>
                             <option value="0">No</option>
                         </select>
@@ -154,6 +154,10 @@
 </table>
 
 </div>
+<style type="text/css">
+	#variantList{width: 100%}
+	#variantList .input-box{width: 100px}
+</style>
 <script type="text/javascript">
 	$('#base_price_row1').keyup(function(){
         $('.base_price_row').val(this.value);
@@ -167,4 +171,11 @@
     $('#stock_qty_row1').keyup(function(){
         $('.stock_qty_row').val(this.value);
     });
+
+    $(function ($) {
+        $('body').find('.display.select2bs4').select2({
+          minimumResultsForSearch: -1
+        });
+    });
+
 </script>

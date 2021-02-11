@@ -104,23 +104,24 @@
 
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="PostCode">Post Code *</label>
-                            <input type="text" class="form-control" readonly name="postcode" id="PostCode" value="{{$vendor->post_code}}">
-                          </div>
-                          <div class="col-sm-5">
                             <label for="Country">Country *</label>
                             {!! Form::text('country_id',$vendor->getCountry->name,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
+                          </div>
+                          <div class="col-sm-5">
+                            <label for="State">State *</label>
+                            {!! Form::text('state_id',$vendor->getState->name,['readonly','class'=>'form-control', 'id'=>'State']) !!}
                           </div>
                         </div>
 
                         <div class="form-group">
+                          
                           <div class="col-sm-5">
-                            <label for="State">State</label>
-                            {!! Form::text('state_id',$vendor->getState->name,['readonly','class'=>'form-control', 'id'=>'State']) !!}
+                            <label for="City">City *</label>
+                            {!! Form::text('city_id',$vendor->getCity->name,['readonly','class'=>'form-control', 'id'=>'City']) !!}
                           </div>
                           <div class="col-sm-5">
-                            <label for="City">City</label>
-                            {!! Form::text('city_id',$vendor->getCity->name,['readonly','class'=>'form-control', 'id'=>'City']) !!}
+                            <label for="PostCode">Post Code *</label>
+                            <input type="text" class="form-control" readonly name="postcode" id="PostCode" value="{{$vendor->post_code}}">
                           </div>
                         </div>
 
@@ -143,8 +144,15 @@
                           </div>
                         </div>
 
+                        <div class="form-group">
+                          <div class="col-sm-5">
+                            <div class="icheck-info d-inline">
+                              <input type="checkbox" name="vendor_status" id="Status" disabled @if($vendor->status==1) checked @endif>
+                              <label for="Status">Status</label>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <button type="button" id="validateStep1" class="btn btn-primary next-step">Next</button>
                     </div>
                     <!-- Step2 -->
                     <div class="tab-pane" role="tabpanel" id="step2">
@@ -180,14 +188,6 @@
                           @endforeach
                         </table>
                       </div>
-                      <ul class="float-left">
-                        <li class="list-inline-item">
-                          <button type="button" class="btn btn-outline-primary prev-step">Previous</button>
-                        </li>
-                        <li class="list-inline-item">
-                          <button type="button" id="validateStep2" class="btn btn-primary next-step">Next</button>
-                        </li>
-                      </ul>
                     </div>
                     <!-- Step3 -->
                     <div class="tab-pane" role="tabpanel" id="step3">
@@ -229,12 +229,7 @@
                           <textarea class="form-control" rows="3" name="others" readonly id="Others">{{$vendor->others}}</textarea>
                         </div>
                       </div>
-                      <ul class="float-left">
-                        <li class="list-inline-item">
-                          <button type="button" class="btn btn-outline-primary prev-step">Previous</button>
-                        </li>
-                        
-                      </ul>
+                      
                     </div>
 
                   </div>

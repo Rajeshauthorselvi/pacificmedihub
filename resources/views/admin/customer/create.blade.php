@@ -132,11 +132,9 @@
                           <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">
-                          <label for="companyLogo">Company Logo JPEG</label>
-                          <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="company[logo]" id="companyLogo" accept="image/*">
-                            <label class="custom-file-label" for="companyLogo">Choose file</label>
-                          </div>
+                          <label for="">Post Code *</label>
+                          {!! Form::text('company[post_code]', null,['class'=>'form-control required','id'=>'company_postcode']) !!}
+                           <span class="text-danger"></span>
                         </div>
                       </div>
                       <div class="form-group">
@@ -144,7 +142,24 @@
                           <label for="">Sales Rep</label>
                           {!! Form::select('company[sales_rep]',$sales_rep,null,['class'=>'form-control select2bs4']) !!}
                         </div>
+                        <div class="col-sm-6">
+                          <label for="companyLogo">Company Logo JPEG</label>
+                          <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="company[logo]" id="companyLogo" accept="image/*">
+                            <label class="custom-file-label" for="companyLogo">Choose file</label>
+                          </div>
+                        </div>
                       </div>
+                        
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <div class="icheck-info d-inline">
+                            <input type="checkbox" name="customer[status]" id="Status" checked>
+                            <label for="Status">Status</label>
+                          </div>
+                        </div>
+                      </div>
+                      
                     </div>
                   </div>
 
@@ -204,29 +219,29 @@
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="">Post Code *</label>
-                          {!! Form::text('address[post_code]', null,['class'=>'form-control required']) !!}
-                           <span class="text-danger"></span>
-                        </div>
-                        <div class="col-sm-6">
                           <label for="">Country *</label>
                           {!! Form::text('null',null,['class'=>'form-control required address_country']) !!}
                           {!! Form::hidden('address[country_id]',null,['class'=>'form-control required address_country_id']) !!}
                           <span class="text-danger"></span>
                         </div>
-                      </div>
-                      <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">State *</label>
                           {!! Form::text('null',null,['class'=>'form-control required address_state']) !!}
                           {!! Form::hidden('address[state_id]',null,['class'=>'form-control required address_state_id']) !!}
                           <span class="text-danger"></span>
                         </div>
+                      </div>
+                      <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">City *</label>
                           {!! Form::text('null',null,['class'=>'form-control required address_city']) !!}
                           {!! Form::hidden('address[city_id]',null,['class'=>'form-control required address_city_id']) !!}
                           <span class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Post Code *</label>
+                          {!! Form::text('address[post_code]', null,['class'=>'form-control required address_postcode']) !!}
+                           <span class="text-danger"></span>
                         </div>
                       </div>
                     </div>
@@ -260,16 +275,9 @@
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="ifsc">IFSC</label>
-                          {!! Form::text('bank[ifsc_code]',null,['class'=>'form-control','id'=>'ifsc']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                        <div class="col-sm-6">
                           <label for="payNow">PayNow Contact No</label>
                           {!! Form::text('bank[paynow_contact]',null,['class'=>'form-control','onkeyup'=>"validateNum(event,this);"]) !!}
                         </div>
-                      </div>
-                      <div class="form-group">
                         <div class="col-sm-6">
                           <label for="Place">Place</label>
                           {!! Form::text('bank[place]',null,['class'=>'form-control']) !!}
@@ -357,28 +365,25 @@
       var company_add1 = $('.company_add1').val();
       var company_add2 = $('.company_add2').val();
       var company_contact = $('.company_contact').val();
+      var country = $('#company_country option:selected').text();
+      var country_id = $('#company_country').val();
+      var state = $('#company_state option:selected').text();
+      var state_id = $('#company_state').val();
+      var city = $('#company_city option:selected').text();
+      var city_id = $('#company_city').val();
+      var postcode = $('#company_postcode').val();
 
       $('.del_add_name').val(company_name);
       $('.del_add_1').val(company_add1);
       $('.del_add_2').val(company_add2);
-      $('.del_add_contact').val(company_contact);
-
-
-      var country = $('#company_country option:selected').text();
-      var country_id = $('#company_country').val();
-
-      var state = $('#company_state option:selected').text();
-      var state_id = $('#company_state').val();
-
-      var city = $('#company_city option:selected').text();
-      var city_id = $('#company_city').val();
-
+      $('.del_add_contact').val(company_contact);      
       $('.address_country').val(country);
       $('.address_country_id').val(country_id);
       $('.address_state').val(state);
       $('.address_state_id').val(state_id);
       $('.address_city').val(city);
       $('.address_city_id').val(city_id);
+      $('.address_postcode').val(postcode);
       
       if (length_empty==0 && error_count==0) {
         if (stepID!=4) {

@@ -63,7 +63,7 @@
                             if($brand->published==1){$published = "fa-check";}
                             else{$published = "fa-ban";}
                           ?>
-                          <td><img class="brand-img" style="width:25%;height:auto;" src="{{ asset($img_url)}}"></td>
+                          <td><img class="brand-img" style="width:12%;height:auto;" src="{{ asset($img_url)}}"></td>
                           <td><i class="fas {{$published}}"></i></td>
                           <td>
                             <div class="input-group-prepend">

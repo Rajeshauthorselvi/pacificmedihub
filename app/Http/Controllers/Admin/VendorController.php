@@ -136,7 +136,7 @@ class VendorController extends Controller
         $add_vendor->paynow_contact_number = $request->paynow_no;
         $add_vendor->bank_place = $request->place;
         $add_vendor->others = $request->others;
-        $add_vendor->status = 1;
+        $add_vendor->status = $request->vendor_status;
         $add_vendor->created_at = date('Y-m-d H:i:s');
         $add_vendor->save();
 
@@ -249,10 +249,8 @@ class VendorController extends Controller
         $add_vendor->paynow_contact_number = $request->paynow_no;
         $add_vendor->bank_place = $request->place;
         $add_vendor->others = $request->others;
-        $add_vendor->created_at = date('Y-m-d H:i:s');
+        $add_vendor->status = $request->vendor_status;
 
-
-       
         if($request->hasFile('vendorGst_image')){
             if (File::exists(public_path('theme/images/vendor/gst/'.$add_vendor->gst_image))) {
                 File::delete(public_path('theme/images/vendor/gst/'.$add_vendor->gst_image));
@@ -289,7 +287,8 @@ class VendorController extends Controller
             $request->vendor_logo->move(public_path('theme/images/vendor/'), $logo_image_name);
             $add_vendor->logo_image = $logo_image_name;
         }
-         $add_vendor->save();
+
+        $add_vendor->update();
 
          
         if($request->poc){

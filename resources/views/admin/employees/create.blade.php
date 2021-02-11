@@ -164,7 +164,7 @@
                               <label class="custom-file-label" for="empImage">Choose file</label>
                             </div>
                           </div>
-                          <div class="col-sm-5">
+                          <div class="col-sm-5" style="margin-top: 40px">
                             <div class="icheck-info d-inline">
                               <input type="checkbox" name="emp_status" id="Status" @if(old('emp_status')=='on') checked @endif>
                               <label for="Status">Status</label>

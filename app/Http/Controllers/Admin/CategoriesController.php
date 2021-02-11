@@ -43,7 +43,7 @@ class CategoriesController extends Controller
             'category_name'  => 'required',
             'search_engine'  => 'required'
         ]);
-        dd($request->all());
+
         if($request->category_published){$published = 1;}else{$published = 0;}
         if($request->category_homepage){$homepage = 1;}else{$homepage = 0;}
 
