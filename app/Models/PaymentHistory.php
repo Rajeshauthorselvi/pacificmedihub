@@ -8,9 +8,9 @@ class PaymentHistory extends Model
 {
     protected $table="payment_history";
 
-    static function FindPendingBalance($ref_id,$total_amount)
+    static function FindPendingBalance($ref_id,$total_amount,$from=1)
     {
-    	$total_paid=self::where('ref_id',$ref_id)->sum('amount');
+    	$total_paid=self::where('ref_id',$ref_id)->where('payment_from',$from)->sum('amount');
     	$balance_amount=$total_amount-$total_paid;
     	return ['balance_amount'=>$balance_amount,'paid_amount'=>$total_paid];
     }

@@ -70,7 +70,7 @@
                           <td>{{ $order['quantity'] }}</td>
                           <td class="total_amount">{{ $order['grand_total'] }}</td>
                           <?php 
-                              $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($order['purchase_id'],$order['grand_total']);
+                              $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($order['purchase_id'],$order['grand_total'],1);
                             ?>
                           <td>{{ $balance_amount['paid_amount'] }}</td>
                           <td class="balance">

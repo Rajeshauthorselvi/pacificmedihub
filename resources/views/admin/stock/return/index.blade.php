@@ -55,6 +55,8 @@
                         <th>Vendor</th>
                         <th>Return Quantity</th>
                         <th>Return Amount</th>
+                        <th>Paid Amount</th>
+                        <th>Balance Amount</th>
                         <th>Payment Status</th>
                         <th>Return Status</th>
                         <th>Action</th>
@@ -69,7 +71,12 @@
                             <td>{{ ($return['order_type']==1)?'Purchase':'Order' }}</td>
                             <td>{{ $return['vendor'] }}</td>
                             <td>{{ $return['total_quantity'] }}</td>
-                            <td>{{ $return['sub_total'] }}</td>
+                            <td class="total_amount">{{ $return['sub_total'] }}</td>
+                             <?php 
+                              $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($return['id'],$return['sub_total'],4);
+                            ?>
+                            <td>{{ $balance_amount['paid_amount'] }}</td>
+                            <td class="balance">{{ $balance_amount['balance_amount'] }}</td>
                             <td>{{ ($return['payment_status']==1)?'Paid':'Not Paid' }}</td>
                             <td>{{ $return['order_status'] }}</td>
                             <td>
@@ -79,7 +86,26 @@
 
                                     <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                     <a href="{{route('return.edit',$return['id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-             
+                                    <a href="javascript:void(0)" class="view-payment" return-id="{{ $return['id'] }}">
+                                      <li class="dropdown-item">
+                                        <i class="fa fa-credit-card"></i>&nbsp;&nbsp;View Payments
+                                      </li>
+                                    </a>
+
+                                    <a href="javascript:void(0)" class="add-payment" return-id="{{ $return['id'] }}">
+                                      <li class="dropdown-item">
+                                        <i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment
+                                      </li>
+                                    </a>
+                                    <a href="javascript:void(0)"><li class="dropdown-item">
+                                      <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
+                                    </li></a>
+                                    <a href="javascript:void(0)"><li class="dropdown-item">
+                                      <i class="fa fa-envelope"></i>&nbsp;&nbsp;Email
+                                    </li></a>
+                                    <a href="javascript:void(0)"><li class="dropdown-item">
+                                      <i class="fa fa-print"></i>&nbsp;&nbsp;Print
+                                    </li></a>
                                   </ul>
                                 </div>
                               </td>
@@ -95,7 +121,87 @@
       </div>
     </section>
   </div>
+<div class="modal fade" id="payment_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Payment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <form action="{{route('create.return.payment')}}" method="post" enctype="multipart/form-data" id="payment_form">
+        @csrf
+          <div class="modal-body">
+            <div class="col-sm-12">
+              <div class="form-group col-sm-6">
+                <label>Payment Type *</label>
+                {!! Form::select('payment_id',$payment_method, null,['class'=>'form-control required']) !!}
+                <span class="text-danger"></span>
+              </div>
+              <div class="form-group col-sm-6">
+                <label>Date *</label>
+                <input type="text" name="created_at" class="form-control" readonly value="{{ date('Y-m-d H:i:s') }}">
+              </div>
+              <div class="clearfix"></div>
+              <div class="form-group col-sm-6">
+                <label>Reference No</label>
+                <input type="text" name="reference_no" class="form-control">
+              </div>
+              <div class="form-group  col-sm-6">
+                <label>Amount</label>
+                <input type="text" name="amount" class="form-control balance_cmount required">
+                <span class="text-danger"></span>
+              </div>
+            <input type="hidden" name="payment_from" value="4">
+            <input type="hidden" name="id" class="model_purchase_id" value="0">
+            <input type="hidden" name="total_payment" class="total-amount" value="">
+            <div class="form-group">
+              <div class="clearfix"></div>
+              <label>Notes</label>
+              {!! Form::textarea('payment_notes',null,['class'=>'form-control summernote']) !!}
+            </div>
+            </div>
+          
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary addpayment-submit">Add Payment</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="edit_payment_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Payment History</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        @csrf
+          <div class="modal-body">
+            <table class="table table-bordered">
+              <thead>
+                  <th>Date</th>
+                  <th>Reference No</th>
+                  <th>Amount</th>
+                  <th>Paid By</th>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+    </div>
+  </div>
+</div>
 
+<style type="text/css">
+  #payment_model .col-sm-6,#edit_payment_model .col-sm-6{
+    float: left;
+  }
+</style>
   @push('custom-scripts')
   <script type="text/javascript">
       
@@ -107,6 +213,67 @@
           $('input:checkbox').prop('checked',false);
         }
     });
+
+    $(document).on('click', '.add-payment', function(event) {
+        event.preventDefault();
+        var balance_amount=$(this).parents('tr').find('.balance').text();
+        var balance_amount=parseInt(balance_amount);
+
+        var total_amount=$(this).parents('tr').find('.total_amount').text();
+        var total_amount=parseInt(total_amount);
+
+        if (balance_amount==0) {
+          alert('Payment status is already paid for the purchase.');
+          return false;
+        }
+        $('.total-amount').val(total_amount);
+        $('.balance_cmount').val(balance_amount);
+        var return_id=$(this).attr('return-id');
+        $('.model_purchase_id').val(return_id);
+
+        $('#payment_model').modal('show');
+    });
+
+    $(document).on('click', '.view-payment', function(event) {
+        event.preventDefault();
+        var return_id=$(this).attr('return-id');
+
+
+        $.ajax({
+          url: '{{ url('admin/view_purchase_payment') }}'+'/'+return_id,
+        })
+        .done(function(response) {
+            $('.modal-body tbody tr').remove();
+            if (response.length>0) {
+              $.each(response, function(index, val) {
+                  var html ="<tr>";
+                      html +="<td>"+moment(val.created_at).format('DD-MM-yyyy HH:mm')+"</td>";
+                      if (val.reference_no==null) {
+                        html +="<td>-</td>";
+                      }
+                      else{
+                        html +="<td>"+  val.reference_no+"</td>";
+                      }
+                      html +="<td>"+val.amount+"</td>";
+                      html +="<td>"+val.payment_method.payment_method+"</td>";
+                      html +="<tr>";
+
+                      $('.modal-body tbody').append(html);
+              });
+            }
+            else{
+              var html ="<tr>";
+                  html +="<td colspan='5' class='text-center'>No record found</td>";
+                  html +="<tr>";
+                  $('.modal-body tbody').append(html);
+            }
+        });
+
+          $('#edit_payment_model').modal('show');
+
+    });
+
+    
 
 
       $('.delete-all').click(function(event) {
