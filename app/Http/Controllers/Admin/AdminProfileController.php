@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
+use App\Models\UserCompanyDetails;
 class AdminProfileController extends Controller
 {
     /**
@@ -15,7 +16,8 @@ class AdminProfileController extends Controller
     public function index()
     {
         $data=array();
-        
+        $data['admin'] = User::where('role_id',1)->first();
+        $data['company'] = UserCompanyDetails::where('customer_id',1)->first();
         return view('admin.profile.form',$data);
     }
 
