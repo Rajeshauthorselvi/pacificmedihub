@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\RFQ;
 use App\Models\RFQProducts;
 use App\User;
+use App\Models\UserCompanyDetails;
+use App\Models\UserAddress;
 use App\Models\OrderStatus;
 use App\Models\PaymentMethod;
 use App\Models\Vendor;
@@ -167,7 +169,10 @@ class RFQController extends Controller
               'product_variant'  => $product_variant
           ];
       }
-      $data['rfqs']=RFQ::where('id',$id)->first();
+      $rfq = RFQ::where('id',$id)->first();
+      $data['rfqs'] = $rfq;
+      $data['admin_address'] = UserCompanyDetails::where('customer_id',1)->first();
+      $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
       $data['product_datas']=$product_data;
       $data['rfq_id']=$id;
       return view('admin.rfq.view',$data);
