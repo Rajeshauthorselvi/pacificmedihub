@@ -130,6 +130,8 @@ class WastageController extends Controller
          $wastage_products=WastageProducts::where('wastage_id',$wastage->id)
                            ->get();
         $options=$this->Options($wastages->product_id);
+
+        
         $data['options'] = $options['options'];
         $pro_wastage=array();
         foreach ($wastage_products as $key => $products) {

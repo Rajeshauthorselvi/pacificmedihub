@@ -203,7 +203,7 @@ class OrderController extends Controller
        }
 
 
-       if ($request->amount=="" || $request->amount!=0) {
+       if ($request->amount!="" || $request->amount!=0) {
            PaymentHistory::insert([
                 'ref_id'  => $order_id,
                 'reference_no'  => $request->payment_ref_no,
