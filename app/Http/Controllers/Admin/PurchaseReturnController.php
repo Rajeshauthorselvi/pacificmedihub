@@ -468,5 +468,15 @@ $data['vendor_name']=Vendor::where('id',$purchase_detail->customer_or_vendor_id)
         PurchaseReturn::where('id',$request->id)->update(['payment_status'=>$payment_status]);
         return Redirect::back()->with('success','Payment added successfully...!');
     }
+    public function ViewReturnPayment($return_id)
+    {
+        $all_payment_history=PaymentHistory::with('PaymentMethod')
+                             ->where('ref_id',$return_id)
+                             ->where('payment_from',4)
+                             ->get()
+                             ->toArray();
+
+        return $all_payment_history;
+    }
 
 }

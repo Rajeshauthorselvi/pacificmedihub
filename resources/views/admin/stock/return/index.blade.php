@@ -240,7 +240,7 @@
 
 
         $.ajax({
-          url: '{{ url('admin/view_purchase_payment') }}'+'/'+return_id,
+          url: '{{ url('admin/view_return_payment') }}'+'/'+return_id,
         })
         .done(function(response) {
             $('.modal-body tbody tr').remove();
