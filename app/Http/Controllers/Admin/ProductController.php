@@ -559,20 +559,22 @@ class ProductController extends Controller
         $data['commissions']     = CommissionValue::where('commission_id',2)->where('published',1)
                                         ->where('is_deleted',0)->get();
         $data['order_exists']    = PurchaseProducts::where('product_id',$id)->exists();
+        //dd($data);
         return view('admin/products/edit',$data);
     }
 
     public function Variants($product_id=0,$type='')
     {
+        //dd($type);
          if ($type!='') {
-            $variant = ProductVariant::where('product_id',$product_id)
-                       ->where('is_deleted',0)
-                       ->where('disabled',1)
-                       ->first();
+            $variant         = ProductVariant::where('product_id',$product_id)
+                                ->where('is_deleted',0)
+                                ->where('disabled',1)
+                                ->first();
             $productVariants = ProductVariant::where('product_id',$product_id)
-                               ->where('is_deleted',0)
-                               ->where('disabled',1)
-                               ->get();
+                                ->where('is_deleted',0)
+                                ->where('disabled',1)
+                                ->get();
          }
          else{
             $variant = ProductVariant::where('product_id',$product_id)
@@ -589,7 +591,6 @@ class ProductController extends Controller
         foreach ($productVariants as $key => $variants) {
             
             $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)->where('product_variant_id',$variants->id)->first();
-
             $product_variants[$key]['variant_id'] = $variants->id;
             if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
             {
@@ -652,14 +653,14 @@ class ProductController extends Controller
                 $product_variants[$key]['option_value5'] = $variants->optionValue5->option_value;
             }
 
-            $product_variants[$key]['base_price'] = $variant_details->base_price;
-            $product_variants[$key]['retail_price'] = $variant_details->retail_price;
-            $product_variants[$key]['minimum_selling_price'] = $variant_details->minimum_selling_price;
-            $product_variants[$key]['display_order'] = $variant_details->display_order;
-            $product_variants[$key]['stock_quantity'] = $variant_details->stock_quantity;
-            $product_variants[$key]['display_variant'] = $variant_details->display_variant;
-            $product_variants[$key]['vendor_id'] = $variant_details->vendor_id;
-            $product_variants[$key]['vendor_name'] = $variant_details->vendorName->name;
+            $product_variants[$key]['base_price'] = isset($variant_details->base_price)?$variant_details->base_price:'';
+            $product_variants[$key]['retail_price'] = isset($variant_details->retail_price)?$variant_details->retail_price:'';
+            $product_variants[$key]['minimum_selling_price'] = isset($variant_details->minimum_selling_price)?$variant_details->minimum_selling_price:'';
+            $product_variants[$key]['display_order'] = isset($variant_details->display_order)?$variant_details->display_order:'';
+            $product_variants[$key]['stock_quantity'] = isset($variant_details->stock_quantity)?$variant_details->stock_quantity:'';
+            $product_variants[$key]['display_variant'] = isset($variant_details->display_variant)?$variant_details->display_variant:'';
+            $product_variants[$key]['vendor_id'] = isset($variant_details->vendor_id)?$variant_details->vendor_id:'';
+            $product_variants[$key]['vendor_name'] = isset($variant_details->vendorName->name)?$variant_details->vendorName->name:'';
         }
 
         return $product_variants;
@@ -735,12 +736,38 @@ class ProductController extends Controller
             'product_code' => 'required',
             'category'     => 'required'
         ]);
-         $product_id=$id;
+        $product_id=$id;
+
+        $product = Product::where('id',$id)->first();
+
+        $order_exists=PurchaseProducts::where('product_id',$product->id)->exists();
+        $rfq_exists=RFQProducts::where('product_id',$product->id)->exists();
+
+
+        if ($request->has('existOption')) {
+            $existOption = json_decode($request->existOption,true);
+            $diff_options=array_diff($options, $existOption);
+        }
+
+        if ($request->has('existVendor')) {
+            $existing_vendor=json_decode($request->existVendor,true);
+            $diff_vendor=array_diff($vendors, $existing_vendor);
+        }
+        
+        if (!$order_exists && !$rfq_exists && $request->has('new_variant')) {
+            ProductVariant::where('product_id',$product->id)->delete();
+            ProductVariantVendor::where('product_id',$product->id)->delete();
+        }else if($request->has('new_variant')){
+            $product_variants = ProductVariant::where('product_id',$product->id)->get();
+            foreach ($product_variants as $key => $value) {
+                $variant = ProductVariant::where('id',$value->id)->first();
+                $variant->disabled=1;
+                $variant->update();
+            }
+        }
 
         if($request->published){$published = 1;}else{$published = 0;}
         if($request->homepage){$homepage = 1;}else{$homepage = 0;}
-
-        $product = Product::where('id',$id)->first();
 
         $image = $request->hasFile('main_image');
         if($image){
@@ -774,32 +801,6 @@ class ProductController extends Controller
         $product->meta_keyword = $request->meta_keyword;
         $product->meta_description = $request->meta_description;
         $product->update();
-
-        $order_exists=PurchaseProducts::where('product_id',$product->id)->exists();
-        $rfq_exists=RFQProducts::where('product_id',$product->id)->exists();
-
-
-        if ($request->has('existOption')) {
-            $existOption = json_decode($request->existOption,true);
-            $diff_options=array_diff($options, $existOption);
-        }
-
-        if ($request->has('existVendor')) {
-            $existing_vendor=json_decode($request->existVendor,true);
-            $diff_vendor=array_diff($vendors, $existing_vendor);
-        }
-
-        if (!$order_exists && !$rfq_exists && $request->has('new_variant')) {
-            ProductVariant::where('product_id',$product->id)->delete();
-            ProductVariantVendor::where('product_id',$product->id)->delete();
-        }else if($request->has('new_variant')){
-            $product_variants = ProductVariant::where('product_id',$product->id)->get();
-            foreach ($product_variants as $key => $value) {
-                $variant = ProductVariant::where('id',$value->id)->first();
-                $variant->disabled=1;
-                $variant->update();
-            }
-        }
 
         if ($request->has('new_variant')) {
             $this->AddNewVariants($request->new_variant,$product->id);
@@ -1008,8 +1009,9 @@ class ProductController extends Controller
                 if (!$check_order_exists) {
                     ProductVariant::where('product_id',$product->id)->delete();
                 }*/
+                //dd($variant_data);
                 foreach ($variant_data as $key=>$value) {
-          
+                    
                     $update_variant = ProductVariant::find($value['id']);
                     if($update_variant!=null)
                     {
@@ -1026,7 +1028,7 @@ class ProductController extends Controller
                         $update_variant->option_id5 = isset($value['option_id5'])?$value['option_id5']:null;
                         $update_variant->option_value_id5 = isset($value['option_value_id5'])?$value['option_id5']:null;
                         $update_variant->timestamps = false;
-                        $update_variant->update();
+                        $update_variant->save();
                         
                         if($update_variant){
                             $update_vendor = ProductVariantVendor::where('product_variant_id',$value['id'])->first();
@@ -1040,7 +1042,7 @@ class ProductController extends Controller
                             $update_vendor->stock_quantity = $value['stock_qty'];
                             $update_vendor->vendor_id = $value['vendor_id'];
                             $update_vendor->timestamps = false;
-                            $update_vendor->update();
+                            $update_vendor->save();
                         }
                     }
                     elseif($update_variant==null)
@@ -1073,6 +1075,29 @@ class ProductController extends Controller
                             $vendor->vendor_id = $value['vendor_id'];
                             $vendor->timestamps = false;
                             $vendor->save();
+                        }
+                    }
+                }
+            }
+
+            if($request->has("removed_vendor")){
+                $removed_vendor = $request->removed_vendor['id'];
+                $remove_product_variants = ProductVariantVendor::whereIn('vendor_id',$removed_vendor)->get();
+                foreach($remove_product_variants as $key => $value) {
+                    $check_purchase_exists=PurchaseProducts::where('product_id',$value->product_id)->exists();
+                    $check_rfq_exists=RFQProducts::where('product_id',$value->product_id)->exists();
+                    if(!$check_rfq_exists && !$check_purchase_exists){
+                        $delete_variant = DB::table('product_variants')->where('id',$value->id)->delete();
+                        $delete_variant_vendor = DB::table('product_variant_vendors')->where('vendor_id',$value->vendor_id)->delete();
+                    }else{
+                        $variant = ProductVariant::where('id',$value->id)->first();
+                        $variant->disabled=1;
+                        $variant->update();
+                        $disable_variant_vendor = ProductVariantVendor::where('vendor_id',$value->vendor_id)->get();
+                        foreach ($disable_variant_vendor as $key => $vendorValue) {
+                            $get_disable_vendor = ProductVariantVendor::where('id',$vendorValue->id)->first();
+                            $get_disable_vendor->display_variant = 0;
+                            $get_disable_vendor->update();
                         }
                     }
                 }
@@ -1262,45 +1287,39 @@ class ProductController extends Controller
         $deleted_vendor=array_diff_assoc($existing_vendors,$nomatch);
         dd($deleted_vendor,$nomatch,$existing_vendors,$request->existVendor);*/
 
-
-
         if ($request->has('existOption')) {
             $existOption = json_decode($request->existOption,true);
             $diff_options=array_diff($options, $existOption);
         }
-        
+            
+        $removed_vendors_id = array();
+
         if ($request->has('existVendor')) {
             $existing_vendor=json_decode($request->existVendor,true);
             $diff_vendor=array_diff($vendors, $existing_vendor);
-
-
             $removed_vendors=array_merge(array_diff($existing_vendor,$vendors),array_diff($vendors, $existing_vendor));
             $removed_vendors_id = array_diff($removed_vendors,$vendors);
 
-            /*if(count($removed_vendors_id)>0){
-                $product_variants = ProductVariantVendor::whereIn('vendor_id',$removed_vendors_id)->get();
-                foreach ($product_variants as $key => $value) {
-                    $variant = ProductVariant::where('id',$value->id)->first();
-                    $variant->disabled=1;
-                    $variant->update();
-                    $variant_vendor = ProductVariantVendor::where('product_variant_id',$value->id)->first();
-                    $variant_vendor->display_variant = 0;
-                    $variant_vendor->update();
-                }
-            }*/
-
             if(array_diff($vendors, $existing_vendor)){
+                $check_vendors = ProductVariantVendor::whereIn('vendor_id',$vendors)->exists();
                 $vendors=$diff_vendor;
+
             }
         }
-
-
 
         // if (isset($diff_options)&& count($diff_options)==0 && count($vendors)>0) {
         //     $vendors=$diff_vendor;
         // }
 
-        //dd($vendors);
+        $data['removed_vendors_id'] = $removed_vendors_id;
+        if($request->dataFrom=="edit"){
+            if(count($diff_options)==0 && count($diff_vendor)==0){
+                $check_vendors = ProductVariantVendor::whereIn('vendor_id',$vendors)->exists();
+                if($check_vendors){
+                    $vendors = [];
+                }    
+            }
+        }
 
         $vendor_data = array();
 
@@ -1311,7 +1330,7 @@ class ProductController extends Controller
             $exist_vendors = json_decode($request->existVendor,true);
         }
         $variant_options=[];
-
+        $get_options = array();
         foreach ($vendors as $vendor) {
             $vendor_data[]=Vendor::find($vendor);
             $get_options = Option::whereIn('id',$options)->get();

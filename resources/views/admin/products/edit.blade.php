@@ -88,7 +88,7 @@
 
                       <div class="form-group">
                         <label for="shortDescription">Product Short Details</label>
-                        <textarea class="form-control" rows="3" name="short_description" id="shortDescription">{{old('short_description',$product->short_description)}}</textarea>
+                        <textarea class="form-control" rows="4" name="short_description" id="shortDescription">{{old('short_description',$product->short_description)}}</textarea>
                       </div>
 
                       <?php 
@@ -96,7 +96,7 @@
                         else {$image = "theme/images/no_image.jpg";}
                       ?>
                       <div class="form-group">
-                        <label for="mainImage">Product Image</label>
+                        <label for="mainImage">Product Image</label><br>
                         <input type="file" name="main_image" id="mainImage" accept="image/*" onchange="preview_image(event)" style="display:none;" value="{{$product->main_image}}">
                         <img title="Click to Change" class="img-product" id="output_image"  onclick="$('#mainImage').trigger('click'); return true;" style="width:100px;height:100px;cursor:pointer;" src="{{asset($image)}}">
                       </div>
@@ -182,12 +182,13 @@
                       <output id="result" style="display:none;"></output>
                       <button type="button" id="clear" style="display:none;">Clear</button>
                     </article>
-                    <label>Existing Images</label><br>
-                    @foreach($product_images as $images)
-                      <img class="img-category" style="width:120px;height: 100px;" src="{{ asset('theme/images/products/'.$images->name)}}">
-                      <a class="btn btn-danger del-image" product-id="{{$images->id}}" route-url="{{ route('remove.pimage') }}">-</a>
-                    @endforeach
-                    
+                    @if(count($product_images)>0)
+                      <label>Existing Images</label><br>
+                      @foreach($product_images as $images)
+                        <img class="img-category" style="width:120px;height: 100px;" src="{{ asset('theme/images/products/'.$images->name)}}">
+                        <a class="btn btn-danger del-image" product-id="{{$images->id}}" route-url="{{ route('remove.pimage') }}">-</a>
+                      @endforeach
+                    @endif
                   </div>
                   <div class="product-variant-block">
                     <label>Product Variants</label>
@@ -369,7 +370,7 @@
             </td>
             <td>
               <div class="form-group">
-                <select class="form-control display_variant" name="variant[display][]">
+                <select class="form-control display_variant select2bs4" name="variant[display][]">
                   <option @if($variant['display_variant']==0) selected="selected" @endif value="0" selected>No</option>
                   <option @if($variant['display_variant']==1) selected="selected" @endif value="1">Yes</option>
                 </select>
@@ -438,13 +439,14 @@
         var db_exist_vendors_id = JSON.stringify(existing_vendors);
         var exist_vendors_id = '['+$('#VendorSupplier').val()+']';
 
-        // if((db_exist_options_id==exist_options_id) && (db_exist_vendors_id!=exist_vendors_id)){
-        //   if (!confirm("Removed Vendor's variants will be disabled. Do you want to make change?")) {
-        //     return false;
-        //   }else{
-        //     createVendorBlock();
-        //   }
-        // }
+
+        if((db_exist_options_id==exist_options_id) && (db_exist_vendors_id!=exist_vendors_id)){
+          if (!confirm("Vendor's are changed it will affected variants. Do you want to make change?")) {
+            return false;
+          }else{
+            createVendorBlock('no_scroll_to');
+          }
+        }
 
         if((db_exist_options_id==exist_options_id) && (db_exist_vendors_id==exist_vendors_id)){
           alert('This variants are already Existing');
@@ -480,9 +482,9 @@
         var existing_vendors = <?php echo json_encode($vendors_id); ?>;
         var existingVendor = JSON.stringify(existing_vendors);
         var options = $('#productVariant option:selected');
-
+        
         var delete_request = 0;
-        if(value){
+        if(value=='delete'){
           delete_request = 1;
         }
 
@@ -513,10 +515,12 @@
               existVendor:existingVendor
             },
             success: function (data) { 
-              //console.log(data);
-              $('#new-product-variant-block').html(data);
+              console.log(data);
               $('.new-product-variant-lable').css('display','block');
-              scroll_to();
+              $('#new-product-variant-block').html(data);
+                scroll_to();  
+              
+              
               /*createTable(data.options);
               addOptionValue(0,data)*/
             }
@@ -527,12 +531,11 @@
       }
 
 
-
       function scroll_to(div){
-      $('html, body').animate({
-        scrollTop: $("#new-product-variant-block").offset().top
-      },1000);
-    }
+        $('html, body').animate({
+          scrollTop: $("#new-product-variant-block").offset().top
+        },1000);
+      }
       //Clear Options
       $('#clear-option').on('click',function () {
         $('#clear-option').css('display','none');

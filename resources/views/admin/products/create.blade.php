@@ -436,12 +436,19 @@
             success: function (data) { 
               //console.log(data);
               $('#product-variant-block').html(data);
+              scroll_to();
             }
           });
         }else{
           alert('Please select maximum of 5 options only.!');
         }
       });
+
+      function scroll_to(div){
+        $('html, body').animate({
+          scrollTop: $("#product-variant-block").offset().top
+        },1000);
+      }
 
       //Clear Options
       $('#clear-option').on('click',function () {

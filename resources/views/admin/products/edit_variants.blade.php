@@ -1,4 +1,7 @@
 <div class="table-responsive">
+	@foreach($removed_vendors_id as $removed)
+		<input type="hidden" name="variant[removed_vendor][]" value="{{$removed}}">
+	@endforeach
 <table class="list" id="variantList">
 	<thead>
 		<tr>
@@ -54,17 +57,7 @@
 					$retail_price_row_id = 'retail_price_row1';
 					$minimum_price_row_id = 'minimum_price_row1';
 					$stock_qty_row_id = 'stock_qty_row1';
-
-					$base_price_row_class = 'base_price_row1';
-					$retail_price_row_class = 'retail_price_row1';
-					$minimum_price_row_class = 'minimum_price_row1';
-					$stock_qty_row_class = 'stock_qty_row1';
 				}else{
-					$base_price_row_class = 'base_price_row';
-					$retail_price_row_class = 'retail_price_row';
-					$minimum_price_row_class = 'minimum_price_row';
-					$stock_qty_row_class = 'stock_qty_row';
-
 					$base_price_row_id = 'base_price_row';
 					$retail_price_row_id = 'retail_price_row';
 					$minimum_price_row_id = 'minimum_price_row';
@@ -110,22 +103,22 @@
 				@endif
 				<td>
 					<div class="form-group">
-                        <input type="text" class="form-control {{$base_price_row_class}}" id="{{$base_price_row_id}}" onkeyup="validateNum(event,this);" name="new_variant[base_price][]">
+                        <input type="text" class="form-control base_price_row" id="{{$base_price_row_id}}" onkeyup="validateNum(event,this);" name="new_variant[base_price][]">
                     </div>
                 </td>
                 <td>
                 	<div class="form-group">
-                		<input type="text" class="form-control {{$retail_price_row_class}}" id="{{$retail_price_row_id}}" onkeyup="validateNum(event,this);" name="new_variant[retail_price][]">
+                		<input type="text" class="form-control retail_price_row" id="{{$retail_price_row_id}}" onkeyup="validateNum(event,this);" name="new_variant[retail_price][]">
                 	</div>
                 </td>
                 <td>
                 	<div class="form-group">
-                		<input type="text" class="form-control {{$minimum_price_row_class}}" id="{{$minimum_price_row_id}}" onkeyup="validateNum(event,this);" name="new_variant[minimum_price][]">
+                		<input type="text" class="form-control minimum_price_row" id="{{$minimum_price_row_id}}" onkeyup="validateNum(event,this);" name="new_variant[minimum_price][]">
                 	</div>
                 </td>
                 <td>
                 	<div class="form-group">
-                		<input type="text" class="form-control {{$stock_qty_row_class}}" id="{{$stock_qty_row_id}}" onkeyup="validateNum(event,this);" name="new_variant[stock_qty][]">
+                		<input type="text" class="form-control stock_qty_row" id="{{$stock_qty_row_id}}" onkeyup="validateNum(event,this);" name="new_variant[stock_qty][]">
                 	</div>
                 </td>
                 <td>
