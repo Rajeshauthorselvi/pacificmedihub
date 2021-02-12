@@ -41,7 +41,7 @@ class RFQController extends Controller
     {
         $data=array();
         $order_status=OrderStatus::where('status',1)
-                              ->whereIn('id',[1,10,12])
+                              ->whereIn('id',[1,10])
                               ->pluck('status_name','id')
                               ->toArray();
 
@@ -186,7 +186,7 @@ class RFQController extends Controller
                     ->where('rfq.id',$id)
                     ->first();
       $order_status=OrderStatus::where('status',1)
-                            ->whereIn('id',[1,10,11,12])
+                            ->whereIn('id',[1,10,11])
                             ->pluck('status_name','id')
                             ->toArray();
 
