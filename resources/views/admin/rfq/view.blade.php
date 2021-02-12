@@ -98,29 +98,39 @@
                             </p>
                           </div>
                         </div>
-                        <div class="col-sm-6 admin address">
-                          <div class="col-sm-2 icon">
-                            <span><i class="far fa-building"></i></span>
+                        @if(isset($admin_address))
+                          <div class="col-sm-6 admin address">
+                            <div class="col-sm-2 icon">
+                              <span><i class="far fa-building"></i></span>
+                            </div>
+                            <div class="col-sm-10">
+                              <h4>{{$admin_address->company_name}}</h4>
+                              <p>
+                                <span>
+                                  {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}
+                                </span><br>
+                                <span>
+                                  {{$admin_address->getCountry->name}},&nbsp;{{$admin_address->getState->name}}
+                                </span><br>
+                                <span>
+                                  {{$admin_address->getCity->name}}&nbsp;-&nbsp;{{$admin_address->post_code}}.
+                                </span>
+                              </p>
+                              <p>
+                                <span>Tel: {{$admin_address->post_code}}</span><br>
+                                <span>Email: {{$admin_address->company_email}}</span>
+                              </p>
+                            </div>
                           </div>
-                          <div class="col-sm-10">
-                            <h4>{{$admin_address->company_name}}</h4>
-                            <p>
-                              <span>
-                                {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}
-                              </span><br>
-                              <span>
-                                {{$admin_address->getCountry->name}},&nbsp;{{$admin_address->getState->name}}
-                              </span><br>
-                              <span>
-                                {{$admin_address->getCity->name}}&nbsp;-&nbsp;{{$admin_address->post_code}}.
-                              </span>
-                            </p>
-                            <p>
-                              <span>Tel: {{$admin_address->post_code}}</span><br>
-                              <span>Email: {{$admin_address->company_email}}</span>
-                            </p>
+                        @else
+                          <div class="col-sm-6 admin address">
+                            <div class="col-sm-2 icon">
+                              <span><i class="far fa-building"></i></span>
+                            </div>
+                            <div class="col-sm-10">
+                            </div>
                           </div>
-                        </div>
+                        @endif
                       </div>
                     </div>
                   </div>
