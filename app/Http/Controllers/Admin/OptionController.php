@@ -49,14 +49,16 @@ class OptionController extends Controller
         $input['created_at'] = date('Y-m-d H:i:s');
         $option_id=Option::insertGetId($input);
 
+        $count = 1;
         foreach ($request->option_values as $key => $values) {
             OptionValue::insert([
                 'option_id'=>$option_id,
                 'option_value'=> $values,
-                'display_order'=>0,
+                'display_order'=>$count,
                 'created_at'=>date('Y-m-d H:i:s'),
                 'is_deleted'=>0
             ]);
+        $count++;
         }
 
         return Redirect::route('options.index')->with('success','New Option added successfully.!');
@@ -100,8 +102,6 @@ class OptionController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-
         $this->validate(request(), ['option_name' => 'required','option_values' => 'required','display_order' => 'required']);
         $status=($request->status=='on')?1:0;
         $option=Option::find($id);
@@ -111,7 +111,7 @@ class OptionController extends Controller
         $option->save();
 
         $option_cunt=OptionValue::where('option_id',$id)->count();
-
+            $count = 1;
             foreach ($request->option_values as $key => $values) {
                 $check_val=OptionValue::where('option_id',$id)
                            ->where('id',$key)
@@ -125,11 +125,12 @@ class OptionController extends Controller
                     OptionValue::insert([
                         'option_id'=>$id,
                         'option_value'=>$values,
-                        'display_order'=>0,
+                        'display_order'=>$count,
                         'created_at'=>date('Y-m-d H:i:s'),
                         'is_deleted'=>0,
                     ]);
                 }
+                $count++;
             }
         if (count($request->option_values) < $option_cunt) {
 

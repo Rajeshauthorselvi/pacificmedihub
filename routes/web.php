@@ -104,6 +104,7 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 
 	Route::get('product-commission-value','Admin\ProductController@productCommissionValue');
 
+	Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');
 });
 
 

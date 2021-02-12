@@ -1333,7 +1333,7 @@ class ProductController extends Controller
         $get_options = array();
         foreach ($vendors as $vendor) {
             $vendor_data[]=Vendor::find($vendor);
-            $get_options = Option::whereIn('id',$options)->get();
+            $get_options = Option::whereIn('id',$options)->where('is_deleted',0)->get();
             $sql =$this->generateRawOptions($options);
             $variant_options[] = DB::select($sql);
         }
