@@ -18,7 +18,6 @@ class ProductSheetImport implements ToCollection, WithHeadingRow, WithValidation
     use Importable;
     public function collection(Collection $rows)
     {
-
     	foreach ($rows as $key => $row) {
     	$category=Categories::where('name','like','%'.$row['categoryname'].'%')
     			  ->where('published',1)
@@ -47,7 +46,7 @@ class ProductSheetImport implements ToCollection, WithHeadingRow, WithValidation
     			'commission_value' => isset($row['commissionvalue'])?$row['commissionvalue']:'',
     			'published' => ($row['published']=='yes')?1:0,
     			'show_home'		=> ($row['showhomepage']=="yes")?1:0,
-    			'search_engine_name' =>'',
+    			'search_engine_name' =>isset($row['friendlypagename'])?$row['friendlypagename']:'',
     			'meta_title'	=> $row['metatitle'],
     			'meta_keyword'	=> $row['metakeywords'],
     			'meta_description'	=> $row['metadescription'],
