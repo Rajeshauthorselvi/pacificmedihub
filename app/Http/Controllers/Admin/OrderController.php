@@ -19,6 +19,7 @@ use App\Models\Settings;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
+use App\Models\PaymentHistory;
 
 class OrderController extends Controller
 {
@@ -50,6 +51,7 @@ class OrderController extends Controller
                       ->where('rfq.id',$rfq_id)
                       ->first();
         $order_status=OrderStatus::where('status',1)
+        ->whereIn('id',[1,2,3])
                               ->pluck('status_name','id')
                               ->toArray();
 
@@ -145,12 +147,7 @@ class OrderController extends Controller
             'order_status'          => $request->order_status,
             'order_tax'             => $request->order_tax,
             'order_discount'        => $request->order_discount,
-            'payment_term'          => $request->payment_term,
-            'payment_status'        => $request->payment_status,
-            'payment_ref_no'        => $request->payment_ref_no,
-            'paid_amount'           => $request->paid_amount,
-            'paying_by'             => $request->paying_by,
-            'payment_note'          => $request->payment_note,
+            // 'payment_term'          => $request->payment_term,
             'notes'                  => $request->note,
             'created_at'            => date('Y-m-d H:i:s')
        ];
@@ -178,7 +175,7 @@ class OrderController extends Controller
             $variant=$request->variant;
 
             $product_ids=$variant['product_id'];
-            $variant_id=$variant['id'];
+            $variant_id=$variant['idvariant_id'];
             $base_price=$variant['base_price'];
             $retail_price=$variant['retail_price'];
             $minimum_selling_price=$variant['minimum_selling_price'];
@@ -204,6 +201,20 @@ class OrderController extends Controller
             }
 
        }
+
+
+       if ($request->amount=="" || $request->amount!=0) {
+           PaymentHistory::insert([
+                'ref_id'  => $order_id,
+                'reference_no'  => $request->payment_ref_no,
+                'payment_from'  => 2,
+                'amount'  => $request->amount,
+                'payment_notes' => $request->payment_note,
+                'payment_id' => $request->paying_by,
+                'created_at' => date('Y-m-d H:i:s')
+           ]);
+       }
+
 
        return Redirect::route('orders.index')->with('success','Order created successfully...!');
 
@@ -280,6 +291,7 @@ class OrderController extends Controller
                       ->where('orders.id',$order_id)
                       ->first();
         $order_status=OrderStatus::where('status',1)
+        ->whereIn('id',[1,2,3])
                               ->pluck('status_name','id')
                               ->toArray();
 

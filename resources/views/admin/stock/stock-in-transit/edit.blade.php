@@ -68,26 +68,6 @@
   <div class="container my-4">
                     <div class="table-responsive">
                       <table class="table">
-                          <thead>
-                            <?php
-                          $total_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id);
-                           ?>
-                            <tr>
-                              <th scope="col">#</th>
-                              <th scope="col">Product Name</th>
-
-                           {{--    <th scope="col">
-                                  Total Quantity:&nbsp;
-                                  <span class="all_quantity">{{ $total_products->quantity }}</span>   
-                              </th>
-                              <th>
-                                  Total Amount:&nbsp;
-                                  <span class="all_amount">{{ $total_products->sub_total }}</span>
-                              </th> --}}
-                              <th scope="col"></th>
-                            </tr>
-                           
-                          </thead>
                         <tbody>
                            @foreach ($purchase_products as $product)
                            <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
@@ -96,14 +76,7 @@
                                   $total_based_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id,$product['product_id']);
                                ?>
                               <td>{{ $product['product_name'] }}</th>
-                              {{-- <td>
-                                Quantity:&nbsp;
-                                <span class="total-quantity">{{ $total_based_products->quantity }}</span>
-                              </td>
-                              <td>
-                                Total:&nbsp;
-                                <span class="total">{{ $total_based_products->sub_total }}</span>
-                              </td> --}}
+                        
                           </tr>
                           <tr class="hide-table-padding">
                             <td></td>
@@ -116,9 +89,11 @@
                             @foreach ($product['options'] as $option)
                               <th>{{ $option }}</th>
                             @endforeach
-                            <th>Qty Ordered</th>
-                            <th>Qty Received</th>
-                            <th>Issue Qty</th>
+                            <th>Qty Ordered<br><small>(A)</small></th>
+                            <th>Qty Received<br><small>(A-C)</small></th>
+                            <th>Damaged Quantity<br><small>(B)</small></th>
+                            <th>Missed Quantity<br><small>(C)</small></th>
+                            <th>Stock Quantity<br><small>(A-B-C)</small></th>
                             <th>Reason</th>
                           </tr>
                         </thead>
@@ -149,12 +124,32 @@
                             <td>{{ $variation_details['quantity'] }}</td>
                             <td>
                               <div class="form-group">
-                                  <input type="text" name="variant[qty_received][]" value="{{ isset($variation_details['qty_received'])?$variation_details['qty_received']:$variation_details['quantity'] }}" class="form-control">
+                                <input type="hidden" class="total_quantity" value="{{ $variation_details['quantity'] }}">
+                                  <input type="text" name="variant[qty_received][]" value="{{ isset($variation_details['qty_received'])?$variation_details['qty_received']:$variation_details['quantity'] }}" class="form-control received_quantity" readonly>
                               </div>
                             </td>
                             <td>
                               <div class="form-group">
-                                  <input type="text" name="variant[issued_qty][]" value="{{ isset($variation_details['issue_quantity'])?$variation_details['issue_quantity']:0 }}" class="form-control">
+                                  <input type="text" name="variant[damaged_qty][]" value="{{ isset($variation_details['damage_quantity'])?$variation_details['damage_quantity']:0 }}" class="form-control damaged_quantity">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                  <input type="text" name="variant[missed_qty][]" value="{{ isset($variation_details['missed_quantity'])?$variation_details['missed_quantity']:0 }}" class="form-control missed_quantity">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <?php 
+
+                                  $qty_received=$variation_details['qty_received'];
+                                  $damage_quantity=isset($variation_details['damage_quantity'])?$variation_details['damage_quantity']:0;
+                                  $missed_quantity=isset($variation_details['missed_quantity'])?$variation_details['missed_quantity']:0;
+
+                                $stock_quantity= $qty_received-$damage_quantity-$missed_quantity;
+
+                                ?>
+                                  <input type="text" name="variant[stock_quantity][]" value="{{ $stock_quantity }}" class="form-control stock_quantity" readonly>
                               </div>
                             </td>
                             <td>
@@ -209,34 +204,62 @@
 
   @push('custom-scripts')
     <script type="text/javascript">
-      //Validate Number
-      function validateNum(e , field) {
-        var val = field.value;
-        var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
-        var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
-        if (re.test(val)) {
+        $(document).on('keyup', '.missed_quantity', function(event) {
+          event.preventDefault();
+          var received_quantity=$(this).parents('.parent_tr').find('.total_quantity').val();
+          var current_field_val=$(this).val();
 
-        } else {
-          val = re1.exec(val);
-          if (val) {
-            field.value = val[0];
-          } else {
-            field.value = "";
+          var damaged_quantity=$(this).parents('.parent_tr').find('.damaged_quantity').val();
+          if (damaged_quantity!="" && damaged_quantity!=0) {
+            var balance_amount=parseInt(received_quantity)-parseInt(damaged_quantity);
           }
-        }
-      }
-      $(function() {
-        $('.validateTxt').keydown(function (e) {
-          if (e.shiftKey || e.ctrlKey || e.altKey) {
-            e.preventDefault();
-          } else {
-            var key = e.keyCode;
-            if (!((key == 8) || (key == 32) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90))) {
-              e.preventDefault();
-            }
+          else{
+              var balance_amount=received_quantity;
           }
+
+          if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
+                var current_field_val=Math.max(Math.min(current_field_val, parseInt(balance_amount)), -90);
+                $(this).val(current_field_val);
+          }
+
+          if (current_field_val!="") {
+              var final_val=parseInt(received_quantity)-parseInt(current_field_val);
+          }
+          else{
+              var final_val=received_quantity;
+          }
+          $(this).parents('.parent_tr').find('.received_quantity').val(final_val);
+          
+          var total_received=$(this).parents('.parent_tr').find('.total_quantity').val();
+          var damaged_quantity=$(this).parents('.parent_tr').find('.damaged_quantity').val();
+          var stock_quantity=parseInt(total_received)-parseInt(damaged_quantity)-parseInt(current_field_val);
+          $(this).parents('.parent_tr').find('.stock_quantity').val(stock_quantity);
+
         });
-      });
+
+        $(document).on('keyup', '.damaged_quantity', function(event) {
+          event.preventDefault();
+          var received_quantity=$(this).parents('.parent_tr').find('.total_quantity').val();
+          var current_field_val=$(this).val();
+          var missed_val=$(this).parents('.parent_tr').find('.missed_quantity').val();
+          if (missed_val!="" && missed_val!=0) {
+            var balance_amount=parseInt(received_quantity)-parseInt(missed_val);
+          }
+          else{
+              var balance_amount=received_quantity;
+          }
+            if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
+                var current_field_val=Math.max(Math.min(current_field_val, parseInt(balance_amount)), -90);
+                $(this).val(current_field_val);
+            }
+
+          var total_received=$(this).parents('.parent_tr').find('.total_quantity').val();
+          var missed_quantity=$(this).parents('.parent_tr').find('.missed_quantity').val();
+          var stock_quantity=parseInt(total_received)-parseInt(missed_quantity)-parseInt(current_field_val);
+          $(this).parents('.parent_tr').find('.stock_quantity').val(stock_quantity);
+
+
+        });
     </script>
   @endpush
   <style type="text/css">

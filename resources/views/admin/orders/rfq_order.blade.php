@@ -92,10 +92,10 @@
                         Total Quantity:&nbsp;
                         <span class="all_quantity">{{ $total_products->quantity }}</span>   
                     </th>
-                    <th scope="col">
+                   {{--  <th scope="col">
                         Total Price:&nbsp;
                         <span class="all_rfq_price">{{ $total_products->rfq_price }}</span>  
-                    </th>
+                    </th> --}}
                     <th>
                         Total Amount:&nbsp;
                         <span class="all_amount">{{ $total_products->sub_total }}</span>
@@ -112,7 +112,7 @@
                  ?>
                 <td>{{ $product['product_name'] }}</th>
                 <th>Quantity: {{ $total_based_products->quantity }}</th>
-                <th>Price: {{ $total_based_products->rfq_price }}</th>
+                {{-- <th>Price: {{ $total_based_products->rfq_price }}</th> --}}
                 <th>Total: {{ $total_based_products->sub_total }}</th>
 
                 </tr>

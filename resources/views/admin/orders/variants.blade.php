@@ -106,7 +106,7 @@
                              <?php $high_value=max($variant['minimum_selling_price'],$variant['base_price'],$variant['retail_price']) ?>
                             <input type="hidden" class="max_price" value="{{ $high_value }}">
                             <td>
-                              <input type="text" name="variant[final_price][]" value="0" class="form-control">
+                              <input type="text" name="variant[final_price][]" value="{{ $high_value }}" class="form-control">
                             </td>
                             <td>
                              

@@ -24,26 +24,6 @@
                   <div class="container my-4">
                     <div class="table-responsive">
                       <table class="table">
-                          <thead>
-                            <?php
-                          $total_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id);
-                           ?>
-                            <tr>
-                              <th scope="col">#</th>
-                              <th scope="col">Product Name</th>
-
-                           {{--    <th scope="col">
-                                  Total Quantity:&nbsp;
-                                  <span class="all_quantity">{{ $total_products->quantity }}</span>   
-                              </th>
-                              <th>
-                                  Total Amount:&nbsp;
-                                  <span class="all_amount">{{ $total_products->sub_total }}</span>
-                              </th> --}}
-                              <th scope="col"></th>
-                            </tr>
-                           
-                          </thead>
                         <tbody>
                            @foreach ($purchase_products as $product)
                            <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
@@ -76,15 +56,16 @@
 							{{-- <th>Retail Price</th> --}}
 							{{-- <th>Minimum Price</th> --}}
 							<th>Purchase Price</th>
-							<th>Total Quantity</th>
+							<th>Total Purchase Quantity</th>
+							<th>Damage Quantity</th>
+							<th>Missed Quantity</th>
+							<th>Total Return Quantity</th>
+							<th>Total Return Amount</th>
 							<th>Reason</th>
-							<th>Return Quantity</th>
-							<th>Subtotal</th>
 						</thead>
                         <tbody>
-                        <?php $total_amount=$total_quantity=$final_price=0 ?>
+                        <?php $missed_quantity=$damage_quantity=$total_amount=$total_quantity=$final_price=0 ?>
                         <?php $s_no=1; ?>
-
                        @foreach($product['product_variant'] as $key=>$variant)
 
                        <?php 
@@ -92,7 +73,7 @@
                          $variation_details=\App\Models\PurchaseProducts::VariationPrice($product['product_id'],$variant['variant_id'],$purchase->id);
                          $product_price=\App\Models\PurchaseProducts::ProductPrice($product['product_id'],$variant['variant_id']);
                        ?>
-                        <input type="hidden" name="variant[row_id][]" value="{{ $variation_details->id }}">
+                       
                           <tr class="parent_tr">
                           	<td>{{ $key+1 }}</td>
                             <td>{{$variant['option_value1']}}</td>
@@ -115,30 +96,43 @@
                             	<input type="hidden" class="purchase_price" value="{{ $product_price }}">
                             	{{ $product_price }}
                             </td>
-                            <td>{{ $variation_details['quantity'] }}</td>
-                            <td>{{ $variation_details['reason'] }}</td>
                             <td>
-                            	<?php $max_price=$product_price*$variation_details['issue_quantity']; ?>
-                              	<input type="text" name="quantity[{{ $variation_details['id'] }}]" class="form-control return_quantity" value="{{ $variation_details['issue_quantity'] }}" max-count="{{ $variation_details['quantity'] }}" max-count="{{ $variation_details['quantity'] }}">
+                            	{{ $variation_details['quantity'] }}
+                            	<input type="hidden" class="total_quantity" value="{{ $variation_details['quantity'] }}">
+                            </td>
+                            
+                            <td>
+                            	<?php $damage_quantity=$variation_details['damage_quantity']; ?>
+                              	<input type="text" name="damage_quantity[{{ $variation_details['id'] }}]" class="form-control damaged_quantity" value="{{ $variation_details['damage_quantity'] }}" max-count="{{ $variation_details['quantity'] }}" readonly>
                               	<input type="hidden" name="purchase_id" value="{{ $purchase_id }}">
-                              	<input type="hidden" name="sub_total[{{ $variation_details['id'] }}]" class="sub_total" value="{{ $product_price*$variation_details['issue_quantity'] }}">
-                              	<input type="hidden" name="product_id" value="{{ $variant['product_id'] }}">
+                              	<input type="hidden" name="product_id[{{ $variation_details['id'] }}]" value="{{ $variant['product_id'] }}">
                               </td>
-                              
+                              <td>
+                              	<input type="text" name="missed_quantity[{{ $variation_details['id'] }}]" class="form-control missed_quantity" value="{{ $variation_details['missed_quantity'] }}" readonly>
+                              </td>
+                              <th>
+                              	<?php $total_return=$variation_details['damage_quantity']+$variation_details['missed_quantity']; ?>
+                              	<input type="text" name="return_quantity[{{ $variation_details['id'] }}]" class="form-control missed_quantity" value="{{ $total_return }}" readonly>
+                              </th>
                               <td>
                               	<span class="sub_total_text">
-                              		{{ $max_price }}
+                              		<?php $total_return_amount=($variation_details['missed_quantity']+$variation_details['damage_quantity'])*$product_price ?>
+                              		{{ $total_return_amount }}
+                              		<input type="hidden" name="sub_total[{{ $variation_details['id'] }}]" value="{{ $total_return_amount }}" class="sub_total">
                               	</span>
                               </td>
+                              <td>{{ $variation_details['reason'] }}</td>
                           </tr>
-                          <?php $total_amount +=$max_price; ?>
-                          <?php $total_quantity +=$variation_details['issue_quantity']; ?>
+                          <?php $total_amount +=$total_return_amount; ?>
+                          <?php $damage_quantity +=$variation_details['damage_quantity']; ?>
+                          <?php $missed_quantity +=$variation_details['missed_quantity']; ?>
                         @endforeach
-                        <tr>
+                        {{-- <tr>
                           <td colspan="{{ count($product['options'])+4 }}" class="text-right">Total:</td>
-                          <td><span class="total-quantity">{{ $total_quantity }}</span></td>
+                          <td><span class="damage-quantity">{{ $damage_quantity }}</span></td>
+                          <td><span class="missed-quantity">{{ $missed_quantity }}</span></td>
                           <td><span class="total-amount">{{ $total_amount }}</span></td>
-                        </tr>
+                        </tr> --}}
                       </tbody>
                       </table>
 

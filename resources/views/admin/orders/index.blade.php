@@ -82,7 +82,7 @@
                               {{ $sub_total-$order->paid_amount }}
                           </td>
                           <td>
-                          <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
+                          <?php $payment_status=[0=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
                             {{ $payment_status[$order->payment_status] }}
                           </td>
                           <td>

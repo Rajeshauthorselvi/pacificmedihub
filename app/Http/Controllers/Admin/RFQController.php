@@ -41,6 +41,7 @@ class RFQController extends Controller
     {
         $data=array();
         $order_status=OrderStatus::where('status',1)
+                              ->whereIn('id',[1,2,3])
                               ->pluck('status_name','id')
                               ->toArray();
 
@@ -90,6 +91,7 @@ class RFQController extends Controller
      */
     public function store(Request $request)
     {
+
       $this->validate(request(),[
         'order_no'  =>'required',
         'status'=>'required',

@@ -62,15 +62,7 @@
                           {!! Form::text('reference_number',null,['class'=>'form-control']) !!}
                         </div>
                     </div>
-                  </div>{{-- 
-                  <div class="product-sec">
-                    <div class="col-sm-8">
-                        <div class="form-group">
-                          <label for="product">Products *</label>
-                          {!! Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec']) !!}
-                        </div>
-                    </div>
-                  </div> --}}
+                  </div>
                   <div class="clearfix"></div>
                   <div class="order-item-sec">
                     <table class="table table-bordered">
@@ -105,37 +97,6 @@
                               <td><input type="text" name="quantity[{{$wastage['id']}}]" value="{{ $wastage['quantity'] }}" class="form-control"></td>
                             </tr>
                           @endforeach
-
-                        {{--   @foreach ($product_datas as $product)
-                            <tr>
-                              <td>{{ $product['product_name'] }}</td>
-                              @if (isset($product['option_value_id1']))
-                                <td>{{ $product['option_value_id1'] }}</td>
-                              @endif
-                              @if (isset($product['option_value_id2']))
-                                <td>{{ $product['option_value_id2'] }}</td>
-                              @endif
-                              @if (isset($product['option_value_id3']))
-                                <td>{{ $product['option_value_id3'] }}</td>
-                              @endif
-                              @if (isset($product['option_value_id4']))
-                                <td>{{ $product['option_value_id4'] }}</td>
-                              @endif
-                              @if (isset($product['option_value_id5']))
-                                <td>{{ $product['option_value_id5'] }}</td>
-                              @endif
-                              <td>{{ $product['quantity'] }}</td>
-                              <td>
-                                <input type="text" name="qty_received[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['qty_received'])?$product['qty_received']:$product['quantity'] }}" class="form-control">
-                              </td>
-                              <td>
-                                <input type="text" name="issue_quantity[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['issue_quantity'])?$product['issue_quantity']:$product['quantity'] }}" class="form-control">
-                              </td>
-                              <td>
-                                <input type="text" name="reason[{{ $product['product_purchase_id'] }}]" value="{{ isset($product['reason'])?$product['reason']:'-' }}" class="form-control">
-                              </td>
-                            </tr>
-                          @endforeach --}}
                         </tbody>
                     </table>
                   </div>

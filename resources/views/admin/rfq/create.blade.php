@@ -193,6 +193,36 @@ $(document).on('click', '.save-btn', function(event) {
          var base=$(this).parents('.parent_tr');
          var base_price=base.find('.rfq_price').val();
          var total_price=base_price*$(this).val();
+         
+          base.find('.subtotal_hidden').val(total_price);
+          base.find('.sub_total').text(total_price);
+            
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+          var attr=$(this).parents('tbody').find('.collapse.show');
+          var total_quantity=SumTotal('.collapse.show .stock_qty');
+          console.log(total_quantity);
+
+          $('.collapse.show').find('.total_quantity').text(total_quantity);
+          $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);
+          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+          $('.collapse.show').find('.total').text(total_amount);
+          $('[href="#'+attr_id+'"]').find('.total').text(total_amount);
+
+          $('.all_quantity').text(SumTotal('.stock_qty'));
+          $('.all_amount').text(SumTotal('.subtotal_hidden'));
+      }
+    });
+
+    $(document).on('keyup', '.rfq_price', function(event) {
+      if (/\D/g.test(this.value))
+      {
+        this.value = this.value.replace(/\D/g, '');
+      }
+      else{
+         var base=$(this).parents('.parent_tr');
+         var base_price=base.find('.stock_qty').val();
+         var total_price=base_price*$(this).val();
+         
           base.find('.subtotal_hidden').val(total_price);
           base.find('.sub_total').text(total_price);
             
@@ -234,7 +264,7 @@ function createTable(){
       data +='<td>#</td>';
       data +='<th scope="col">Product Name</th>';
       data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
-      data +='<th>Total Price:&nbsp;<span class="all_rfq_price"></span></th>';
+      // data +='<th>Total Price:&nbsp;<span class="all_rfq_price"></span></th>';
       data +='<th>Total Amount:<span class="all_amount"></span></th>';
       data +='</tr>';
       data +='</thead>';

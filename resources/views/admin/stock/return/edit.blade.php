@@ -51,30 +51,16 @@
       <input class="form-control" value="{{ $vendor_name }}" readonly>
     </div>
   </div>
+  <div class="col-sm-4">
+    <div class="form-group">
+      <label>Return Status</label>
+      {!! Form::select('return_status',$status,$purchase_detail->return_status,['class'=>'form-control']) !!}
+    </div>
+  </div>
 </div>
-
+<div class="clearfix"></div>
 <div class="col-sm-12">
   <table class="table table-bordered">
-                          <thead>
-                            <?php
-                          $total_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id);
-                           ?>
-                            <tr>
-                              <th scope="col">#</th>
-                              <th scope="col">Product Name</th>
-
-                           {{--    <th scope="col">
-                                  Total Quantity:&nbsp;
-                                  <span class="all_quantity">{{ $total_products->quantity }}</span>   
-                              </th>
-                              <th>
-                                  Total Amount:&nbsp;
-                                  <span class="all_amount">{{ $total_products->sub_total }}</span>
-                              </th> --}}
-                              <th scope="col"></th>
-                            </tr>
-                           
-                          </thead>
                         <tbody>
                            @foreach ($purchase_products as $product)
                            <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
@@ -83,14 +69,6 @@
                                   $total_based_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id,$product['product_id']);
                                ?>
                               <td>{{ $product['product_name'] }}</td>
-                             {{--  <td>
-                                Quantity:&nbsp;
-                                <span class="total-quantity">{{ $total_based_products->quantity }}</span>
-                              </td>
-                              <td>
-                                Total:&nbsp;
-                                <span class="total">{{ $total_based_products->sub_total }}</span>
-                              </td> --}}
                           </tr>
                           <tr class="hide-table-padding">
                             <td></td>
@@ -99,19 +77,18 @@
 
                       <table class="table table-bordered" style="width: 100%">
                         <thead>
-              <th>No</th>
-                      @foreach ($product['options'] as $option)
-                        <th>{{ $option }}</th>
-                      @endforeach
-              {{-- <th>Base Price</th> --}}
-              {{-- <th>Retail Price</th> --}}
-              {{-- <th>Minimum Price</th> --}}
-              <th>Purchase Price</th>
-              <th>Total Quantity</th>
-              <th>Reason</th>
-              <th>Return Quantity</th>
-              <th>Subtotal</th>
-            </thead>
+                          <th>No</th>
+                          @foreach ($product['options'] as $option)
+                            <th>{{ $option }}</th>
+                          @endforeach
+                          <th>Purchase Price</th>
+                          <th>Total Purchase Quantity</th>
+                          <th>Damage Quantity</th>
+                          <th>Missed Quantity</th>
+                          <th>Return Quantity</th>
+                          <th>Total Return Amount</th>
+                          <th>Reason</th>
+                        </thead>
                         <tbody>
                         <?php $total_amount=$total_quantity=$final_price=0 ?>
                         <?php $s_no=1; ?>
@@ -121,12 +98,7 @@
                          $option_count=$product['option_count'];
                          $variation_details=\App\Models\PurchaseProducts::VariationPrice($product['product_id'],$variant['variant_id'],$purchase_id);
                          $product_price=\App\Models\PurchaseProducts::ProductPrice($product['product_id'],$variant['variant_id']);
-
-                         //$return_quantity=\App\Models\PurchaseProductReturn::ReturnPrice($product['product_id'],$variant['variant_id'],$purchase_return_id);
-
-
                        ?>
-                        {{-- <input type="hidden" name="variant[row_id][]" value="{{ $variation_details->id }}"> --}}
                           <tr class="parent_tr">
                             <td>{{ $key+1 }}</td>
                             <td>{{$variant['option_value1']}}</td>
@@ -142,39 +114,38 @@
                             @if($option_count==5)
                               <td> {{$variant['option_value5']}} </td>
                             @endif
-                            {{-- <td> {{$variant['base_price']}} </td> --}}
-                            {{-- <td> {{$variant['retail_price']}}</td> --}}
-                            {{-- <td><span class="test"> {{$variant['minimum_selling_price']}} </span></td> --}}
                             <td>
                               <input type="hidden" class="purchase_price" value="{{ $product_price }}">
                               {{ $product_price }}
                             </td>
-                            <td>{{ $variation_details['quantity'] }}</td>
-                            <td>{{ $variation_details['reason'] }}</td>
                             <td>
-                              <?php $max_price=$product_price*$variation_details['issue_quantity']; ?>
-                                <input type="text" name="quantity[{{ $variation_details['id'] }}]" class="form-control return_quantity" value="{{ $return_quantity[$variation_details['id']] }}" max-count="{{ $variation_details['quantity'] }}">
-
+                              {{ $variation_details['quantity'] }}
+                              <input type="hidden" class="total_quantity" value="{{ $variation_details['quantity'] }}">
+                            </td>
+                            
+                            <td>
+                                <input type="text" name="damage_quantity[{{ $variation_details['id'] }}]" class="form-control damaged_quantity" value="{{ $damage_quantity[$variation_details['id']] }}" readonly>
                                 <input type="hidden" name="purchase_id" value="{{ $purchase_id }}">
-                                <input type="hidden" name="sub_total[{{ $variation_details['id'] }}]" class="sub_total" value="{{ $return_sub_total[$variation_details['id']]  }}">
                                 <input type="hidden" name="product_id[{{ $variation_details['id'] }}]" value="{{ $variant['product_id'] }}">
                               </td>
-                              
+                             <td>
+                                <input type="text" name="missed_quantity[{{ $variation_details['id'] }}]" class="form-control missed_quantity" value="{{ $missed_quantity[$variation_details['id']] }}" readonly>
+                              </td>
+                             <td>
+                                <input type="text" name="return_quantity[{{ $variation_details['id'] }}]" class="form-control return_quantity" value="{{ $return_quantity[$variation_details['id']] }}" readonly>
+                              </td>
                               <td>
                                 <span class="sub_total_text">
-                                  {{ $max_price }}
+<?php $total_return_amount=($missed_quantity[$variation_details['id']]+$damage_quantity[$variation_details['id']])*$product_price ?>
+                                  {{ $total_return_amount }}
                                 </span>
+                                  <input type="hidden" name="sub_total[{{ $variation_details['id'] }}]" value="{{ $total_return_amount }}" class="sub_total">
                               </td>
+                              <td>{{ $variation_details['reason'] }}</td>
                           </tr>
-                          <?php $total_amount += $return_sub_total[$variation_details['id']] ; ?>
-                          <?php $total_quantity +=$return_quantity[$variation_details['id']]; ?>
+                        
                         @endforeach
-                        <tr>
-                          <td colspan="{{ count($product['options'])+4 }}" class="text-right">Total:</td>
-                          <td><span class="total-quantity">{{ $total_quantity }}</span></td>
-                          <td><span class="total-amount">{{ $total_amount }}</span></td>
-                        </tr>
-                      </tbody>
+                      
                       </table>
 
                               </div>
@@ -226,35 +197,63 @@ $(document).on("keyup", ".return_quantity", function() {
     });
     $(".total").html(sum);
 });
-      $(document).on('keyup', '.return_quantity', function(event) {
-          
+        $(document).on('keyup', '.missed_quantity', function(event) {
+          event.preventDefault();
+
           if (/\D/g.test(this.value)){
-            this.value = this.value.replace(/\D/g, '');
-            return false
+              this.value = this.value.replace(/\D/g, '');
+              return false
+            }
+
+          var total_quantity=$(this).parents('.parent_tr').find('.total_quantity').val();
+          var current_field_val=$(this).val();
+          var damaged_quantity=$(this).parents('.parent_tr').find('.damaged_quantity').val();
+
+          if (damaged_quantity!="" && damaged_quantity!=0) {
+            var balance_amount=parseInt(total_quantity)-parseInt(damaged_quantity);
           }
-          var current_val=$(this).val();
-            var parent=$(this).parents('.parent_tr');
-            var base_price=parent.find('.purchase_price').val();
-            var sub_total=parseInt(current_val)*parseInt(base_price);
-            parent.find('.sub_total').val(sub_total);
-            parent.find('.sub_total_text').text(sub_total);
+          else{
+              var balance_amount=total_quantity;
+          }
+          if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
+                var current_field_val=Math.max(Math.min(current_field_val, parseInt(balance_amount)), -90);
+                $(this).val(current_field_val);
+          }
 
-            var all_total=$(this).parents('.table').find('.sub_total_text');
-            var all_quantity=$(this).parents('.table').find('.return_quantity');
-
-             var total = 0;
-            $.each(all_total, function(index, val) {
-               total += parseInt($(this).text());
-            });
-          $(".total-amount").html(total);
+          var purchase_price=$(this).parents('.parent_tr').find('.purchase_price').val();
+          var total=(parseInt(current_field_val)+parseInt(damaged_quantity))*parseInt(purchase_price);
+           $(this).parents('.parent_tr').find('.sub_total_text').text(total);
+           $(this).parents('.parent_tr').find('.sub_total').val(total);
 
 
-          var quantity = 0;
-          $(all_quantity).each(function(){
-              quantity += parseInt($(this).val());
-          });
-          $(".total-quantity").html(quantity);
+        });
+      $(document).on('keyup', '.damaged_quantity', function(event) {
 
+          event.preventDefault();
+          if (/\D/g.test(this.value)){
+              this.value = this.value.replace(/\D/g, '');
+              return false
+            }
+
+          var total_quantity=$(this).parents('.parent_tr').find('.total_quantity').val();
+          var current_field_val=$(this).val();
+          var missed_val=$(this).parents('.parent_tr').find('.missed_quantity').val();
+          if (missed_val!="" && missed_val!=0) {
+            var balance_amount=parseInt(total_quantity)-parseInt(missed_val);
+          }
+          else{
+              var balance_amount=total_quantity;
+          }
+            if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
+                var current_field_val=Math.max(Math.min(current_field_val, parseInt(balance_amount)), -90);
+                $(this).val(current_field_val);
+            }
+
+          var purchase_price=$(this).parents('.parent_tr').find('.purchase_price').val();
+          var total=(parseInt(current_field_val)+parseInt(missed_val))*parseInt(purchase_price);
+
+           $(this).parents('.parent_tr').find('.sub_total_text').text(total);
+           $(this).parents('.parent_tr').find('.sub_total').val(total);
 
 
       });

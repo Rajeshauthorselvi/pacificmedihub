@@ -92,44 +92,63 @@
       $('.notes-sec').hide();
       $('.submit-sec').hide();
 
-      $(document).on('keyup', '.return_quantity', function(event) {
+        $(document).on('keyup', '.missed_quantity', function(event) {
+          event.preventDefault();
 
-
-           if (/\D/g.test(this.value)){
+          if (/\D/g.test(this.value)){
               this.value = this.value.replace(/\D/g, '');
               return false
             }
-            var max_quantity=$(this).attr('max-count');
-            var current_val = $(this).val();
-            if ((current_val !== '') && (current_val.indexOf('.') === -1)) {
-                var current_val=Math.max(Math.min(current_val, parseInt(max_quantity)), -90);
-                $(this).val(current_val);
+
+          var total_quantity=$(this).parents('.parent_tr').find('.total_quantity').val();
+          var current_field_val=$(this).val();
+          var damaged_quantity=$(this).parents('.parent_tr').find('.damaged_quantity').val();
+
+          if (damaged_quantity!="" && damaged_quantity!=0) {
+            var balance_amount=parseInt(total_quantity)-parseInt(damaged_quantity);
+          }
+          else{
+              var balance_amount=total_quantity;
+          }
+          if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
+                var current_field_val=Math.max(Math.min(current_field_val, parseInt(balance_amount)), -90);
+                $(this).val(current_field_val);
+          }
+
+          var purchase_price=$(this).parents('.parent_tr').find('.purchase_price').val();
+          var total=(parseInt(current_field_val)+parseInt(damaged_quantity))*parseInt(purchase_price);
+           $(this).parents('.parent_tr').find('.sub_total_text').text(total);
+           $(this).parents('.parent_tr').find('.sub_total').val(total);
+
+
+        });
+      $(document).on('keyup', '.damaged_quantity', function(event) {
+
+          event.preventDefault();
+          if (/\D/g.test(this.value)){
+              this.value = this.value.replace(/\D/g, '');
+              return false
             }
-        
-          // var current_val=$(this).val();
-            var parent=$(this).parents('.parent_tr');
-            var base_price=parent.find('.purchase_price').val();
-            var sub_total=parseInt(current_val)*parseInt(base_price);
-            parent.find('.sub_total').val(sub_total);
 
-            parent.find('.sub_total_text').text(sub_total);
+          var total_quantity=$(this).parents('.parent_tr').find('.total_quantity').val();
+          var current_field_val=$(this).val();
+          var missed_val=$(this).parents('.parent_tr').find('.missed_quantity').val();
+          if (missed_val!="" && missed_val!=0) {
+            var balance_amount=parseInt(total_quantity)-parseInt(missed_val);
+          }
+          else{
+              var balance_amount=total_quantity;
+          }
+            if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
+                var current_field_val=Math.max(Math.min(current_field_val, parseInt(balance_amount)), -90);
+                $(this).val(current_field_val);
+            }
 
-            var all_total=$(this).parents('.table').find('.sub_total_text');
-            var all_quantity=$(this).parents('.table').find('.return_quantity');
+          var purchase_price=$(this).parents('.parent_tr').find('.purchase_price').val();
+          var total=(parseInt(current_field_val)+parseInt(missed_val))*parseInt(purchase_price);
 
-             var total = 0;
-            $.each(all_total, function(index, val) {
-               total += parseInt($(this).text());
-            });
-          $(".total-amount").html(total);
-
-
-          var quantity = 0;
-          $(all_quantity).each(function(){
-              quantity += parseInt($(this).val());
-          });
-          $(".total-quantity").html(quantity);
-
+           $(this).parents('.parent_tr').find('.sub_total_text').text(total);
+           $(this).parents('.parent_tr').find('.sub_total').val(total);
 
 
       });

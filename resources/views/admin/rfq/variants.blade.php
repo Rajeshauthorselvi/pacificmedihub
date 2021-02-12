@@ -3,7 +3,7 @@
     <td class="expand-button"></td>
     <td>{{ $product_name }}</td>
     <td>Quantity:&nbsp;<span class="quantity_{{ $product_id }} total_quantity"></span></td>
-    <td>Price:&nbsp;<span class="rfq_{{ $product_id }}"></span></td>
+    {{-- <td>Price:&nbsp;<span class="rfq_{{ $product_id }}"></span></td> --}}
     <td>Total:&nbsp;<span class="total_{{ $product_id }} total"></span></td>
   </tr>
 
@@ -20,8 +20,8 @@
             <th>Base Price</th>
             <th>Retail Price</th>
             <th>Minimum Selling Price</th>
-            <th>Quantity</th>
             <th>Price</th>
+            <th>Quantity</th>
             <th>Subtotal</th>
           </tr>
         </thead>
@@ -90,17 +90,18 @@
                   {{$variant['minimum_selling_price']}}
                 </td>
                 <td>
-                  <div class="form-group">
-                    <?php $quantity=0 ?>
-                    <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" value="{{$quantity}}">
-                  </div>
-                </td>
-                <td>
                   <?php 
                     $high_value=max($variant['minimum_selling_price'],$variant['base_price'],$variant['retail_price']) 
                   ?>
                   <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{$high_value}}">
                 </td>
+                <td>
+                  <div class="form-group">
+                    <?php $quantity=0 ?>
+                    <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" value="{{$quantity}}">
+                  </div>
+                </td>
+
                 <td>
                   <div class="form-group">
                     <!-- <span class="sub_total">{{ $high_value }}</span>
