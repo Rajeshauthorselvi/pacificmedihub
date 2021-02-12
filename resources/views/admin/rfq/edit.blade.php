@@ -149,7 +149,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                        <?php $total_amount=$total_quantity=0 ?>
+                        <?php $rfq_price=$total_amount=$total_quantity=0 ?>
    @foreach($product['product_variant'] as $key=>$variant)
 
    <?php 
@@ -240,11 +240,12 @@
                           </tr>
                           <?php $total_amount +=$variation_details['sub_total']; ?>
                           <?php $total_quantity +=$variation_details['quantity']; ?>
+                          <?php $rfq_price +=$high_value; ?>
                         @endforeach
                         <tr>
-                          <td colspan="{{ count($product['options'])+3 }}" class="text-right">Total Qty:</td>
+                          <td colspan="{{ count($product['options'])+3 }}" class="text-right">Total:</td>
+                          <td class="text-left">{{ $rfq_price }}</td>
                           <td class="total_quantity">{{ $total_quantity }}</td>
-                          <td class="text-right">Total Subtotal:</td>
                           <td class="total_amount">{{ $total_amount }}</td>
                         </tr>
                       </tbody>

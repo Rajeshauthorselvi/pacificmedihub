@@ -18,7 +18,6 @@ class ProductSheetImport implements ToCollection, WithHeadingRow, WithValidation
     use Importable;
     public function collection(Collection $rows)
     {
-
     	foreach ($rows as $key => $row) {
     	$category=Categories::where('name','like','%'.$row['categoryname'].'%')
     			  ->where('published',1)
@@ -33,7 +32,7 @@ class ProductSheetImport implements ToCollection, WithHeadingRow, WithValidation
     		$data=[
     			'id'	=> $row['productid'],
     			'name'	=> $row['productname'],
-    			'code'	=>$row['code'],
+    			'code'	=>isset($row['code'])?$row['code']:'',
     			'sku'	=> isset($row['sku'])?$row['sku']:'',
     			'category_id'	=>$category->id,
     			'brand_id'		=> $brand_id,
@@ -47,7 +46,7 @@ class ProductSheetImport implements ToCollection, WithHeadingRow, WithValidation
     			'commission_value' => isset($row['commissionvalue'])?$row['commissionvalue']:'',
     			'published' => ($row['published']=='yes')?1:0,
     			'show_home'		=> ($row['showhomepage']=="yes")?1:0,
-    			'search_engine_name' =>'',
+    			'search_engine_name' =>isset($row['friendlypagename'])?$row['friendlypagename']:'',
     			'meta_title'	=> $row['metatitle'],
     			'meta_keyword'	=> $row['metakeywords'],
     			'meta_description'	=> $row['metadescription'],
@@ -63,6 +62,7 @@ class ProductSheetImport implements ToCollection, WithHeadingRow, WithValidation
         return [
             // Above is alias for as it always validates in batches
             'productid'=>'required|unique:products,id',
+            'code'=>'required',
             'categoryname'=>'required|exists:categories,name'
         ];
     }
