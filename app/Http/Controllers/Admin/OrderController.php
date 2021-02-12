@@ -402,8 +402,10 @@ class OrderController extends Controller
         if ($search_type=="product") {
 
             $product_names=Product::where("name","LIKE","%".$request->input('name')."%")
-                          ->pluck('name','id')
-                          ->toArray();
+                            ->where('is_deleted',0)
+                            ->where('published',1)
+                            ->pluck('name','id')
+                            ->toArray();
             $names=array();
             if (count($product_names)>0) {
                 foreach ($product_names as $key => $name) {

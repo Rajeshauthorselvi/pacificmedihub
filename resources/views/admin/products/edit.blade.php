@@ -288,6 +288,7 @@
         </tr>
       </thead>
       <tbody>
+        <input type="hidden" id="product_variant_count" value="{{count($product_variant)}}">
         @php foreach($product_variant as $variant){ @endphp
           <tr>
             <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
@@ -714,17 +715,24 @@
     //Remove Variant
     var prev_val;
     $(".remove-variant-individual").on('click', function(e, state) { 
-        prev_val = $(this).val();
-        var success = confirm('Are you sure you want to remove this Variant?');
-        if(success) {
-          var varId = $(this).attr('variant-id');
-          var routeUrl = $(this).attr('route-url');
-          deletevariant(varId,routeUrl);
+        var productVariantCount = $('#product_variant_count').val();
+        if(productVariantCount==1){
+          confirm("Can't remove. Product contain atleast one variant");
+          return false;
+        }else{
+          prev_val = $(this).val();
+          var success = confirm('Are you sure you want to remove this Variant?');
+          if(success) {
+            var varId = $(this).attr('variant-id');
+            var routeUrl = $(this).attr('route-url');
+            deletevariant(varId,routeUrl);
 
-        }else {
-          $(this).val(prev_val);
-          return false; 
+          }else {
+            $(this).val(prev_val);
+            return false; 
+          }
         }
+
       });
     function deletevariant(varId,routeUrl) {
       $.ajax({

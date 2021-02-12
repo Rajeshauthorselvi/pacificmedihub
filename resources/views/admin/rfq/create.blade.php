@@ -149,7 +149,7 @@ $(document).on('click', '.save-btn', function(event) {
           }
         });
       },
-      minLength: 3,
+      minLength: 1,
       select: function( event, ui ) {
         $.ajax({
           url: "{{ url('admin/rfq-product') }}",

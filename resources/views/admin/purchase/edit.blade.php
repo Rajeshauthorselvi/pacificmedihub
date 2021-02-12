@@ -408,7 +408,7 @@ function SumTotal(class_name) {
           }
         });
       },
-      minLength: 3,
+      minLength: 1,
       select: function( event, ui ) {
 
         var check_length=$('.product_id[value='+ui.item.value+']').length;
