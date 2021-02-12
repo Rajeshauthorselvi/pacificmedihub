@@ -20,7 +20,7 @@
             <th>Base Price</th>
             <th>Retail Price</th>
             <th>Minimum Selling Price</th>
-            <th>Price</th>
+            <th>RFQ Price</th>
             <th>Quantity</th>
             <th>Subtotal</th>
           </tr>
