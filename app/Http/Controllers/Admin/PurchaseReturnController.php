@@ -27,7 +27,7 @@ class PurchaseReturnController extends Controller
     public function index()
     {
         $data_return=array();
-        $returns=PurchaseReturn::all();
+        $returns=PurchaseReturn::orderBy('id','DESC')->get();
         foreach ($returns as $key => $return) {
             $purchase=Purchase::where('id',$return->purchase_or_order_id)
                       ->value('purchase_order_number'); 
@@ -74,11 +74,11 @@ class PurchaseReturnController extends Controller
     public function store(Request $request)
     {
         $purchase=Purchase::where('id',$request->purchase_id)->first();
-
         $damage_quantity=$request->damage_quantity;
         $missed_quantity=$request->missed_quantity;
         $sub_total=$request->sub_total;
         $product_id=$request->product_id;
+        $return_quantity=$request->return_quantity;
           $data= [ 
                 'purchase_or_order_id'  => (int)$request->purchase_id,
                 'customer_or_vendor_id' => $purchase->vendor_id,
@@ -97,6 +97,7 @@ class PurchaseReturnController extends Controller
                 'purchase_variation_id' => $key,
                 'damage_quantity'       => $quantity,
                 'missed_quantity'       => $missed_quantity[$key],
+                'return_quantity'       => $return_quantity[$key],
                 'return_sub_total'      => $sub_total[$key]
             ];
         PurchaseProductReturn::insert($data);
@@ -150,7 +151,7 @@ class PurchaseReturnController extends Controller
             $data['purchase_products']=$product_data;
 
          $data['purchase_id']=$id;
-         $data['status']=[''=>'Please Select']+OrderStatus::whereIn('id',[5,6,7])->pluck('status_name','id')->toArray();
+         $data['status']=[''=>'Please Select']+OrderStatus::whereIn('id',[5,6,7,9])->pluck('status_name','id')->toArray();
         $view=view('admin.stock.return.products',$data)->render();
 
         return ['status'=>true,'view'=>$view];
@@ -316,7 +317,7 @@ class PurchaseReturnController extends Controller
     {
         $data=array();
         $data['purchase_detail']=$purchase_detail=PurchaseReturn::where('id',$id)->first();
-         $data['status']=[''=>'Please Select']+OrderStatus::whereIn('id',[5,6,7])->pluck('status_name','id')->toArray();
+         $data['status']=[''=>'Please Select']+OrderStatus::whereIn('id',[5,6,7,9])->pluck('status_name','id')->toArray();
 
         $data['damage_quantity']=PurchaseProductReturn::where('purchase_return_id',$id)
                          ->pluck('damage_quantity','purchase_variation_id')
@@ -326,6 +327,9 @@ class PurchaseReturnController extends Controller
                          ->toArray();
         $data['return_subtotal']=PurchaseProductReturn::where('purchase_return_id',$id)
                     ->pluck('return_sub_total','purchase_variation_id')
+                    ->toArray();
+        $data['return_quantity']=PurchaseProductReturn::where('purchase_return_id',$id)
+                    ->pluck('return_quantity','purchase_variation_id')
                     ->toArray();
         $purchase_id=$purchase_detail->purchase_or_order_id;
 

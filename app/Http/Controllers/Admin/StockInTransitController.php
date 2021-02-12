@@ -305,19 +305,18 @@ class StockInTransitController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $this->validate(request(),[
             'purchase_status'   => 'required'
         ]);
-
         $quantity_received=$request->qty_received;
-
        
        $variant=$request->variant;
-
        $row_ids=$variant['row_id'];
        $qty_received=$variant['qty_received'];
        $damaged_qty=$variant['damaged_qty'];
        $missed_quantity=$variant['missed_qty'];
+       $stock_quantity=$variant['stock_quantity'];
        $reason=$variant['reason'];
          foreach ($row_ids as $key => $row_id) {
             $purchase_data=DB::table('purchase_products')->where('id',$row_id)->first();
@@ -325,16 +324,17 @@ class StockInTransitController extends Controller
             $variant_data=DB::table('product_variant_vendors')
                           ->where('product_variant_id',$purchase_data->product_variation_id)
                           ->first();
-            $total_quantity=$variant_data->stock_quantity+$qty_received[$key];
+           
               $data=[
                   'qty_received'      => $qty_received[$key],
                   'damage_quantity'    => $damaged_qty[$key],
                   'missed_quantity'    => $missed_quantity[$key],
+                  'stock_quantity'    => $stock_quantity[$key],
                   'reason'            => isset($reason[$key])?$reason[$key]:''
               ];
               PurchaseProducts::where('id',$row_id)->update($data);
-
               if ($request->purchase_status==2) {
+                $total_quantity=$variant_data->stock_quantity+$stock_quantity[$key];
                 DB::table('product_variant_vendors')
                 ->where('product_variant_id',$purchase_data->product_variation_id)
                 ->update(['stock_quantity'=>$total_quantity]);

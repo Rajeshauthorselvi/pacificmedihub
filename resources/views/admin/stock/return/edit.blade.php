@@ -77,17 +77,18 @@
 
                       <table class="table table-bordered" style="width: 100%">
                         <thead>
-                            <th>No</th>
-                            @foreach ($product['options'] as $option)
-                              <th>{{ $option }}</th>
-                            @endforeach
-                            <th>Purchase Price</th>
-                            <th>Total Purchase Quantity</th>
-                            <th>Reason</th>
-                            <th>Damage Quantity</th>
-                            <th>Missed Quantity</th>
-                            <th>Total Return Amount</th>
-                          </thead>
+                          <th>No</th>
+                          @foreach ($product['options'] as $option)
+                            <th>{{ $option }}</th>
+                          @endforeach
+                          <th>Purchase Price</th>
+                          <th>Total Purchase Quantity</th>
+                          <th>Damage Quantity</th>
+                          <th>Missed Quantity</th>
+                          <th>Return Quantity</th>
+                          <th>Total Return Amount</th>
+                          <th>Reason</th>
+                        </thead>
                         <tbody>
                         <?php $total_amount=$total_quantity=$final_price=0 ?>
                         <?php $s_no=1; ?>
@@ -121,14 +122,17 @@
                               {{ $variation_details['quantity'] }}
                               <input type="hidden" class="total_quantity" value="{{ $variation_details['quantity'] }}">
                             </td>
-                            <td>{{ $variation_details['reason'] }}</td>
+                            
                             <td>
-                                <input type="text" name="damage_quantity[{{ $variation_details['id'] }}]" class="form-control damaged_quantity" value="{{ $damage_quantity[$variation_details['id']] }}">
+                                <input type="text" name="damage_quantity[{{ $variation_details['id'] }}]" class="form-control damaged_quantity" value="{{ $damage_quantity[$variation_details['id']] }}" readonly>
                                 <input type="hidden" name="purchase_id" value="{{ $purchase_id }}">
                                 <input type="hidden" name="product_id[{{ $variation_details['id'] }}]" value="{{ $variant['product_id'] }}">
                               </td>
                              <td>
-                                <input type="text" name="missed_quantity[{{ $variation_details['id'] }}]" class="form-control missed_quantity" value="{{ $missed_quantity[$variation_details['id']] }}">
+                                <input type="text" name="missed_quantity[{{ $variation_details['id'] }}]" class="form-control missed_quantity" value="{{ $missed_quantity[$variation_details['id']] }}" readonly>
+                              </td>
+                             <td>
+                                <input type="text" name="return_quantity[{{ $variation_details['id'] }}]" class="form-control return_quantity" value="{{ $return_quantity[$variation_details['id']] }}" readonly>
                               </td>
                               <td>
                                 <span class="sub_total_text">
@@ -137,6 +141,7 @@
                                 </span>
                                   <input type="hidden" name="sub_total[{{ $variation_details['id'] }}]" value="{{ $total_return_amount }}" class="sub_total">
                               </td>
+                              <td>{{ $variation_details['reason'] }}</td>
                           </tr>
                         
                         @endforeach

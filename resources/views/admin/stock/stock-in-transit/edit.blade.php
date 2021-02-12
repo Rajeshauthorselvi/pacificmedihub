@@ -76,14 +76,7 @@
                                   $total_based_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id,$product['product_id']);
                                ?>
                               <td>{{ $product['product_name'] }}</th>
-                              {{-- <td>
-                                Quantity:&nbsp;
-                                <span class="total-quantity">{{ $total_based_products->quantity }}</span>
-                              </td>
-                              <td>
-                                Total:&nbsp;
-                                <span class="total">{{ $total_based_products->sub_total }}</span>
-                              </td> --}}
+                        
                           </tr>
                           <tr class="hide-table-padding">
                             <td></td>
@@ -96,10 +89,11 @@
                             @foreach ($product['options'] as $option)
                               <th>{{ $option }}</th>
                             @endforeach
-                            <th>Qty Ordered</th>
-                            <th>Qty Received</th>
-                            <th>Damaged Quantity</th>
-                            <th>Missed Quantity</th>
+                            <th>Qty Ordered<br><small>(A)</small></th>
+                            <th>Qty Received<br><small>(A-C)</small></th>
+                            <th>Damaged Quantity<br><small>(B)</small></th>
+                            <th>Missed Quantity<br><small>(C)</small></th>
+                            <th>Stock Quantity<br><small>(A-B-C)</small></th>
                             <th>Reason</th>
                           </tr>
                         </thead>
@@ -131,7 +125,7 @@
                             <td>
                               <div class="form-group">
                                 <input type="hidden" class="total_quantity" value="{{ $variation_details['quantity'] }}">
-                                  <input type="text" name="variant[qty_received][]" value="{{ isset($variation_details['qty_received'])?$variation_details['qty_received']:$variation_details['quantity'] }}" class="form-control received_quantity">
+                                  <input type="text" name="variant[qty_received][]" value="{{ isset($variation_details['qty_received'])?$variation_details['qty_received']:$variation_details['quantity'] }}" class="form-control received_quantity" readonly>
                               </div>
                             </td>
                             <td>
@@ -142,6 +136,20 @@
                             <td>
                               <div class="form-group">
                                   <input type="text" name="variant[missed_qty][]" value="{{ isset($variation_details['missed_quantity'])?$variation_details['missed_quantity']:0 }}" class="form-control missed_quantity">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <?php 
+
+                                  $qty_received=$variation_details['qty_received'];
+                                  $damage_quantity=isset($variation_details['damage_quantity'])?$variation_details['damage_quantity']:0;
+                                  $missed_quantity=isset($variation_details['missed_quantity'])?$variation_details['missed_quantity']:0;
+
+                                $stock_quantity= $qty_received-$damage_quantity-$missed_quantity;
+
+                                ?>
+                                  <input type="text" name="variant[stock_quantity][]" value="{{ $stock_quantity }}" class="form-control stock_quantity" readonly>
                               </div>
                             </td>
                             <td>
@@ -221,6 +229,11 @@
               var final_val=received_quantity;
           }
           $(this).parents('.parent_tr').find('.received_quantity').val(final_val);
+          
+          var total_received=$(this).parents('.parent_tr').find('.total_quantity').val();
+          var damaged_quantity=$(this).parents('.parent_tr').find('.damaged_quantity').val();
+          var stock_quantity=parseInt(total_received)-parseInt(damaged_quantity)-parseInt(current_field_val);
+          $(this).parents('.parent_tr').find('.stock_quantity').val(stock_quantity);
 
         });
 
@@ -239,6 +252,12 @@
                 var current_field_val=Math.max(Math.min(current_field_val, parseInt(balance_amount)), -90);
                 $(this).val(current_field_val);
             }
+
+          var total_received=$(this).parents('.parent_tr').find('.total_quantity').val();
+          var missed_quantity=$(this).parents('.parent_tr').find('.missed_quantity').val();
+          var stock_quantity=parseInt(total_received)-parseInt(missed_quantity)-parseInt(current_field_val);
+          $(this).parents('.parent_tr').find('.stock_quantity').val(stock_quantity);
+
 
         });
     </script>

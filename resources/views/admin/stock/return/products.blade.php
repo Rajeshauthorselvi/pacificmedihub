@@ -57,10 +57,10 @@
 							{{-- <th>Minimum Price</th> --}}
 							<th>Purchase Price</th>
 							<th>Total Purchase Quantity</th>
-							<th>Reason</th>
 							<th>Damage Quantity</th>
 							<th>Missed Quantity</th>
 							<th>Total Return Amount</th>
+							<th>Reason</th>
 						</thead>
                         <tbody>
                         <?php $missed_quantity=$damage_quantity=$total_amount=$total_quantity=$final_price=0 ?>
@@ -99,15 +99,20 @@
                             	{{ $variation_details['quantity'] }}
                             	<input type="hidden" class="total_quantity" value="{{ $variation_details['quantity'] }}">
                             </td>
-                            <td>{{ $variation_details['reason'] }}</td>
+                            
                             <td>
-                              	<input type="text" name="damage_quantity[{{ $variation_details['id'] }}]" class="form-control damaged_quantity" value="{{ $variation_details['damage_quantity'] }}" max-count="{{ $variation_details['quantity'] }}" max-count="{{ $variation_details['quantity'] }}">
+                            	<?php $damage_quantity=$variation_details['damage_quantity']; ?>
+                              	<input type="text" name="damage_quantity[{{ $variation_details['id'] }}]" class="form-control damaged_quantity" value="{{ $variation_details['damage_quantity'] }}" max-count="{{ $variation_details['quantity'] }}" readonly>
                               	<input type="hidden" name="purchase_id" value="{{ $purchase_id }}">
                               	<input type="hidden" name="product_id[{{ $variation_details['id'] }}]" value="{{ $variant['product_id'] }}">
                               </td>
                               <td>
-                              	<input type="text" name="missed_quantity[{{ $variation_details['id'] }}]" class="form-control missed_quantity" value="{{ $variation_details['missed_quantity'] }}" max-count="{{ $variation_details['quantity'] }}" max-count="{{ $variation_details['quantity'] }}">
+                              	<input type="text" name="missed_quantity[{{ $variation_details['id'] }}]" class="form-control missed_quantity" value="{{ $variation_details['missed_quantity'] }}" readonly>
                               </td>
+                              <th>
+                              	<?php $total_return=$variation_details['damage_quantity']+$variation_details['missed_quantity']; ?>
+                              	<input type="text" name="return_quantity[{{ $variation_details['id'] }}]" class="form-control missed_quantity" value="{{ $total_return }}" readonly>
+                              </th>
                               <td>
                               	<span class="sub_total_text">
                               		<?php $total_return_amount=($variation_details['missed_quantity']+$variation_details['damage_quantity'])*$product_price ?>
@@ -115,6 +120,7 @@
                               		<input type="hidden" name="sub_total[{{ $variation_details['id'] }}]" value="{{ $total_return_amount }}" class="sub_total">
                               	</span>
                               </td>
+                              <td>{{ $variation_details['reason'] }}</td>
                           </tr>
                           <?php $total_amount +=$total_return_amount; ?>
                           <?php $damage_quantity +=$variation_details['damage_quantity']; ?>
