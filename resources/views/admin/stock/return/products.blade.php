@@ -59,6 +59,7 @@
 							<th>Total Purchase Quantity</th>
 							<th>Damage Quantity</th>
 							<th>Missed Quantity</th>
+							<th>Total Return Quantity</th>
 							<th>Total Return Amount</th>
 							<th>Reason</th>
 						</thead>
