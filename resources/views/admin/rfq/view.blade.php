@@ -29,7 +29,7 @@
           <a href="{{route('rfq.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
-      <div class="container-fluid">
+      <div class="container-fluid rfq-show-page">
         <div class="row">
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -65,42 +65,91 @@
                   </div>
                   <div class="clearfix"></div>
                   <div class="address-sec col-sm-12">
-                      <div class="col-sm-6">
-                        <ul class="list-unstyled order-no-sec">
-                            <li><h5>Order No:</h5></li>
-                            <li><strong>Status: </strong></li>
-                            <li><strong>Sales Rep: </strong></li>
-                        </ul>
+                    <div class="col-sm-4">
+                      <ul class="list-unstyled order-no-sec">
+                        <li><h5>Order No: </h5></li>
+                        <li><strong>Date: </strong></li>
+                        <li><strong>Status: </strong></li>
+                        <li><strong>Sales Rep: </strong></li>
+                      </ul>
+                    </div>
+                    <div class="col-sm-8">
+                      <div class="address-block">
+                        <div class="col-sm-6 customer address">
+                          <div class="col-sm-2">
+                            <span><i class="fas fa-user"></i></span>
+                          </div>
+                          <div class="col-sm-10">
+                            <h4>{{$customer_address->first_name}} {{$customer_address->last_name}}</h4>
+                            <p>
+                              <span>
+                                {{$customer_address->address->address_line1}},&nbsp;{{$customer_address->address->address_line2}}
+                              </span><br>
+                              <span>
+                                {{$customer_address->address->country->name}},&nbsp;{{$customer_address->address->state->name}}
+                              </span><br>
+                              <span>
+                                {{$customer_address->address->city->name}}&nbsp;-&nbsp;{{$customer_address->address->post_code}}.
+                              </span>
+                            </p>
+                            <p>
+                              <span>Tel: {{$customer_address->address->mobile}}</span><br>
+                              <span>Email: {{$customer_address->email}}</span>
+                            </p>
+                          </div>
+                        </div>
+                        <div class="col-sm-6 admin address">
+                          <div class="col-sm-2 icon">
+                            <span><i class="far fa-building"></i></span>
+                          </div>
+                          <div class="col-sm-10">
+                            <h4>{{$admin_address->company_name}}</h4>
+                            <p>
+                              <span>
+                                {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}
+                              </span><br>
+                              <span>
+                                {{$admin_address->getCountry->name}},&nbsp;{{$admin_address->getState->name}}
+                              </span><br>
+                              <span>
+                                {{$admin_address->getCity->name}}&nbsp;-&nbsp;{{$admin_address->post_code}}.
+                              </span>
+                            </p>
+                            <p>
+                              <span>Tel: {{$admin_address->post_code}}</span><br>
+                              <span>Email: {{$admin_address->company_email}}</span>
+                            </p>
+                          </div>
+                        </div>
                       </div>
+                    </div>
                   </div>
                   <div class="product-sec">
-
-            <div class="container my-4">
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <?php
-                $total_products=\App\Models\RFQProducts::TotalDatas($rfq_id);
-                 ?>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">
-                        Total Quantity:&nbsp;
-                        <span class="all_quantity">{{ $total_products->quantity }}</span>   
-                    </th>
-                    <th scope="col">
-                        Total RFQ Price:&nbsp;
-                        <span class="all_rfq_price">{{ $total_products->rfq_price }}</span>  
-                    </th>
-                    <th>
-                        Total Amount:&nbsp;
-                        <span class="all_amount">{{ $total_products->sub_total }}</span>
-                    </th>
-                  </tr>
-                 
-                </thead>
-                <tbody>
+                    <div class="container my-4">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <?php
+                              $total_products=\App\Models\RFQProducts::TotalDatas($rfq_id);
+                            ?>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Product Name</th>
+                              <th scope="col">
+                                  Total Quantity:&nbsp;
+                                  <span class="all_quantity">{{ $total_products->quantity }}</span>   
+                              </th>
+                              <th scope="col">
+                                  Total RFQ Price:&nbsp;
+                                  <span class="all_rfq_price">{{ $total_products->rfq_price }}</span>  
+                              </th>
+                              <th>
+                                  Total Amount:&nbsp;
+                                  <span class="all_amount">{{ $total_products->sub_total }}</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
                    @foreach ($product_datas as $product)
                 <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
                 <td class="expand-button"></td>
@@ -207,67 +256,7 @@
     </section>
   </div>
   <style type="text/css">
-    .footer-sec .col-sm-6{
-      float: left;
-    }
-  .notes-sec,.created-sec {
-    background-color: #f6f6f6;
-    padding: 15px;
-  }
-  .date-sec .col-sm-4, .product-sec .col-sm-4 {
-    float: left;
-  }
-  tr.hide-table-padding>td {
-    padding: 0;
-  }
-  .expand-button {
-    position: relative;
-  }
-  .accordion-toggle .expand-button:after
-  {
-    position: absolute;
-    left:.75rem;
-    top: 50%;
-    transform: translate(0, -50%);
-    content: '-';
-  }
-  .accordion-toggle.collapsed .expand-button:after
-  {
-    content: '+';
-  }
-  .order-no-sec {
-    line-height: 38px;
-    font-size: 18px;
-  }
-  .action_sec li {
-    float: left;
-    width: 16.6%;
-    text-align: center;
-  }
-  .action_sec li a {
-    float: left;
-    width: 100%;
-    color: #fff;
-    padding: 8px;
-  }
-  .place-order,.pdf{
-    background-color:#3471a8;
-    border-right: 1px solid #5cbfdd;
-  }
-  .email{
-    background-color:#5cbfdd;
-  }
-  .comment{
-    background-color:#48bb77;
-  }
-  .edit{
-    background-color:#efab4f;
-  }
-  .delete{
-    background-color:#d85450;
-  }
-  .address-sec {
-    padding: 10px
-  }
+  .rfq-show-page .accordion-toggle .expand-button:after{position: absolute;left:.75rem;top: 50%;transform: translate(0, -50%);content: '-';}
+  .rfq-show-page .accordion-toggle.collapsed .expand-button:after{content: '+';}
 </style>
 @endsection
