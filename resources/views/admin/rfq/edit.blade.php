@@ -143,8 +143,8 @@
                             <th>Base Price</th>
                             <th>Retail Price</th>
                             <th>Minimum Selling Price</th>
-                            <th>Quantity</th>
                             <th>RFQ Price</th>
+                            <th>Quantity</th>
                             <th>Subtotal</th>
                           </tr>
                         </thead>
@@ -220,16 +220,17 @@
                 <input type="hidden" name="variant[minimum_selling_price][]" value="{{$variant['minimum_selling_price']}}">
                               {{$variant['minimum_selling_price']}}
                             </td>
+                          <td>
+                              <?php $high_value=$variation_details['rfq_price']; ?>
+                              <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{ $high_value }}">
+                            </td>
                             <td>
                               <div class="form-group">
                                 <?php $quantity=1 ?>
                                 <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" value="{{ $variation_details['quantity'] }}">
                               </div>
                             </td>
-                            <td>
-                              <?php $high_value=$variation_details['rfq_price']; ?>
-                              <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{ $high_value }}">
-                            </td>
+  
                             <td>
                               <div class="form-group">
                                 <span class="sub_total">{{ $variation_details['sub_total'] }}</span>
