@@ -15,6 +15,7 @@ use App\Models\Vendor;
 use App\Models\OptionValue;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
+use App\Models\PaymentHistory;
 use Redirect;
 use DB;
 class PurchaseReturnController extends Controller
@@ -51,6 +52,9 @@ class PurchaseReturnController extends Controller
             ];
         }
         $data['returns']=$data_return;
+        $data['payment_method']=PaymentMethod::where('status',1)
+                              ->pluck('payment_method','id')
+                              ->toArray();
         return view('admin.stock.return.index',$data);
     }
 
@@ -439,4 +443,40 @@ $data['vendor_name']=Vendor::where('id',$purchase_detail->customer_or_vendor_id)
         }
         return response()->json($result);
     }
+    public function CreatePurchasePayment(Request $request)
+    {
+
+        $data=[
+          'ref_id'          => $request->id,
+          'reference_no'    => $request->reference_no,
+          'payment_from'    => $request->payment_from,
+          'amount'          => $request->amount,
+          'payment_notes'   => $request->payment_notes,
+          'created_at'      => date('Y-m-d H:i:s'),
+          'payment_id'      => $request->payment_id,
+        ];
+        PaymentHistory::insert($data);
+
+
+        $total_amount=$request->total_payment;
+        $total_paid=$request->amount;
+        $balance_amount=$total_amount-$total_paid;
+        if ($balance_amount==0) 
+          $payment_status=1;
+        else
+          $payment_status=2; 
+        PurchaseReturn::where('id',$request->id)->update(['payment_status'=>$payment_status]);
+        return Redirect::back()->with('success','Payment added successfully...!');
+    }
+    public function ViewReturnPayment($return_id)
+    {
+        $all_payment_history=PaymentHistory::with('PaymentMethod')
+                             ->where('ref_id',$return_id)
+                             ->where('payment_from',4)
+                             ->get()
+                             ->toArray();
+
+        return $all_payment_history;
+    }
+
 }

@@ -143,10 +143,14 @@
                                 <?php 
 
                                   $qty_received=$variation_details['qty_received'];
-                                  $damage_quantity=isset($variation_details['damage_quantity'])?$variation_details['damage_quantity']:0;
-                                  $missed_quantity=isset($variation_details['missed_quantity'])?$variation_details['missed_quantity']:0;
-
-                                $stock_quantity= $qty_received-$damage_quantity-$missed_quantity;
+                                  $damage_quantity=$variation_details['damage_quantity'];
+                                  $missed_quantity=$variation_details['missed_quantity'];
+                                if (isset($variation_details['damage_quantity']) && isset($variation_details['missed_quantity'])) {
+                                  $stock_quantity= $qty_received;
+                                }
+                                else{
+                                  $stock_quantity =$variation_details['quantity'];
+                                }
 
                                 ?>
                                   <input type="text" name="variant[stock_quantity][]" value="{{ $stock_quantity }}" class="form-control stock_quantity" readonly>

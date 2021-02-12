@@ -95,6 +95,11 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 
 	Route::post('create_purchase_payment',['as'=>'create.purchase.payment','uses'=>'Admin\PurchaseController@CreatePurchasePayment']);
 
+
+	Route::get('view_return_payment/{return_id}',['as'=>'view.return.payment','uses'=>'Admin\PurchaseReturnController@ViewReturnPayment']);
+
+	Route::post('create_return_payment',['as'=>'create.return.payment','uses'=>'Admin\PurchaseReturnController@CreatePurchasePayment']);
+
 	Route::get('search-vendor/{product_id}','Admin\PurchaseController@FindVendors');
 
 	Route::get('product-commission-value','Admin\ProductController@productCommissionValue');

@@ -700,6 +700,7 @@ class PurchaseController extends Controller
     {
         $all_payment_history=PaymentHistory::with('PaymentMethod')
                              ->where('ref_id',$purchase_id)
+                             ->where('payment_from',1)
                              ->get()
                              ->toArray();
 
