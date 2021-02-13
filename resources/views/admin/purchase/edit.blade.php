@@ -316,24 +316,12 @@
 </style>
 @push('custom-scripts')
 <script type="text/javascript">
-
-      function validateNum(e , field) {
-        var val = field.value;
-        var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
-        var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
-        if (re.test(val)) {
-
-          } else {
-              val = re1.exec(val);
-              if (val) {
-                  field.value = val[0];
-              } else {
-                  field.value = "";
-              }
-          }
-      }
-
-
+  $(function ($) {
+    $('.select2bs4').select2({
+      minimumResultsForSearch: -1
+    });
+  });
+      
     $(document).ready(function(){
         // Add minus icon for collapse element which is open by default
         $(".collapse.show").each(function(){

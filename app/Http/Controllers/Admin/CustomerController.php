@@ -121,6 +121,14 @@ class CustomerController extends Controller
             $request->company['logo']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $logo_image_name);
             UserCompanyDetails::where('id',$company_id)->update(['logo'=>$logo_image_name]);
         }
+        if(isset($request->company['company_gst_certificate'])){
+            $gst_file          = $request->company['company_gst_certificate'];     
+            $gst_filename       = $gst_file->getClientOriginalName();            
+            $gst_file_extension = $request->company['company_gst_certificate']->getClientOriginalExtension();
+            $gst_file_name = strtotime("now").".".$gst_file_extension;
+            $request->company['company_gst_certificate']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $gst_file_name);
+            UserCompanyDetails::where('id',$company_id)->update(['company_gst_certificate'=>$gst_file_name]);
+        }
         /*Insert Company Details*/
 
         /*Update Company , Address,Bank to users table*/

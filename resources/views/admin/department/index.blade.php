@@ -50,7 +50,7 @@
                         <th><input type="checkbox" class="select-all"></th>
                       	<th>ID</th>
                       	<th>Name</th>
-                      	<th>Status</th>
+                      	<th>Published</th>
                       	<th>Action</th>
                       </tr>
                     </thead>

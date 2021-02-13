@@ -57,7 +57,7 @@
                         <th>Mobile No</th>
                         <th>Total Orders</th>
                         <th>Total Orders Amount</th>
-                        <th>Status</th>
+                        <th>Published</th>
                         <th>Actions</th>
                       </tr>
                     </thead>

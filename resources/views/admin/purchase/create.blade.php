@@ -108,7 +108,7 @@
                         <div class="form-group">
                           <label for="purchase_date">Payment Status *</label>
                           <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
-                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control']) !!}
+                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                   </div>
@@ -171,6 +171,11 @@
 
 @push('custom-scripts')
 <script type="text/javascript">
+  $(function ($) {
+    $('.select2bs4').select2({
+      minimumResultsForSearch: -1
+    });
+  });
   $(document).on('click', '.remove-product-row', function(event) {
     event.preventDefault();
     $(this).closest('tr').next('tr').remove();

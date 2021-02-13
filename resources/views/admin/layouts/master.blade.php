@@ -206,6 +206,35 @@
     $('#reservationdate').datetimepicker({
         format: 'L'
     });
+
+     //Validate Number
+      function validateNum(e , field) {
+        var val = field.value;
+        var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
+        var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
+        if (re.test(val)) {
+
+          } else {
+              val = re1.exec(val);
+              if (val) {
+                  field.value = val[0];
+              } else {
+                  field.value = "";
+              }
+          }
+      }
+      $(function() {
+        $('.validateTxt').keydown(function (e) {
+          if (e.shiftKey || e.ctrlKey || e.altKey) {
+            e.preventDefault();
+          } else {
+            var key = e.keyCode;
+            if (!((key == 8) || (key == 32) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90))) {
+              e.preventDefault();
+            }
+          }
+        });
+      });
   
 </script>
   

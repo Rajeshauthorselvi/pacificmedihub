@@ -77,17 +77,7 @@
                           {!! Form::text('null',$parent,['readonly','class'=>'form-control']) !!}
                         </div>
                       </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="">Company GST No</label>
-                          {!! Form::text('company[company_gst]', null,['class'=>'form-control','readonly']) !!}
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="">Company UEN *</label>
-                          {!! Form::text('company[company_uen]', null,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                      </div>
+                      
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Company Email *</label>
@@ -117,19 +107,18 @@
                           {!! Form::text('country_id',$customer->company->getCountry->name,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
                         </div>
                         <div class="col-sm-6">
-                          <label for="">State *</label>
-                          {!! Form::text('state_id',$customer->company->getState->name,['readonly','class'=>'form-control', 'id'=>'State']) !!}
+                          <label for="">State</label>
+                          {!! Form::text('state_id',isset($customer->company->getState->name)?$customer->company->getState->name:'',['readonly','class'=>'form-control', 'id'=>'State']) !!}
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="">City *</label>
-                          {!! Form::text('city_id',$customer->company->getCity->name,['readonly','class'=>'form-control', 'id'=>'City']) !!}
+                          <label for="">City</label>
+                          {!! Form::text('city_id',isset($customer->company->getCity->name)?$customer->company->getCity->name:'',['readonly','class'=>'form-control', 'id'=>'City']) !!}
                         </div>
                         <div class="col-sm-6">
-                          <label for="">Post Code *</label>
+                          <label for="">Post Code</label>
                           {!! Form::text('company[post_code]', null,['readonly','class'=>'form-control company_postcode']) !!}
-                           <span class="text-danger"></span>
                         </div>
                       </div>
                       <div class="form-group">
@@ -139,21 +128,35 @@
                             $sales_rep = isset($customer->company->getSalesRep->emp_name)?$customer->company->getSalesRep->emp_name:'' @endphp
                           {!! Form::text('salesrep',$sales_rep,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
                         </div>
-                        <div class="col-sm-6" style="margin-top:40px">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="customer[status]" id="Status" disabled @if($customer->status==1) checked @endif>
-                            <label for="Status">Status</label>
-                          </div>
+                        <div class="col-sm-6">
+                          <label for="">Company GST No</label>
+                          {!! Form::text('company[company_gst]', null,['class'=>'form-control','readonly']) !!}
                         </div>
                       </div>
                       <?php 
                         if(!empty($customer->company->logo)){$image = 'theme/images/customer/company/'.$customer->company->id.'/'.$customer->company->logo;}
                         else {$image = "theme/images/no_image.jpg";}
+
+                        if(!empty($customer->company->company_gst_certificate)){$gst_file = 'theme/images/customer/company/'.$customer->company->id.'/'.$customer->company->company_gst_certificate;}
+                        else {$gst_file = "theme/images/no_image.jpg";}
+
                       ?>
                       <div class="form-group">
                         <div class="col-sm-6">
                           {!! Form::label('companyLogo', 'Company Logo JPEG') !!}<br>
-                          <img title="Click to Change" class="img-company" id="output_image" style="width:125px;height:100px;" src="{{asset($image)}}">
+                          <img class="img-company" style="width:125px;height:100px;" src="{{asset($image)}}">
+                        </div>
+                        <div class="col-sm-6">
+                          {!! Form::label('companyGst', 'Company GST Certificate Copy(JPEG,PNG,PDF)') !!}<br>
+                          <img class="img-company" style="width:125px;height:100px;" src="{{asset($gst_file)}}">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <div class="icheck-info d-inline">
+                            <input type="checkbox" name="customer[status]" id="Status" disabled @if($customer->status==1) checked @endif>
+                            <label for="Status">Published</label>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -184,6 +187,13 @@
                           <span class="text-danger"></span>
                         </div>
                       </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Company UEN *</label>
+                          {!! Form::text('company[company_uen]', null,['class'=>'form-control','readonly']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                    
@@ -197,7 +207,9 @@
                                 <td>
                                   {{ $address->name }}<br>{{ $address->mobile }}<br>
                                   {{ $address->address_line1 }}<br>{{ $address->address_line2 }}<br>
-                                  {{ $address->country->name }}, {{ $address->state->name }}, {{ $address->city->name }}
+                                  {{ $address->country->name }}
+                                  @if(isset($address->state->name)) , {{$address->state->name}} @endif
+                                  @if(isset($address->city->name)) ,{{$address->city->name}} @endif
                                   <br>{{ $address->post_code }}
                                 </td>
                               </tr>
@@ -209,45 +221,44 @@
                     </div>
                   </div>
 
-                  <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
-                    <div class="col-sm-12" style="display:flow-root">
-                      {!! Form::hidden('bank[account_id]',$customer->bank->id) !!}
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="accountName">Account Name</label>
-                          {!! Form::text('bank[account_name]',$customer->bank->account_name,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="accountNumber">Account Number</label>
-                          {!! Form::text('bank[account_number]',null,['class'=>'form-control','readonly','onkeyup'=>"validateNum(event,this);"]) !!}
-                          <span class="text-danger"></span>
-                        </div>
+                  <div class="tab-pane " tab-count="4" role="tabpanel" id="step4">
+                    {!! Form::hidden('bank[account_id]',$customer->bank->id) !!}
+                    <div class="form-group">
+                      <div class="col-sm-6">
+                        <label for="accountName">Account Name</label>
+                        {!! Form::text('bank[account_name]',$customer->bank->account_name,['class'=>'form-control','readonly']) !!}
+                        <span class="text-danger"></span>
                       </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="bankName">Bank Name</label>
-                          {!! Form::text('bank[bank_name]',null,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="bankBranch">Bank Branch</label>
-                          {!! Form::text('bank[bank_branch]',null,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="payNow">PayNow Contact No</label>
-                          {!! Form::text('bank[paynow_contact]',null,['class'=>'form-control','readonly','onkeyup'=>"validateNum(event,this);"]) !!}
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="Place">Place</label>
-                          {!! Form::text('bank[place]',null,['class'=>'form-control','readonly']) !!}
-                        </div>                          
+                      <div class="col-sm-6">
+                        <label for="accountNumber">Account Number</label>
+                        {!! Form::text('bank[account_number]',null,['class'=>'form-control','readonly','onkeyup'=>"validateNum(event,this);"]) !!}
+                        <span class="text-danger"></span>
                       </div>
                     </div>
+                    <div class="form-group">
+                      <div class="col-sm-6">
+                        <label for="bankName">Bank Name</label>
+                        {!! Form::text('bank[bank_name]',null,['class'=>'form-control','readonly']) !!}
+                        <span class="text-danger"></span>
+                      </div>
+                      <div class="col-sm-6">
+                        <label for="bankBranch">Bank Branch</label>
+                        {!! Form::text('bank[bank_branch]',null,['class'=>'form-control','readonly']) !!}
+                        <span class="text-danger"></span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-6">
+                        <label for="payNow">PayNow Contact No</label>
+                        {!! Form::text('bank[paynow_contact]',null,['class'=>'form-control','readonly','onkeyup'=>"validateNum(event,this);"]) !!}
+                      </div>
+                      <div class="col-sm-6">
+                        <label for="Place">Place</label>
+                        {!! Form::text('bank[place]',null,['class'=>'form-control','readonly']) !!}
+                      </div>                          
+                    </div>
                   </div>
+                  
                 </div>
               </div>
             </div>

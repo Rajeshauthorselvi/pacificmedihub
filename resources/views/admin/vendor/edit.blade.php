@@ -127,8 +127,8 @@
                             @endif
                           </div>
                           <div class="col-sm-5">
-                            <label for="Mobile">Mobile No *</label>
-                            <input type="text" class="form-control contact" name="vendor_contact" id="Mobile" value="{{old('vendor_contact',$vendor->contact_number)}}">
+                            <label for="Mobile">Contact No *</label>
+                            <input type="text" class="form-control contact" name="vendor_contact" id="Mobile" value="{{old('vendor_contact',$vendor->contact_number)}}" onkeyup="validateNum(event,this);">
                             <span class="text-danger" style="display:none">Vendor Mobile No is required</span>
                           </div>
                         </div>
@@ -152,19 +152,18 @@
                             <span class="text-danger" style="display:none">Country is required</span>
                           </div>
                           <div class="col-sm-5">
-                            <label for="State">State *</label>
+                            <label for="State">State</label>
                             <select name="state" class="form-control select2bs4" id="State"></select>
                           </div>
                         </div>
 
                         <div class="form-group">
-                          
                           <div class="col-sm-5">
-                            <label for="City">City *</label>
+                            <label for="City">City</label>
                             <select name="city" class="form-control select2bs4" id="City"></select>
                           </div>
                           <div class="col-sm-5">
-                            <label for="PostCode">Post Code *</label>
+                            <label for="PostCode">Post Code</label>
                             <input type="text" class="form-control" name="postcode" id="PostCode" value="{{old('postcode',$vendor->post_code)}}">
                             <span class="text-danger" style="display:none">Post Code is required</span>
                           </div>
@@ -222,7 +221,7 @@
                           <div class="col-sm-5">
                             <div class="icheck-info d-inline">
                               <input type="checkbox" name="vendor_status" id="Status" @if($vendor->status==1) checked @endif>
-                              <label for="Status">Status</label>
+                              <label for="Status">Published</label>
                             </div>
                           </div>
                         </div>
@@ -255,7 +254,7 @@
                                 </td>
                                 <td>
                                   <div class="form-group">
-                                    <input type="text" class="form-control" name="poc[contact][]" id="contact1" value="{{old('contact',$poc->contact_no)}}">
+                                    <input type="text" class="form-control" name="poc[contact][]" id="contact1" value="{{old('contact',$poc->contact_no)}}" onkeyup="validateNum(event,this);">
                                   </div>
                                 </td>
                               </tr>
@@ -283,7 +282,7 @@
                           </div>
                           <div class="col-sm-5">
                             <label for="accountNumber">Account Number</label>
-                            <input type="text" class="form-control" name="account_number" id="accountNumber" value="{{old('account_number',$vendor->account_number)}}">
+                            <input type="text" class="form-control" name="account_number" id="accountNumber" value="{{old('account_number',$vendor->account_number)}}" onkeyup="validateNum(event,this);">
                           </div>
                         </div>
                         <div class="form-group">
@@ -299,7 +298,7 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             <label for="payNow">PayNow Contact No</label>
-                            <input type="text" class="form-control contact2" name="paynow_no" id="payNow" value="{{old('paynow_no',$vendor->paynow_contact_number)}}">
+                            <input type="text" class="form-control contact2" name="paynow_no" id="payNow" value="{{old('paynow_no',$vendor->paynow_contact_number)}}" onkeyup="validateNum(event,this);">
                           </div>
                           <div class="col-sm-5">
                             <label for="Place">Place</label>
@@ -386,10 +385,6 @@
             $("[name='address1']").closest('.form-group').find('span.text-danger').show();
             valid=false;
           }
-          if($("[name='postcode']").val()=="") {
-            $("[name='postcode']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
           if($("[name='country']").val()=="") {
             $("[name='country']").closest('.form-group').find('span.text-danger').show();
             valid=false;
@@ -398,12 +393,10 @@
         }
         function validateStep2(e){
           var valid=true;
-          
           return valid;
         }
         function validateStep3(e){
           var valid=true;
-          
           return valid;
         }
   
@@ -471,43 +464,6 @@
         }
       });
 
-      $('.contact').keyup(function(e){
-        if(/\D/g.test(this.value))
-        {
-          this.value = this.value.replace(/\D/g, '');
-          alert('Enter numbers only');
-        }
-      });
-
-      $('.contact2').keyup(function(e){
-        if(/\D/g.test(this.value))
-        {
-          this.value = this.value.replace(/\D/g, '');
-          alert('Enter numbers only');
-        }
-      });
-
-      $('#contact1').keyup(function(e){
-        if(/\D/g.test(this.value))
-        {
-          this.value = this.value.replace(/\D/g, '');
-          alert('Enter numbers only');
-        }
-      });
-      $('#contact2').keyup(function(e){
-        if(/\D/g.test(this.value))
-        {
-          this.value = this.value.replace(/\D/g, '');
-          alert('Enter numbers only');
-        }
-      });
-      $('#contact3').keyup(function(e){
-        if(/\D/g.test(this.value))
-        {
-          this.value = this.value.replace(/\D/g, '');
-          alert('Enter numbers only');
-        }
-      });
     </script>
     <script type='text/javascript'>
       function preview_image(event) 

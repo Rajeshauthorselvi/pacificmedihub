@@ -54,7 +54,7 @@
                         <th>City</th>
                         <th>Commission</th>
                         <th>Salary</th>
-                      	<th>Status</th>
+                      	<th>Published</th>
                       	<th>Action</th>
                       </tr>
                     </thead>
