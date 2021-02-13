@@ -130,8 +130,9 @@ class StockInTransitController extends Controller
         $data['product_name']=$product_name;
 
         $order_status=OrderStatus::where('status',1)
-                              ->pluck('status_name','id')
-                              ->toArray();
+                      ->whereIn('id',[1,2])
+                      ->pluck('status_name','id')
+                      ->toArray();
 
         $payment_method=PaymentMethod::where('status',1)
                               ->pluck('payment_method','id')
