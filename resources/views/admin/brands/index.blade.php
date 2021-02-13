@@ -49,7 +49,8 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Name</th><th>Image</th><th>Published</th><th>Actions</th>
+                        <th>Name</th><th style="width:100px">Image</th><th>Manufacturing Name</th><th>Manufacturing Country</th>
+                        <th>Published</th><th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -63,7 +64,9 @@
                             if($brand->published==1){$published = "fa-check";}
                             else{$published = "fa-ban";}
                           ?>
-                          <td><img class="brand-img" style="width:12%;height:auto;" src="{{ asset($img_url)}}"></td>
+                          <td><img class="brand-img" style="width:50%;height:auto;" src="{{ asset($img_url)}}"></td>
+                          <td>{{$brand->manf_name}}</td>
+                          <td>{{isset($brand->country->name)?$brand->country->name:''}}</td>
                           <td><i class="fas {{$published}}"></i></td>
                           <td>
                             <div class="input-group-prepend">

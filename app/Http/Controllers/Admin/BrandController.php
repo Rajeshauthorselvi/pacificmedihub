@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Brand;
+use App\Models\Countries;
 use Redirect;
 
 class BrandController extends Controller
@@ -27,7 +28,9 @@ class BrandController extends Controller
      */
     public function create()
     {
-        return view('admin/brands/create');
+        $data = array();
+        $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        return view('admin/brands/create',$data);
     }
 
     /**
@@ -38,8 +41,8 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate(request(), ['brand_name' => 'required']); 
-        
+        $this->validate(request(), ['brand_name' => 'required', 'manf_name' => 'required']); 
+
         if($request->brand_published){$published = 1;}else{$published = 0;}
         
         $image= $request->hasFile('brand_image');
@@ -55,6 +58,8 @@ class BrandController extends Controller
         }
         $add = new Brand;
         $add->name   = $request->brand_name;
+        $add->manf_name = $request->manf_name;
+        $add->manf_country_id = $request->country_id;
         $add->image  = $image_name;
         $add->published = $published;
         $add->created_at = date('Y-m-d H:i:s');
@@ -84,6 +89,7 @@ class BrandController extends Controller
     public function edit($id)
     {
         $data['brand'] = Brand::find($id);
+        $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
         return view('admin/brands/edit',$data);
     }
 
@@ -96,7 +102,7 @@ class BrandController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate(request(), ['brand_name' => 'required']); 
+        $this->validate(request(), ['brand_name' => 'required', 'manf_name' => 'required']); 
         
         if($request->brand_published){$published = 1;}else{$published = 0;}
         
@@ -120,6 +126,8 @@ class BrandController extends Controller
         }
         if($check_brand){
             $check_brand->name   = $request->brand_name;
+            $check_brand->manf_name = $request->manf_name;
+            $check_brand->manf_country_id = $request->country_id;
             $check_brand->image  = $image_name;
             $check_brand->published = $published;
             $check_brand->created_at = date('Y-m-d H:i:s');

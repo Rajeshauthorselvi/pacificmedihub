@@ -10,4 +10,8 @@ class Brand extends Model
 
     protected $fillable =  ['name'];
 
+    public function country()
+    {
+    	return $this->belongsTo('App\Models\Countries','manf_country_id');
+    }
 }
