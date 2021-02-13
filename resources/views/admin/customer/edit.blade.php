@@ -52,13 +52,13 @@
                     <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Company Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
+                    <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Delivery Address</a>
+                    <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Delivery Address</a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step4" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
+                    <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
                   </li>
                 </ul>
                 <div class="tab-content py-2">
@@ -74,17 +74,6 @@
                         <div class="col-sm-6">
                           <label for="">Parent Company</label>
                           {!! Form::select('company[parent_company]', $all_company,$customer->company->parent_company,['class'=>'form-control select2bs4']) !!}
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="">Company GST No</label>
-                          {!! Form::text('company[company_gst]', null,['class'=>'form-control']) !!}
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="">Company UEN *</label>
-                          {!! Form::text('company[company_uen]', null,['class'=>'form-control required']) !!}
-                          <span class="text-danger"></span>
                         </div>
                       </div>
                       <div class="form-group">
@@ -117,21 +106,18 @@
                           <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">
-                          <label for="">State *</label>
-                           <select name="company[state_id]" class="form-control select2bs4 required" id="company_state"></select>
-                          <span class="text-danger"></span>
+                          <label for="">State</label>
+                           <select name="company[state_id]" class="form-control select2bs4" id="company_state"></select>
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="">City *</label>
-                          <select name="company[city_id]" class="form-control select2bs4 required" id="company_city"></select>
-                          <span class="text-danger"></span>
+                          <label for="">City</label>
+                          <select name="company[city_id]" class="form-control select2bs4" id="company_city"></select>
                         </div>
                          <div class="col-sm-6">
-                          <label for="">Post Code *</label>
-                          {!! Form::text('company[post_code]', null,['class'=>'form-control required company_postcode']) !!}
-                           <span class="text-danger"></span>
+                          <label for="">Post Code</label>
+                          {!! Form::text('company[post_code]', null,['class'=>'form-control company_postcode']) !!}
                         </div>
                       </div>
                       <div class="form-group">
@@ -139,11 +125,9 @@
                           <label for="">Sales Rep</label>
                           {!! Form::select('company[sales_rep]',$sales_rep,$customer->company->sales_rep,['class'=>'form-control select2bs4']) !!}
                         </div>
-                        <div class="col-sm-6" style="margin-top:40px">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="customer[status]" id="Status" @if($customer->status==1) checked @endif>
-                            <label for="Status">Status</label>
-                          </div>
+                        <div class="col-sm-6">
+                          <label for="">Company GST No</label>
+                          {!! Form::text('company[company_gst]', null,['class'=>'form-control']) !!}
                         </div>
                       </div>
                       <div class="form-group">
@@ -155,6 +139,23 @@
                           </div>
                           <br><br>
                           <img src="{{asset('theme/images/customer/company/'.$customer->company->id.'/' .$customer->company->logo)}}" width="100px" height="100px">
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="companyGst">Company GST Certificate Copy(JPEG,PNG,PDF)</label>
+                          <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="company[company_gst_certificate]" id="companyGst" accept="image/*">
+                            <label class="custom-file-label" for="companyGst">Choose file</label>
+                          </div>
+                          <br><br>
+                          <img src="{{asset('theme/images/customer/company/'.$customer->company->id.'/' .$customer->company->company_gst_certificate)}}" width="100px" height="100px">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <div class="icheck-info d-inline">
+                            <input type="checkbox" name="customer[status]" id="Status" @if($customer->status==1) checked @endif>
+                            <label for="Status">Published</label>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -176,12 +177,19 @@
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Contact No *</label>
-                          {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control required']) !!}
+                          {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control required','onkeyup'=>"validateNum(event,this);"]) !!}
                           <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Email *</label>
                           {!! Form::email('customer[email]',  $customer->email,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Company UEN *</label>
+                          {!! Form::text('company[company_uen]', null,['class'=>'form-control required']) !!}
                           <span class="text-danger"></span>
                         </div>
                       </div>
@@ -208,7 +216,9 @@
                                 <td>
                                   {{ $address->name }}<br>{{ $address->mobile }}<br>
                                   {{ $address->address_line1 }}<br>{{ $address->address_line2 }}<br>
-                                  {{ $address->country->name }}, {{ $address->state->name }}, {{ $address->city->name }}
+                                  {{ $address->country->name }} 
+                                  @if(isset($address->state->name)) , {{$address->state->name}} @endif
+                                  @if(isset($address->city->name)) ,{{$address->city->name}} @endif
                                   <br>{{ $address->post_code }}
                                 </td>
                                 <td>
@@ -282,7 +292,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Edit Customer Address</h4>
+          <h4 class="modal-title">Edit Delivery Address</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -319,7 +329,7 @@
 
               <div class="col-sm-6" style="padding:0;">
                 {!! Form::label('mobile', 'Contact No *') !!}
-                {!! Form::text('address[mobile]', '',['class'=>'form-control required add_mobile']) !!}
+                {!! Form::text('address[mobile]', '',['class'=>'form-control required add_mobile','onkeyup'=>"validateNum(event,this);"]) !!}
                 <span class="text-danger mobile" style="display:none">Contact Number is required</span>
               </div>
             </div>
@@ -334,28 +344,24 @@
               {!! Form::text('address[address_line2]', '',['class'=>'form-control add_line_2']) !!}
             </div>
             <div class="form-group" style="display:flex;">
-              <div class="col-sm-6" style="padding-left:0">
-                {!! Form::label('postcode', 'Post Code *') !!}
-                {!! Form::text('address[post_code]', '',['class'=>'form-control required add_post_code']) !!}
-                <span class="text-danger postcode" style="display:none">Post Code is required</span>
-              </div>
-
-              <div class="col-sm-6" style="padding:0;">
+              <div class="col-sm-6" style="padding-left:0;">
                 {!! Form::label('addresss_country', 'Country *') !!}
                 {!! Form::select('address[country_id]',$countries,null,['class'=>'form-contol select2bs4 required add_country_id', 'id'=>'addresss_country']) !!}
                 <span class="text-danger country" style="display:none">Country is required</span>
               </div>
+              <div class="col-sm-6" style="padding:0">
+                {!! Form::label('addresss_state', 'State') !!}
+                <select name="address[state_id]" class="form-control select2bs4 add_state_id" id="addresss_state"></select>
+              </div>
             </div>
             <div class="form-group" style="display:flex;">
-              <div class="col-sm-6" style="padding-left:0">
-                {!! Form::label('addresss_state', 'State *') !!}
-                <select name="address[state_id]" class="form-control select2bs4 required add_state_id" id="addresss_state"></select>
-                <span class="text-danger state" style="display:none">State is required</span>
+              <div class="col-sm-6" style="padding-left:0;">
+                {!! Form::label('addresss_city', 'City') !!}
+                <select name="address[city_id]" class="form-control select2bs4 add_city_id" id="addresss_city"></select>
               </div>
-              <div class="col-sm-6" style="padding:0;">
-                {!! Form::label('addresss_city', 'City *') !!}
-                <select name="address[city_id]" class="form-control select2bs4 required add_city_id" id="addresss_city"></select>
-                <span class="text-danger city" style="display:none">City is required</span>
+              <div class="col-sm-6" style="padding:0">
+                {!! Form::label('postcode', 'Post Code') !!}
+                {!! Form::text('address[post_code]', '',['class'=>'form-control add_post_code']) !!}
               </div>
             </div>
             <div class="form-group">
@@ -411,6 +417,8 @@
 @if (Session::has('from'))
   <script type="text/javascript">
     $(document).ready(function() {
+      $('a[href="#step2"]').removeClass('disabled');
+      $('a[href="#step3"]').removeClass('disabled');
       $('a[href="#step3"]').trigger('click');
     });
   </script>
@@ -505,20 +513,8 @@
             $(".add_line_1").closest('.form-group').find('span.text-danger.address1').show();
             valid = false;
         }
-        if ($(".add_post_code").val()=="") {
-            $(".add_post_code").closest('.form-group').find('span.text-danger.postcode').show();
-            valid = false;
-        }
         if ($("#addresss_country").val()=="") {
             $("#addresss_country").closest('.form-group').find('span.text-danger.country').show();
-            valid = false;
-        }
-        if ($("#addresss_state").val()=="") {
-            $("#addresss_state").closest('.form-group').find('span.text-danger.state').show();
-            valid = false;
-        }
-        if ($("#addresss_city").val()=="") {
-            $("#addresss_city").closest('.form-group').find('span.text-danger.city').show();
             valid = false;
         }
         return valid;

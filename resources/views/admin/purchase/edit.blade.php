@@ -63,7 +63,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Status *</label>
-                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control']) !!}
+                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                   </div>
@@ -77,7 +77,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Vendor *</label>
-                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control']) !!}
+                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                   </div>
@@ -244,7 +244,7 @@
                         <div class="form-group">
                           <label for="purchase_date">Payment Status *</label>
                           <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
-                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control']) !!}
+                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                   </div>
@@ -266,7 +266,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_date">Paying By</label>
-                          {!! Form::select('paying_by', $payment_method, null,['class'=>'form-control']) !!}
+                          {!! Form::select('paying_by', $payment_method, null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                     <div class="clearfix"></div>
@@ -316,24 +316,12 @@
 </style>
 @push('custom-scripts')
 <script type="text/javascript">
-
-      function validateNum(e , field) {
-        var val = field.value;
-        var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
-        var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
-        if (re.test(val)) {
-
-          } else {
-              val = re1.exec(val);
-              if (val) {
-                  field.value = val[0];
-              } else {
-                  field.value = "";
-              }
-          }
-      }
-
-
+  $(function ($) {
+    $('.select2bs4').select2({
+      minimumResultsForSearch: -1
+    });
+  });
+      
     $(document).ready(function(){
         // Add minus icon for collapse element which is open by default
         $(".collapse.show").each(function(){
@@ -408,7 +396,7 @@ function SumTotal(class_name) {
           }
         });
       },
-      minLength: 3,
+      minLength: 1,
       select: function( event, ui ) {
 
         var check_length=$('.product_id[value='+ui.item.value+']').length;

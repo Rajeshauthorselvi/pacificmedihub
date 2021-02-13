@@ -244,8 +244,10 @@ class WastageController extends Controller
         elseif ($search_type=="product") {
 
             $product_names=Product::where("name","LIKE","%".$request->input('name')."%")
-                          ->pluck('name','id')
-                          ->toArray();
+                            ->where('is_deleted',0)
+                            ->where('published',1)
+                            ->pluck('name','id')
+                            ->toArray();
             $names=array();
             foreach ($product_names as $key => $name) {
                 $names[]=[

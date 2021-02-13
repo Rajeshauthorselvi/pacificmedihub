@@ -488,6 +488,8 @@ class PurchaseController extends Controller
         elseif ($search_type=="product") {
 
             $product_names=Product::where("name","LIKE","%".$request->input('name')."%")
+                          ->where('is_deleted',0)
+                          ->where('published',1)
                           ->pluck('name','id')
                           ->toArray();
             $names=array();

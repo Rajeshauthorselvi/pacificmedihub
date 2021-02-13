@@ -70,10 +70,7 @@ class VendorController extends Controller
             'email'          => 'required|email|unique:vendors',
             'vendor_contact' => 'required',
             'address1'       => 'required',
-            'postcode'       => 'required',
-            'country'        => 'required',
-            'state'          => 'required',
-            'city'           => 'required'
+            'country'        => 'required'
         ]);
         
         $gst_image= $request->hasFile('vendorGst_image');
@@ -222,10 +219,7 @@ class VendorController extends Controller
             'vendor_email'   => 'required|email',
             'vendor_contact' => 'required',
             'address1'       => 'required',
-            'postcode'       => 'required',
-            'country'        => 'required',
-            'state'          => 'required',
-            'city'           => 'required'
+            'country'        => 'required'
         ]);
 
 

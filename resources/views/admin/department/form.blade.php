@@ -84,7 +84,7 @@
                     @endif
                     <div class="icheck-info d-inline">
                       <input type="checkbox" name="status" id="dept_status" {{$checked}}> 
-                      <label for="dept_status">Status</label>
+                      <label for="dept_status">Published</label>
                     </div>
                   </div>
                   <div class="form-group">

@@ -80,15 +80,8 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="">Company GST No</label>
-                          {!! Form::text('company[company_gst]', null,['class'=>'form-control']) !!}
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="">Company UEN *</label>
-                          {!! Form::text('company[company_uen]', null,['class'=>'form-control required']) !!}
-                          <span class="text-danger"></span>
-                        </div>
+                        
+                        
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
@@ -120,20 +113,19 @@
                           <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6 csc-sec">
-                          <label for="">State *</label>
-                          <select name="company[state_id]" class="form-control select2bs4 required" id="company_state"></select>
+                          <label for="">State</label>
+                          <select name="company[state_id]" class="form-control select2bs4" id="company_state"></select>
                           <span class="text-danger"></span>
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6 csc-sec">
-                          <label for="">City *</label>
-                          <select name="company[city_id]" class="form-control select2bs4 required" id="company_city"></select>
-                          <span class="text-danger"></span>
+                          <label for="">City</label>
+                          <select name="company[city_id]" class="form-control select2bs4" id="company_city"></select>
                         </div>
                         <div class="col-sm-6">
-                          <label for="">Post Code *</label>
-                          {!! Form::text('company[post_code]', null,['class'=>'form-control required','id'=>'company_postcode']) !!}
+                          <label for="">Post Code</label>
+                          {!! Form::text('company[post_code]', null,['class'=>'form-control','id'=>'company_postcode']) !!}
                            <span class="text-danger"></span>
                         </div>
                       </div>
@@ -143,10 +135,24 @@
                           {!! Form::select('company[sales_rep]',$sales_rep,null,['class'=>'form-control select2bs4']) !!}
                         </div>
                         <div class="col-sm-6">
+                          <label for="">Company GST No</label>
+                          {!! Form::text('company[company_gst]', null,['class'=>'form-control']) !!}
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <div class="col-sm-6">
                           <label for="companyLogo">Company Logo JPEG</label>
                           <div class="custom-file">
                             <input type="file" class="custom-file-input" name="company[logo]" id="companyLogo" accept="image/*">
                             <label class="custom-file-label" for="companyLogo">Choose file</label>
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="companyGst">Upload Company GST Certificate Copy(JPEG,PNG,PDF)</label>
+                          <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="company[company_gst_certificate]" id="companyGst">
+                            <label class="custom-file-label" for="companyGst">Choose file</label>
                           </div>
                         </div>
                       </div>
@@ -155,7 +161,7 @@
                         <div class="col-sm-6">
                           <div class="icheck-info d-inline">
                             <input type="checkbox" name="customer[status]" id="Status" checked>
-                            <label for="Status">Status</label>
+                            <label for="Status">Published</label>
                           </div>
                         </div>
                       </div>
@@ -186,6 +192,13 @@
                         <div class="col-sm-6">
                           <label for="">Email *</label>
                           {!! Form::email('customer[email]', null,['class'=>'form-control required']) !!}
+                          <span class="text-danger"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Company UEN *</label>
+                          {!! Form::text('company[company_uen]', null,['class'=>'form-control required']) !!}
                           <span class="text-danger"></span>
                         </div>
                       </div>
@@ -225,23 +238,20 @@
                           <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">
-                          <label for="">State *</label>
-                          {!! Form::text('null',null,['class'=>'form-control required address_state']) !!}
-                          {!! Form::hidden('address[state_id]',null,['class'=>'form-control required address_state_id']) !!}
-                          <span class="text-danger"></span>
+                          <label for="">State</label>
+                          {!! Form::text('null',null,['class'=>'form-control address_state']) !!}
+                          {!! Form::hidden('address[state_id]',null,['class'=>'form-control address_state_id']) !!}
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="">City *</label>
-                          {!! Form::text('null',null,['class'=>'form-control required address_city']) !!}
-                          {!! Form::hidden('address[city_id]',null,['class'=>'form-control required address_city_id']) !!}
-                          <span class="text-danger"></span>
+                          <label for="">City</label>
+                          {!! Form::text('null',null,['class'=>'form-control address_city']) !!}
+                          {!! Form::hidden('address[city_id]',null,['class'=>'form-control address_city_id']) !!}
                         </div>
                         <div class="col-sm-6">
-                          <label for="">Post Code *</label>
-                          {!! Form::text('address[post_code]', null,['class'=>'form-control required address_postcode']) !!}
-                           <span class="text-danger"></span>
+                          <label for="">Post Code</label>
+                          {!! Form::text('address[post_code]', null,['class'=>'form-control address_postcode']) !!}
                         </div>
                       </div>
                     </div>
@@ -482,35 +492,6 @@
         $(append_id).empty();        
       }      
       }
-
-      //Validate Number
-      function validateNum(e , field) {
-        var val = field.value;
-        var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
-        var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
-        if (re.test(val)) {
-
-        } else {
-          val = re1.exec(val);
-          if (val) {
-            field.value = val[0];
-          } else {
-            field.value = "";
-          }
-        }
-      }
-      $(function() {
-        $('.validateTxt').keydown(function (e) {
-          if (e.shiftKey || e.ctrlKey || e.altKey) {
-            e.preventDefault();
-          } else {
-            var key = e.keyCode;
-            if (!((key == 8) || (key == 32) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90))) {
-              e.preventDefault();
-            }
-          }
-        });
-      });
 
   </script>
   @endpush

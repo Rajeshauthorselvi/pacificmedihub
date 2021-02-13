@@ -78,7 +78,6 @@ class EmployeeController extends Controller
             'emp_email'      => 'required|email',
             'emp_contact'    => 'required',
             'address1'       => 'required',
-            'postcode'       => 'required',
             'country_id'     => 'required',
             'basic'          => 'required'
         ]);
@@ -195,7 +194,6 @@ class EmployeeController extends Controller
             'emp_email'      => 'required|email',
             'emp_contact'    => 'required',
             'address1'       => 'required',
-            'postcode'       => 'required',
             'country_id'     => 'required',
             'basic'          => 'required'
         ]);

@@ -113,7 +113,7 @@
                             @endif
                           </div>
                           <div class="col-sm-5">
-                            {!! Form::label('Mobile', 'Mobile No *') !!}
+                            {!! Form::label('Mobile', 'Contact No *') !!}
                             {!! Form::text('emp_contact',null,['class'=>'form-control','id'=>'Mobile' , 'onkeyup'=>"validateNum(event,this);"]) !!}
                             <span class="text-danger" style="display:none">Mobile No is required</span>
                           </div>
@@ -133,26 +133,25 @@
 
                         <div class="form-group">
                           <div class="col-sm-5">
-                            {!! Form::label('PostCode', 'Post Code *') !!}
-                            {!! Form::text('postcode',null,['class'=>'form-control','id'=>'PostCode']) !!}
-                            <span class="text-danger" style="display:none">Post Code is required</span>
-                          </div>
-                          <div class="col-sm-5">
                             {!! Form::label('Country', 'Country *') !!}
                             {!! Form::select('country_id',$countries,null,['class'=>'form-contol select2bs4', 'id'=>'Country', 'style'=>'width:100%' ]) !!}
                             <span class="text-danger country" style="display:none">Country is required</span>
                           </div>
-                        </div>
-
-                        <div class="form-group">
                           <div class="col-sm-5">
                             {!! Form::label('State', 'State') !!}
                             <select name="state_id" class="form-control select2bs4" id="State"></select>
-
                           </div>
+                        </div>
+
+                        <div class="form-group">
+                          
                           <div class="col-sm-5">
                             {!! Form::label('City', 'City') !!}
                             <select name="city_id" class="form-control select2bs4" id="City"></select>
+                          </div>
+                          <div class="col-sm-5">
+                            {!! Form::label('PostCode', 'Post Code') !!}
+                            {!! Form::text('postcode',null,['class'=>'form-control','id'=>'PostCode']) !!}
                           </div>
                         </div>
 
@@ -167,7 +166,7 @@
                           <div class="col-sm-5" style="margin-top: 40px">
                             <div class="icheck-info d-inline">
                               <input type="checkbox" name="emp_status" id="Status" @if(old('emp_status')=='on') checked @endif>
-                              <label for="Status">Status</label>
+                              <label for="Status">Published</label>
                             </div>
                           </div>
                         </div>
@@ -351,10 +350,6 @@
             $("[name='address1']").closest('.form-group').find('span.text-danger').show();
             valid=false;
           }
-          if($("[name='postcode']").val()=="") {
-            $("[name='postcode']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
           if($("#Country").val()=="") {
             $("#Country").closest('.form-group').find('span.text-danger.country').show();
             valid=false;
@@ -480,35 +475,6 @@
         } else {
           $('.email-error').hide();
         }
-      });
-
-      //Validate Number
-      function validateNum(e , field) {
-        var val = field.value;
-        var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
-        var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
-        if (re.test(val)) {
-
-          } else {
-              val = re1.exec(val);
-              if (val) {
-                  field.value = val[0];
-              } else {
-                  field.value = "";
-              }
-          }
-      }
-      $(function() {
-        $('.validateTxt').keydown(function (e) {
-          if (e.shiftKey || e.ctrlKey || e.altKey) {
-            e.preventDefault();
-          } else {
-            var key = e.keyCode;
-            if (!((key == 8) || (key == 32) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90))) {
-              e.preventDefault();
-            }
-          }
-        });
       });
 
     </script>

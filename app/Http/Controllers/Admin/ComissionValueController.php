@@ -32,7 +32,7 @@ class ComissionValueController extends Controller
     {
         $data['type']='create';
         $data['commissions']=[''=>'Please Select']+Commissions::where('published',1)->pluck('commission_name','id')->toArray();
-        $data['commission_type']=[''=>'Please Select','p'=>'Percentage','f'=>'Fixed'];
+        $data['commission_type']=[''=>'Please Select','p'=>'Percentage (%)','f'=>'Fixed (amount)'];
         return view('admin.commission_values.form',$data);
     }
 
@@ -82,7 +82,7 @@ class ComissionValueController extends Controller
         $data['commission_value']=CommissionValue::with('comission')->where('commission_values.id',$comissionValue->id)->first();
         $data['type']='edit';
         $data['commissions']=[''=>'Please Select']+Commissions::where('published',1)->pluck('commission_name','id')->toArray();
-        $data['commission_type']=[''=>'Please Select','p'=>'Percentage','f'=>'Fixed'];
+        $data['commission_type']=[''=>'Please Select','p'=>'Percentage (%)','f'=>'Fixed (amount)'];
         return view('admin.commission_values.form',$data);
     }
 

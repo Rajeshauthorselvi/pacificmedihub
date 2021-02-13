@@ -64,7 +64,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Status *</label>
-                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control']) !!}
+                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                   </div>
@@ -78,7 +78,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Vendor *</label>
-                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control vendors']) !!}
+                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control vendors select2bs4']) !!}
                         </div>
                     </div>
                   </div>
@@ -101,14 +101,14 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_date">Payment Term</label>
-                          {!! Form::text('payment_term', null,['class'=>'form-control']) !!}
+                          {!! Form::text('payment_term', null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_date">Payment Status *</label>
                           <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
-                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control']) !!}
+                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                   </div>
@@ -130,7 +130,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_date">Paying By</label>
-                          {!! Form::select('paying_by', $payment_method, null,['class'=>'form-control']) !!}
+                          {!! Form::select('paying_by', $payment_method, null,['class'=>'form-control select2bs4']) !!}
                         </div>
                     </div>
                     <div class="clearfix"></div>
@@ -171,6 +171,11 @@
 
 @push('custom-scripts')
 <script type="text/javascript">
+  $(function ($) {
+    $('.select2bs4').select2({
+      minimumResultsForSearch: -1
+    });
+  });
   $(document).on('click', '.remove-product-row', function(event) {
     event.preventDefault();
     $(this).closest('tr').next('tr').remove();
@@ -276,7 +281,7 @@
         }
       });
     },
-    minLength: 3,
+    minLength: 1,
     select: function( event, ui ) {
 
       var check_length=$('.product_id[value='+ui.item.value+']').length;

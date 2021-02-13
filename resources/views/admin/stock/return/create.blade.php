@@ -198,7 +198,7 @@
             }
           });
         },
-        minLength: 3,
+        minLength: 1,
         open: function() {
           $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
         },

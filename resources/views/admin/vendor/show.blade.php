@@ -108,15 +108,14 @@
                             {!! Form::text('country_id',$vendor->getCountry->name,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
                           </div>
                           <div class="col-sm-5">
-                            <label for="State">State *</label>
+                            <label for="State">State</label>
                             {!! Form::text('state_id',$vendor->getState->name,['readonly','class'=>'form-control', 'id'=>'State']) !!}
                           </div>
                         </div>
 
                         <div class="form-group">
-                          
                           <div class="col-sm-5">
-                            <label for="City">City *</label>
+                            <label for="City">City</label>
                             {!! Form::text('city_id',$vendor->getCity->name,['readonly','class'=>'form-control', 'id'=>'City']) !!}
                           </div>
                           <div class="col-sm-5">
@@ -148,7 +147,7 @@
                           <div class="col-sm-5">
                             <div class="icheck-info d-inline">
                               <input type="checkbox" name="vendor_status" id="Status" disabled @if($vendor->status==1) checked @endif>
-                              <label for="Status">Status</label>
+                              <label for="Status">Published</label>
                             </div>
                           </div>
                         </div>

@@ -165,11 +165,6 @@
             </a>
           </li>
 
-          <!-- Tax Menu -->
-          <li class="nav-item">
-            <a href="#" class="nav-link"><i class="fas fa-calculator"></i><p>Tax</p></a>
-          </li>
-
           <!-- Reports Menu -->
           <li class="nav-item">
             <a href="#" class="nav-link"><i class="fas fa-chart-bar"></i><p>Reports</p></a>
@@ -181,11 +176,11 @@
           </li>
 
           <!-- Settings Menu -->
-          <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit'||$current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit') menu-is-opening menu-open @endif">
             <a href="#" class="nav-link"><i class="fas fa-cog"></i>
               <p>Settings<i class="fas fa-angle-left right"></i></p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit') block @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit'||$current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit') block @endif">
               <li class="nav-item">
                 <a href="" class="nav-link"><i class="fas fa-angle-double-right"></i><p>General Settings</p></a>
               </li>
@@ -222,6 +217,10 @@
                   <i class="fas fa-angle-double-right"></i><p>Customer Settings</p>
                 </a>
               </li>
+              
+              <li class="nav-item @if($current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit') active @endif">
+                <a href="{{route('tax.index')}}" class="nav-link"><i class="fas fa-angle-double-right"></i><p>Tax</p></a>
+              </li>
 
                <li class="nav-item @if($current_route=='currency.index'||$current_route=='currency.create'||$current_route=='currency.edit') active @endif">
                 <a href="{{ route('currency.index') }}" class="nav-link">
@@ -233,6 +232,7 @@
                   <i class="fas fa-angle-double-right"></i><p>Payment Methods</p>
                 </a>
               </li>
+
                
             </ul>
           </li>

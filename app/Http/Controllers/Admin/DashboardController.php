@@ -39,4 +39,9 @@ class DashboardController extends Controller
     	$state = City::where('state_id',$request->state_id)->pluck("name","id");    
         return response()->json($state);
     }
+
+    public function errorPage()
+    {
+        return view('error');
+    }
 }

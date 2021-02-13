@@ -97,7 +97,7 @@
                           {!! Form::text('emp_email',$employees->emp_email,['readonly','class'=>'form-control validate-email','id'=>'Email']) !!}
                         </div>
                         <div class="col-sm-5">
-                          {!! Form::label('Mobile', 'Mobile No *') !!}
+                          {!! Form::label('Mobile', 'Contact No *') !!}
                           {!! Form::text('emp_contact',$employees->emp_mobile_no,['readonly','class'=>'form-control','id'=>'Mobile']) !!}
                         </div>
                       </div>
@@ -115,23 +115,23 @@
 
                       <div class="form-group">
                         <div class="col-sm-5">
-                          {!! Form::label('PostCode', 'Post Code *') !!}
-                          {!! Form::text('postcode',$employees->emp_postcode,['readonly','class'=>'form-control','id'=>'PostCode']) !!}
-                        </div>
-                        <div class="col-sm-5">
                           {!! Form::label('Country', 'Country *') !!}
                           {!! Form::text('country_id',$employees->country->name,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
+                        </div>
+                        <div class="col-sm-5">
+                          {!! Form::label('State', 'State') !!}
+                          {!! Form::text('state_id',$employees->state->name,['readonly','class'=>'form-control', 'id'=>'State']) !!}
                         </div>
                       </div>
 
                       <div class="form-group">
                         <div class="col-sm-5">
-                          {!! Form::label('State', 'State') !!}
-                          {!! Form::text('state_id',$employees->state->name,['readonly','class'=>'form-control', 'id'=>'State']) !!}
-                        </div>
-                        <div class="col-sm-5">
                           {!! Form::label('City', 'City') !!}
                           {!! Form::text('city_id',$employees->city->name,['readonly','class'=>'form-control', 'id'=>'City']) !!}
+                        </div>
+                        <div class="col-sm-5">
+                          {!! Form::label('PostCode', 'Post Code') !!}
+                          {!! Form::text('postcode',$employees->emp_postcode,['readonly','class'=>'form-control','id'=>'PostCode']) !!}
                         </div>
                       </div>
                       <?php 
@@ -146,7 +146,7 @@
                         <div class="col-sm-5">
                           <div class="icheck-info d-inline">
                             <input type="checkbox" name="emp_status" id="Status" @if($employees->status==1) checked @endif disabled>
-                            <label for="Status">Status</label>
+                            <label for="Status">Published</label>
                           </div>
                         </div>
                       </div>
