@@ -48,14 +48,30 @@
                       <span class="text-danger">{{ $errors->first('brand_name') }}</span>
                     @endif
                   </div>
+                  <div class="form-group" style="display:flex;">
+                    <div class="col-sm-6" style="padding-left:0">
+                      <label for="manfName">Manufacturing Name *</label>
+                      <input type="text" class="form-control" name="manf_name" id="manfName" value="{{old('manf_name',$brand->manf_name)}}">
+                      @if($errors->has('manf_name'))
+                        <span class="text-danger">{{ $errors->first('manf_name') }}</span>
+                      @endif
+                    </div>
+                    <div class="col-sm-6" style="padding-left:0">
+                      <label for="manfName">Manufacturing Country</label>
+                      {!! Form::select('country_id',$countries,$brand->manf_country_id,['class'=>'form-control select2bs4 required']) !!}
+                    </div>
+                  </div>
                  <?php 
                   if(!empty($brand->image)){$image = "theme/images/brands/".$brand->image;}
                   else {$image = "theme/images/no_image.jpg";}
                   ?>
                   <div class="form-group">
                     <label for="brandImage">Image</label>
-                    <input type="file" name="brand_image" id="brandImage" accept="image/*" onchange="preview_image(event)" style="display:none;" value="{{$brand->image}}">
-                    <img title="Click to Change" class="img-brand" id="output_image"  onclick="$('#brandImage').trigger('click'); return true;" style="width:100px;height:100px;cursor:pointer;" src="{{asset($image)}}">
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input" name="brand_image" id="brandImage" accept="image/*" value="{{old('brand_image')}}">
+                      <label class="custom-file-label" for="brandImage">Choose file</label>
+                    </div><br><br>
+                    <img class="img-brand" style="width:100px;height:100px;" src="{{asset($image)}}">
                   </div>
                   <div class="form-group clearfix">
                     <div class="icheck-info d-inline">
@@ -75,16 +91,4 @@
       </div>
     </section>
   </div>
-  <script type='text/javascript'>
-    function preview_image(event) 
-    {
-      var reader = new FileReader();
-      reader.onload = function()
-      {
-        var output = document.getElementById('output_image');
-        output.src = reader.result;
-      }
-      reader.readAsDataURL(event.target.files[0]);
-    }
-  </script>
 @endsection

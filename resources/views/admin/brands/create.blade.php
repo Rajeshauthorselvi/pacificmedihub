@@ -41,11 +41,24 @@
                 <form action="{{route('brands.store')}}" method="post" enctype="multipart/form-data">
                   @csrf 
                   <div class="form-group">
-                    <label for="brandName">Brand Name</label>
+                    <label for="brandName">Brand Name *</label>
                     <input type="text" class="form-control" name="brand_name" id="brandName" value="{{old('brand_name')}}">
                     @if($errors->has('brand_name'))
                       <span class="text-danger">{{ $errors->first('brand_name') }}</span>
                     @endif
+                  </div>
+                  <div class="form-group" style="display:flex;">
+                    <div class="col-sm-6" style="padding-left:0">
+                      <label for="manfName">Manufacturing Name *</label>
+                      <input type="text" class="form-control" name="manf_name" id="manfName" value="{{old('manf_name')}}">
+                      @if($errors->has('manf_name'))
+                        <span class="text-danger">{{ $errors->first('manf_name') }}</span>
+                      @endif
+                    </div>
+                    <div class="col-sm-6" style="padding-left:0">
+                      <label for="manfName">Manufacturing Country</label>
+                      {!! Form::select('country_id',$countries,null,['class'=>'form-control select2bs4 required']) !!}
+                    </div>
                   </div>
                   <div class="form-group">
                     <label for="brandImage">Image</label>
