@@ -1,4 +1,4 @@
-    .payment-note-sec .panel-body{
+/*    .payment-note-sec .panel-body{
         background-color: #f6f6f6;
         padding: 20px;
         border: 1px solid #eee;
@@ -15,9 +15,9 @@
     left:.75rem;
     top: 50%;
     transform: translate(0, -50%);
-    content: '-';
+    content: "-";
   }
   .accordion-toggle.collapsed .expand-button:after
   {
     content: '+';
-  }
+  }*/

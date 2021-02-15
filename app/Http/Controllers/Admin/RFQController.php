@@ -17,6 +17,8 @@ use App\Models\Settings;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
+use App\Models\PaymentTerm;
+use App\Models\Tax;
 use Redirect;
 use Session;
 class RFQController extends Controller
@@ -41,48 +43,33 @@ class RFQController extends Controller
      */
     public function create()
     {
-        $data=array();
-        $order_status=OrderStatus::where('status',1)
-                              ->whereIn('id',[1,10])
-                              ->pluck('status_name','id')
-                              ->toArray();
+      $data=array();
+      $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)->where('role_id',7)
+                                  ->pluck('first_name','id')->toArray();
+      $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                  ->where('role_id',4)->pluck('emp_name','id')->toArray();
+      $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,10])
+                                  ->pluck('status_name','id')->toArray();
+      $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
+                                  ->toArray();
+      $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->whereNotIn('tax_type',['f'])->get();
+      $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                  ->pluck('name','id')->toArray();
 
-        $payment_method=PaymentMethod::where('status',1)
-                              ->pluck('payment_method','id')
-                              ->toArray();
-        $customers=User::where('is_deleted',0)
-                         ->where('status',1)
-                         ->where('role_id',7)
-                         ->pluck('first_name','id')
-                         ->toArray();
-        $emplyees=Employee::where('is_deleted',0)
-                         ->where('status',1)
-                         ->where('role_id',4)
-                         ->pluck('emp_name','id')
-                         ->toArray();
-        $data['customers']=[''=>'Please Select']+$customers;
-        $data['sales_rep']=[''=>'Please Select']+$emplyees;
-        $data['order_status']=[''=>'Please Select']+$order_status;
-        $data['payment_method']=[''=>'Please Select']+$payment_method;
-
-        $key_val=Settings::where('key','prefix')
-                 ->where('code','rfq')
-                 ->value('content');
-        $data['rfq_id']='';
-        if (isset($key_val)) {
-            $value=unserialize($key_val);
-
-            $char_val=$value['value'];
-            $explode_val=explode('-',$value['value']);
-            $total_datas=RFQ::count();
-            $total_datas=($total_datas==0)?end($explode_val):$total_datas+1;
-
-            $data_original=$char_val;
-            $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace=[date('d'), date('m'), date('Y'), $total_datas ];
-            $data['rfq_id']=str_replace($search,$replace, $data_original);
-        }
-        return view('admin.rfq.create',$data);
+      $data['rfq_id']='';
+      $key_val = Settings::where('key','prefix')->where('code','rfq')->value('content');
+      if (isset($key_val)) {
+        $value=unserialize($key_val);
+        $char_val=$value['value'];
+        $explode_val=explode('-',$value['value']);
+        $total_datas=RFQ::count();
+        $total_datas=($total_datas==0)?end($explode_val):$total_datas+1;
+        $data_original=$char_val;
+        $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
+        $replace=[date('d'), date('m'), date('Y'), $total_datas ];
+        $data['rfq_id']=str_replace($search,$replace, $data_original);
+      }
+      return view('admin.rfq.create',$data);
     }
 
     /**
@@ -101,14 +88,16 @@ class RFQController extends Controller
       ]);
 
       $rfq_details=[
-        'order_no'  => $request->order_no,
-        'status'  => $request->status,
-        'customer_id'  =>$request->customer_id,
-        'sales_rep_id'  =>$request->sales_rep_id,
-        'discount'  => 0,
-        'tax'  =>0,
-        'notes'  =>$request->notes,
-        'created_at'  => date('Y-m-d H:i:s')
+        'order_no'        => $request->order_no,
+        'status'          => $request->status,
+        'customer_id'     => $request->customer_id,
+        'sales_rep_id'    => $request->sales_rep_id,
+        'order_tax'       => $request->order_tax,
+        'order_discount'  => $request->order_discount,
+        'payment_term'    => $request->payment_term,
+        //'payment_status'  => $request->payment_status,
+        'notes'           => $request->notes,
+        'created_at'      => date('Y-m-d H:i:s')
       ];
       $rfq_id=RFQ::insertGetId($rfq_details);
 
@@ -155,26 +144,27 @@ class RFQController extends Controller
       $products=RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
       $product_data=$product_variant=array();
       foreach ($products as $key => $product) {
-      
-          $product_name=Product::where('id',$product->product_id)
-                        ->value('name');
-          $options=$this->Options($product->product_id);
-          $product_variant=$this->Variants($product->product_id);
-          $product_data[$product->product_id]=[
-              'rfq_id'    => $id,
-              'product_id'=> $product->product_id,
-              'product_name'  => $product_name,
-              'options'       => $options['options'],
-              'option_count'  => $options['option_count'],
-              'product_variant'  => $product_variant
-          ];
+        $product_name = Product::where('id',$product->product_id)->value('name');
+        $options=$this->Options($product->product_id);
+        $product_variant=$this->Variants($product->product_id);
+        $product_data[$product->product_id]=[
+          'rfq_id'          => $id,
+          'product_id'      => $product->product_id,
+          'product_name'    => $product_name,
+          'options'         => $options['options'],
+          'option_count'    => $options['option_count'],
+          'product_variant' => $product_variant
+        ];
       }
       $rfq = RFQ::where('id',$id)->first();
-      $data['rfqs'] = $rfq;
-      $data['admin_address'] = UserCompanyDetails::where('customer_id',1)->first();
+      $data['rfqs']             = $rfq;
+      $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
       $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
-      $data['product_datas']=$product_data;
-      $data['rfq_id']=$id;
+      $data['product_datas']    = $product_data;
+      $data['rfq_id']           = $id;
+      $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
+      $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                    ->pluck('name','id')->toArray();
       return view('admin.rfq.view',$data);
     }
 
@@ -187,58 +177,36 @@ class RFQController extends Controller
     public function edit($id)
     {
       $data=array();
-      $data['rfqs']=RFQ::with('customer','salesrep','statusName')
-                    ->where('rfq.id',$id)
-                    ->first();
-      $order_status=OrderStatus::where('status',1)
-                            ->whereIn('id',[1,10,11])
-                            ->pluck('status_name','id')
-                            ->toArray();
+      $data['rfqs']           = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
+      $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,10,11])
+                                    ->pluck('status_name','id')->toArray();
+      $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
+                                    ->pluck('payment_method','id')->toArray();
+      $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)->where('role_id',7)
+                                    ->pluck('first_name','id')->toArray();
+      $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                    ->where('role_id',4)->pluck('emp_name','id')->toArray();
+      $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
+      $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                    ->pluck('name','id')->toArray();
 
-      $payment_method=PaymentMethod::where('status',1)
-                            ->pluck('payment_method','id')
-                            ->toArray();
-      $customers=User::where('is_deleted',0)
-                       ->where('status',1)
-                       ->where('role_id',7)
-                       ->pluck('first_name','id')
-                       ->toArray();
-      $emplyees=Employee::where('is_deleted',0)
-                       ->where('status',1)
-                       ->where('role_id',4)
-                       ->pluck('emp_name','id')
-                       ->toArray();
-      $data['customers']=[''=>'Please Select']+$customers;
-      $data['sales_rep']=[''=>'Please Select']+$emplyees;
-      $data['order_status']=[''=>'Please Select']+$order_status;
-      $data['payment_method']=[''=>'Please Select']+$payment_method;
-
-      $products=RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
-      $product_data=$product_variant=array();
-    
+      $products     = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
+      $product_data = $product_variant=array();
       foreach ($products as $key => $product) {
-        $product_name=Product::where('id',$product->product_id)
-                      ->value('name');
-
-        $all_variants=RFQProducts::where('rfq_id',$id)
-                              ->where('product_id',$product->product_id)
-                              ->pluck('product_variant_id')
-                              ->toArray();
-
-        $options=$this->Options($product->product_id);
-        $product_variant=$this->Variants($product->product_id,$all_variants);
-
-        $product_data[$product->product_id]=[
-            'rfq_id'    => $id,
-            'product_id'=> $product->product_id,
-            'product_name'  => $product_name,
-            'options'       => $options['options'],
-            'option_count'  => $options['option_count'],
-            'product_variant'  => $product_variant
+        $product_name    = Product::where('id',$product->product_id)->value('name');
+        $all_variants    = RFQProducts::where('rfq_id',$id)->where('product_id',$product->product_id)
+                            ->pluck('product_variant_id')->toArray();
+        $options         = $this->Options($product->product_id);
+        $product_variant = $this->Variants($product->product_id,$all_variants);
+        $product_data[$product->product_id] = [
+          'rfq_id'          => $id,
+          'product_id'      => $product->product_id,
+          'product_name'    => $product_name,
+          'options'         => $options['options'],
+          'option_count'    => $options['option_count'],
+          'product_variant' => $product_variant
         ];
-
       }
-
       $data['product_datas']=$product_data;
       return view('admin.rfq.edit',$data);
     }
@@ -253,30 +221,34 @@ class RFQController extends Controller
     public function update(Request $request, $id)
     {
       $this->validate(request(),[
-        'order_no'  =>'required',
-        'status'=>'required',
-        'customer_id'=>'required',
-        'sales_rep_id'=>'required'
+        'order_no'     => 'required',
+        'status'       => 'required',
+        'customer_id'  => 'required',
+        'sales_rep_id' => 'required'
       ]);
       $rfq_details=[
-        'customer_id'  =>$request->customer_id,
-        'sales_rep_id'  =>$request->sales_rep_id,
-        'order_no'  => $request->order_no,
-        'status'  => $request->status,
-        'sales_rep_id'  =>$request->sales_rep_id,
-        'notes'  =>$request->notes,
+        'customer_id'    => $request->customer_id,
+        'sales_rep_id'   => $request->sales_rep_id,
+        'order_no'       => $request->order_no,
+        'status'         => $request->status,
+        'sales_rep_id'   => $request->sales_rep_id,
+        'order_tax'      => $request->order_tax,
+        'order_discount' => $request->order_discount,
+        'payment_term'   => $request->payment_term,
+        'notes'          => $request->notes,
+        'updated_at'     => date('Y-m-d H:i:s')
       ];
       RFQ::where('id',$id)->update($rfq_details);
-      $variant=$request->variant;
-      $row_ids=$variant['row_id'];
-      $product_ids=$variant['product_id'];
-      $variant_id=$variant['id'];
-      $base_price=$variant['base_price'];
-      $retail_price=$variant['retail_price'];
-      $minimum_selling_price=$variant['minimum_selling_price'];
-      $stock_qty=$variant['stock_qty'];
-      $rfq_price=$variant['rfq_price'];
-      $sub_total=$variant['sub_total'];
+      $variant               = $request->variant;
+      $row_ids               = $variant['row_id'];
+      $product_ids           = $variant['product_id'];
+      $variant_id            = $variant['id'];
+      $base_price            = $variant['base_price'];
+      $retail_price          = $variant['retail_price'];
+      $minimum_selling_price = $variant['minimum_selling_price'];
+      $stock_qty             = $variant['stock_qty'];
+      $rfq_price             = $variant['rfq_price'];
+      $sub_total             = $variant['sub_total'];
 
       foreach ($row_ids as $key => $row_id) {
         $data=[
@@ -341,104 +313,94 @@ class RFQController extends Controller
     }
     public function Variants($product_id,$variation_id=0)
     {
+      $variant = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->first();
 
-        $variant = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->first();
+      if ($variation_id!=0) {
+        $productVariants = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)
+                            ->whereIn('id',$variation_id)->get();
+      }
+      else{
+        $productVariants = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->get();
+      }
+      $product_variants = array();
+      foreach ($productVariants as $key => $variants) {            
+        $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)
+                            ->where('product_variant_id',$variants->id)->first();
+        $product_variants[$key]['variant_id'] = $variants->id;
+        $product_variants[$key]['product_name']=Product::where('id',$variants->product_id)->value('name');
+        $product_variants[$key]['product_id']=$product_id;
 
-        if ($variation_id!=0) {
-
-             $productVariants = ProductVariant::where('product_id',$product_id)
-                            ->where('is_deleted',0)->where('id',$variation_id)
-                            ->get();
-
+        if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
         }
-        else{
-        $productVariants = ProductVariant::where('product_id',$product_id)
-                            ->where('is_deleted',0)->get();
-
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = $variants->option_id2;
+          $product_variants[$key]['option_value_id2'] = $variants->option_value_id2;
+          $product_variants[$key]['option_value2'] = $variants->optionValue2->option_value;
         }
-
-
-        $product_variants = array();
-        foreach ($productVariants as $key => $variants) {
-            
-            $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)->where('product_variant_id',$variants->id)->first();
-
-            $product_variants[$key]['variant_id'] = $variants->id;
-            $product_variants[$key]['product_name']=Product::where('id',$variants->product_id)->value('name');
-            $product_variants[$key]['product_id']=$product_id;
-
-            if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
-            {
-                $product_variants[$key]['option_id1'] = $variants->option_id;
-                $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
-                $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
-            }
-            elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
-            {
-                $product_variants[$key]['option_id1'] = $variants->option_id;
-                $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
-                $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
-                $product_variants[$key]['option_id2'] = $variants->option_id2;
-                $product_variants[$key]['option_value_id2'] = $variants->option_value_id2;
-                $product_variants[$key]['option_value2'] = $variants->optionValue2->option_value;
-            }
-            elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
-            {
-                $product_variants[$key]['option_id1'] = $variants->option_id;
-                $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
-                $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
-                $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
-                $product_variants[$key]['option_value_id2'] = isset($variants->option_value_id2)?$variants->option_value_id2:'';
-                $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
-                $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
-                $product_variants[$key]['option_value_id3'] = isset($variants->option_value_id3)?$variants->option_value_id3:'';
-                $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
-            }
-            elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5==NULL))
-            {
-                $product_variants[$key]['option_id1'] = $variants->option_id;
-                $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
-                $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
-                $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
-                $product_variants[$key]['option_value_id2'] = isset($variants->option_value_id2)?$variants->option_value_id2:'';
-                $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
-                $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
-                $product_variants[$key]['option_value_id3'] = isset($variants->option_value_id3)?$variants->option_value_id3:'';
-                $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
-                $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
-                $product_variants[$key]['option_value_id4'] = isset($variants->option_value_id4)?$variants->option_value_id4:'';
-                $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
-            }
-            elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5!=NULL))
-            {
-                $product_variants[$key]['option_id1'] = $variants->option_id;
-                $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
-                $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
-                $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
-                $product_variants[$key]['option_value_id2'] = isset($variants->option_value_id2)?$variants->option_value_id2:'';
-                $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
-                $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
-                $product_variants[$key]['option_value_id3'] = isset($variants->option_value_id3)?$variants->option_value_id3:'';
-                $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
-                $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
-                $product_variants[$key]['option_value_id4'] = isset($variants->option_value_id4)?$variants->option_value_id4:'';
-                $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
-                $product_variants[$key]['option_id5'] = isset($variants->option_id5)?$variants->option_id5:'';
-                $product_variants[$key]['option_value_id5'] = isset($variants->option_value_id5)?$variants->option_value_id5:'';
-                $product_variants[$key]['option_value5'] = isset($variants->optionValue5->option_value)?$variants->optionValue5->option_value:'';
-            }
-
-            $product_variants[$key]['base_price'] = $variant_details->base_price;
-            $product_variants[$key]['retail_price'] = $variant_details->retail_price;
-            $product_variants[$key]['minimum_selling_price'] = $variant_details->minimum_selling_price;
-            $product_variants[$key]['display_order'] = $variant_details->display_order;
-            $product_variants[$key]['stock_quantity'] = $variant_details->stock_quantity;
-            $product_variants[$key]['display_variant'] = $variant_details->display_variant;
-            $product_variants[$key]['vendor_id'] = $variant_details->vendor_id;
-            $product_variants[$key]['vendor_name'] = $variant_details->vendorName->name;
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+          $product_variants[$key]['option_value_id2']=isset($variants->option_value_id2)?$variants->option_value_id2:'';
+          $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+          $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+          $product_variants[$key]['option_value_id3']=isset($variants->option_value_id3)?$variants->option_value_id3:'';
+          $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+          $product_variants[$key]['option_value_id2']=isset($variants->option_value_id2)?$variants->option_value_id2:'';
+          $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+          $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+          $product_variants[$key]['option_value_id3']=isset($variants->option_value_id3)?$variants->option_value_id3:'';
+          $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+          $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
+          $product_variants[$key]['option_value_id4']=isset($variants->option_value_id4)?$variants->option_value_id4:'';
+          $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5!=NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+          $product_variants[$key]['option_value_id2']=isset($variants->option_value_id2)?$variants->option_value_id2:'';
+          $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+          $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+          $product_variants[$key]['option_value_id3']=isset($variants->option_value_id3)?$variants->option_value_id3:'';
+          $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+          $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
+          $product_variants[$key]['option_value_id4']=isset($variants->option_value_id4)?$variants->option_value_id4:'';
+          $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
+          $product_variants[$key]['option_id5'] = isset($variants->option_id5)?$variants->option_id5:'';
+          $product_variants[$key]['option_value_id5']=isset($variants->option_value_id5)?$variants->option_value_id5:'';
+          $product_variants[$key]['option_value5'] = isset($variants->optionValue5->option_value)?$variants->optionValue5->option_value:'';
         }
 
-        return $product_variants;
+        $product_variants[$key]['base_price'] = $variant_details->base_price;
+        $product_variants[$key]['retail_price'] = $variant_details->retail_price;
+        $product_variants[$key]['minimum_selling_price'] = $variant_details->minimum_selling_price;
+        $product_variants[$key]['display_order'] = $variant_details->display_order;
+        $product_variants[$key]['stock_quantity'] = $variant_details->stock_quantity;
+        $product_variants[$key]['display_variant'] = $variant_details->display_variant;
+        $product_variants[$key]['vendor_id'] = $variant_details->vendor_id;
+        $product_variants[$key]['vendor_name'] = $variant_details->vendorName->name;
+      }
+      return $product_variants;
     }
     public function Options($id)
     {

@@ -24,13 +24,13 @@
     <span class="hr"></span>
     @include('flash-message')
     @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+      <div class="alert alert-danger">
+        <ul>
+          @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>
     @endif    
     <section class="content">
       <ol class="breadcrumb float-sm-right">
@@ -48,53 +48,83 @@
               <div class="card-body">
                 {!! Form::open(['route'=>'rfq.store','method'=>'POST','class'=>'rfq-form' ,'id'=>'form-validate']) !!}
                   <div class="date-sec">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="date">Date *</label>
-                          <input type="text" class="form-control" name="created_at" value="{{ date('d/m/Y H:i') }}" readonly="true" />
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="order_no">RFQ No *</label>
-                          {!! Form::text('order_no',$rfq_id,['class'=>'form-control','readonly']) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_order_number">Status *</label>
-                          {!! Form::select('status',$order_status, null,['class'=>'form-control select2bs4']) !!}
-                        </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="date">Date *</label>
+                        <input type="text" class="form-control" name="created_at" value="{{ date('d/m/Y H:i') }}" readonly="true" />
+                      </div>
+                      <div class="col-sm-4">
+                        <label for="order_no">RFQ No *</label>
+                        {!! Form::text('order_no',$rfq_id,['class'=>'form-control','readonly']) !!}
+                      </div>
+                      <div class="col-sm-4">
+                        <label for="purchase_order_number">Status *</label>
+                        {!! Form::select('status',$order_status, null,['class'=>'form-control no-search select2bs4']) !!}
+                      </div>
                     </div>
                   </div>
                   <div class="product-sec">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="product">Products *</label>
-                          {!! Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec']) !!}
-                        </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="customer_id">Customer *</label>
+                        {!! Form::select('customer_id',$customers, null,['class'=>'form-control select2bs4','id'=>'customer']) !!}
+                      </div>
+                      <div class="col-sm-4">
+                        <label for="sales_rep_id">Sales Rep *</label>
+                        {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4']) !!}
+                      </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="customer_id">Customer *</label>
-                          {!! Form::select('customer_id',$customers, null,['class'=>'form-control select2bs4','id'=>'customer']) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="sales_rep_id">Sales Rep *</label>
-                          {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4']) !!}
-                        </div>
+                    <div class="form-group">
+                      <div class="col-sm-12">
+                        <label for="product">Products *</label>
+                        {!!Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec'])!!}
+                      </div>
                     </div>
                   </div>
                   <div class="clearfix"></div>
                   <div class="product-append-sec"></div>
                   <div class="clearfix"></div>
-                  <div class="col-sm-12">
-                     <div class="form-group">
-                          <label for="sales_rep_id">Notes</label>
-                        {!! Form::textarea('notes',null,['class'=>'form-control summernote']) !!}
+                  <hr>
+
+                  <div class="tax-sec">
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="purchase_date">Order Tax</label>
+                        <select class="form-control no-search select2bs4" name="order_tax" id="order_tax">
+                          @foreach($taxes as $tax)
+                            <option tax-rate="{{$tax->rate}}" value="{{$tax->id}}" @if($tax->name=='No Tax')  selected="selected" @endif {{ (collect(old('order_tax'))->contains($tax->id)) ? 'selected':'' }}>
+                              {{$tax->name}} 
+                              @if($tax->name=='No Tax') 
+                              @else @  {{round($tax->rate,2)}}% 
+                              @endif
+                            </option>
+                          @endforeach
+                        </select>
+
+                      </div>
+                      <div class="col-sm-4">
+                        <label for="purchase_date">Order Discount</label>
+                        {!! Form::text('order_discount', null,['class'=>'form-control','id'=>'order-discount']) !!}
+                      </div>
+                      <div class="col-sm-4">
+                        <label for="purchase_date">Payment Term</label>
+                        {!! Form::select('payment_term',$payment_terms,null,['class'=>'form-control no-search select2bs4']) !!}
+                      </div>
                     </div>
+                    <!-- <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="purchase_date">Payment Status *</label>
+                        <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
+                        {!!Form::select('payment_status',$payment_status, null,['class'=>'form-control select2bs4'])!!}
+                      </div>
+                    </div> -->
+                  </div>
+
+                  <div class="col-sm-12">
+                    
+                      <label for="sales_rep_id">Notes</label>
+                      {!! Form::textarea('notes',null,['class'=>'form-control summernote']) !!}
+                    
                   </div>
                   <div class="clearfix"></div> 
                   <br>
@@ -112,14 +142,16 @@
     </section>
   </div>
 <style type="text/css">
-    .date-sec .col-sm-4, .product-sec .col-sm-4 {
-      float: left;
-    }
-
-
+  .form-group{display:flex;}
 </style>
 @push('custom-scripts')
   <script type="text/javascript">
+
+     $(function ($) {
+        $('.no-search.select2bs4').select2({
+          minimumResultsForSearch: -1
+        });
+      });
 
 $(document).on('click', '.save-btn', function(event) {
     
@@ -151,6 +183,14 @@ $(document).on('click', '.save-btn', function(event) {
       },
       minLength: 1,
       select: function( event, ui ) {
+        var check_length=$('.product_id[value='+ui.item.value+']').length;
+
+        if (check_length>0) {
+          alert('This product already exists');
+          $(this).val('');
+          return false;
+        }
+
         $.ajax({
           url: "{{ url('admin/rfq-product') }}",
           data: {
@@ -184,32 +224,37 @@ $(document).on('click', '.save-btn', function(event) {
         $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
       }
     });
+
+    $(document).on('keyup', '#order-discount', function() {
+      $('.order-discount').text($(this).val());
+    });
+
     $(document).on('keyup', '.stock_qty', function(event) {
       if (/\D/g.test(this.value))
       {
         this.value = this.value.replace(/\D/g, '');
       }
       else{
-         var base=$(this).parents('.parent_tr');
-         var base_price=base.find('.rfq_price').val();
-         var total_price=base_price*$(this).val();
-         
-          base.find('.subtotal_hidden').val(total_price);
-          base.find('.sub_total').text(total_price);
+        var base=$(this).parents('.parent_tr');
+        var base_price=base.find('.rfq_price').val();
+        var total_price=base_price*$(this).val();
+
+        base.find('.subtotal_hidden').val(total_price);
+        base.find('.sub_total').text(total_price);
             
-          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
-          var attr=$(this).parents('tbody').find('.collapse.show');
-          var total_quantity=SumTotal('.collapse.show .stock_qty');
-          console.log(total_quantity);
-
-          $('.collapse.show').find('.total_quantity').text(total_quantity);
-          $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);
-          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
-          $('.collapse.show').find('.total').text(total_amount);
-          $('[href="#'+attr_id+'"]').find('.total').text(total_amount);
-
-          $('.all_quantity').text(SumTotal('.stock_qty'));
-          $('.all_amount').text(SumTotal('.subtotal_hidden'));
+        var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+        var attr=$(this).parents('tbody').find('.collapse.show');
+        var total_quantity=SumTotal('.collapse.show .stock_qty');
+        console.log(total_quantity);
+        
+        $('.collapse.show').find('.total_quantity').text(total_quantity);
+        $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);
+        var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+        
+        $('.collapse.show').find('.total').text(total_amount);
+        $('[href="#'+attr_id+'"]').find('.total').text(total_amount);
+        $('.all_quantity').text(SumTotal('.stock_qty'));
+        $('.all_amount').text(SumTotal('.subtotal_hidden'));
       }
     });
 
@@ -255,21 +300,44 @@ function SumTotal(class_name) {
 
   return sum;
 }
+
+$(document).on('change', '#order_tax', function() {
+  var all_amount = $('#allAmount').text();
+  var tax_rate = $('option:selected', this).attr("tax-rate");
+  //alert(tax_rate);
+  //getOrderTax(all_amount,tax_rate);
+});
+
+function getOrderTax(all_amount,tax_rate){
+  var allAmount = all_amount;
+  var taxRate = tax_rate;
+  //alert(allAmount);
+  //alert(taxRate);
+
+}
+
 function createTable(){
   var data='<div class="container my-4">';
       data +='<div class="table-responsive vatiant_table">';
       data +='<table class="table">';
-      data +='<thead>';
-      //data +='<tr>';
-      //data +='<td>#</td>';
-     // data +='<th scope="col">Product Name</th>';
-      //data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
+      data +='<thead class="heading-top">';
+      data +='<tr>';
+      data +='<td>#</td>';
+      data +='<th scope="col">Product Name</th>';
+      data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
       // data +='<th>Total Price:&nbsp;<span class="all_rfq_price"></span></th>';
-     // data +='<th>Total Amount:<span class="all_amount"></span></th>';
-      //data +='</tr>';
+      data +='<th>Total Amount:<span class="all_amount" id="allAmount"></span></th>'; 
+      data +='</tr>';
       data +='</thead>';
       data +='<tbody class="parent_tbody">';
       data +='</tbody>';
+      data +='<tr class="total-calculation"><td colspan="3" class="title">Total</td>';
+      data +='<td><span class="all_amount"></span></td></tr>';
+      data +='<tr class="total-calculation"><td colspan="3" class="title">Order Discount</td>';
+      data +='<td><span class="order-discount">0</span></td></tr>';
+      data +='<tr class="total-calculation"><td colspan="3" class="title">Order Tax</td><td>0.00</td></tr>';
+      data +='<tr class="total-calculation"><td colspan="3" class="title">Total Amount(SGD)</td><td>0.00</td></tr>';
+      data +='<tr><td colspan="5"></td></tr>'
       data +='</table>';
       data +='</div>';
       data +='</div>';

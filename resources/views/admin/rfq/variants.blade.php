@@ -4,7 +4,7 @@
     <td>{{ $product_name }}</td>
     <td>Quantity:&nbsp;<span class="quantity_{{ $product_id }} total_quantity"></span></td>
     {{-- <td>Price:&nbsp;<span class="rfq_{{ $product_id }}"></span></td> --}}
-    <td>Total:&nbsp;<span class="total_{{ $product_id }} total"></span></td>
+    <td class="total-head">Total:&nbsp;<span class="total_{{ $product_id }} total"></span></td>
   </tr>
 
   <tr class="hide-table-padding" class="test">
@@ -125,3 +125,5 @@
       </div>
     </td>
   </tr>
+
+  

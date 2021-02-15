@@ -62,7 +62,7 @@
                         <tr>
                           <td><input type="checkbox" name="tax_ids" value="{{ $tax->id }}"></td>
                           <td>
-                            {{$tax->name}} @if($tax->tax_type=='p') @  {{round($tax->rate,2)}} % @endif
+                            {{$tax->name}} @if($tax->tax_type=='p') @  {{round($tax->rate,2)}} % @elseif($tax->name=='No Tax')  @else @  {{number_format((float)$tax->rate,2,'.','')}}  @endif
                           </td>
                           <td>{{$tax->code}}</td>
                           <td>{{number_format($tax->rate,2,'.',',')}}</td>

@@ -42,7 +42,9 @@
                     <div class="clearfix"></div>
                     <ul class="list-unstyled">
                       <li>
-                        <a href="{{ route('orders.create',['rfq_id'=>$rfq_id]) }}" class="place-order"><i class="fa fa-plus-circle"></i>&nbsp; Place Order</a>
+                        <a href="{{ route('orders.create',['rfq_id'=>$rfq_id]) }}" class="place-order">
+                          <i class="fa fa-plus-circle"></i>&nbsp; Place Order
+                        </a>
                       </li>
                       <li>
                         <a href="" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
@@ -54,7 +56,9 @@
                         <a href="" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
                       </li>
                       <li>
-                        <a href="{{ route('rfq.edit',[$rfq_id]) }}" class="edit"><i class="fa fa-edit"></i>&nbsp; Edit</a>
+                        <a href="{{ route('rfq.edit',[$rfq_id]) }}" class="edit">
+                          <i class="fa fa-edit"></i>&nbsp; Edit
+                        </a>
                       </li>
                       <li>
                         <a href="{{ route('rfq.delete',[$rfq_id]) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
@@ -138,7 +142,7 @@
                     <div class="container my-4">
                       <div class="table-responsive">
                         <table class="table">
-                          <thead>
+                          <thead class="heading-top">
                             <?php
                               $total_products=\App\Models\RFQProducts::TotalDatas($rfq_id);
                             ?>
@@ -160,101 +164,147 @@
                             </tr>
                           </thead>
                           <tbody>
-                   @foreach ($product_datas as $product)
-                <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
-                <td class="expand-button"></td>
-                <?php
-                $total_based_products=\App\Models\RFQProducts::TotalDatas($rfq_id,$product['product_id']);
-                 ?>
-                <td>{{ $product['product_name'] }}</th>
-                <th>Quantity: {{ $total_based_products->quantity }}</th>
-                <th>RFQ Price: {{ $total_based_products->rfq_price }}</th>
-                <th>Total: {{ $total_based_products->sub_total }}</th>
-
-                </tr>
-                <tr class="hide-table-padding">
-                <td></td>
-                <td colspan="4">
-                 <div id="collapse{{ $product['product_id'] }}" class="collapse in p-3">
-                      <table class="table table-bordered" style="width: 100%">
-                        <thead>
-                          <tr>
-                            @foreach ($product['options'] as $option)
-                              <th>{{ $option }}</th>
+                            @foreach ($product_datas as $product)
+                              <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
+                                <td class="expand-button"></td>
+                                  <?php
+                                    $total_based_products=\App\Models\RFQProducts::TotalDatas($rfq_id,$product['product_id']);
+                                  ?>
+                                <td>{{ $product['product_name'] }}</td>
+                                <th>Quantity: {{ $total_based_products->quantity }}</th>
+                                <th>RFQ Price: {{ $total_based_products->rfq_price }}</th>
+                                <th class="total-head">Total: {{ $total_based_products->sub_total }}</th>
+                              </tr>
+                              <tr class="hide-table-padding">
+                                <td></td>
+                                <td colspan="4">
+                                  <div id="collapse{{ $product['product_id'] }}" class="collapse in p-3">
+                                    <table class="table table-bordered" style="width: 100%">
+                                      <thead>
+                                        <tr>
+                                          @foreach ($product['options'] as $option)
+                                            <th>{{ $option }}</th>
+                                          @endforeach
+                                          <th>Base Price</th>
+                                          <th>Retail Price</th>
+                                          <th>Minimum Selling Price</th>
+                                          <th>Quantity</th>
+                                          <th>RFQ Price</th>
+                                          <th>Subtotal</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <?php $total_amount=$total_quantity=0 ?>
+                                        @foreach($product['product_variant'] as $key=>$variant)
+                                          <?php 
+                                            $option_count=$product['option_count'];
+                                            $variation_details=\App\Models\RFQProducts::VariationPrice($product['product_id'],$variant['variant_id'],$product['rfq_id']);
+                                          ?>
+                                          <tr class="parent_tr">
+                                            <td>{{$variant['option_value1']}}</td>
+                                            @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
+                                              <td>{{$variant['option_value2']}}</td>
+                                            @endif
+                                            @if($option_count==3||$option_count==4||$option_count==5)
+                                              <td>{{$variant['option_value3']}}</td>
+                                            @endif
+                                            @if($option_count==4||$option_count==5)
+                                              <td>{{$variant['option_value4']}}</td>
+                                            @endif
+                                            @if($option_count==5)
+                                              <td> {{$variant['option_value5']}} </td>
+                                            @endif
+                                            <td class="base_price"> {{$variant['base_price']}} </td>
+                                            <td> {{$variant['retail_price']}}</td>
+                                            <td> {{$variant['minimum_selling_price']}} </td>
+                                            <td>
+                                              <div class="form-group">{{ $variation_details['quantity'] }}</div>
+                                            </td>
+                                            <td>
+                                              <?php $high_value=$variation_details['rfq_price']; ?>
+                                              {{ $high_value }}
+                                            </td>
+                                            <td>
+                                              <div class="form-group">{{ $variation_details['sub_total'] }}</div>
+                                            </td>
+                                          </tr>
+                                          <?php $total_amount +=$variation_details['sub_total']; ?>
+                                          <?php $total_quantity +=$variation_details['quantity']; ?>
+                                        @endforeach
+                                        <tr>
+                                          <td colspan="{{ count($product['options'])+4 }}" class="text-right">Total:</td>
+                                          <td class="total_quantity">{{ $total_quantity }}</td>
+                                          <td class="total_amount">{{ $total_amount }}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </td>
+                              </tr>
                             @endforeach
-                            <th>Base Price</th>
-                            <th>Retail Price</th>
-                            <th>Minimum Selling Price</th>
-                            <th>Quantity</th>
-                            <th>RFQ Price</th>
-                            <th>Subtotal</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        <?php $total_amount=$total_quantity=0 ?>
-                       @foreach($product['product_variant'] as $key=>$variant)
-                       <?php 
-                         $option_count=$product['option_count'];
-                         $variation_details=\App\Models\RFQProducts::VariationPrice($product['product_id'],$variant['variant_id'],$product['rfq_id']);
-                       ?>
-                          <tr class="parent_tr">
-                            <td>{{$variant['option_value1']}}</td>
-                            @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
-                              <td>{{$variant['option_value2']}}</td>
-                            @endif
-                            @if($option_count==3||$option_count==4||$option_count==5)
-                              <td>{{$variant['option_value3']}}</td>
-                            @endif
-                            @if($option_count==4||$option_count==5)
-                              <td>{{$variant['option_value4']}}</td>
-                            @endif
-                            @if($option_count==5)
-                              <td> {{$variant['option_value5']}} </td>
-                            @endif
-                            <td class="base_price"> {{$variant['base_price']}} </td>
-                            <td> {{$variant['retail_price']}}</td>
-                            <td> {{$variant['minimum_selling_price']}} </td>
-                            <td>
-                              <div class="form-group">{{ $variation_details['quantity'] }}</div>
-                            </td>
-                            <td>
-                              <?php $high_value=$variation_details['rfq_price']; ?>
-                              {{ $high_value }}
-                            </td>
-                            <td>
-                              <div class="form-group">{{ $variation_details['sub_total'] }}</div>
-                            </td>
-                          </tr>
-                          <?php $total_amount +=$variation_details['sub_total']; ?>
-                          <?php $total_quantity +=$variation_details['quantity']; ?>
-                        @endforeach
-                        <tr>
-                          <td colspan="{{ count($product['options'])+4 }}" class="text-right">Total:</td>
-                          <td class="total_quantity">{{ $total_quantity }}</td>
-                          <td class="total_amount">{{ $total_amount }}</td>
-                        </tr>
-                      </tbody>
-                      </table>
-                </div>
-              </td>
-                </tr>
-                 @endforeach
-                </tbody>
-              </table>
-            </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="footer-sec col-sm-12">
-                <div class="notes-sec col-sm-6">
-                  <label>Notes:</label>
-                  {!! $rfqs->notes !!}
-                </div>
-                <div class="created-sec col-sm-3 pull-right">
-                    Created by : 
-                    <br>
-                    Date: {{ date('d/m/Y H:i:s',strtotime($rfqs->created_at)) }}
-                </div>
-            </div>
+                            <tr class="total-calculation">
+                              <td colspan="4" class="title">Total</td><td>0.00</td>
+                            </tr>
+                            <tr class="total-calculation">
+                              <td colspan="4" class="title">Order Discount</td><td>0.00</td>
+                            </tr>
+                            <tr class="total-calculation">
+                              <td colspan="4" class="title">Order Tax</td><td>0.00</td>
+                            </tr>
+                            <tr class="total-calculation">
+                              <td colspan="4" class="title">Total Amount(SGD)</td><td>0.00</td>
+                            </tr>
+                            <!-- <tr class="total-calculation">
+                              <td colspan="4" class="title">Total Amount(USD)</td><td>0.00</td>
+                            </tr> -->
+                            <tr><td colspan="6"></td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="tax-sec">
+                      <div class="form-group">
+                        <div class="col-sm-4">
+                          <label for="purchase_date">Order Tax</label>
+                          <select class="form-control no-search select2bs4" name="order_tax">
+                            @foreach($taxes as $tax)
+                              <option value="{{$tax->id}}" @if($tax->name=='No Tax')  selected="selected" @endif {{ (collect(old('order_tax'))->contains($tax->id)) ? 'selected':'' }}>
+                                {{$tax->name}} 
+                                @if($tax->tax_type=='p') @  {{round($tax->rate,2)}}% 
+                                @elseif($tax->name=='No Tax') 
+                                @else @  {{number_format((float)$tax->rate,2,'.','')}} 
+                                @endif
+                              </option>
+                            @endforeach
+                          </select>
+
+                        </div>
+                        <div class="col-sm-4">
+                          <label for="purchase_date">Order Discount</label>
+                          {!! Form::text('order_discount', null,['class'=>'form-control']) !!}
+                        </div>
+                        <div class="col-sm-4">
+                          <label for="purchase_date">Payment Term</label>
+                          {!! Form::select('payment_term',$payment_terms,null,['class'=>'form-control no-search select2bs4']) !!}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <div class="footer-sec col-sm-12">
+                      <div class="form-group">
+                        <div class="notes-sec col-sm-6">
+                          <label>Notes:</label>
+                          {!! $rfqs->notes !!}
+                        </div>
+                        <div class="created-sec col-sm-3 pull-right">
+                          Created by : <br>Date: {{ date('d/m/Y H:i:s',strtotime($rfqs->created_at)) }}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -262,11 +312,6 @@
           </div>
         </div>
       </div>
-
     </section>
   </div>
-  <style type="text/css">
-  .rfq-show-page .accordion-toggle .expand-button:after{position: absolute;left:.75rem;top: 50%;transform: translate(0, -50%);content: '-';}
-  .rfq-show-page .accordion-toggle.collapsed .expand-button:after{content: '+';}
-</style>
 @endsection
