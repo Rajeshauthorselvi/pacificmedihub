@@ -58,8 +58,9 @@
                         {!! Form::text('order_no',$rfq_id,['class'=>'form-control','readonly']) !!}
                       </div>
                       <div class="col-sm-4">
-                        <label for="purchase_order_number">Status *</label>
-                        {!! Form::select('status',$order_status, null,['class'=>'form-control no-search select2bs4']) !!}
+                        <label for="rfqStatus">Status *</label>
+                        {!! Form::select('status',$order_status, null,['class'=>'form-control no-search select2bs4','id'=>'rfqStatus']) !!}
+                        <span class="text-danger rfq" style="display:none;">Status is required. Please Select</span>
                       </div>
                     </div>
                   </div>
@@ -68,10 +69,12 @@
                       <div class="col-sm-4">
                         <label for="customer_id">Customer *</label>
                         {!! Form::select('customer_id',$customers, null,['class'=>'form-control select2bs4','id'=>'customer']) !!}
+                        <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
                       </div>
                       <div class="col-sm-4">
                         <label for="sales_rep_id">Sales Rep *</label>
-                        {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4']) !!}
+                        {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4','id'=>'sales_rep_id']) !!}
+                        <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
                       </div>
                       <div class="col-sm-4">
                         <label for="currency_rate">Currency</label>
@@ -161,14 +164,6 @@
         });
       });
 
-      $(document).on('click', '.save-btn', function(event) {
-        var check_variants_exists=$('.vatiant_table').length;
-        if (check_variants_exists==0) {
-          alert('Please select products');
-          event.preventDefault();
-        }
-      });
-  
       $(document).on('click', '.remove-item', function(event) {
         $(this).parents('.parent_tr').remove();
       });
@@ -207,6 +202,9 @@
             if ($('.vatiant_table').length==0) {
               var currencyCode = $('option:selected', '#currency_rate').attr("currency-code");
               createTable(currencyCode);
+              if(currencyCode!='SGD'){
+                $('#total_exchange').show();
+              }
             }
             $('.parent_tbody').append(response);
 
@@ -330,6 +328,11 @@
       $(document).on('change', '#currency_rate', function() {
         var currency = $('option:selected', this).attr("currency-rate");
         var currencyCode = $('option:selected', this).attr("currency-code");
+        if(currencyCode!='SGD'){
+          $('#total_exchange').show();
+        }else if(currencyCode=='SGD'){
+          $('#total_exchange').hide();
+        }
         var all_amount = $('#allAmount').text();
         var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
         $('.exchange-code').text(currencyCode);
@@ -380,7 +383,7 @@
             data +='<td id="orderTax">0.00</td></tr>';
             data +='<tr class="total-calculation"><th colspan="3" class="title">Total Amount(SGD)</th>';
             data +='<th id="total_amount_sgd">0.00</th></tr>';
-            data +='<tr class="total-calculation"><th colspan="3" class="title">Total Amount (<span class="exchange-code">'+currency_code+'</span>)</th>';
+            data +='<tr class="total-calculation" id="total_exchange" style="display:none"><th colspan="3" class="title">Total Amount (<span class="exchange-code">'+currency_code+'</span>)</th>';
             data +='<th>';
             data +='<input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="0.00" onkeyup="validateNum(event,this);" autocomplete="off"></th></tr>';
             data +='<tr><td colspan="5"></td></tr>'
@@ -397,6 +400,40 @@
           return false;
         }
       });
+
+      $(document).on('click', '.save-btn', function(event) {
+        
+        var check_variants_exists=$('.vatiant_table').length;
+        if (check_variants_exists==0) {
+          alert('Product is required. Please Select');
+          event.preventDefault();
+        }
+
+        if(validate()!=false){
+          $('#rfq-form').submit();
+        }else{
+          return false;
+        }
+
+      });
+      
+      function validate(){
+        var valid=true;
+        if ($("#customer").val()=="") {
+          $("#customer").closest('.form-group').find('span.text-danger.customer').show();
+          valid = false;
+        }
+        if ($("#sales_rep_id").val()=="") {
+          $("#sales_rep_id").closest('.form-group').find('span.text-danger.sales_rep').show();
+          valid = false;
+        }
+        if ($("#rfqStatus").val()=="") {
+          $("#rfqStatus").closest('.form-group').find('span.text-danger.rfq').show();
+          valid = false;
+        }
+        return valid;
+      }
+
     </script>
   @endpush
 @endsection

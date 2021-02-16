@@ -20,6 +20,7 @@ use App\Models\ProductVariantVendor;
 use App\Models\PaymentTerm;
 use App\Models\Tax;
 use App\Models\Currency;
+use Auth;
 use Redirect;
 use Session;
 class RFQController extends Controller
@@ -49,7 +50,7 @@ class RFQController extends Controller
                                   ->pluck('first_name','id')->toArray();
       $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('role_id',4)->pluck('emp_name','id')->toArray();
-      $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,10])
+      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[1,10])
                                   ->pluck('status_name','id')->toArray();
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
                                   ->toArray();
@@ -103,6 +104,7 @@ class RFQController extends Controller
         'sgd_total_amount'      => $request->sgd_total_amount,
         'exchange_total_amount' => $request->exchange_rate,
         'notes'                 => $request->notes,
+        'user_id'               => Auth::id(),
         'created_at'            => date('Y-m-d H:i:s')
       ];
       $rfq_id=RFQ::insertGetId($rfq_details);

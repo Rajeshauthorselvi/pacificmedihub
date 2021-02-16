@@ -38,4 +38,8 @@ class RFQ extends Model
         return $this->belongsTo(PaymentTerm::class,'payment_term');
     }
 
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

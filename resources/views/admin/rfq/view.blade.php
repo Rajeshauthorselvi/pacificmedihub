@@ -7,13 +7,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">List RFQ</h1>
+            <h1 class="m-0">View RFQ</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
               <li class="breadcrumb-item"><a href="{{route('rfq.index')}}">RFQ</a></li>
-              <li class="breadcrumb-item active">List RFQ</li>
+              <li class="breadcrumb-item active">View RFQ</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -34,7 +34,7 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">All RFQ</h3>
+                <h3 class="card-title">View RFQ</h3>
               </div>
               <div class="card">
                 <div class="card-body">
@@ -72,10 +72,12 @@
                     <div class="col-sm-4">
                       <ul class="list-unstyled order-no-sec">
                         <li><h5>Order No: </h5></li>
-                        <li><strong>Date: </strong></li>
-                        <li><strong>Status: </strong></li>
-                        <li><strong>Sales Rep: </strong></li>
-                        <li><strong>Payment Term: </strong>{{isset($rfqs->payTerm->name)?$rfqs->payTerm->name:''}}</li>
+                        <li><strong>Date: </strong>{{date('d F, Y',strtotime($rfqs->created_at))}}</li>
+                        <li><strong>Status: </strong>{{$rfqs->statusName->status_name}}</li>
+                        <li><strong>Sales Rep: </strong>{{$rfqs->salesrep->emp_name}}</li>
+                        @if(isset($rfqs->payTerm->name))
+                          <li><strong>Payment Term: </strong>{{$rfqs->payTerm->name}}</li>
+                        @endif
                       </ul>
                     </div>
                     <div class="col-sm-8">
@@ -259,7 +261,12 @@
                               <th colspan="4" class="title">Total Amount(SGD)</th>
                               <th id="total_amount_sgd">{{$rfqs->sgd_total_amount}}</th>
                             </tr>
-                            <tr class="total-calculation">
+                            @if($rfqs->currencyCode->currency_code!='SGD')
+                              @php $currency = 'block'; @endphp 
+                            @else
+                              @php $currency = 'none'; @endphp
+                            @endif
+                            <tr class="total-calculation" style="display:{{$currency}}">
                               <th colspan="4" class="title">
                                 Total Amount (<span class="exchange-code">{{$rfqs->currencyCode->currency_code}}</span>)
                               </th>
@@ -278,7 +285,8 @@
                           {!! $rfqs->notes !!}
                         </div>
                         <div class="created-sec col-sm-3 pull-right">
-                          Created by : <br>Date: {{ date('d/m/Y H:i:s',strtotime($rfqs->created_at)) }}
+                          Created by : {{$rfqs->createdBy->first_name}} {{$rfqs->createdBy->last_name}}<br>
+                          Date: {{ date('d/m/Y H:i:s',strtotime($rfqs->created_at)) }}
                         </div>
                       </div>
                     </div>
