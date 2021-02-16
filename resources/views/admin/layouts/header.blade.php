@@ -1,4 +1,4 @@
-
+<span style="display: none;">{{$currentRoute=request()->route()->getName()}}</span>
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
@@ -84,7 +84,7 @@
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">{{$name}}&nbsp;<i class="fas fa-angle-down"></i></a>
         <div class="dropdown-menu dropdown-menu-md dropdown-menu-right" style="left:inherit;right:0px;">
-          <a href="{{route('admin-profile.index')}}" class="dropdown-item"><i class="fas fa-user mr-2"></i>Profile</a>
+          <a href="{{route('admin-profile.index')}}" class="dropdown-item @if($currentRoute=='admin-profile.index') active @endif"><i class="fas fa-user mr-2"></i>Profile</a>
           <div class="dropdown-divider"></div>
           <a href="{{route('admin.logout')}}" class="dropdown-item"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
         </div>

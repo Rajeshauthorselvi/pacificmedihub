@@ -30,7 +30,6 @@ class TaxController extends Controller
     public function create()
     {
         $data['type']='create';
-        $data['tax_type']=[''=>'Please Select','p'=>'Percentage (%)','f'=>'Fixed (amount)'];
         return view('admin/settings/tax/form',$data);
     }
 
@@ -44,7 +43,6 @@ class TaxController extends Controller
     {
         $this->validate(request(), [
             'name'     => 'required',
-            'tax_type' => 'required',
             'rate'     => 'required'
         ]); 
 
@@ -78,8 +76,6 @@ class TaxController extends Controller
         $data = array();
         $data['type']='edit';
         $data['tax']=tax::where('id',$id)->first();
-        $data['tax_type']=[''=>'Please Select','p'=>'Percentage (%)','f'=>'Fixed (amount)'];
-        
         return view('admin/settings/tax/form',$data);
     }
 
@@ -94,7 +90,6 @@ class TaxController extends Controller
     {
         $this->validate(request(), [
             'name'     => 'required',
-            'tax_type' => 'required',
             'rate'     => 'required'
         ]); 
 
@@ -103,7 +98,6 @@ class TaxController extends Controller
         $update_tax = Tax::find($id);
         $update_tax->name = $request->name;
         $update_tax->code = $request->code;
-        $update_tax->tax_type = $request->tax_type;
         $update_tax->rate = $request->rate;
         $update_tax->published = $published;
         $update_tax->update();

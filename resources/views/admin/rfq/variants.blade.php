@@ -4,7 +4,7 @@
     <td>{{ $product_name }}</td>
     <td>Quantity:&nbsp;<span class="quantity_{{ $product_id }} total_quantity"></span></td>
     {{-- <td>Price:&nbsp;<span class="rfq_{{ $product_id }}"></span></td> --}}
-    <td>Total:&nbsp;<span class="total_{{ $product_id }} total"></span></td>
+    <td class="total-head">Total:&nbsp;<span class="total_{{ $product_id }} total"></span></td>
   </tr>
 
   <tr class="hide-table-padding" class="test">
@@ -93,12 +93,12 @@
                   <?php 
                     $high_value=max($variant['minimum_selling_price'],$variant['base_price'],$variant['retail_price']) 
                   ?>
-                  <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{$high_value}}">
+                  <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" autocomplete="off" value="{{$high_value}}">
                 </td>
                 <td>
                   <div class="form-group">
                     <?php $quantity=0 ?>
-                    <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" value="{{$quantity}}">
+                    <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" autocomplete="off" value="{{$quantity}}">
                   </div>
                 </td>
 
@@ -125,3 +125,5 @@
       </div>
     </td>
   </tr>
+
+  

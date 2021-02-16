@@ -39,6 +39,8 @@ table .input-group-prepend.show .dropdown-menu a:hover li, table .dropdown-menu 
 table i.fas.fa-ban, table i.fas.fa-check {color: #3287c7;font-size: 22px;}
 table .dropdown-menu .dropdown-item button{padding:0}
 
+.dropdown-item.active, .dropdown-item:active{background-color:#3287c7;}
+
 /* Slidebar Menu */
 .sidebar-mini .sidebar-light-primary .brand-link {padding: 0.37rem .5rem;float: left;text-align: center;border-bottom: 1px solid #f4f6f9;}
 .sidebar-mini .main-sidebar .brand-link .brand-image {float: none;max-height: 40px;}
@@ -131,3 +133,53 @@ table .dropdown-menu .dropdown-item button{padding:0}
 .card-body.currency-block{display:flex;}
 .card-body.currency-block .currency-converter {height: 240px;overflow: hidden;    border-bottom: 1px solid #428bca;}
 /* End Currency */
+
+
+
+
+/* Common Design */
+.heading-top {
+    background-color: #3287c7;
+    color: #fff;
+}
+.accordion-toggle {
+    cursor: pointer;
+}
+    .payment-note-sec .panel-body{
+        background-color: #f6f6f6;
+        padding: 20px;
+        border: 1px solid #eee;
+    }
+  tr.hide-table-padding>td {
+    padding: 0;
+  }
+  .expand-button {
+    position: relative;
+  }
+  .accordion-toggle .expand-button:after
+  {
+    position: absolute;
+    left:.75rem;
+    top: 1.25rem;
+    transform: translate(0, -50%);
+    content: "-";
+    font-size: 32px;
+  }
+  .accordion-toggle.collapsed .expand-button:after
+  {
+  	top: 1.50rem;
+    content: '+';
+    font-size: 24px;
+  }
+  .table-responsive .hide-table-padding table thead {
+  	background-color: rgba(50, 135, 199,.1);
+	border-color: #fff;
+  }
+
+  .total-calculation .title {
+    text-align: right;
+    border-right: 1px solid #ddd;
+}
+.total-head {
+    border-left: 1px solid #ddd;
+}

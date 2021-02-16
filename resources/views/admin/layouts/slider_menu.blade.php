@@ -18,7 +18,7 @@
           
           <!-- Products -->
           <li class="nav-item @if($current_route=='products.index'||$current_route=='products.create'||$current_route=='products.edit'||$current_route=='products.show'||$current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit'||$current_route=='product.import') menu-is-opening menu-open @endif">
-            <a href="#" class="nav-link">
+            <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-list"></i> <p>Products <i class="fas fa-angle-left right"></i></p>
             </a>
             <ul class="nav nav-treeview" style="display:@if($current_route=='products.index'||$current_route=='products.create'||$current_route=='products.edit'||$current_route=='product.import') block @endif">
@@ -39,7 +39,7 @@
               </li> --}}
               
               <li class="nav-item inner-menu @if($current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit') block menu-is-opening menu-open @endif">
-                <a href="#" class="nav-link">
+                <a href="javascript:void(0)" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>
                     Product Settings
@@ -82,7 +82,7 @@
 
           <!-- Stock Menu -->
           <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create') menu-is-opening menu-open @endif">
-            <a href="#" class="nav-link">
+            <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-boxes"></i> <p>Stock <i class="fas fa-angle-left right"></i></p>
             </a>
             <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create') block @endif">
@@ -131,7 +131,7 @@
 
           <!-- Employee Menu -->
           <li class="nav-item @if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show'||$current_route=='salary.list') menu-is-opening menu-open @endif">
-            <a href="#" class="nav-link"><i class="fas fa-address-card"></i>
+            <a href="javascript:void(0)" class="nav-link"><i class="fas fa-address-card"></i>
               <p>Employees<i class="fas fa-angle-left right"></i></p>
             </a>
             <ul class="nav nav-treeview" style="display:@if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show'||$current_route=='salary.list') block @endif">
@@ -167,17 +167,17 @@
 
           <!-- Reports Menu -->
           <li class="nav-item">
-            <a href="#" class="nav-link"><i class="fas fa-chart-bar"></i><p>Reports</p></a>
+            <a href="javascript:void(0)" class="nav-link"><i class="fas fa-chart-bar"></i><p>Reports</p></a>
           </li>
           
           <!-- Static Page Menu -->
           <li class="nav-item">
-            <a href="" class="nav-link"><i class="fas fa-laptop"></i><p>Static Page</p></a>
+            <a href="javascript:void(0)" class="nav-link"><i class="fas fa-laptop"></i><p>Static Page</p></a>
           </li>
 
           <!-- Settings Menu -->
           <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit'||$current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit') menu-is-opening menu-open @endif">
-            <a href="#" class="nav-link"><i class="fas fa-cog"></i>
+            <a href="javascript:void(0)" class="nav-link"><i class="fas fa-cog"></i>
               <p>Settings<i class="fas fa-angle-left right"></i></p>
             </a>
             <ul class="nav nav-treeview" style="display:@if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit'||$current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit') block @endif">
