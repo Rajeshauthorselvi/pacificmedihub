@@ -75,6 +75,7 @@
                         <li><strong>Date: </strong></li>
                         <li><strong>Status: </strong></li>
                         <li><strong>Sales Rep: </strong></li>
+                        <li><strong>Payment Term: </strong>{{isset($rfqs->payTerm->name)?$rfqs->payTerm->name:''}}</li>
                       </ul>
                     </div>
                     <div class="col-sm-8">
@@ -243,57 +244,33 @@
                               </tr>
                             @endforeach
                             <tr class="total-calculation">
-                              <td colspan="4" class="title">Total</td><td>0.00</td>
+                              <td colspan="4" class="title">Total</td>
+                              <td><span class="all_amount">{{$rfqs->total_amount}}</span></td>
                             </tr>
                             <tr class="total-calculation">
-                              <td colspan="4" class="title">Order Discount</td><td>0.00</td>
+                              <td colspan="4" class="title">Order Discount</td>
+                              <td><span class="order-discount">{{$rfqs->order_discount}}</span></td>
                             </tr>
                             <tr class="total-calculation">
-                              <td colspan="4" class="title">Order Tax</td><td>0.00</td>
+                              <td colspan="4" class="title">Order Tax ({{$rfqs->oderTax->name}} @ {{round($rfqs->oderTax->rate,0)}}%)</td>
+                              <td id="orderTax">{{$rfqs->order_tax_amount}}</td>
                             </tr>
                             <tr class="total-calculation">
-                              <td colspan="4" class="title">Total Amount(SGD)</td><td>0.00</td>
+                              <th colspan="4" class="title">Total Amount(SGD)</th>
+                              <th id="total_amount_sgd">{{$rfqs->sgd_total_amount}}</th>
                             </tr>
-                            <!-- <tr class="total-calculation">
-                              <td colspan="4" class="title">Total Amount(USD)</td><td>0.00</td>
-                            </tr> -->
+                            <tr class="total-calculation">
+                              <th colspan="4" class="title">
+                                Total Amount (<span class="exchange-code">{{$rfqs->currencyCode->currency_code}}</span>)
+                              </th>
+                              <th colspan="4" id="toatl_exchange_rate">{{$rfqs->exchange_total_amount}}</th>
+                            </tr>
                             <tr><td colspan="6"></td></tr>
                           </tbody>
                         </table>
                       </div>
                     </div>
                     <div class="clearfix"></div>
-
-                    <div class="tax-sec">
-                      <div class="form-group">
-                        <div class="col-sm-4">
-                          <label for="purchase_date">Order Tax</label>
-                          <select class="form-control no-search select2bs4" name="order_tax">
-                            @foreach($taxes as $tax)
-                              <option value="{{$tax->id}}" @if($tax->name=='No Tax')  selected="selected" @endif {{ (collect(old('order_tax'))->contains($tax->id)) ? 'selected':'' }}>
-                                {{$tax->name}} 
-                                @if($tax->tax_type=='p') @  {{round($tax->rate,2)}}% 
-                                @elseif($tax->name=='No Tax') 
-                                @else @  {{number_format((float)$tax->rate,2,'.','')}} 
-                                @endif
-                              </option>
-                            @endforeach
-                          </select>
-
-                        </div>
-                        <div class="col-sm-4">
-                          <label for="purchase_date">Order Discount</label>
-                          {!! Form::text('order_discount', null,['class'=>'form-control']) !!}
-                        </div>
-                        <div class="col-sm-4">
-                          <label for="purchase_date">Payment Term</label>
-                          {!! Form::select('payment_term',$payment_terms,null,['class'=>'form-control no-search select2bs4']) !!}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="clearfix"></div>
-
                     <div class="footer-sec col-sm-12">
                       <div class="form-group">
                         <div class="notes-sec col-sm-6">

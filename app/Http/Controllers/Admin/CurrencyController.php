@@ -19,7 +19,7 @@ class CurrencyController extends Controller
     public function index()
     {
         $data=array();
-        $data['currency']=Currency::where('status','<>',3)->get();
+        $data['currency']=Currency::where('is_deleted',0)->get();
         return view('admin.currency.index',$data);
     }
 
@@ -46,17 +46,16 @@ class CurrencyController extends Controller
         $this->validate(request(),[
                 'currency_code' => 'required',
                 'currency_name' => 'required',
-                'symbol' => 'required',
-                'exchange_rate' => 'required',
+                'exchange_rate' => 'required'
         ]);
         $input=$request->all();
-
-        Arr::forget($input,['_token','is_primary']);
+        Arr::forget($input,['_token','is_primary','published']);
         if ($request->has('is_primary')) {
            DB::table('currency')->update(['is_primary'=>2]);
         }
         $input['is_primary']=($request->has('is_primary'))?1:2;
-        $input['status']=1;
+        $input['published']=($request->published=='on')?1:0;
+        $input['created_at'] = date('Y-m-d H:i:s');
         Currency::insert($input);
         return Redirect::route('currency.index')->with('success','Currency added successfully...!');
 
@@ -99,20 +98,20 @@ class CurrencyController extends Controller
         $this->validate(request(),[
                 'currency_code' => 'required',
                 'currency_name' => 'required',
-                'symbol' => 'required',
-                'exchange_rate' => 'required',
+                'exchange_rate' => 'required'
         ]);
         $input=$request->all();
 
-        Arr::forget($input,['_token','is_primary','_method']);
+        Arr::forget($input,['_token','is_primary','_method','published']);
 
         if ($request->has('is_primary')) {
            DB::table('currency')->update(['is_primary'=>2]);
         }
 
         $input['is_primary']=($request->has('is_primary'))?1:2;
-
-         $currency=Currency::where('id',$currency->id)->update($input);
+        $input['published']=($request->published=='on')?1:0;
+        $currency=Currency::where('id',$currency->id)->update($input);
+        
         return Redirect::route('currency.index')->with('success','Currency updated successfully...!');
     }
 

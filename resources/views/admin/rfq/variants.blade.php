@@ -93,12 +93,12 @@
                   <?php 
                     $high_value=max($variant['minimum_selling_price'],$variant['base_price'],$variant['retail_price']) 
                   ?>
-                  <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{$high_value}}">
+                  <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" autocomplete="off" value="{{$high_value}}">
                 </td>
                 <td>
                   <div class="form-group">
                     <?php $quantity=0 ?>
-                    <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" value="{{$quantity}}">
+                    <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" autocomplete="off" value="{{$quantity}}">
                   </div>
                 </td>
 

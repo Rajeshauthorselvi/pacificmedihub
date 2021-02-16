@@ -52,27 +52,18 @@
                   {{ Form::model($tax,['method' => 'PATCH', 'route' =>['tax.update',$tax->id]]) }}
                 @endif
                   <div class="form-group">
-                    <div class="col-sm-5">
+                    <div class="col-sm-4">
                       <label for="name">Name *</label>
                       {{ Form::text('name',null,['class'=>'form-control','id'=>'name']) }}
                       @if($errors->has('name'))
                         <span class="text-danger">{{ $errors->first('name') }}</span>
                       @endif
                     </div>
-                    <div class="col-sm-5">
+                    <div class="col-sm-4">
                       <label for="code">Code</label>
                       {{ Form::text('code',null,['class'=>'form-control','id'=>'code']) }}
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-sm-5">
-                      <label for="tax_type">Type *</label>
-                      {{ Form::select('tax_type',$tax_type,null,['class'=>'form-control select2bs4','id'=>'tax_type']) }}
-                      @if($errors->has('tax_type'))
-                        <span class="text-danger">{{ $errors->first('tax_type') }}</span>
-                      @endif
-                    </div>
-                    <div class="col-sm-5">
+                    <div class="col-sm-4">
                       <label for="rate">Rate *</label>
                       {{ Form::text('rate',null,['class'=>'form-control','id'=>'rate','onkeyup'=>"validateNum(event,this);"]) }}
                       @if($errors->has('rate'))
@@ -82,17 +73,8 @@
                   </div>
                   <div class="form-group">
                     <div class="col-sm-6">
-                      @if ($type=="edit")
-                        @if (isset($tax->published) && $tax->published==1)
-                          @php $checked='checked'; @endphp
-                        @else  
-                          @php $checked=''; @endphp
-                        @endif
-                      @else
-                        @php $checked=''; @endphp
-                      @endif
                       <div class="icheck-info d-inline">
-                        <input type="checkbox" name="published" id="Published" {{ $checked }}> 
+                        <input type="checkbox" name="published" id="Published" checked> 
                         <label for="Published">Published</label>
                       </div>
                     </div>

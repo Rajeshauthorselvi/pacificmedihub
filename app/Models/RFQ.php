@@ -22,4 +22,20 @@ class RFQ extends Model
     {
     	return $this->belongsTo(OrderStatus::class,'status');
     }
+
+    public function currencyCode()
+    {
+        return $this->belongsTo(Currency::class,'currency');
+    }
+
+    public function oderTax()
+    {
+        return $this->belongsTo(Tax::class,'order_tax');
+    }
+
+    public function payTerm()
+    {
+        return $this->belongsTo(PaymentTerm::class,'payment_term');
+    }
+
 }

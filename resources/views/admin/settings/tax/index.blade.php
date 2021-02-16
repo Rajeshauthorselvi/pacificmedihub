@@ -52,7 +52,6 @@
                       	<th>Name</th>
                       	<th>Code</th>
                       	<th>Tax Rate</th>
-                        <th>Type</th>
                         <th>Published</th>
                       	<th>Action</th>
                       </tr>
@@ -61,18 +60,9 @@
                       @foreach($taxes as $tax)
                         <tr>
                           <td><input type="checkbox" name="tax_ids" value="{{ $tax->id }}"></td>
-                          <td>
-                            {{$tax->name}} @if($tax->tax_type=='p') @  {{round($tax->rate,2)}} % @elseif($tax->name=='No Tax')  @else @  {{number_format((float)$tax->rate,2,'.','')}}  @endif
-                          </td>
+                          <td>{{$tax->name}} @  {{round($tax->rate,2)}} %</td>
                           <td>{{$tax->code}}</td>
                           <td>{{number_format($tax->rate,2,'.',',')}}</td>
-                          <td>
-                            <?php 
-                              if($tax->tax_type=='f') $type='Fixed (amount)';
-                              else if($tax->tax_type=='p') $type='Percentage (%)';
-                             ?>
-                            {{$type}}
-                          </td>
                           <td>
                              <?php
                               if($tax->published==1){$published = "fa-check";}

@@ -56,31 +56,40 @@
                     </div>
 
                     <div class="form-group">
-                      <label for="symbol">Symbol *</label>
+                      <label for="symbol">Symbol</label>
                       {{ Form::text('symbol',null,['class'=>'form-control','id'=>'symbol']) }}
-                      @if($errors->has('symbol'))
-                        <span class="text-danger">{{ $errors->first('symbol') }}</span>
-                      @endif
                     </div>
 
                     <div class="form-group">
                       <label for="exchange_rate">Exchange Rate *</label>
-                      {{ Form::text('exchange_rate',null,['class'=>'form-control','id'=>'exchange_rate','onkeyup'=>"validateNum(event,this);"]) }}
+                      {{ Form::text('exchange_rate',null,['class'=>'form-control','id'=>'exchange_rate']) }}
                       @if($errors->has('exchange_rate'))
                         <span class="text-danger">{{ $errors->first('exchange_rate') }}</span>
                       @endif
                     </div>
-
-                    <div class="form-group">
-                      @if (isset($currency->is_primary) && $currency->is_primary==1)
-                        @php $checked='checked'; @endphp
-                      @else  
-                        @php $checked=''; @endphp
-                      @endif
-                      <div class="icheck-info d-inline">
-                        <input type="checkbox" name="is_primary" id="Published" {{ $checked }}> 
-                        <label for="Published">Primary Currency</label>
-                      </div>          
+                    <div class="form-group clearfix" style="display:flex;">
+                      <div class="col-sm-6" style="padding-left:0">
+                        @if (isset($currency->is_primary) && $currency->is_primary==1)
+                          @php $checked='checked'; @endphp
+                        @else  
+                          @php $checked=''; @endphp
+                        @endif
+                        <div class="icheck-info d-inline">
+                          <input type="checkbox" name="is_primary" id="Published" {{ $checked }}> 
+                          <label for="Published">Primary Currency</label>
+                        </div>         
+                      </div>
+                      <div class="col-sm-6" style="padding:0">
+                        @if (isset($currency->published) && $currency->published==1)
+                          @php $published='checked'; @endphp
+                        @else  
+                          @php $published=''; @endphp
+                        @endif
+                        <div class="icheck-info d-inline">
+                          <input type="checkbox" name="published" id="published" {{$published}}>
+                          <label for="published">Published</label>
+                        </div>
+                      </div>
                     </div>
                     <div class="form-group">
                       <a href="{{route('currency.index')}}" class="btn reset-btn">Cancel</a>
@@ -111,6 +120,22 @@
             minimumResultsForSearch: -1
           });
         });
+
+       $(function () {
+        $("#exchange_rate").keydown(function (event) {
+          if (event.shiftKey == true) {
+            event.preventDefault();
+          }
+
+          if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+            
+          } else {
+            event.preventDefault();
+          }
+          if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+          event.preventDefault();
+        });
+      });
     </script>
   @endpush
 @endsection

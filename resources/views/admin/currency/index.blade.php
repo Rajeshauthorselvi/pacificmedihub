@@ -53,6 +53,7 @@
                       	<th>Exchange Rate</th>
                         <th>Symbol</th>
                         <th>Primary</th>
+                        <th>Published</th>
                       	<th>Action</th>
                       </tr>
                     </thead>
@@ -65,6 +66,13 @@
                             <td>{{ $cur->exchange_rate }}</td>
                             <td>{{ $cur->symbol }}</td>
                             <td>{{ ($cur->is_primary==1)?'Yes':'No' }}</td>
+                            <td>
+                              <?php
+                                if($cur->published==1){$published = "fa-check";}
+                                else{$published = "fa-ban";}
+                              ?>
+                              <i class="fas {{$published}}"></i>
+                            </td>
                             <td>
                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>

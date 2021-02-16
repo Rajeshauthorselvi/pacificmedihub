@@ -19,6 +19,7 @@ use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
 use App\Models\PaymentTerm;
 use App\Models\Tax;
+use App\Models\Currency;
 use Redirect;
 use Session;
 class RFQController extends Controller
@@ -52,9 +53,10 @@ class RFQController extends Controller
                                   ->pluck('status_name','id')->toArray();
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
                                   ->toArray();
-      $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->whereNotIn('tax_type',['f'])->get();
+      $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
       $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                   ->pluck('name','id')->toArray();
+      $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
 
       $data['rfq_id']='';
       $key_val = Settings::where('key','prefix')->where('code','rfq')->value('content');
@@ -88,30 +90,34 @@ class RFQController extends Controller
       ]);
 
       $rfq_details=[
-        'order_no'        => $request->order_no,
-        'status'          => $request->status,
-        'customer_id'     => $request->customer_id,
-        'sales_rep_id'    => $request->sales_rep_id,
-        'order_tax'       => $request->order_tax,
-        'order_discount'  => $request->order_discount,
-        'payment_term'    => $request->payment_term,
-        //'payment_status'  => $request->payment_status,
-        'notes'           => $request->notes,
-        'created_at'      => date('Y-m-d H:i:s')
+        'order_no'              => $request->order_no,
+        'status'                => $request->status,
+        'customer_id'           => $request->customer_id,
+        'sales_rep_id'          => $request->sales_rep_id,
+        'currency'              => $request->currency,
+        'order_tax'             => $request->order_tax,
+        'order_discount'        => $request->order_discount,
+        'payment_term'          => $request->payment_term,
+        'order_tax_amount'      => $request->order_tax_amount,
+        'total_amount'          => $request->total_amount,
+        'sgd_total_amount'      => $request->sgd_total_amount,
+        'exchange_total_amount' => $request->exchange_rate,
+        'notes'                 => $request->notes,
+        'created_at'            => date('Y-m-d H:i:s')
       ];
       $rfq_id=RFQ::insertGetId($rfq_details);
 
-      $quantites=$request->quantity;
-      $variant=$request->variant;
-      
-      $product_ids=$variant['product_id'];
-      $variant_id=$variant['id'];
-      $base_price=$variant['base_price'];
-      $retail_price=$variant['retail_price'];
-      $minimum_selling_price=$variant['minimum_selling_price'];
-      $stock_qty=$variant['stock_qty'];
-      $rfq_price=$variant['rfq_price'];
-      $sub_total=$variant['sub_total'];
+      $quantites             = $request->quantity;
+      $variant               = $request->variant;
+      $product_ids           = $variant['product_id'];
+      $variant_id            = $variant['id'];
+      $base_price            = $variant['base_price'];
+      $retail_price          = $variant['retail_price'];
+      $minimum_selling_price = $variant['minimum_selling_price'];
+      $stock_qty             = $variant['stock_qty'];
+      $rfq_price             = $variant['rfq_price'];
+      $sub_total             = $variant['sub_total'];
+
       foreach ($product_ids as $key => $product_id) {
         if ($stock_qty[$key]!=0 && $stock_qty[$key]!="") {
           $data=[
@@ -128,7 +134,6 @@ class RFQController extends Controller
           RFQProducts::insert($data);
         }
       }
-
       return Redirect::route('rfq.index')->with('success','RFQ added successfully...!');
     }
 
@@ -165,6 +170,7 @@ class RFQController extends Controller
       $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
       $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                     ->pluck('name','id')->toArray();
+      $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
       return view('admin.rfq.view',$data);
     }
 
@@ -189,15 +195,18 @@ class RFQController extends Controller
       $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
       $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                     ->pluck('name','id')->toArray();
-
-      $products     = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
+      $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
+      
       $product_data = $product_variant=array();
+      $products     = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
+
       foreach ($products as $key => $product) {
         $product_name    = Product::where('id',$product->product_id)->value('name');
         $all_variants    = RFQProducts::where('rfq_id',$id)->where('product_id',$product->product_id)
                             ->pluck('product_variant_id')->toArray();
         $options         = $this->Options($product->product_id);
         $product_variant = $this->Variants($product->product_id,$all_variants);
+
         $product_data[$product->product_id] = [
           'rfq_id'          => $id,
           'product_id'      => $product->product_id,
@@ -226,19 +235,25 @@ class RFQController extends Controller
         'customer_id'  => 'required',
         'sales_rep_id' => 'required'
       ]);
+
       $rfq_details=[
-        'customer_id'    => $request->customer_id,
-        'sales_rep_id'   => $request->sales_rep_id,
-        'order_no'       => $request->order_no,
-        'status'         => $request->status,
-        'sales_rep_id'   => $request->sales_rep_id,
-        'order_tax'      => $request->order_tax,
-        'order_discount' => $request->order_discount,
-        'payment_term'   => $request->payment_term,
-        'notes'          => $request->notes,
-        'updated_at'     => date('Y-m-d H:i:s')
+        'order_no'              => $request->order_no,
+        'customer_id'           => $request->customer_id,
+        'sales_rep_id'          => $request->sales_rep_id,
+        'currency'              => $request->currency,
+        'order_tax'             => $request->order_tax,
+        'order_discount'        => $request->order_discount,
+        'payment_term'          => $request->payment_term,
+        'order_tax_amount'      => $request->order_tax_amount,
+        'total_amount'          => $request->total_amount,
+        'sgd_total_amount'      => $request->sgd_total_amount,
+        'exchange_total_amount' => $request->exchange_rate,
+        'notes'                 => $request->notes,
+        'updated_at'            => date('Y-m-d H:i:s')
       ];
+
       RFQ::where('id',$id)->update($rfq_details);
+
       $variant               = $request->variant;
       $row_ids               = $variant['row_id'];
       $product_ids           = $variant['product_id'];
