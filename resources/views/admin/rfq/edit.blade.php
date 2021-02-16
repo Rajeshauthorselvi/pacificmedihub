@@ -492,6 +492,7 @@
         if(validate()!=false){
           $('#rfq-form').submit();
         }else{
+          scroll_to();
           return false;
         }
 
@@ -512,6 +513,12 @@
           valid = false;
         }
         return valid;
+      }
+      
+      function scroll_to(form){
+        $('html, body').animate({
+          scrollTop: $(".rfq-form").offset().top
+        },1000);
       }
     </script>
   @endpush

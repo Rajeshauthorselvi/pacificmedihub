@@ -49,7 +49,7 @@
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
                         <th>Date</th>
-                        <th>Order No</th>
+                        <th>RFQ No</th>
                         <th>Customer</th>
                         <th>Sales Rep</th>
                         <th>Quantity</th>
@@ -71,20 +71,35 @@
                           </td>
                           <td>{{  $rfq->statusName->status_name  }}</td>
                           <td>
-                                <div class="input-group-prepend">
-                                  <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
-                                  <ul class="dropdown-menu">
-                                    <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                    <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-                                   <a href="#"><li class="dropdown-item">
-                                      <form method="POST" action="{{ route('rfq.destroy',$rfq->id) }}">@csrf 
-                                        <input name="_method" type="hidden" value="DELETE">
-                                        <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
-                                      </form>
-                                    </li></a>
-                                  </ul>
-                                </div>
-                              </td>
+                            <div class="input-group-prepend">
+                              <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
+                              <ul class="dropdown-menu">
+                                
+                                <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
+                                
+                                <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                
+                                <a href="{{ route('orders.create',['rfq_id'=>$rfq->id]) }}"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
+
+                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
+
+                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF</li></a>
+
+                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</li></a>
+
+                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fas fa-comments"></i>&nbsp;&nbsp;Comments</li></a>
+
+                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fas fa-print"></i>&nbsp;&nbsp;Print</li></a>
+
+                                <a href="javascript:void(0)"><li class="dropdown-item">
+                                  <form method="POST" action="{{ route('rfq.destroy',$rfq->id) }}">@csrf 
+                                    <input name="_method" type="hidden" value="DELETE">
+                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
+                                  </form>
+                                </li></a>
+                              </ul>
+                            </div>
+                          </td>
                         </tr>
                       @endforeach
                     </tbody>
