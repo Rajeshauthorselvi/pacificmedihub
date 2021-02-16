@@ -64,7 +64,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Status *</label>
-                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control select2bs4']) !!}
+                          {!! Form::select('purchase_status',$order_status, 1,['class'=>'form-control','readonly','style'=>'pointer-events:none']) !!}
                         </div>
                     </div>
                   </div>
@@ -267,7 +267,6 @@
   }
 
   var path ="{{ url('admin/product-search') }}";
-
   $('#prodct-add-sec').autocomplete({
     source: function( request, response) {
       $.ajax({
@@ -292,30 +291,30 @@
           return false;
       }
 
-      $.ajax({
-        url: '{{ url('admin/search-vendor') }}'+'/'+ui.item.value,
-        type: 'GET',
-      })
-      .done(function(response) {
-        $('.vendors').empty();
-        $.each(response.products, function(key, value) {
-             var $option = $("<option/>", {
-                value: key,
-                text: value
-              });
-              $('.vendors').append($option);
+      /*Load Related Vendors*/
+        $.ajax({
+          url: '{{ url('admin/search-vendor') }}'+'/'+ui.item.value,
+          type: 'GET',
+        })
+        .done(function(response) {
+          $('.vendors').empty();
+          $.each(response.products, function(key, value) {
+               var $option = $("<option/>", {
+                  value: key,
+                  text: value
+                });
+                $('.vendors').append($option);
+          });
+        })
+        .fail(function() {
+          alert('Ajax Error:--');
         });
-      })
-      .fail(function() {
-        alert('Ajax Error:--');
-      });
+
+      /*Load Related Vendors*/
       
-       // ajaxFunction('header',ui)
        ajaxFunction('options',ui);
        $('.no-match').hide();
        $(this).val('');
-       collapseFunction();
-       
        return false;
 
     },
@@ -327,19 +326,6 @@
     }
   });
 
-  function collapseFunction() {
-    // Add minus icon for collapse element which is open by default
-    $(".collapse.show").each(function(){
-      $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
-    });
-    
-    // Toggle plus minus icon on show hide of collapse element
-    $(".collapse").on('show.bs.collapse', function(){
-      $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
-    }).on('hide.bs.collapse', function(){
-      $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
-    });
-  }
 
   function ajaxFunction(type,ui) {
     $.ajax({

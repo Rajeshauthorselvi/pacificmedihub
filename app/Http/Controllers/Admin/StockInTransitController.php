@@ -10,6 +10,7 @@ use App\Models\ProductVariant;
 use App\Models\PaymentMethod;
 use App\Models\ProductVariantVendor;
 use App\Models\Product;
+use App\Models\PurchaseStockHistory;
 use App\Models\Vendor;
 use App\Models\Settings;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class StockInTransitController extends Controller
     {
         $data=array();
 
-        $purchases=Purchase::where('purchase_status','<>',2)->orderBy('id','DESC')->get();
+        $purchases=Purchase::orderBy('id','DESC')->get();
         $data=array();
         $orders=array();
         foreach ($purchases as $key => $purchase) {
@@ -37,6 +38,7 @@ class StockInTransitController extends Controller
                 ->where('purchase_id',$purchase->id)
                 ->first();
 
+            $total_qty_received=PurchaseStockHistory::where('purchase_id',$purchase->id)->sum('qty_received');
         $order_status=OrderStatus::where('status',1)
                               ->where('id',$purchase->purchase_status)
                               ->value('status_name');
@@ -47,7 +49,7 @@ class StockInTransitController extends Controller
                 'vendor'   =>$vendor_name,
                 'po_number'=>$purchase->purchase_order_number,
                 'quantity' => $product_details->quantity,
-                'qty_received' => $product_details->qty_received,
+                'qty_received' => $total_qty_received,
                 'status' =>$order_status
             ];
         }
@@ -97,15 +99,13 @@ class StockInTransitController extends Controller
     public function edit($id)
     {
         $data=array();
-         $data['purchase']=Purchase::find($id);
-         // $data['purchase_products']=PurchaseProducts::with('product','optionvalue')->where('purchase_id',$id)->get();
+        $data['purchase']=Purchase::find($id);
 
         $products=PurchaseProducts::where('purchase_id',$id)->groupBy('product_id')->get();
 
             $product_data=$product_variant=array();
             foreach ($products as $key => $product) {
-                $product_name=Product::where('id',$product->product_id)
-                              ->value('name');
+                $product_name=Product::where('id',$product->product_id)->value('name');
                 $options=$this->Options($product->product_id);
 
                 $all_variants=PurchaseProducts::where('purchase_id',$id)
@@ -130,8 +130,9 @@ class StockInTransitController extends Controller
         $data['product_name']=$product_name;
 
         $order_status=OrderStatus::where('status',1)
-                              ->pluck('status_name','id')
-                              ->toArray();
+                      ->whereIn('id',[1,2,4])
+                      ->pluck('status_name','id')
+                      ->toArray();
 
         $payment_method=PaymentMethod::where('status',1)
                               ->pluck('payment_method','id')
@@ -140,12 +141,93 @@ class StockInTransitController extends Controller
                          ->where('status',1)
                          ->pluck('name','id')
                          ->toArray();
-        $data['vendors']=[''=>'Please Select']+$vendors;
+        $data['received_quantity']=$this->TotalReceivedQuantity($id);
 
+        $data['existing_history']=$this->StockHistoryDetails($id);
+        $data['vendors']=[''=>'Please Select']+$vendors;
         $data['order_status']=[''=>'Please Select']+$order_status;
         $data['payment_method']=[''=>'Please Select']+$payment_method;
-
         return view('admin.stock.stock-in-transit.edit',$data);
+    }
+
+    public function TotalReceivedQuantity($purchase_id)
+    {
+          $total_received_history=PurchaseStockHistory::where('purchase_id',$purchase_id)
+                                         ->select(DB::raw('sum(qty_received) as total_quantity'),'purchase_id','purchase_product_id')
+                                         ->groupBy('purchase_product_id')
+                                         ->get();
+          $data=array();
+          foreach ($total_received_history as $key => $history) {
+              $data[$history->purchase_product_id]=$history->total_quantity;
+          }
+
+        return $data;
+    }
+    public function update(Request $request, $id)
+    {
+
+
+
+        $this->validate(request(),[
+            'purchase_status'   => 'required'
+        ]);
+        $quantity_received=$request->qty_received;
+       
+       $variant=$request->variant;
+       $row_ids=$variant['row_id'];
+       $qty_received=$variant['qty_received'];
+       $damaged_qty=$variant['damaged_qty'];
+       $missed_quantity=$variant['missed_qty'];
+       $stock_quantity=$variant['stock_quantity'];
+       $product_id=$variant['product_id'];
+       if ($request->purchase_status!=1) {
+         foreach ($row_ids as $key => $row_id) {
+
+
+            $purchase_data=DB::table('purchase_products')->where('id',$row_id)->first();
+            $variant_data=DB::table('product_variant_vendors')
+                          ->where('product_variant_id',$purchase_data->product_variation_id)
+                          ->first();
+              if ($qty_received[$key]!=0) {
+                $data=[
+                  'purchase_id'           => $id,
+                  // 'product_id'            => $product_id[$key],
+                  'purchase_product_id'  => $row_id,
+                  'qty_received'          => $qty_received[$key]+$damaged_qty[$key],
+                  'damage_quantity'       => $damaged_qty[$key],
+                  'missed_quantity'       => $missed_quantity[$key],
+                  'stock_quantity'        => $stock_quantity[$key],
+                  'created_at'            => date('Y-m-d H:i:s')
+                ];
+                PurchaseStockHistory::insert($data);
+              }
+              if ($request->purchase_status==2 || $request->purchase_status==4) {
+                $total_quantity=$variant_data->stock_quantity+$stock_quantity[$key];
+                DB::table('product_variant_vendors')
+                ->where('product_variant_id',$purchase_data->product_variation_id)
+                ->update(['stock_quantity'=>$total_quantity]);
+              }
+          }
+       }
+
+        Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$request->purchase_status]);
+            return Redirect::route('stock-in-transit.index')->with('success','Stock-In-Transit modified successfully...!');  
+        }
+
+    public function StockHistoryDetails($purchase_id)
+    {
+        $purchase_history=PurchaseStockHistory::where('purchase_id',$purchase_id)->get();
+        $data=array();
+        foreach ($purchase_history as $key => $history) {
+            $data[$history->product_variation_id]=[
+              'qty_received'  => $history->qty_received,
+              'damage_quantity'  => $history->damage_quantity,
+              'damage_quantity'  => $history->damage_quantity,
+              'missed_quantity'  => $history->missed_quantity,
+              'created_at'  => date('d-m-Y H:i:s'),
+            ];
+        }
+        return $data;
     }
     public function OptionValues($value_id='')
     {
@@ -296,6 +378,52 @@ class StockInTransitController extends Controller
 
         return $product_variants;
     }
+
+    public function ListPurchaseStockHistory(Request $request)
+    {
+
+      $data=$history=array();
+
+      $purchase_variant_id=$request->get('purchase_variant_id');
+      $purchase_id=$request->get('purchase_id');
+      $product_id=$request->get('product_id');
+      $product_variant_id=$request->get('product_variant');
+
+      $purchase_details=PurchaseStockHistory::where('purchase_id',$purchase_id)
+                        ->where('purchase_product_id',$purchase_variant_id)
+                        ->get();
+
+      $product_name=DB::table('purchase_stock_history as psh')
+                        ->leftjoin('purchase_products as pp','pp.id','psh.purchase_product_id')
+                        ->leftjoin('products as p','p.id','pp.product_id')
+                        ->where('psh.purchase_product_id',$purchase_variant_id)
+                        ->where('psh.purchase_id',$purchase_id)
+                        ->value('name');
+
+
+      $options=$this->Options($product_id);
+
+      $data['option_count']=$options['option_count'];
+      $data['options']=$options['options'];
+      $all_variants=PurchaseProducts::where('id',$purchase_variant_id)->pluck('product_variation_id')->toArray();
+      $data['product_variants']=$this->Variants($product_id,$all_variants);
+
+
+      // dd($data);
+
+      $data['product_name']    = $product_name;
+      foreach ($purchase_details as $key => $purchase_detail) {
+          $history[]=[
+              'qty_received'    => $purchase_detail->qty_received,
+              'damage_quantity' => $purchase_detail->damage_quantity,
+              'missed_quantity' => $purchase_detail->missed_quantity,
+              'stock_quantity'  => $purchase_detail->stock_quantity,
+              'created_at'      => date('d-m-Y H:i',strtotime($purchase_detail->created_at))
+          ];
+      }
+      $data['histories']=$history;
+      return view('admin.stock.stock-in-transit.stock_history',$data);
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -303,47 +431,6 @@ class StockInTransitController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-
-        $this->validate(request(),[
-            'purchase_status'   => 'required'
-        ]);
-        $quantity_received=$request->qty_received;
-       
-       $variant=$request->variant;
-       $row_ids=$variant['row_id'];
-       $qty_received=$variant['qty_received'];
-       $damaged_qty=$variant['damaged_qty'];
-       $missed_quantity=$variant['missed_qty'];
-       $stock_quantity=$variant['stock_quantity'];
-       $reason=$variant['reason'];
-         foreach ($row_ids as $key => $row_id) {
-            $purchase_data=DB::table('purchase_products')->where('id',$row_id)->first();
-
-            $variant_data=DB::table('product_variant_vendors')
-                          ->where('product_variant_id',$purchase_data->product_variation_id)
-                          ->first();
-           
-              $data=[
-                  'qty_received'      => $qty_received[$key],
-                  'damage_quantity'    => $damaged_qty[$key],
-                  'missed_quantity'    => $missed_quantity[$key],
-                  'stock_quantity'    => $stock_quantity[$key],
-                  'reason'            => isset($reason[$key])?$reason[$key]:''
-              ];
-              PurchaseProducts::where('id',$row_id)->update($data);
-              if ($request->purchase_status==2) {
-                $total_quantity=$variant_data->stock_quantity+$stock_quantity[$key];
-                DB::table('product_variant_vendors')
-                ->where('product_variant_id',$purchase_data->product_variation_id)
-                ->update(['stock_quantity'=>$total_quantity]);
-              }
-       }
-
-        Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$request->purchase_status]);
-            return Redirect::route('stock-in-transit.index')->with('success','Stock-In-Transit modified successfully...!');  
-        }
 
     /**
      * Remove the specified resource from storage.

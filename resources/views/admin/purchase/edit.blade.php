@@ -63,7 +63,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Status *</label>
-                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control select2bs4']) !!}
+                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control','readonly','style'=>'pointer-events:none']) !!}
                         </div>
                     </div>
                   </div>
