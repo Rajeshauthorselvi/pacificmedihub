@@ -107,6 +107,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');
 
 	Route::resource('tax','Admin\TaxController');
+
+	Route::post('purchase-stock-history', 'Admin\StockInTransitController@ListPurchaseStockHistory');
 });
 
 

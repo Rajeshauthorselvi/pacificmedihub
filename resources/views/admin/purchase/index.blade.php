@@ -79,6 +79,7 @@
                           <td>{{ $order['order_status'] }}</td>
                           <td>{{ $order['payment_status'] }}</td>
                           <td>
+
                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                                   <ul class="dropdown-menu">
@@ -95,8 +96,17 @@
                                         <i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment
                                       </li>
                                     </a>
+                                    @if ($order['status_id']==2)
+                                      @php $status_class="disabled" @endphp
+                                    @else
+                                        @php $status_class="" @endphp
+                                    @endif
+                                    <a href="{{route('purchase.edit',$order['purchase_id'])}}" class="{{ $status_class }}">
+                                      <li class="dropdown-item">
+                                        <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
+                                      </li>
+                                    </a>
 
-                                    <a href="{{route('purchase.edit',$order['purchase_id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                     <a href="javascript:void(0)"><li class="dropdown-item">
                                       <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
                                     </li></a>
@@ -208,6 +218,10 @@
 <style type="text/css">
   #payment_model .col-sm-6,#edit_payment_model .col-sm-6{
     float: left;
+  }
+  .disabled{
+    pointer-events: none;
+    opacity: 0.5;
   }
 </style>
   @push('custom-scripts')

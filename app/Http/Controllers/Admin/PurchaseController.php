@@ -60,7 +60,8 @@ class PurchaseController extends Controller
                 'amount' => $purchase->amount,
                 'balance' => ($product_details->sub_total)-($purchase->amount),
                 'payment_status' => $payment_status,
-                'order_status'  =>$order_status
+                'order_status'  =>$order_status,
+                'status_id'     => $purchase->purchase_status
             ];
         }
         $data['orders']=$orders;
@@ -124,7 +125,6 @@ class PurchaseController extends Controller
      */
     public function store(Request $request)
     {
-
 
 
        $this->validate(request(),[
