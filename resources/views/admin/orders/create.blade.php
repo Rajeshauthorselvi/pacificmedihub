@@ -23,15 +23,15 @@
     <!-- /.content-header -->
     <span class="hr"></span>
     @include('flash-message')
-@if ($errors->any())
-    <div class="alert alert-danger">
+    @if ($errors->any())
+      <div class="alert alert-danger">
         <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
+          @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
         </ul>
-    </div>
-@endif    
+      </div>
+    @endif    
     <!-- Main content -->
     <section class="content">
       <ol class="breadcrumb float-sm-right">
@@ -48,294 +48,420 @@
               </div>
               <div class="card">
                 <div class="card-body">
-              {!! Form::open(['route'=>'orders.store','method'=>'POST','id'=>'form-validate']) !!}
-                  <div class="clearfix"></div>
-                  <div class="date-sec">
-                    <div class="col-sm-4">
-                     
-                        <div class="form-group">
+                  {!! Form::open(['route'=>'orders.store','method'=>'POST','id'=>'orders-form']) !!}
+                    
+                    <div class="date-sec">
+                      <div class="form-group">
+                        <div class="col-sm-4">
                           <label for="date">Date *</label>
                           <input type="text" class="form-control" name="created_at" value="{{ date('d/m/Y H:i') }}" readonly="true" />
                         </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
+                        <div class="col-sm-4">
                           <label for="order_no">Order No *</label>
                           {!! Form::text('order_no',$order_code,['class'=>'form-control','readonly']) !!}
                         </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="status">Status *</label>
-                          {!! Form::select('order_status',$order_status, null,['class'=>'form-control']) !!}
+                        <div class="col-sm-4">
+                          <label for="orderStatus">Status *</label>
+                          {!! Form::select('order_status',$order_status, null,['class'=>'form-control no-search select2bs4','id'=>'orderStatus']) !!}
+                          <span class="text-danger order" style="display:none;">Status is required. Please Select</span>
                         </div>
-                    </div>
-                  </div>
-                  <div class="clearfix"></div>
-                  <div class="product-sec">
-                    <div class="col-sm-4">
-                        <div class="form-group">
+                      </div>
+                    </div>                  
+
+                    <div class="product-sec">
+                      <div class="form-group">
+                        <div class="col-sm-4">
+                          <label for="customer_id">Customer *</label>
+                          {!! Form::select('customer_id',$customers,  null,['class'=>'form-control select2bs4','id'=>'customer',]) !!}
+                          <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
+                        </div>
+                        <div class="col-sm-4">
+                          <label for="sales_rep_id">Sales Rep *</label>
+                          {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4','id'=>'sales_rep_id']) !!}
+                          <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
+                        </div>
+                        <div class="col-sm-4">
+                          <label for="currency_rate">Currency</label>
+                          <select class="form-control no-search select2bs4" name="currency" id="currency_rate">
+                            @foreach($currencies as $currency)
+                              <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($currency->is_primary==1)  selected="selected" @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
+                                {{$currency->currency_code}} - {{$currency->currency_name}}
+                              </option>
+                            @endforeach
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-12">
                           <label for="product">Products *</label>
                           {!! Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec']) !!}
                         </div>
+                      </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="customer_id">Customer *</label>
-                          {!! Form::select('customer_id',$customers,  null,['class'=>'form-control','id'=>'customer',]) !!}
+
+                    <div class="product-append-sec"></div>
+
+
+                    <div class="tax-sec">
+                      <div class="form-group">
+                        <div class="col-sm-3">
+                          <label for="purchase_date">Order Tax</label>
+                          <select class="form-control no-search select2bs4" name="order_tax" id="order_tax">
+                            @foreach($taxes as $tax)
+                              <option tax-rate="{{$tax->rate}}" value="{{$tax->id}}" @if($tax->name=='No Tax')  selected="selected" @endif {{ (collect(old('order_tax'))->contains($tax->id)) ? 'selected':'' }}>
+                                {{$tax->name}} 
+                                @if($tax->name=='No Tax') 
+                                @else @  {{round($tax->rate,2)}}% 
+                                @endif
+                              </option>
+                            @endforeach
+                          </select>
+
                         </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="sales_rep_id">Sales Rep *</label>
-                          {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control']) !!}
+                        <div class="col-sm-3">
+                          <label for="purchase_date">Order Discount</label>
+                          {!! Form::text('order_discount', 0,['class'=>'form-control','id'=>'order-discount']) !!}
                         </div>
-                    </div>
-                  </div>
-                  <div class="clearfix"></div>
-                  <div class="product-append-sec"></div>
-                  <div class="clearfix"></div>
-                  <div class="panel panel-default payment-note-sec">
-                    <div class="panel-body">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Payment Reference Number</label>
-                          {!! Form::text('payment_ref_no', null,['class'=>'form-control']) !!}
+                        <div class="col-sm-3">
+                          <label for="purchase_date">Payment Term</label>
+                          {!! Form::select('payment_term',$payment_terms,null,['class'=>'form-control no-search select2bs4']) !!}
                         </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Amount</label>
-                          {!! Form::text('amount', null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Paying By</label>
-                          {!! Form::select('paying_by', $payment_method, null,['class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
+                        <div class="col-sm-3">
                           <label for="purchase_date">Payment Status *</label>
                           <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
-                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control']) !!}
+                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control no-search select2bs4','id'=>'payment_status']) !!}
                         </div>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                          <label for="purchase_date">Payment Note</label>
-                          {!! Form::textarea('payment_note', null,['class'=>'form-control summernote','rows'=>5]) !!}
-                        </div>
+                      </div>
                     </div>
 
-                    </div>
-                  </div>
-                  <div class="clearfix"></div>
-                  <br>
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                          <label for="purchase_date">Note</label>
-                          {!! Form::textarea('note', null,['class'=>'form-control summernote','rows'=>5]) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-12 submit-sec">
-                      <a href="{{ route('orders.index') }}" class="btn  reset-btn">
-                        Cancel
-                      </a>
-                      <button class="btn save-btn" type="submit">
-                        Submit
-                      </button>
 
+                    <div class="panel panel-default payment-note-sec">
+                      <div class="form-group">
+                        
+                      </div>
+                      <div class="panel-body" style="display:none">
+                        <div class="form-group">
+                          <div class="col-sm-4">
+                            <label for="purchase_date">Payment Reference Number</label>
+                            {!! Form::text('payment_ref_no', null,['class'=>'form-control']) !!}
+                          </div>
+                          <div class="col-sm-4">
+                            <label for="purchase_date">Amount</label>
+                            {!! Form::text('amount', null,['class'=>'form-control']) !!}
+                          </div>
+                          <div class="col-sm-4">
+                            <label for="purchase_date">Paying By</label>
+                            {!! Form::select('paying_by', $payment_method, null,['class'=>'form-control no-search select2bs4']) !!}
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="col-sm-12">
+                            <label for="purchase_date">Payment Note</label>
+                            {!! Form::textarea('payment_note', null,['class'=>'form-control summernote','rows'=>5]) !!}
+                          </div>
+                        </div>
+
+                      </div>
                     </div>
-              {!! Form::close() !!}
-                  </div>
+
+                    <div class="form-group">
+                      <div class="col-sm-12">
+                        <label for="purchase_date">Note</label>
+                        {!! Form::textarea('note', null,['class'=>'form-control summernote','rows'=>5]) !!}
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-12 submit-sec">
+                        <a href="{{ route('orders.index') }}" class="btn reset-btn">Cancel</a>
+                        <button class="btn save-btn" type="button">Submit</button>
+                      </div>
+                    </div>
+                  {!! Form::close() !!}
                 </div>
               </div>
             </div>
           </div>
         </div>
-
+      </div>
     </section>
   </div>
+                  
   <style type="text/css">
+    .form-group{display:flex;}
+  </style>
+  @push('custom-scripts')
+    <script type="text/javascript">
+      $(function ($) {
+        $('.no-search.select2bs4').select2({
+          minimumResultsForSearch: -1
+        });
+      });
 
-    .footer-sec .col-sm-6{
-      float: left;
-    }
-  .notes-sec,.created-sec {
-    background-color: #f6f6f6;
-    padding: 15px;
-  }
-  .date-sec .col-sm-4, .payment-note-sec .col-sm-4, .product-sec .col-sm-4 {
-    float: left;
-  }
-
-  .order-no-sec {
-    line-height: 38px;
-    font-size: 18px;
-  }
-  .action_sec li {
-    float: left;
-    width: 16.6%;
-    text-align: center;
-  }
-  .action_sec li a {
-    float: left;
-    width: 100%;
-    color: #fff;
-    padding: 8px;
-  }
-  .place-order,.pdf{
-    background-color:#3471a8;
-    border-right: 1px solid #5cbfdd;
-  }
-  .email{
-    background-color:#5cbfdd;
-  }
-  .comment{
-    background-color:#48bb77;
-  }
-  .edit{
-    background-color:#efab4f;
-  }
-  .delete{
-    background-color:#d85450;
-  }
-  .address-sec {
-    padding: 10px
-  }
-</style>
-@push('custom-scripts')
-  <script type="text/javascript">
-
-$(document).on('click', '.remove-product-row', function(event) {
-  event.preventDefault();
-  $(this).closest('tr').next('tr').remove();
-  $(this).closest('tr').remove();
-});
-$(document).on('click', '.save-btn', function(event) {
-    
-    var check_variants_exists=$('.parent_tr').length;
-    if (check_variants_exists==0) {
-      alert('Please select products');
-       event.preventDefault();
-    }
-
-});
+      $(document).on('click', '.remove-product-row', function(event) {
+        event.preventDefault();
+        $(this).closest('tr').next('tr').remove();
+        $(this).closest('tr').remove();
+      });
   
+      $(document).on('click', '.remove-item', function(event) {
+        $(this).parents('.parent_tr').remove();
+      });
 
-  $(document).on('click', '.remove-item', function(event) {
-    $(this).parents('.parent_tr').remove();
-  });
+      $('#prodct-add-sec').autocomplete({
+        source: function( request, response) {
+          $.ajax({
+            url: "{{ url('admin/orders-product') }}",
+            data: {
+              name: request.term,
+              product_search_type:'product'
+            },
+            success: function( data ) {
+              response( data );
+            }
+          });
+        },
+        minLength: 1,
+        select: function( event, ui ) {
+          $.ajax({
+            url: "{{ url('admin/orders-product') }}",
+            data: {
+              product_search_type: 'product_options',
+              product_id:ui.item.value
+            },
+          })
+          .done(function(response) {
+            if (response.status==false) {
+              return false;
+            }
+            if ($('.vatiant_table').length==0) {
+              createTable();
+            } 
+            $('.parent_tbody').append(response);
+          });
+           $(this).val('');
+          return false;
+        },
+        open: function() {
+          $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+          $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+      });
 
-    $('#prodct-add-sec').autocomplete({
-      source: function( request, response) {
-        $.ajax({
-          url: "{{ url('admin/orders-product') }}",
-          data: {
-            name: request.term,
-            product_search_type:'product'
-          },
-          success: function( data ) {
-            response( data );
-          }
-        });
-      },
-      minLength: 1,
-      select: function( event, ui ) {
-        $.ajax({
-          url: "{{ url('admin/orders-product') }}",
-          data: {
-            product_search_type: 'product_options',
-            product_id:ui.item.value
-          },
-        })
-        .done(function(response) {
-          if (response.status==false) {
-            return false;
-          }
-
-          if ($('.vatiant_table').length==0) {
-            createTable();
-          } 
-
-          $('.parent_tbody').append(response);
-
-
-        });
-         $(this).val('');
-        return false;
-      },
-      open: function() {
-        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
-      },
-      close: function() {
-        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
-      }
-    });
-    $(document).on('keyup', '.stock_qty', function(event) {
-      if (/\D/g.test(this.value))
-      {
-        this.value = this.value.replace(/\D/g, '');
-      }
-      else{
-         var base=$(this).parents('.parent_tr');
-         var base_price=base.find('.max_price').val();
-         var total_price=base_price*$(this).val();
+      $(document).on('keyup', '.stock_qty', function(event) {
+        if (/\D/g.test(this.value))
+        {
+          this.value = this.value.replace(/\D/g, '');
+        }
+        else{
+          var base=$(this).parents('.parent_tr');
+          var base_price=base.find('.final_price').val();
+          var total_price=base_price*$(this).val();
 
           base.find('.subtotal_hidden').val(total_price);
           base.find('.sub_total').text(total_price);
-         
-          $('.all_quantity').text(SumTotal('.stock_qty'));
-          $('.all_amount').text(SumTotal('.subtotal_hidden'));
-
+            
           var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
-          var total_quantity=SumTotal('#'+attr_id+' .stock_qty');
+          var attr=$(this).parents('tbody').find('.collapse.show');
+          var total_quantity=SumTotal('.collapse.show .stock_qty');
+          console.log(total_quantity);
+          
+          $('.collapse.show').find('.total_quantity').text(total_quantity);
+          $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);
           var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
           
-         $('.'+attr_id).find('.total-quantity').text(total_quantity);
-         $('.'+attr_id).find('.total').text(total_amount);
+          $('.collapse.show').find('.total').text(total_amount);
+          $('[href="#'+attr_id+'"]').find('.total').text(total_amount.toFixed(2));
+          $('.all_quantity').text(SumTotal('.stock_qty'));
+          $('.all_amount').text(SumTotal('.subtotal_hidden').toFixed(2));
 
-         $('#'+attr_id).find('.total_quantity').text(total_quantity);
-         $('#'+attr_id).find('.total_amount').text(total_amount);
+          var currency = $('option:selected', '#currency_rate').attr("currency-rate");
+          var all_amount = $('#allAmount').text();
+          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+          overallCalculation(all_amount,tax_rate,currency);
+        }
+      });
 
+      $(document).on('keyup', '.final_price', function(event) {
+        if (/\D/g.test(this.value))
+        {
+          this.value = this.value.replace(/\D/g, '');
+        }
+        else{
+          var base=$(this).parents('.parent_tr');
+          var base_price=base.find('.stock_qty').val();
+          var total_price=base_price*$(this).val();
+        
+          base.find('.subtotal_hidden').val(total_price);
+          base.find('.sub_total').text(total_price);
+            
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+          var attr=$(this).parents('tbody').find('.collapse.show');
+          var total_quantity=SumTotal('.collapse.show .stock_qty');
+          console.log(total_quantity);
+
+          $('.collapse.show').find('.total_quantity').text(total_quantity);
+          $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);
+          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+          $('.collapse.show').find('.total').text(total_amount);
+          $('[href="#'+attr_id+'"]').find('.total').text(total_amount.toFixed(2));
+
+          var total_final_price=SumTotal('.collapse.show .final_price');
+          $('.collapse.show').find('.all_final_price').text(total_final_price);
+
+          $('.all_quantity').text(SumTotal('.stock_qty'));
+          $('.all_amount').text(SumTotal('.subtotal_hidden').toFixed(2));
+
+          var currency = $('option:selected', '#currency_rate').attr("currency-rate");
+          var all_amount = $('#allAmount').text();
+          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+          overallCalculation(all_amount,tax_rate,currency);
+        }
+      });
+
+      function SumTotal(class_name) {
+        var sum = 0;
+        $(class_name).each(function(){
+           sum += parseFloat(this.value);
+        });
+        return sum;
       }
-    });
 
-$(document).on('keyup', '.rfq_price', function(event) {
-  $('.all_rfq_price').text(SumTotal('.rfq_price'));
-});
+      $(document).on('keyup', '#order-discount', function() {
+        var discount = $(this).val();
+        $('.order-discount').text(discount);
+        var currency = $('option:selected', '#currency_rate').attr("currency-rate");
+        var all_amount = $('#allAmount').text();
+        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        overallCalculation(all_amount,tax_rate,currency);
+      });
+
+      $(document).on('change', '#order_tax', function() {
+        var currency = $('option:selected', '#currency_rate').attr("currency-rate");
+        var all_amount = $('#allAmount').text();
+        var tax_rate = $('option:selected', this).attr("tax-rate");
+        overallCalculation(all_amount,tax_rate,currency);
+      });
+
+      $(document).on('change', '#currency_rate', function() {
+        var currency = $('option:selected', this).attr("currency-rate");
+        var currencyCode = $('option:selected', this).attr("currency-code");
+        if(currencyCode!='SGD'){
+          $('#total_exchange').show();
+        }else if(currencyCode=='SGD'){
+          $('#total_exchange').hide();
+        }
+        var all_amount = $('#allAmount').text();
+        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        $('.exchange-code').text(currencyCode);
+        overallCalculation(all_amount,tax_rate,currency);
+      });
+
+      function overallCalculation(all_amount,tax_rate,currency_rate){
+        var allAmount = all_amount;
+        var taxRate = tax_rate;
+        var currencyRate = currency_rate;
+        var tax = taxRate/100;
+        var calculatTax = tax*allAmount;
+        var taxAmount = calculatTax.toFixed(2);
+        var discount = $('#order-discount').val();
+        $('#orderTax').text(taxAmount);
+        var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount);
+        var totalSGD = parseFloat(calculateSGD)-parseFloat(discount);
+        $('#total_amount_sgd').text(totalSGD.toFixed(2));
+        var totalExchangeRate = totalSGD*currencyRate;
+        $('#toatl_exchange_rate').val(totalExchangeRate.toFixed(2));
+
+        $('#total_amount_hidden').val(allAmount);
+        $('#order_tax_amount_hidden').val(taxAmount);
+        $('#sgd_total_amount_hidden').val(totalSGD);
+      }
+
+      function createTable(currency_code){
+        var data='<div class="container my-4">';
+            data +='<div class="table-responsive vatiant_table">';
+            data +='<table class="table">';
+            data +='<thead class="heading-top">';
+            data +='<tr>';
+            data +='<td>#</td>';
+            data +='<th scope="col">Product Name</th>';
+            data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
+            data +='<th>Total Amount:&nbsp;<span class="all_amount" id="allAmount"></span></th>';
+            data +='<th></th>';
+            data +='</tr>';
+            data +='</thead>';
+            data +='<tbody class="parent_tbody">';
+            data +='</tbody>';
+            data +='<tr class="total-calculation"><td colspan="3" class="title">Total</td>';
+            data +='<td colspan="2"><span class="all_amount">0.00</span></td></tr>';
+            data +='<tr class="total-calculation"><td colspan="3" class="title">Order Discount</td>';
+            data +='<td colspan="2"><span class="order-discount">0.00</span></td></tr>';
+            data +='<tr class="total-calculation"><td colspan="3" class="title">Order Tax</td>';
+            data +='<td colspan="2" id="orderTax">0.00</td></tr>';
+            data +='<tr class="total-calculation"><th colspan="3" class="title">Total Amount(SGD)</th>';
+            data +='<th colspan="2" id="total_amount_sgd">0.00</th></tr>';
+            data +='<tr class="total-calculation" id="total_exchange" style="display:none"><th colspan="3" class="title">Total Amount (<span class="exchange-code">'+currency_code+'</span>)</th>';
+            data +='<th colspan="2">';
+            data +='<input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="0.00" onkeyup="validateNum(event,this);" autocomplete="off"></th></tr>';
+            data +='<tr><td colspan="5"></td></tr>';
+            data +='</table>';
+            data +='</div>';
+            data +='</div>';
+        $('.product-append-sec').html(data);
+      }
+        
+      $(document).on('change', '#payment_status', function() {
+        var paymentStatus = $('option:selected', this).val();
+        if((paymentStatus==1) || (paymentStatus==2)){
+          $('.panel-body').show();
+        }else{
+          $('.panel-body').hide();
+        }
+      });
 
 
-function SumTotal(class_name) {
-  var sum = 0;
-  $(class_name).each(function(){
-      sum += parseFloat(this.value);
-  });
-  return sum;
-}
-function createTable(){
-  var data='<div class="container my-4">';
-      data +='<div class="table-responsive vatiant_table">';
-      data +='<table class="table">';
-      data +='<thead>';
-      data +='<tr>';
-      data +='<td>#</td>';
-      data +='<th scope="col">Product Name</th>';
-      data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
-      data +='<th>Total Amount:<span class="all_amount"></span></th>';
-      data +='<th></th>';
-      data +='</tr>';
-      data +='</thead>';
-      data +='<tbody class="parent_tbody">';
-      data +='</tbody>';
-      data +='</table>';
-      data +='</div>';
-      data +='</div>';
-      $('.product-append-sec').html(data);
-}
-  </script>
-@endpush
+
+      $(document).on('click', '.save-btn', function(event) {
+        
+        var check_variants_exists=$('.vatiant_table').length;
+        if (check_variants_exists==0) {
+          alert('Product is required. Please Select');
+          event.preventDefault();
+        }
+
+        if(validate()!=false){
+          $('#orders-form').submit();
+        }else{
+          scroll_to();
+          return false;
+        }
+
+      });
+      
+      function validate(){
+        var valid=true;
+        if ($("#customer").val()=="") {
+          $("#customer").closest('.form-group').find('span.text-danger.customer').show();
+          valid = false;
+        }
+        if ($("#sales_rep_id").val()=="") {
+          $("#sales_rep_id").closest('.form-group').find('span.text-danger.sales_rep').show();
+          valid = false;
+        }
+        if ($("#orderStatus").val()=="") {
+          $("#orderStatus").closest('.form-group').find('span.text-danger.order').show();
+          valid = false;
+        }
+        return valid;
+      }
+
+      function scroll_to(form){
+        $('html, body').animate({
+          scrollTop: $(".orders-form").offset().top
+        },1000);
+      }
+
+    </script>
+  @endpush
 @endsection

@@ -23,6 +23,7 @@ use App\Models\Currency;
 use Auth;
 use Redirect;
 use Session;
+
 class RFQController extends Controller
 {
     /**
