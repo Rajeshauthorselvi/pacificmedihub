@@ -29,7 +29,7 @@
           <a href="{{route('rfq.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
-      <div class="container-fluid rfq-show-page">
+      <div class="container-fluid rfq show-page">
         <div class="row">
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -156,10 +156,11 @@
                                   Total Quantity:&nbsp;
                                   <span class="all_quantity">{{ $total_products->quantity }}</span>   
                               </th>
-                              <th scope="col">
+                              {{-- <th scope="col">
                                   Total RFQ Price:&nbsp;
                                   <span class="all_rfq_price">{{ $total_products->rfq_price }}</span>  
-                              </th>
+                              </th> --}}
+                              <th scope="col"></th>
                               <th>
                                   Total Amount:&nbsp;
                                   <span class="all_amount">{{ $total_products->sub_total }}</span>
@@ -286,7 +287,7 @@
                         </div>
                         <div class="created-sec col-sm-3 pull-right">
                           Created by : {{$rfqs->createdBy->first_name}} {{$rfqs->createdBy->last_name}}<br>
-                          Date: {{ date('d/m/Y H:i:s',strtotime($rfqs->created_at)) }}
+                          Date: {{ date('d/m/Y H:i a',strtotime($rfqs->created_at)) }}
                         </div>
                       </div>
                     </div>

@@ -117,7 +117,7 @@
                       </div>
                       <div class="col-sm-4">
                         <label for="purchase_date">Order Discount</label>
-                        {!! Form::text('order_discount', 0,['class'=>'form-control','id'=>'order-discount']) !!}
+                        {!! Form::text('order_discount', 0,['class'=>'form-control','id'=>'order-discount','autocomplete'=>'off','onkeyup'=>'validateNum(event,this);']) !!}
                       </div>
                       <div class="col-sm-4">
                         <label for="purchase_date">Payment Term</label>
@@ -186,7 +186,7 @@
           var check_length=$('.product_id[value='+ui.item.value+']').length;
 
           if (check_length>0) {
-            alert('This product already exists');
+            alert('This Product is already exists');
             $(this).val('');
             return false;
           }
@@ -386,7 +386,7 @@
             data +='<tr class="total-calculation" id="total_exchange" style="display:none"><th colspan="3" class="title">Total Amount (<span class="exchange-code">'+currency_code+'</span>)</th>';
             data +='<th>';
             data +='<input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="0.00" onkeyup="validateNum(event,this);" autocomplete="off"></th></tr>';
-            data +='<tr><td colspan="5"></td></tr>'
+            data +='<tr><td colspan="5"></td></tr>';
             data +='</table>';
             data +='</div>';
             data +='</div>';
@@ -430,6 +430,11 @@
         }
         if ($("#rfqStatus").val()=="") {
           $("#rfqStatus").closest('.form-group').find('span.text-danger.rfq').show();
+          valid = false;
+        }
+        if($('#total_amount_hidden').val()==""||$('#total_amount_hidden').val()==0)
+        {
+          alert('Please enter minimum Quantity');
           valid = false;
         }
         return valid;

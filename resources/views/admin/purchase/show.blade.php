@@ -29,55 +29,113 @@
           <a href="{{route('purchase.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
-      <div class="container-fluid product">
+      <div class="container-fluid purchase show-page">
         <div class="row">
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
                 <h3 class="card-title">Purchase Details</h3>
               </div>
-              <div class="card-body">
-                {{ Form::model($purchase,['method' => 'PATCH', 'route' =>['purchase.update',$purchase->id]]) }}
-                  <div class="date-sec">
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                        <label for="purchase_order_number">Date *</label>
-                        {!! Form::text('purchase_date', null,['class'=>'form-control','readonly'=>true]) !!}
-                      </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                        <label for="purchase_order_number">Purchase Order Number *</label>
-                          {!! Form::text('purchase_order_number',null,['class'=>'form-control','readonly']) !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_order_number">Status *</label>
-                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control select2bs4','disabled']) !!}
-                        </div>
-                    </div>
+              <div class="card">
+                <div class="card-body">
+                  <div class="action_sec">
+                    <ul class="list-unstyled">
+                      <li>
+                        <a href="" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
+                      </li>
+                      <li>
+                        <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
+                      </li>
+                      <li>
+                        <a href="{{ route('purchase.edit',$purchase->id) }}" class="edit">
+                          <i class="fa fa-edit"></i>&nbsp; Edit
+                        </a>
+                      </li>
+                      <li>
+                        <a href="{{ route('purchase.destroy',$purchase->id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
+                          <i class="fa fa-trash"></i>&nbsp; Delete
+                        </a>
+                      </li>
+                    </ul>
                   </div>
-                  <div class="product-sec">
+                  <div class="address-sec col-sm-12">
+                    <div class="col-sm-4">
+                      <ul class="list-unstyled order-no-sec">
+                        <li><h5>Purchase No: <small>{{ $purchase->purchase_order_number }}</small></h5></li>
+                        <li><strong>Date: </strong>{{date('d F, Y - h:i a',strtotime($purchase->purchase_date))}}</li>
+                        <li><strong>Status: </strong>{{$purchase->statusName->status_name}}</li>
+                        @if(isset($purchase->payTerm->name))
+                          <li><strong>Payment Term: </strong>{{$purchase->payTerm->name}}</li>
+                        @endif
+                      </ul>
+                    </div>
                     <div class="col-sm-8">
-                      <div class="form-group">
-                        <label for="purchase_order_number">Products *</label>
-                        {!! Form::text('product',null, ['class'=>'form-control','id'=>'prodct-add-sec','readonly']) !!}
-                      </div>
-                    </div>
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                        <label for="purchase_order_number">Vendor *</label>
-                        {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control select2bs4','disabled']) !!}
+                      <div class="address-block">
+                        @if(isset($admin_address))
+                          <div class="col-sm-6 customer address">
+                            <div class="col-sm-2 icon">
+                              <span><i class="far fa-building"></i></span>
+                            </div>
+                            <div class="col-sm-10">
+                              <h4>{{$admin_address->company_name}}</h4>
+                              <p>
+                                <span>
+                                  {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}
+                                </span><br>
+                                <span>
+                                  {{$admin_address->getCountry->name}},&nbsp;{{$admin_address->getState->name}}
+                                </span><br>
+                                <span>
+                                  {{$admin_address->getCity->name}}&nbsp;-&nbsp;{{$admin_address->post_code}}.
+                                </span>
+                              </p>
+                              <p>
+                                <span>Tel: {{$admin_address->post_code}}</span><br>
+                                <span>Email: {{$admin_address->company_email}}</span>
+                              </p>
+                            </div>
+                          </div>
+                        @else
+                          <div class="col-sm-6 customer address">
+                            <div class="col-sm-2 icon">
+                              <span><i class="far fa-building"></i></span>
+                            </div>
+                            <div class="col-sm-10">
+                            </div>
+                          </div>
+                        @endif
+                        <div class="col-sm-6 admin address">
+                          <div class="col-sm-2">
+                            <span><i class="fas fa-people-carry"></i></span>
+                          </div>
+                          <div class="col-sm-10">
+                            <h4>{{$vendor_address->name}}</h4>
+                            <p>
+                              <span>
+                                {{$vendor_address->address_line1}},&nbsp;{{$vendor_address->address_line2}}
+                              </span><br>
+                              <span>
+                                {{$vendor_address->getCountry->name}},&nbsp;{{$vendor_address->getState->name}}
+                              </span><br>
+                              <span>
+                                {{$vendor_address->getCity->name}}&nbsp;-&nbsp;{{$vendor_address->post_code}}.
+                              </span>
+                            </p>
+                            <p>
+                              <span>Tel: {{$vendor_address->contact_number}}</span><br>
+                              <span>Email: {{$vendor_address->email}}</span>
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-
+                  
                   <div class="order-item-sec">
                     <div class="container my-4">
                       <div class="table-responsive">
                         <table class="table">
-                          <thead>
+                          <thead class="heading-top">
                             <?php
                               $total_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id);
                             ?>
@@ -107,7 +165,7 @@
                                   Quantity:&nbsp;
                                   <span class="total-quantity">{{ $total_based_products->quantity }}</span>
                                 </td>
-                                <td>
+                                <td class="total-head">
                                   Total:&nbsp;
                                   <span class="total">{{ $total_based_products->sub_total }}</span>
                                 </td>
@@ -157,16 +215,10 @@
                                             <td> {{$variant['retail_price']}}</td>
                                             <td><span class="test"> {{$variant['minimum_selling_price']}} </span></td>
                                             <td>
-                                              <div class="form-group">
-                                                <input type="text" class="form-control stock_qty" readonly value="{{ $variation_details['quantity'] }}">
-                                              </div>
+                                              {{ $variation_details['quantity'] }}
                                             </td>
-                           
                                             <td>
-                                              <input type="hidden" name="variant[base_price][]" class="base_price" value="{{$variant['base_price']}}"> 
-                                              <?php $high_value=$variation_details['base_price']; ?>
                                               <div class="form-group">
-                                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $variation_details['sub_total']  }}">
                                                 <span class="sub_total">{{ $variation_details['sub_total'] }}</span>
                                               </div>
                                             </td>
@@ -185,79 +237,45 @@
                                 </td>
                               </tr>
                             @endforeach
+                            <tr class="total-calculation">
+                              <td colspan="3" class="title">Total</td>
+                              <td><span class="all_amount">{{ $purchase->total_amount }}</span></td>
+                            </tr>
+                            <tr class="total-calculation">
+                              <td colspan="3" class="title">Order Discount</td>
+                              <td><span class="order-discount">{{$purchase->order_discount}}</span></td>
+                            </tr>
+                            <tr class="total-calculation">
+                              <td colspan="3" class="title">Order Tax</td>
+                              <td id="orderTax">{{$purchase->order_tax_amount}}</td>
+                            </tr>
+                            <tr class="total-calculation">
+                              <th colspan="3" class="title">Total Amount(SGD)</th>
+                              <th id="total_amount_sgd">{{$purchase->sgd_total_amount}}</th>
+                            </tr>
+                            <tr><td colspan="5"></td></tr>
                           </tbody>
                         </table>
                       </div>
                     </div>
                   </div>
 
-                  <div class="col-sm-12 order-total-sec">
+                  <div class="footer-sec col-sm-12">
+                    <div class="notes-sec col-sm-6">
+                      <label>Notes:</label>
+                      {!! $purchase->note !!}
+                    </div>
 
-                    <div class="tax-sec">
-                      <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Order Tax</label>
-                          {!! Form::text('order_tax', null,['class'=>'form-control','readonly']) !!}
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Order Discount</label>
-                          {!! Form::text('order_discount', null,['class'=>'form-control','readonly']) !!}
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Payment Term</label>
-                          {!! Form::text('payment_term', null,['class'=>'form-control','readonly']) !!}
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="form-group">
-                          <label for="purchase_date">Payment Status *</label>
-                          <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
-                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control select2bs4','disabled']) !!}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="panel panel-default payment-note-sec">
-                      <div class="panel-body">
-                        <div class="col-sm-4">
-                          <div class="form-group">
-                            <label for="purchase_date">Payment Reference Number</label>
-                            {!! Form::text('payment_reference_no', null,['class'=>'form-control','readonly']) !!}
-                          </div>
-                        </div>
-                        <div class="col-sm-4">
-                          <div class="form-group">
-                            <label for="purchase_date">Amount</label>
-                            {!! Form::text('amount', null,['class'=>'form-control','readonly']) !!}
-                          </div>
-                        </div>
-                        <div class="col-sm-4">
-                          <div class="form-group">
-                            <label for="purchase_date">Paying By</label>
-                            {!! Form::select('paying_by', $payment_method, null,['class'=>'form-control select2bs4','disabled']) !!}
-                          </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="col-sm-12">
-                          <div class="form-group">
-                            <label for="purchase_date">Payment Note</label>
-                            {!! Form::textarea('payment_note', null,['class'=>'form-control summernote1']) !!}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-sm-12">
-                      <div class="form-group">
-                        <label for="purchase_date">Note</label>
-                        {!! Form::textarea('note', null,['class'=>'form-control summernote2']) !!}
-                      </div>
+                    <div class="created-sec col-sm-3 pull-right">
+                      Created by : 
+                      @if(isset($purchase->createdBy))
+                        {{$purchase->createdBy->first_name}} {{$purchase->createdBy->last_name}}
+                      @endif
+                      <br>
+                      Date: {{ date('d/m/Y H:i a',strtotime($purchase->purchase_date)) }}
                     </div>
                   </div>
-                {!! Form::close() !!}
+                </div>
               </div>
             </div>
           </div>
@@ -265,17 +283,5 @@
       </div>
     </section>
   </div>
-
-  <style type="text/css">
-  .order-total-sec{background-color:#f1f1f1;padding-bottom:5px;padding-top:26px;padding-right:20px;padding-left:20px;box-shadow:none !important;}
-  .total-sec{background-color: #fcf8e3;}
-  .date-sec .col-sm-4, .tax-sec .col-sm-4 , .payment-note-sec .col-sm-4 {float: left;}
-  .product-sec .col-sm-8,.product-sec .col-sm-4{float: left;}
-  </style>
-  @push('custom-scripts')
-    <script type="text/javascript">
-      $('.summernote1').summernote('disable');
-      $('.summernote2').summernote('disable');
-    </script>
-  @endpush
+ 
 @endsection

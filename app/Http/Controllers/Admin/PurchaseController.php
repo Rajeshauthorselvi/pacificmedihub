@@ -13,11 +13,17 @@ use App\Models\Product;
 use App\Models\Vendor;
 use App\Models\Settings;
 use App\Models\PaymentHistory;
+use App\Models\Tax;
+use App\Models\PaymentTerm;
+use App\Models\UserCompanyDetails;
 use Illuminate\Http\Request;
+use App\User;
 use Session;
 use Redirect;
 use Response;
+use Auth;
 use DB;
+
 class PurchaseController extends Controller
 {
     /**
@@ -27,45 +33,43 @@ class PurchaseController extends Controller
      */
     public function index()
     {
+      $data = array();
+      $orders = array();
+      $purchases = Purchase::orderBy('id','DESC')->get();
+      foreach ($purchases as $key => $purchase) {
+        $vendor_name      = Vendor::find($purchase->vendor_id)->name;
+        $product_details  = PurchaseProducts::select(DB::raw('sum(quantity) as quantity'),
+                                DB::raw('sum(sub_total) as sub_total'))->where('purchase_id',$purchase->id)->first();
+        $order_status     = DB::table('order_status')->where('id',$purchase->purchase_status)->value('status_name');
 
-        $purchases=Purchase::orderBy('id','DESC')->get();
-        $data=array();
-        $orders=array();
-        $payment_method=PaymentMethod::where('status',1)
-                              ->pluck('payment_method','id')
-                              ->toArray();
-        $data['payment_method']=[''=>'Please Select']+$payment_method;
-        foreach ($purchases as $key => $purchase) {
-            $vendor_name=Vendor::find($purchase->vendor_id)->name;
-            $product_details=PurchaseProducts::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'))
-                ->where('purchase_id',$purchase->id)
-                ->first();
-            $order_status=DB::table('order_status')->where('id',$purchase->purchase_status)->value('status_name');
-            if($purchase->payment_status==1){
-                $payment_status='Paid';
-              }
-            elseif($purchase->payment_status==3){
-              $payment_status='Not Paid';
-            }
-            else{
-              $payment_status='Partly Paid';
-            }
-            $orders[]=[
-                'purchase_date'=>$purchase->purchase_date,
-                'purchase_id'=>$purchase->id,
-                'vendor'   =>$vendor_name,
-                'po_number'=>$purchase->purchase_order_number,
-                'quantity' => $product_details->quantity,
-                'grand_total' => $product_details->sub_total,
-                'amount' => $purchase->amount,
-                'balance' => ($product_details->sub_total)-($purchase->amount),
-                'payment_status' => $payment_status,
-                'order_status'  =>$order_status,
-                'status_id'     => $purchase->purchase_status
-            ];
+        if($purchase->payment_status==1){
+          $payment_status = 'Paid';
         }
-        $data['orders']=$orders;
-        return view('admin.purchase.index',$data);
+        elseif($purchase->payment_status==3){
+          $payment_status = 'Not Paid';
+        }
+        else{
+          $payment_status = 'Partly Paid';
+        }
+        $orders[] = [
+          'purchase_date'    => $purchase->purchase_date,
+          'purchase_id'      => $purchase->id,
+          'vendor'           => $vendor_name,
+          'po_number'        => $purchase->purchase_order_number,
+          'quantity'         => $product_details->quantity,
+          'grand_total'      => $product_details->sub_total,
+          'amount'           => $purchase->amount,
+          'balance'          => ($product_details->sub_total)-($purchase->amount),
+          'payment_status'   => $payment_status,
+          'order_status'     => $order_status,
+          'status_id'        => $purchase->purchase_status,
+          'sgd_total_amount' => $purchase->sgd_total_amount
+        ];
+      }
+      $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
+                                    ->toArray();
+      $data['orders']         = $orders;
+      return view('admin.purchase.index',$data);
     }
 
     /**
@@ -75,46 +79,30 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        $data=array();
+      $data=array();
+      $data['vendors']        = [''=>'Please Select']+Vendor::where('is_deleted',0)->where('status',1)
+                                    ->pluck('name','id')->toArray();
+      $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,2,8])
+                                    ->pluck('status_name','id')->toArray();
+      $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
+      $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                        ->pluck('name','id')->toArray();
+      $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
 
-        $order_status=OrderStatus::where('status',1)
-                              ->whereIn('id',[1,2,8])
-                              ->pluck('status_name','id')
-                              ->toArray();
-
-        $payment_method=PaymentMethod::where('status',1)
-                              ->pluck('payment_method','id')
-                              ->toArray();
-        $vendors=Vendor::where('is_deleted',0)
-                         ->where('status',1)
-                         ->pluck('name','id')
-                         ->toArray();
-        $data['vendors']=[''=>'Please Select']+$vendors;
-
-        $data['order_status']=[''=>'Please Select']+$order_status;
-        $data['payment_method']=[''=>'Please Select']+$payment_method;
-
-        $order_codee=Settings::where('key','prefix')
-                         ->where('code','purchase_no')
-                        ->value('content');
-        $data['purchase_code']='';
-        if (isset($order_codee)) {
-            $value=unserialize($order_codee);
-
-            $char_val=$value['value'];
-            $explode_val=explode('-',$value['value']);
-            $total_datas=Purchase::count();
-            $total_datas=($total_datas==0)?end($explode_val):$total_datas+1;
-            $data_original=$char_val;
-
-            $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace=[date('d'), date('m'), date('Y'), $total_datas ];
-            $data['purchase_code']=str_replace($search,$replace, $data_original);
-        }
-
-
-
-        return view('admin.purchase.create',$data);
+      $order_code = Settings::where('key','prefix')->where('code','purchase_no')->value('content');
+      $data['purchase_code']='';
+      if (isset($order_code)) {
+        $value         = unserialize($order_code);
+        $char_val      = $value['value'];
+        $explode_val   = explode('-',$value['value']);
+        $total_datas   = Purchase::count();
+        $total_datas   = ($total_datas==0)?end($explode_val):$total_datas+1;
+        $data_original = $char_val;
+        $search        = ['[dd]', '[mm]', '[yyyy]', end($explode_val)];
+        $replace       = [date('d'), date('m'), date('Y'), $total_datas ];
+        $data['purchase_code'] = str_replace($search,$replace, $data_original);
+      }
+      return view('admin.purchase.create',$data);
     }
 
     /**
@@ -125,69 +113,69 @@ class PurchaseController extends Controller
      */
     public function store(Request $request)
     {
+      $this->validate(request(),[
+        'purchase_date'         => 'required',
+        'purchase_order_number' => 'required',
+        'purchase_status'       => 'required',
+        'vendor_id'             => 'required',
+        'payment_status'        => 'required',
+      ],
+      [
+        'vendor_id.required'    => 'The vendor field is required.'
+      ]);
 
-
-       $this->validate(request(),[
-            'purchase_date' => 'required',
-            'purchase_order_number' => 'required',
-            'purchase_status' => 'required',
-            'vendor_id' => 'required',
-            'payment_status' => 'required',
-       ],
-       [
-            'vendor_id.required'    => 'The vendor field is required.'
-       ]
-
-   );
-
-       $purchase_data=[
-            'purchase_date' =>date('Y-m-d H:i:s'),
-            'purchase_order_number' =>$request->purchase_order_number,
-            'purchase_status' =>$request->purchase_status,
-            'vendor_id' =>$request->vendor_id,
-            'order_tax' =>$request->order_tax,
-            'order_discount' =>$request->order_discount,
-            'payment_term' =>$request->payment_term,
-            'payment_status' =>$request->payment_status,
-            'payment_reference_no' =>$request->payment_reference_no,
-            'amount' =>$request->amount,
-            'paying_by' =>$request->paying_by,
-            'payment_note' =>$request->payment_note,
-            'note' =>$request->note,
+      $purchase_data=[
+        'purchase_date'         => date('Y-m-d H:i:s'),
+        'purchase_order_number' => $request->purchase_order_number,
+        'purchase_status'       => $request->purchase_status,
+        'vendor_id'             => $request->vendor_id,
+        'order_tax'             => $request->order_tax,
+        'order_discount'        => $request->order_discount,
+        'payment_term'          => $request->payment_term,
+        'payment_status'        => $request->payment_status,
+        'payment_reference_no'  => $request->payment_reference_no,
+        'amount'                => $request->amount,
+        'paying_by'             => $request->paying_by,
+        'payment_note'          => $request->payment_note,
+        'note'                  => $request->note,
+        'order_tax_amount'      => $request->order_tax_amount,
+        'total_amount'          => $request->total_amount,
+        'sgd_total_amount'      => $request->sgd_total_amount,
+        'user_id'               => Auth::id(),
+        'created_at'            => date('Y-m-d H:i:s')
        ];
 
-       $purchase_id=Purchase::insertGetId($purchase_data);
+      $purchase_id = Purchase::insertGetId($purchase_data);
 
-       $product_ids=$request->variant['product_id'];
-       $variant=$request->variant;
-       $product_id=$variant['product_id'];
-       $stock_qty=$variant['stock_qty'];
+      $product_ids           = $request->variant['product_id'];
+      $variant               = $request->variant;
+      $product_id            = $variant['product_id'];
+      $stock_qty             = $variant['stock_qty'];
+      $base_price            = $variant['base_price'];
+      $retail_price          = $variant['retail_price'];
+      $minimum_selling_price = $variant['minimum_selling_price'];
+      $sub_total             = $variant['sub_total'];
+      $variant_id            = $variant['variant_id'];
 
-       $base_price=$variant['base_price'];
-       $retail_price=$variant['retail_price'];
-       $minimum_selling_price=$variant['minimum_selling_price'];
-       $sub_total=$variant['sub_total'];
-       $variant_id=$variant['variant_id'];
+      foreach ($product_ids as $key => $variant) {
+        if ($stock_qty[$key]!=0) {
+          $data=[
+            'purchase_id'           => $purchase_id,
+            'product_id'            => $product_id[$key],
+            'product_variation_id'  => $variant_id[$key],
+            'base_price'            => $base_price[$key],
+            'retail_price'          => $retail_price[$key],
+            'minimum_selling_price' => $minimum_selling_price[$key],
+            'quantity'              => $stock_qty[$key],
+            'discount'              => 0,
+            'product_tax'           => 0,
+            'sub_total'             => $sub_total[$key],
+          ];
+          DB::table('purchase_products')->insert($data);
+        }
+      }
 
-       foreach ($product_ids as $key => $variant) {
-          if ($stock_qty[$key]!=0) {
-              $data=[
-                  'purchase_id'           => $purchase_id,
-                  'product_id'            => $product_id[$key],
-                  'product_variation_id'  => $variant_id[$key],
-                  'base_price'            => $base_price[$key],
-                  'retail_price'          => $retail_price[$key],
-                  'minimum_selling_price' => $minimum_selling_price[$key],
-                  'quantity'              => $stock_qty[$key],
-                  'discount'              => 0,
-                  'product_tax'           => 0,
-                  'sub_total'             => $sub_total[$key],
-              ];
-              DB::table('purchase_products')->insert($data);
-          }
-       }
-
-       if ($request->amount!="") {
+      if ($request->amount!="") {
         $data=[
           'ref_id'          => $purchase_id,
           'reference_no'    => $request->payment_reference_no,
@@ -207,7 +195,7 @@ class PurchaseController extends Controller
           $payment_status=2; 
 
         Purchase::where('id',$request->id)->update(['payment_status'=>$payment_status]);
-       }
+      }
       return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');
     }
 
@@ -220,47 +208,33 @@ class PurchaseController extends Controller
     public function show(Purchase $purchase)
     {
       $data=array();
+      $purchase               = Purchase::find($purchase->id);
+      $data['purchase']       = $purchase;
+      $data['admin_address']  = UserCompanyDetails::where('customer_id',1)->first();
+      $data['vendor_address'] = Vendor::where('id',$purchase->vendor_id)->first();
+      $data['customer_address'] = User::with('address')->where('id',$purchase->user_id)->first();
+      $products = PurchaseProducts::where('purchase_id',$purchase->id)->groupBy('product_id')->get();
 
-      $order_status = OrderStatus::where('status',1)
-                            ->pluck('status_name','id')
-                            ->toArray();
-      $payment_method = PaymentMethod::where('status',1)
-                            ->pluck('payment_method','id')
-                            ->toArray();
-      $vendors = Vendor::where('is_deleted',0)
-                            ->where('status',1)
-                            ->pluck('name','id')
-                            ->toArray();
-      $data['vendors'] = [''=>'Please Select']+$vendors;
-      $data['order_status']=[''=>'Please Select']+$order_status;
-      $data['payment_method']=[''=>'Please Select']+$payment_method;
-
-      $products=PurchaseProducts::where('purchase_id',$purchase->id)->groupBy('product_id')->get();
-      $product_data=$product_variant=array();
+      $product_data = $product_variant = array();
       foreach ($products as $key => $product) {
-        $product_name=Product::where('id',$product->product_id)
-                      ->value('name');
-        $options=$this->Options($product->product_id);
+        $product_name    = Product::where('id',$product->product_id)->value('name');
+        $options         = $this->Options($product->product_id);
+        $all_variants    = PurchaseProducts::where('purchase_id',$purchase->id)->where('product_id',$product->product_id)
+                            ->pluck('product_variation_id')->toArray();
+        $product_variant = $this->Variants($product->product_id,$all_variants);
 
-        $all_variants=PurchaseProducts::where('purchase_id',$purchase->id)
-                      ->where('product_id',$product->product_id)
-                      ->pluck('product_variation_id')
-                      ->toArray();
-
-        $product_variant=$this->Variants($product->product_id,$all_variants);
-        $product_data[$product->product_id]=[
-            'row_id'         => $product->id,
-            'purchase_id'    => $purchase->id,
-            'product_id'=> $product->product_id,
-            'product_name'  => $product_name,
-            'options'       => $options['options'],
-            'option_count'  => $options['option_count'],
-            'product_variant'  => $product_variant
+        $product_data[$product->product_id] = [
+          'row_id'          => $product->id,
+          'purchase_id'     => $purchase->id,
+          'product_id'      => $product->product_id,
+          'product_name'    => $product_name,
+          'options'         => $options['options'],
+          'option_count'    => $options['option_count'],
+          'product_variant' => $product_variant
         ];
       }
-      $data['purchase_products']=$product_data;
-      $data['purchase']=Purchase::find($purchase->id);
-      $data['product_name']=$product_name;
+      $data['purchase_products'] = $product_data;
+      $data['product_name']      = $product_name;
       return view('admin.purchase.show',$data);
     }
 
@@ -272,58 +246,40 @@ class PurchaseController extends Controller
      */
     public function edit(Purchase $purchase)
     {
-        $data=array();
+      $data=array();
 
-        $order_status=OrderStatus::where('status',1)
-                              ->whereIn('id',[1,2,8])
-                              ->pluck('status_name','id')
-                              ->toArray();
+      $data['vendors']        = [''=>'Please Select']+Vendor::where('is_deleted',0)->where('status',1)
+                                    ->pluck('name','id')->toArray();
+      $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,2,8])
+                                    ->pluck('status_name','id')->toArray();
+      $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
+      $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                    ->pluck('name','id')->toArray();
+      $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
 
-        $payment_method=PaymentMethod::where('status',1)
-                              ->pluck('payment_method','id')
-                              ->toArray();
-        $vendors=Vendor::where('is_deleted',0)
-                         ->where('status',1)
-                         ->pluck('name','id')
-                         ->toArray();
-        $data['vendors']=[''=>'Please Select']+$vendors;
+      $products = PurchaseProducts::where('purchase_id',$purchase->id)->groupBy('product_id')->get();
+      $product_data = $product_variant = array();
+      foreach ($products as $key => $product) {
+        $product_name    = Product::where('id',$product->product_id)->value('name');
+        $options         = $this->Options($product->product_id);
+        $all_variants    = PurchaseProducts::where('purchase_id',$purchase->id)->where('product_id',$product->product_id)
+                              ->pluck('product_variation_id')->toArray();
+        $product_variant = $this->Variants($product->product_id,$all_variants);
 
-        $data['order_status']=[''=>'Please Select']+$order_status;
-        $data['payment_method']=[''=>'Please Select']+$payment_method;
-
-
-
-        $products=PurchaseProducts::where('purchase_id',$purchase->id)->groupBy('product_id')->get();
-
-            $product_data=$product_variant=array();
-            foreach ($products as $key => $product) {
-                $product_name=Product::where('id',$product->product_id)
-                              ->value('name');
-                $options=$this->Options($product->product_id);
-
-                $all_variants=PurchaseProducts::where('purchase_id',$purchase->id)
-                              ->where('product_id',$product->product_id)
-                              ->pluck('product_variation_id')
-                              ->toArray();
-
-                $product_variant=$this->Variants($product->product_id,$all_variants);
-                $product_data[$product->product_id]=[
-                    'row_id'         => $product->id,
-                    'purchase_id'    => $purchase->id,
-                    'product_id'=> $product->product_id,
-                    'product_name'  => $product_name,
-                    'options'       => $options['options'],
-                    'option_count'  => $options['option_count'],
-                    'product_variant'  => $product_variant
-                ];
-            }
-            $data['purchase_products']=$product_data;
-
-
-        $data['purchase']=Purchase::find($purchase->id);
-        $data['product_name']=$product_name;
-
-        return view('admin.purchase.edit',$data);
+        $product_data[$product->product_id] = [
+          'row_id'          => $product->id,
+          'purchase_id'     => $purchase->id,
+          'product_id'      => $product->product_id,
+          'product_name'    => $product_name,
+          'options'         => $options['options'],
+          'option_count'    => $options['option_count'],
+          'product_variant' => $product_variant
+        ];
+      }
+      $data['purchase_products'] = $product_data;
+      $data['purchase']          = Purchase::find($purchase->id);
+      $data['product_name']      = $product_name;
+      return view('admin.purchase.edit',$data);
     }
 
     /**
@@ -335,48 +291,47 @@ class PurchaseController extends Controller
      */
     public function update(Request $request, Purchase $purchase)
     {
-       $purchase_id=$purchase->id;
-       $this->validate(request(),[
-            'purchase_date' => 'required',
-            'purchase_order_number' => 'required',
-            'purchase_status' => 'required',
-            'vendor_id' => 'required',
-            'payment_status' => 'required',
-       ]);
+      $purchase_id = $purchase->id;
+      $this->validate(request(),[
+        'purchase_date'         => 'required',
+        'purchase_order_number' => 'required',
+        'purchase_status'       => 'required',
+        'vendor_id'             => 'required',
+        'payment_status'        => 'required'
+      ]);
 
-       $purchase_data=[
-            // 'purchase_date' =>date('y-m-d H:i:s'),
-            'purchase_order_number' =>$request->purchase_order_number,
-            'purchase_status' =>$request->purchase_status,
-            'vendor_id' =>$request->vendor_id,
-            'order_tax' =>$request->order_tax,
-            'order_discount' =>$request->order_discount,
-            'payment_term' =>$request->payment_term,
-            'payment_status' =>$request->payment_status,
-            'payment_reference_no' =>$request->payment_reference_no,
-            'amount' =>$request->amount,
-            'paying_by' =>$request->paying_by,
-            'payment_note' =>$request->payment_note,
-            'note' =>$request->note,
-       ];
+      $purchase_data=[
+        'purchase_order_number' => $request->purchase_order_number,
+        'purchase_status'       => $request->purchase_status,
+        'vendor_id'             => $request->vendor_id,
+        'order_tax'             => $request->order_tax,
+        'order_discount'        => $request->order_discount,
+        'payment_term'          => $request->payment_term,
+        'payment_status'        => $request->payment_status,
+        'payment_reference_no'  => $request->payment_reference_no,
+        'amount'                => $request->amount,
+        'paying_by'             => $request->paying_by,
+        'payment_note'          => $request->payment_note,
+        'note'                  => $request->note,
+        'order_tax_amount'      => $request->order_tax_amount,
+        'total_amount'          => $request->total_amount,
+        'sgd_total_amount'      => $request->sgd_total_amount,
+      ];
 
-        Purchase::where('id',$purchase_id)->update($purchase_data);
+      Purchase::where('id',$purchase_id)->update($purchase_data);
         
-
-       // $product_ids=$request->variant['product_id'];
-       $variant=$request->variant;
-       $stock_qty=$variant['stock_qty'];
-
-       $sub_total=$variant['sub_total'];
-
-       $row_ids=$variant['row_id'];
-       foreach ($row_ids as $key => $row_id) {
-            $data=[
-                'quantity'                  => $stock_qty[$key],
-                'sub_total'                 => $sub_total[$key],
-            ];
-            PurchaseProducts::where('id',$row_id)->update($data);
-        }
+      // $product_ids=$request->variant['product_id'];
+      $variant=$request->variant;
+      $stock_qty=$variant['stock_qty'];
+      $sub_total=$variant['sub_total'];
+      $row_ids=$variant['row_id'];
+      foreach ($row_ids as $key => $row_id) {
+        $data=[
+          'quantity'                  => $stock_qty[$key],
+          'sub_total'                 => $sub_total[$key],
+        ];
+        PurchaseProducts::where('id',$row_id)->update($data);
+      }
 
      /*  if (isset($variant['option_id1'])) {
            $option_id1=$variant['option_id1'];
@@ -430,7 +385,7 @@ class PurchaseController extends Controller
 
        DB::table('purchase_products')->insert($data);*/
 
-            return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');        
+      return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');        
     }
 
     /**
