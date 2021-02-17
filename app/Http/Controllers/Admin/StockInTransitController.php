@@ -34,7 +34,7 @@ class StockInTransitController extends Controller
         $orders=array();
         foreach ($purchases as $key => $purchase) {
             $vendor_name=Vendor::find($purchase->vendor_id)->name;
-            $product_details=PurchaseProducts::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(qty_received) as qty_received'))
+            $product_details=PurchaseProducts::select(DB::raw('sum(quantity) as quantity'))
                 ->where('purchase_id',$purchase->id)
                 ->first();
 
@@ -166,13 +166,14 @@ class StockInTransitController extends Controller
     public function update(Request $request, $id)
     {
 
-
-
         $this->validate(request(),[
             'purchase_status'   => 'required'
         ]);
         $quantity_received=$request->qty_received;
-       
+
+      
+
+
        $variant=$request->variant;
        $row_ids=$variant['row_id'];
        $qty_received=$variant['qty_received'];
@@ -180,6 +181,7 @@ class StockInTransitController extends Controller
        $missed_quantity=$variant['missed_qty'];
        $stock_quantity=$variant['stock_quantity'];
        $product_id=$variant['product_id'];
+       $status=1;
        if ($request->purchase_status!=1) {
          foreach ($row_ids as $key => $row_id) {
 
@@ -193,7 +195,7 @@ class StockInTransitController extends Controller
                   'purchase_id'           => $id,
                   // 'product_id'            => $product_id[$key],
                   'purchase_product_id'  => $row_id,
-                  'qty_received'          => $qty_received[$key]-$damaged_qty[$key],
+                  'qty_received'          => $qty_received[$key],
                   'damage_quantity'       => $damaged_qty[$key],
                   'missed_quantity'       => $missed_quantity[$key],
                   'stock_quantity'        => $stock_quantity[$key],
@@ -203,14 +205,22 @@ class StockInTransitController extends Controller
               }
               if ($request->purchase_status==2 || $request->purchase_status==4) {
                 $total_quantity=$variant_data->stock_quantity+$stock_quantity[$key];
-                DB::table('product_variant_vendors')
-                ->where('product_variant_id',$purchase_data->product_variation_id)
-                ->update(['stock_quantity'=>$total_quantity]);
+                  DB::table('product_variant_vendors')
+                  ->where('product_variant_id',$purchase_data->product_variation_id)
+                  ->update(['stock_quantity'=>$total_quantity]);
               }
+          }
+          $total_quantity=PurchaseProducts::where('purchase_id',$id)->sum('quantity');
+          $paid_quantity=PurchaseStockHistory::where('purchase_id',$id)->sum('qty_received');
+          if ($total_quantity==$paid_quantity) {
+              $status=2;
+          }
+          elseif ($total_quantity!=$paid_quantity) {
+            $status=4;
           }
        }
 
-        Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$request->purchase_status]);
+        Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$status]);
             return Redirect::route('stock-in-transit.index')->with('success','Stock-In-Transit modified successfully...!');  
         }
 

@@ -55,13 +55,9 @@
                           <td>{{ $order['qty_received'] }}</td>
                           <td>{{ $order['status'] }}</td>
                           <td>
-                                <div class="input-group-prepend">
-                                  <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
-                                  <ul class="dropdown-menu">
-                                    <a href="{{route('stock-in-transit.edit',$order['purchase_id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                            
+                                    <a href="{{route('stock-in-transit.edit',$order['purchase_id'])}}" class="btn btn-primary">Stock Update</a>
              
-                                  </ul>
-                                </div>
                               </td>
                           </tr>
                         @endforeach
