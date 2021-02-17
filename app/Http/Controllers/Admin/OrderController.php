@@ -20,6 +20,7 @@ use App\Models\PaymentHistory;
 use App\Models\Currency;
 use App\Models\Tax;
 use App\Models\PaymentTerm;
+use App\Models\UserCompanyDetails;
 use App\User;
 use Auth;
 use Redirect;
@@ -48,87 +49,55 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         $rfq_id=$request->rfq_id;
-
-
         $data=array();
-        $data['rfqs']=RFQ::with('customer','salesrep','statusName')
-                      ->where('rfq.id',$rfq_id)
-                      ->first();
-        $order_status=OrderStatus::where('status',1)
-        ->whereIn('id',[1,2,3])
-                              ->pluck('status_name','id')
-                              ->toArray();
-
-        $payment_method=PaymentMethod::where('status',1)
-                              ->pluck('payment_method','id')
-                              ->toArray();
-        $customers=User::where('is_deleted',0)
-                         ->where('status',1)
-                         ->where('role_id',7)
-                         ->pluck('first_name','id')
-                         ->toArray();
-        $emplyees=Employee::where('is_deleted',0)
-                         ->where('status',1)
-                         ->where('role_id',4)
-                         ->pluck('emp_name','id')
-                         ->toArray();
+        $data['rfqs']           = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();     
         $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
-        $data['customers']=[''=>'Please Select']+$customers;
-        $data['sales_rep']=[''=>'Please Select']+$emplyees;
-        $data['order_status']=[''=>'Please Select']+$order_status;
-        $data['payment_method']=[''=>'Please Select']+$payment_method;
+        $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
+                                        ->where('role_id',7)->pluck('first_name','id')->toArray();
+        $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                        ->where('role_id',4)->pluck('emp_name','id')->toArray();
+        $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[3,13,11])->pluck('status_name','id')
+                                        ->toArray();
+        $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
         $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
         $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
-                                  ->pluck('name','id')->toArray();
-        $order_codee=Settings::where('key','prefix')
-                         ->where('code','order_no')
-                        ->value('content');
+                                        ->pluck('name','id')->toArray();
+
+        $order_codee = Settings::where('key','prefix')->where('code','order_no')->value('content');
 
         if (isset($order_codee)) {
-            $value=unserialize($order_codee);
-
-            $char_val=$value['value'];
-            $explode_val=explode('-',$value['value']);
-            $total_datas=Orders::count();
-            $total_datas=($total_datas==0)?end($explode_val)+1:$total_datas+1;
-            $data_original=$char_val;
-
-            $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
-            $data['order_code']=str_replace($search,$replace, $data_original);
+            $value              = unserialize($order_codee);
+            $char_val           = $value['value'];
+            $explode_val        = explode('-',$value['value']);
+            $total_datas        = Orders::count();
+            $total_datas        = ($total_datas==0)?end($explode_val)+1:$total_datas+1;
+            $data_original      = $char_val;
+            $search             = ['[dd]', '[mm]', '[yyyy]', end($explode_val)];
+            $replace            = [date('d'), date('m'), date('Y'), $total_datas+1 ];
+            $data['order_code'] = str_replace($search,$replace, $data_original);
         }
-
 
         if ($request->has('rfq_id')) {
-            $products=RFQProducts::where('rfq_id',$rfq_id)->groupBy('product_id')->get();
-            $product_data=$product_variant=array();
+            $products = RFQProducts::where('rfq_id',$rfq_id)->groupBy('product_id')->get();
+            $product_data = $product_variant = array();
             foreach ($products as $key => $product) {
-            
-                $product_name=Product::where('id',$product->product_id)
-                              ->value('name');
+                $product_name    = Product::where('id',$product->product_id)->value('name');
+                $options         = $this->Options($product->product_id);
+                $product_variant = $this->Variants($product->product_id);
 
-                $options=$this->Options($product->product_id);
-
-                $product_variant=$this->Variants($product->product_id);
-
-                $product_data[$product->product_id]=[
-                    'rfq_id'    => $rfq_id,
-                    'product_id'=> $product->product_id,
-                    'product_name'  => $product_name,
-                    'options'       => $options['options'],
-                    'option_count'  => $options['option_count'],
-                    'product_variant'  => $product_variant
+                $product_data[$product->product_id] = [
+                    'rfq_id'          => $rfq_id,
+                    'product_id'      => $product->product_id,
+                    'product_name'    => $product_name,
+                    'options'         => $options['options'],
+                    'option_count'    => $options['option_count'],
+                    'product_variant' => $product_variant
                 ];
-
             }
-            $data['product_datas']=$product_data;
-            $data['rfq_id']=$rfq_id;
+            $data['product_datas'] = $product_data;
+            $data['rfq_id']        = $rfq_id;
             return view('admin.orders.rfq_order',$data);
         }
-
-
-
-
         return view('admin.orders.create',$data);
     }
 
@@ -145,7 +114,6 @@ class OrderController extends Controller
             'order_status'   => 'required',
             'payment_status' => 'required'
         ]);
-
         $order_data=[
             'rfq_id'                => $request->rfq_id,
             'sales_rep_id'          => $request->sales_rep_id,
@@ -156,6 +124,7 @@ class OrderController extends Controller
             'order_discount'        => $request->order_discount,
             'currency'              => $request->currency,
             'payment_term'          => $request->payment_term,
+            'payment_status'        => $request->payment_status,
             'order_tax_amount'      => $request->order_tax_amount,
             'total_amount'          => $request->total_amount,
             'sgd_total_amount'      => $request->sgd_total_amount,
@@ -183,10 +152,8 @@ class OrderController extends Controller
            }
        }
        else{
-
             $quantites=$request->quantity;
             $variant=$request->variant;
-
             $product_ids=$variant['product_id'];
             $variant_id=$variant['idvariant_id'];
             $base_price=$variant['base_price'];
@@ -207,14 +174,12 @@ class OrderController extends Controller
                         'minimum_selling_price'     => $minimum_selling_price[$key],
                         'quantity'                  => $stock_qty[$key],
                         'sub_total'                 => $sub_total[$key],
-                        'final_price'                 => $final_price[$key]
+                        'final_price'               => $final_price[$key]
                     ];
                     OrderProducts::insert($data);
                 }
             }
-
        }
-
 
        if ($request->amount!="" || $request->amount!=0) {
            PaymentHistory::insert([
@@ -227,10 +192,7 @@ class OrderController extends Controller
                 'created_at' => date('Y-m-d H:i:s')
            ]);
        }
-
-
        return Redirect::route('orders.index')->with('success','Order created successfully...!');
-
     }
 
     /**
@@ -241,53 +203,34 @@ class OrderController extends Controller
      */
     public function show(Orders $orders,$order_id)
     {
-        $data['order']=Orders::with('customer','salesrep','statusName')
-                      ->where('orders.id',$order_id)
-                      ->first();
-        $order_status=OrderStatus::where('status',1)
-                              ->pluck('status_name','id')
-                              ->toArray();
-        $payment_method=PaymentMethod::where('status',1)
-                              ->pluck('payment_method','id')
-                              ->toArray();
-        $customers=User::where('is_deleted',0)
-                         ->where('status',1)
-                         ->where('role_id',7)
-                         ->pluck('first_name','id')
-                         ->toArray();
-        $emplyees=Employee::where('is_deleted',0)
-                         ->where('status',1)
-                         ->where('role_id',4)
-                         ->pluck('emp_name','id')
-                         ->toArray();
-        $data['customers']=[''=>'Please Select']+$customers;
-        $data['sales_rep']=[''=>'Please Select']+$emplyees;
-        $data['order_status']=[''=>'Please Select']+$order_status;
-        $data['payment_method']=[''=>'Please Select']+$payment_method;
+        $orders = Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)->first();
+        
+        $data['order']            = $orders;
+        $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
+        $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                        ->pluck('name','id')->toArray();
+        $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
+        $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+        $data['customer_address'] = User::with('address')->where('id',$orders->customer_id)->first();
 
-        $products=OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
-        $product_data=$product_variant=array();
+        $products = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
+        $product_data = $product_variant = array();
         foreach ($products as $key => $product) {
-            $product_name=Product::where('id',$product->product_id)
-                          ->value('name');
-            $options=$this->Options($product->product_id);
-
-            $all_variants=OrderProducts::where('order_id',$order_id)
-                          ->where('product_id',$product->product_id)
-                          ->pluck('product_variation_id')
-                          ->toArray();
-
-            $product_variant=$this->Variants($product->product_id,$all_variants);
-            $product_data[$product->product_id]=[
-                'order_id'    => $order_id,
-                'product_id'=> $product->product_id,
-                'product_name'  => $product_name,
-                'options'       => $options['options'],
-                'option_count'  => $options['option_count'],
-                'product_variant'  => $product_variant
+            $product_name    = Product::where('id',$product->product_id)->value('name');
+            $options         = $this->Options($product->product_id);
+            $all_variants    = OrderProducts::where('order_id',$order_id)->where('product_id',$product->product_id)
+                                ->pluck('product_variation_id')->toArray();
+            $product_variant = $this->Variants($product->product_id,$all_variants);
+            $product_data[$product->product_id] = [
+                'order_id'        => $order_id,
+                'product_id'      => $product->product_id,
+                'product_name'    => $product_name,
+                'options'         => $options['options'],
+                'option_count'    => $options['option_count'],
+                'product_variant' => $product_variant
             ];
         }
-        $data['product_datas']=$product_data;
+        $data['product_datas'] = $product_data;
         return view('admin.orders.show',$data);
     }
 
@@ -299,60 +242,43 @@ class OrderController extends Controller
      */
     public function edit(Orders $orders,$order_id)
     {
-        
-        $data['order']=Orders::with('customer','salesrep','statusName')
-                      ->where('orders.id',$order_id)
-                      ->first();
-        $order_status=OrderStatus::where('status',1)
-        ->whereIn('id',[1,2,3])
-                              ->pluck('status_name','id')
-                              ->toArray();
+        $data['order']          = Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
+                                        ->first();
+        $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
+                                        ->where('role_id',7)->pluck('first_name','id')->toArray();
+        $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                        ->where('role_id',4)->pluck('emp_name','id')->toArray();
+        $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[3,13,11])->pluck('status_name','id')
+                                        ->toArray();
+        $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
+        $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
+        $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                        ->pluck('name','id')->toArray();
+        $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
 
-        $payment_method=PaymentMethod::where('status',1)
-                              ->pluck('payment_method','id')
-                              ->toArray();
-        $customers=User::where('is_deleted',0)
-                         ->where('status',1)
-                         ->where('role_id',7)
-                         ->pluck('first_name','id')
-                         ->toArray();
-        $emplyees=Employee::where('is_deleted',0)
-                         ->where('status',1)
-                         ->where('role_id',4)
-                         ->pluck('emp_name','id')
-                         ->toArray();
-        $data['customers']=[''=>'Please Select']+$customers;
-        $data['sales_rep']=[''=>'Please Select']+$emplyees;
-        $data['order_status']=[''=>'Please Select']+$order_status;
-        $data['payment_method']=[''=>'Please Select']+$payment_method;
+        $products = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
 
-            $products=OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
-            $product_data=$product_variant=array();
-            foreach ($products as $key => $product) {
-                $product_name=Product::where('id',$product->product_id)
-                              ->value('name');
-                $options=$this->Options($product->product_id);
+        $product_data = $product_variant=array();
 
-                $all_variants=OrderProducts::where('order_id',$order_id)
-                              ->where('product_id',$product->product_id)
-                              ->pluck('product_variation_id')
-                              ->toArray();
+        foreach ($products as $key => $product) {
+            $product_name    = Product::where('id',$product->product_id)->value('name');
+            $options         = $this->Options($product->product_id);
+            $all_variants    = OrderProducts::where('order_id',$order_id)->where('product_id',$product->product_id)
+                                    ->pluck('product_variation_id')
+                                    ->toArray();
+            $product_variant = $this->Variants($product->product_id,$all_variants);
 
-                $product_variant=$this->Variants($product->product_id,$all_variants);
-                $product_data[$product->product_id]=[
-                    'order_id'    => $order_id,
-                    'product_id'=> $product->product_id,
-                    'product_name'  => $product_name,
-                    'options'       => $options['options'],
-                    'option_count'  => $options['option_count'],
-                    'product_variant'  => $product_variant
-                ];
-
-            }
-            $data['product_datas']=$product_data;
-
-
-            return view('admin.orders.edit',$data);
+            $product_data[$product->product_id] = [
+                'order_id'        => $order_id,
+                'product_id'      => $product->product_id,
+                'product_name'    => $product_name,
+                'options'         => $options['options'],
+                'option_count'    => $options['option_count'],
+                'product_variant' => $product_variant
+            ];
+        }
+        $data['product_datas']=$product_data;
+        return view('admin.orders.edit',$data);
     }
 
     /**
@@ -368,7 +294,7 @@ class OrderController extends Controller
             'order_status'   => 'required',
             'payment_status' => 'required'
         ]);
-
+        //dd($request->all());
         $order_data=[
             'sales_rep_id'          => $request->sales_rep_id,
             'customer_id'           => $request->customer_id,
@@ -381,7 +307,13 @@ class OrderController extends Controller
             'paid_amount'           => $request->paid_amount,
             'paying_by'             => $request->paying_by,
             'payment_note'          => $request->payment_note,
-            'notes'                 => $request->note
+            'notes'                 => $request->note,
+            'currency'              => $request->currency,
+            'order_tax_amount'      => $request->order_tax_amount,
+            'total_amount'          => $request->total_amount,
+            'sgd_total_amount'      => $request->sgd_total_amount,
+            'exchange_total_amount' => $request->exchange_rate,
+            'updated_at'            => date('Y-m-d H:i:s')
        ];
 
 

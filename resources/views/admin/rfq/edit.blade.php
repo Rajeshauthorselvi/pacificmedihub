@@ -128,9 +128,14 @@
                                 $total_based_products=\App\Models\RFQProducts::TotalDatas($rfqs->id,$product['product_id']);
                                  ?>
                 								<td>{{ $product['product_name'] }}</td>
-                								<td>Quantity: &nbsp;<span class="total_quantity">{{ $total_based_products->quantity }}</span></td>
+                								<th>
+                                  Quantity: &nbsp;
+                                  <span class="total_quantity">{{ $total_based_products->quantity }}</span>
+                                </th>
                 								{{-- <th>Price: {{ $total_based_products->rfq_price }}</th> --}}
-                                <td class="total-head">Total: &nbsp;<span class="total">{{ $total_based_products->sub_total }}</span></td>
+                                <th class="total-head">
+                                  Total: &nbsp;<span class="total">{{ $total_based_products->sub_total }}</span>
+                                </th>
               							  </tr>
             								  <tr class="hide-table-padding">
 								                <td></td>
@@ -482,13 +487,6 @@
       });
 
       $(document).on('click', '.save-btn', function(event) {
-        
-        var check_variants_exists=$('.vatiant_table').length;
-        if (check_variants_exists==0) {
-          alert('Product is required. Please Select');
-          event.preventDefault();
-        }
-
         if(validate()!=false){
           $('#rfq-form').submit();
         }else{

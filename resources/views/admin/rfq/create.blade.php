@@ -186,7 +186,7 @@
           var check_length=$('.product_id[value='+ui.item.value+']').length;
 
           if (check_length>0) {
-            alert('This product already exists');
+            alert('This Product is already exists');
             $(this).val('');
             return false;
           }
@@ -430,6 +430,11 @@
         }
         if ($("#rfqStatus").val()=="") {
           $("#rfqStatus").closest('.form-group').find('span.text-danger.rfq').show();
+          valid = false;
+        }
+        if($('#total_amount_hidden').val()=="")
+        {
+          alert('Please enter minimum Quantity');
           valid = false;
         }
         return valid;

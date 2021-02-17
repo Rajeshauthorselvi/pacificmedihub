@@ -105,28 +105,6 @@ table .dropdown-menu .dropdown-item button{padding:0}
 
 .custom-file-label {overflow: hidden;}
 
-/* RFQ Module */
-.rfq-show-page .address-sec, .rfq-show-page .address-block,.rfq-show-page .address-block .address {display: flex;}
-.rfq-show-page .address-sec{padding: 20px 10px 0;}
-.rfq-show-page .address-block{background: #f6f6f6;border: 1px solid #dddddd;padding: 10px;}
-.rfq-show-page .address-block .address span i{font-size: 42px;color: #767676;}
-.rfq-show-page .address-block .address p{font-size: 14px;}
-.rfq-show-page .address-block .admin.address {border-left: 1px solid #ddd;}
-.rfq-show-page .footer-sec .col-sm-6{float: left;}
-.rfq-show-page .notes-sec,.created-sec {background-color: #f6f6f6;padding: 15px;}
-.rfq-show-page .date-sec .col-sm-4, .product-sec .col-sm-4 {float: left;}
-.rfq-show-page tr.hide-table-padding>td {padding: 0;}
-.rfq-show-page .expand-button {position: relative;}
-.rfq-show-page .order-no-sec {line-height: 38px;font-size: 18px;}
-.rfq-show-page .action_sec li {float: left;width: 16.6%;text-align: center;}
-.rfq-show-page .action_sec li a {float: left;width: 100%;color: #fff;padding: 8px;}
-.rfq-show-page .place-order, .rfq-show-page .pdf{background-color:#3471a8;border-right: 1px solid #5cbfdd;}
-.rfq-show-page .email{background-color:#5cbfdd;}
-.rfq-show-page .comment{background-color:#48bb77;}
-.rfq-show-page .edit{background-color:#efab4f;}
-.rfq-show-page .delete{background-color:#d85450;}
-
-/* End RFQ */
 
 
 /* Currency Page */
@@ -135,51 +113,40 @@ table .dropdown-menu .dropdown-item button{padding:0}
 /* End Currency */
 
 
+/* Orders Page */
+.orders.show-page .action_sec li {float: left;width: 20%;text-align: center;}
+
+/* End Orders Page */
 
 
 /* Common Design */
-.heading-top {
-    background-color: #3287c7;
-    color: #fff;
-}
-.accordion-toggle {
-    cursor: pointer;
-}
-    .payment-note-sec .panel-body{
-        background-color: #f6f6f6;
-        padding: 20px;
-        border: 1px solid #eee;
-    }
-  tr.hide-table-padding>td {
-    padding: 0;
-  }
-  .expand-button {
-    position: relative;
-  }
-  .accordion-toggle .expand-button:after
-  {
-    position: absolute;
-    left:.75rem;
-    top: 1.25rem;
-    transform: translate(0, -50%);
-    content: "-";
-    font-size: 32px;
-  }
-  .accordion-toggle.collapsed .expand-button:after
-  {
-  	top: 1.50rem;
-    content: '+';
-    font-size: 24px;
-  }
-  .table-responsive .hide-table-padding table thead {
-  	background-color: rgba(50, 135, 199,.1);
-	border-color: #fff;
-  }
+.heading-top {background-color: #3287c7;color: #fff;}
+.accordion-toggle {cursor: pointer;}
+.payment-note-sec .panel-body{background-color: #f6f6f6;padding: 20px;border: 1px solid #eee;}
+tr.hide-table-padding>td {padding: 0;}
+.expand-button {position: relative;}
+.accordion-toggle .expand-button:after{position: absolute;left:.75rem;top: 1.25rem;transform: translate(0, -50%);content: "-";font-size: 32px;}
+.accordion-toggle.collapsed .expand-button:after{top: 1.50rem;content: '+';font-size: 24px;}
+.table-responsive .hide-table-padding table thead {background-color: rgba(50, 135, 199,.1);border-color: #fff;}
+.total-calculation .title {text-align: right;border-right: 1px solid #ddd;}
+.total-head {border-left: 1px solid #ddd;}
 
-  .total-calculation .title {
-    text-align: right;
-    border-right: 1px solid #ddd;
-}
-.total-head {
-    border-left: 1px solid #ddd;
-}
+.show-page .action_sec li {float: left;width: 16.6%;text-align: center;}
+.show-page .action_sec li a {float: left;width: 100%;color: #fff;padding: 8px;}
+.show-page .place-order, .show-page .pdf{background-color:#3471a8;border-right: 1px solid #5cbfdd;}
+.show-page .email{background-color:#5cbfdd;}
+.show-page .comment{background-color:#48bb77;}
+.show-page .edit{background-color:#efab4f;}
+.show-page .delete{background-color:#d85450;}
+.show-page .address-sec, .show-page .address-block,.show-page .address-block .address {display: flex;}
+.show-page .address-sec{padding: 20px 10px 0;}
+.show-page .address-block{background: #f6f6f6;border: 1px solid #dddddd;padding: 10px;display: flex;}
+.show-page .address-block .address span i{font-size: 42px;color: #767676;}
+.show-page .address-block .address p{font-size: 14px;}
+.show-page .address-block .admin.address {border-left: 1px solid #ddd;}
+.show-page .footer-sec .col-sm-6{float: left;}
+.show-page .notes-sec,.created-sec {background-color: #f6f6f6;padding: 15px;border: 1px solid #ddd}
+.show-page .date-sec .col-sm-4, .product-sec .col-sm-4 {float: left;}
+.show-page tr.hide-table-padding>td {padding: 0;}
+.show-page .expand-button {position: relative;}
+.show-page .order-no-sec {line-height: 30px;font-size: 16px;}

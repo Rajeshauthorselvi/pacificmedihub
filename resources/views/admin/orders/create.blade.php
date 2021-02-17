@@ -48,7 +48,7 @@
               </div>
               <div class="card">
                 <div class="card-body">
-                  {!! Form::open(['route'=>'orders.store','method'=>'POST','id'=>'orders-form']) !!}
+                  {!! Form::open(['route'=>'orders.store','method'=>'POST','class'=>'orders-form']) !!}
                     
                     <div class="date-sec">
                       <div class="form-group">
@@ -101,7 +101,6 @@
 
                     <div class="product-append-sec"></div>
 
-
                     <div class="tax-sec">
                       <div class="form-group">
                         <div class="col-sm-3">
@@ -128,12 +127,17 @@
                         </div>
                         <div class="col-sm-3">
                           <label for="purchase_date">Payment Status *</label>
-                          <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
-                          {!! Form::select('payment_status',$payment_status, null,['class'=>'form-control no-search select2bs4','id'=>'payment_status']) !!}
+                          <?php $payment_status=[1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
+                          {!! Form::select('payment_status',$payment_status, 3,['class'=>'form-control no-search select2bs4','id'=>'payment_status']) !!}
                         </div>
                       </div>
                     </div>
 
+                    <div>
+                      <input type="hidden" name="total_amount" id="total_amount_hidden">
+                      <input type="hidden" name="order_tax_amount" id="order_tax_amount_hidden">
+                      <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden">
+                    </div>
 
                     <div class="panel panel-default payment-note-sec">
                       <div class="form-group">
@@ -173,7 +177,7 @@
                     <div class="form-group">
                       <div class="col-sm-12 submit-sec">
                         <a href="{{ route('orders.index') }}" class="btn reset-btn">Cancel</a>
-                        <button class="btn save-btn" type="button">Submit</button>
+                        <button class="btn save-btn" type="submit">Submit</button>
                       </div>
                     </div>
                   {!! Form::close() !!}
@@ -222,6 +226,13 @@
         },
         minLength: 1,
         select: function( event, ui ) {
+          var check_length=$('.product_id[value='+ui.item.value+']').length;
+
+          if (check_length>0) {
+            alert('This Product is already exists');
+            $(this).val('');
+            return false;
+          }
           $.ajax({
             url: "{{ url('admin/orders-product') }}",
             data: {
@@ -234,7 +245,11 @@
               return false;
             }
             if ($('.vatiant_table').length==0) {
-              createTable();
+              var currencyCode = $('option:selected', '#currency_rate').attr("currency-code");
+              createTable(currencyCode);
+              if(currencyCode!='SGD'){
+                $('#total_exchange').show();
+              }
             } 
             $('.parent_tbody').append(response);
           });
@@ -431,7 +446,7 @@
         }
 
         if(validate()!=false){
-          $('#orders-form').submit();
+          $('.orders-form').submit();
         }else{
           scroll_to();
           return false;
@@ -444,13 +459,24 @@
         if ($("#customer").val()=="") {
           $("#customer").closest('.form-group').find('span.text-danger.customer').show();
           valid = false;
+        }else{
+          $("#customer").closest('.form-group').find('span.text-danger.customer').hide();
         }
         if ($("#sales_rep_id").val()=="") {
           $("#sales_rep_id").closest('.form-group').find('span.text-danger.sales_rep').show();
           valid = false;
+        }else{
+          $("#sales_rep_id").closest('.form-group').find('span.text-danger.sales_rep').hide();
         }
         if ($("#orderStatus").val()=="") {
           $("#orderStatus").closest('.form-group').find('span.text-danger.order').show();
+          valid = false;
+        }else{
+          $("#orderStatus").closest('.form-group').find('span.text-danger.order').hide();
+        }
+        if($('#total_amount_hidden').val()=="")
+        {
+          alert('Please enter minimum Quantity');
           valid = false;
         }
         return valid;
