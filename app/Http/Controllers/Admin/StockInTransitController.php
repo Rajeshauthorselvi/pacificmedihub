@@ -195,7 +195,7 @@ class StockInTransitController extends Controller
                   'purchase_id'           => $id,
                   // 'product_id'            => $product_id[$key],
                   'purchase_product_id'  => $row_id,
-                  'qty_received'          => $qty_received[$key]-$damaged_qty[$key],
+                  'qty_received'          => $qty_received[$key],
                   'damage_quantity'       => $damaged_qty[$key],
                   'missed_quantity'       => $missed_quantity[$key],
                   'stock_quantity'        => $stock_quantity[$key],
