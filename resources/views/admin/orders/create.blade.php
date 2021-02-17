@@ -119,7 +119,7 @@
                         </div>
                         <div class="col-sm-3">
                           <label for="purchase_date">Order Discount</label>
-                          {!! Form::text('order_discount', 0,['class'=>'form-control','id'=>'order-discount']) !!}
+                          {!! Form::text('order_discount', 0,['class'=>'form-control','id'=>'order-discount','autocomplete'=>'off','onkeyup'=>'validateNum(event,this);']) !!}
                         </div>
                         <div class="col-sm-3">
                           <label for="purchase_date">Payment Term</label>
@@ -140,9 +140,6 @@
                     </div>
 
                     <div class="panel panel-default payment-note-sec">
-                      <div class="form-group">
-                        
-                      </div>
                       <div class="panel-body" style="display:none">
                         <div class="form-group">
                           <div class="col-sm-4">
@@ -481,7 +478,7 @@
         }else{
           $("#orderStatus").closest('.form-group').find('span.text-danger.order').hide();
         }
-        if($('#total_amount_hidden').val()=="")
+        if($('#total_amount_hidden').val()==""||$('#total_amount_hidden').val()==0)
         {
           alert('Please enter minimum Quantity');
           valid = false;

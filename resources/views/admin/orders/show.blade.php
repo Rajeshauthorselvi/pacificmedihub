@@ -47,9 +47,6 @@
                         <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
                       </li>
                       <li>
-                        <a href="" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
-                      </li>
-                      <li>
                         <a href="{{ route('orders.edit',$order->id) }}" class="edit">
                           <i class="fa fa-edit"></i>&nbsp; Edit
                         </a>

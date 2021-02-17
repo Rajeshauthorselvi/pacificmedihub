@@ -114,10 +114,15 @@ table .dropdown-menu .dropdown-item button{padding:0}
 
 
 /* Orders Page */
-.orders.show-page .action_sec li {float: left;width: 20%;text-align: center;}
+.orders.show-page .action_sec li {float: left;width: 25%;text-align: center;}
 
 /* End Orders Page */
 
+
+/* Purchase Page */
+.purchase.show-page .action_sec li{float: left;width: 25%;text-align: center;}
+
+/* End Purchase Page */
 
 /* Common Design */
 .heading-top {background-color: #3287c7;color: #fff;}
