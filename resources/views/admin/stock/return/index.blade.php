@@ -32,11 +32,11 @@
                 <i class="fa fa-trash"></i> Delete (selected)
               </a>
             </div>
-            <div class="col-sm-6 text-right pull-right">
+{{--             <div class="col-sm-6 text-right pull-right">
               <a class="btn add-new" href="{{route('return.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
               </a>
-            </div>
+            </div> --}}
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">

@@ -98,9 +98,12 @@ class PurchaseController extends Controller
         $total_datas   = Purchase::count();
         $total_datas   = ($total_datas==0)?end($explode_val):$total_datas+1;
         $data_original = $char_val;
-        $search        = ['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-        $replace       = [date('d'), date('m'), date('Y'), $total_datas ];
-        $data['purchase_code'] = str_replace($search,$replace, $data_original);
+        $search        = ['[dd]', '[mm]', '[yyyy]'];
+        $replace       = [date('d'), date('m'), date('Y')];
+        $purchase_code= str_replace($search,$replace, $data_original);
+        $purchase_code=explode('-', $purchase_code);
+        $purchase_code[4]=$total_datas;
+        $data['purchase_code']=implode('-',$purchase_code);
       }
       return view('admin.purchase.create',$data);
     }

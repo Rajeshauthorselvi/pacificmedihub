@@ -99,11 +99,11 @@
                   <i class="fas fa-angle-double-right"></i> <p>List Return</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='return.create') active @endif">
+{{--               <li class="nav-item @if($current_route=='return.create') active @endif">
                 <a href="{{ route('return.create') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Add Return</p>
                 </a>
-              </li>
+              </li> --}}
               <li class="nav-item @if($current_route=='wastage.index'||$current_route=='wastage.create') active @endif">
                 <a href="{{ route('wastage.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Wastage/Write Off</p>
