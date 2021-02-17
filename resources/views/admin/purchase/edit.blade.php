@@ -46,7 +46,7 @@
                 <h3 class="card-title">Edit Purchase</h3>
               </div>
               <div class="card-body">
-                  {{ Form::model($purchase,['method' => 'PATCH', 'route' =>['purchase.update',$purchase->id]]) }}
+                  {{ Form::model($purchase,['class'=>'purchase-form','method' => 'PATCH', 'route' =>['purchase.update',$purchase->id]]) }}
                   <div class="date-sec">
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -436,7 +436,7 @@ function SumTotal(class_name) {
       }
     });
 
-    $('.rfq-form').on('keyup keypress', function(e) {
+    $('.purchase-form').on('keyup keypress', function(e) {
       var keyCode = e.keyCode || e.which;
       if (keyCode === 13) { 
         e.preventDefault();

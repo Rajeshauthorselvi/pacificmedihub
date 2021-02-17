@@ -46,7 +46,7 @@
                 <h3 class="card-title">Add Purchase</h3>
               </div>
               <div class="card-body">
-                <form action="{{route('purchase.store')}}" method="post" enctype="multipart/form-data" id="productForm">
+                <form action="{{route('purchase.store')}}" method="post" enctype="multipart/form-data" class="purchase-form">
                   @csrf
                   <div class="date-sec">
                     <div class="col-sm-4">
@@ -343,7 +343,7 @@
     });
   }
 
-  $('.rfq-form').on('keyup keypress', function(e) {
+  $('.purchase-form').on('keyup keypress', function(e) {
     var keyCode = e.keyCode || e.which;
     if (keyCode === 13) { 
       e.preventDefault();
