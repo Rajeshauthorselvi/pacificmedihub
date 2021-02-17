@@ -6,11 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Orders;
 use App\Models\OrderProducts;
 use Illuminate\Http\Request;
-use Redirect;
-use Session;
 use App\Models\RFQ;
 use App\Models\RFQProducts;
-use App\User;
 use App\Models\OrderStatus;
 use App\Models\PaymentMethod;
 use App\Models\Vendor;
@@ -20,6 +17,13 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
 use App\Models\PaymentHistory;
+use App\Models\Currency;
+use App\Models\Tax;
+use App\Models\PaymentTerm;
+use App\User;
+use Auth;
+use Redirect;
+use Session;
 
 class OrderController extends Controller
 {
@@ -68,11 +72,14 @@ class OrderController extends Controller
                          ->where('role_id',4)
                          ->pluck('emp_name','id')
                          ->toArray();
+        $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
         $data['customers']=[''=>'Please Select']+$customers;
         $data['sales_rep']=[''=>'Please Select']+$emplyees;
         $data['order_status']=[''=>'Please Select']+$order_status;
         $data['payment_method']=[''=>'Please Select']+$payment_method;
-
+        $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
+        $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                  ->pluck('name','id')->toArray();
         $order_codee=Settings::where('key','prefix')
                          ->where('code','order_no')
                         ->value('content');
@@ -147,12 +154,18 @@ class OrderController extends Controller
             'order_status'          => $request->order_status,
             'order_tax'             => $request->order_tax,
             'order_discount'        => $request->order_discount,
-            // 'payment_term'          => $request->payment_term,
-            'notes'                  => $request->note,
+            'currency'              => $request->currency,
+            'payment_term'          => $request->payment_term,
+            'order_tax_amount'      => $request->order_tax_amount,
+            'total_amount'          => $request->total_amount,
+            'sgd_total_amount'      => $request->sgd_total_amount,
+            'exchange_total_amount' => $request->exchange_rate,
+            'user_id'               => Auth::id(),
+            'notes'                 => $request->note,
             'created_at'            => date('Y-m-d H:i:s')
        ];
+       
        $order_id=Orders::insertGetId($order_data);
-
 
        if ($request->has('rfq_id')) {
            $pfq_products=RFQProducts::where('rfq_id',$request->rfq_id)->get();
