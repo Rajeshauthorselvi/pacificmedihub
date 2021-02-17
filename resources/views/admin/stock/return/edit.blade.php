@@ -84,10 +84,8 @@
                           <th>Purchase Price</th>
                           <th>Total Purchase Quantity</th>
                           <th>Damage Quantity</th>
-                          <th>Missed Quantity</th>
                           <th>Return Quantity</th>
                           <th>Total Return Amount</th>
-                          <th>Reason</th>
                         </thead>
                         <tbody>
                         <?php $total_amount=$total_quantity=$final_price=0 ?>
@@ -124,24 +122,26 @@
                             </td>
                             
                             <td>
-                                <input type="text" name="damage_quantity[{{ $variation_details['id'] }}]" class="form-control damaged_quantity" value="{{ $damage_quantity[$variation_details['id']] }}" readonly>
+                              <?php 
+                              $damage_data=isset($damage_quantity[$variant['variant_id']])?$damage_quantity[$variant['variant_id']]:0;
+                              $return_data=isset($return_quantity[$variant['variant_id']])?$return_quantity[$variant['variant_id']]:0;
+
+                              ?>
+                                <input type="text" name="damage_quantity[{{ $variation_details['id'] }}]" class="form-control damaged_quantity" value="{{ $damage_data }}" readonly>
                                 <input type="hidden" name="purchase_id" value="{{ $purchase_id }}">
                                 <input type="hidden" name="product_id[{{ $variation_details['id'] }}]" value="{{ $variant['product_id'] }}">
                               </td>
+
                              <td>
-                                <input type="text" name="missed_quantity[{{ $variation_details['id'] }}]" class="form-control missed_quantity" value="{{ $missed_quantity[$variation_details['id']] }}" readonly>
-                              </td>
-                             <td>
-                                <input type="text" name="return_quantity[{{ $variation_details['id'] }}]" class="form-control return_quantity" value="{{ $return_quantity[$variation_details['id']] }}" readonly>
+                                <input type="text" name="return_quantity[{{ $variation_details['id'] }}]" class="form-control return_quantity" value="{{ $return_data }}" readonly>
                               </td>
                               <td>
                                 <span class="sub_total_text">
-<?php $total_return_amount=($missed_quantity[$variation_details['id']]+$damage_quantity[$variation_details['id']])*$product_price ?>
+                                  <?php $total_return_amount=($damage_data)*$product_price ?>
                                   {{ $total_return_amount }}
                                 </span>
                                   <input type="hidden" name="sub_total[{{ $variation_details['id'] }}]" value="{{ $total_return_amount }}" class="sub_total">
                               </td>
-                              <td>{{ $variation_details['reason'] }}</td>
                           </tr>
                         
                         @endforeach

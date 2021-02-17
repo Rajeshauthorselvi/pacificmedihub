@@ -99,13 +99,12 @@
                         <tbody>
                         <?php $total_amount=$total_quantity=$final_price=0 ?>
                        @foreach($product['product_variant'] as $key=>$variant)
-
                        <?php 
                          $option_count=$product['option_count'];
                          $variation_details=\App\Models\PurchaseProducts::VariationPrice($product['product_id'],$variant['variant_id'],$purchase->id);
-                         
                        ?>
                         <input type="hidden" name="variant[row_id][]" value="{{ $variation_details->id }}">
+                        <input type="hidden" name="variant[variant_id][]" value="{{ $variant['variant_id'] }}">
                         <input type="hidden" name="variant[product_id][]" value="{{ $product['product_id'] }}">
                           <tr class="parent_tr">
                             <td>{{$variant['option_value1']}}</td>

@@ -14,6 +14,8 @@ use App\Models\PurchaseStockHistory;
 use App\Models\Vendor;
 use App\Models\Settings;
 use Illuminate\Http\Request;
+use App\Models\PurchaseReturn;
+use App\Models\PurchaseProductReturn;
 use Session;
 use Redirect;
 use DB;
@@ -171,25 +173,25 @@ class StockInTransitController extends Controller
         ]);
         $quantity_received=$request->qty_received;
 
-      
-
-
        $variant=$request->variant;
        $row_ids=$variant['row_id'];
        $qty_received=$variant['qty_received'];
        $damaged_qty=$variant['damaged_qty'];
+
        $missed_quantity=$variant['missed_qty'];
        $stock_quantity=$variant['stock_quantity'];
        $product_id=$variant['product_id'];
+       
        $status=1;
        if ($request->purchase_status!=1) {
          foreach ($row_ids as $key => $row_id) {
-
 
             $purchase_data=DB::table('purchase_products')->where('id',$row_id)->first();
             $variant_data=DB::table('product_variant_vendors')
                           ->where('product_variant_id',$purchase_data->product_variation_id)
                           ->first();
+
+              /*Add Stock History*/
               if ($qty_received[$key]!=0) {
                 $data=[
                   'purchase_id'           => $id,
@@ -201,14 +203,19 @@ class StockInTransitController extends Controller
                   'stock_quantity'        => $stock_quantity[$key],
                   'created_at'            => date('Y-m-d H:i:s')
                 ];
-                PurchaseStockHistory::insert($data);
+                $history_id=PurchaseStockHistory::insertGetId($data);
               }
+              /*Add Stock History*/
+
+              /*Update Stock Quantity*/
               if ($request->purchase_status==2 || $request->purchase_status==4) {
                 $total_quantity=$variant_data->stock_quantity+$stock_quantity[$key];
                   DB::table('product_variant_vendors')
                   ->where('product_variant_id',$purchase_data->product_variation_id)
                   ->update(['stock_quantity'=>$total_quantity]);
               }
+              /*Update Stock Quantity*/
+
           }
           $total_quantity=PurchaseProducts::where('purchase_id',$id)->sum('quantity');
           $paid_quantity=PurchaseStockHistory::where('purchase_id',$id)->sum('qty_received');
@@ -219,9 +226,61 @@ class StockInTransitController extends Controller
             $status=4;
           }
        }
-
         Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$status]);
-            return Redirect::route('stock-in-transit.index')->with('success','Stock-In-Transit modified successfully...!');  
+
+        /*Add record to return table*/
+          $check_quantity_exists = array_filter($damaged_qty, function($value){
+                  return $value > 0;
+              });
+        if (count($check_quantity_exists)>0) {
+          $purchase_details=Purchase::find($id);
+          // $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid'];
+          $data_return=[
+              // 'purchase_history_id'     => $history_id,
+              'purchase_or_order_id'    => $id,
+              'customer_or_vendor_id'   => $purchase_details->vendor_id,
+              'order_type'              => 1,
+              'payment_status'          => 3,
+              'return_status'           => 5,
+              'staff_notes'             => "",
+              'created_at'              => date('Y-m-d H:i:s')
+          ];
+          $return_id=PurchaseReturn::updateOrCreate(['purchase_or_order_id'=> $id],$data_return);
+          $variant_ids=$variant['variant_id'];
+          foreach ($variant_ids as $key => $row_id) {
+            if ($damaged_qty[$key]>0) {
+
+              $existing_damage=PurchaseProductReturn::where(['product_id'=> $product_id[$key],'purchase_variation_id'=>$row_id])
+              ->value('damage_quantity');
+              $damage_total=$existing_damage+$damaged_qty[$key];
+              $stock_price=PurchaseProducts::where('id',$id)->value('base_price');
+              $data_return_products=[
+                'product_id'              => $product_id[$key],
+                'purchase_variation_id'   => $row_id,
+                'damage_quantity'         => $damage_total,
+                'return_quantity'         => $damage_total,
+                'return_sub_total'        => $damage_total*$stock_price,
+                'purchase_return_id'      => $return_id->id
+              ];
+
+
+               $return_product_id=PurchaseProductReturn::updateOrCreate(
+                ['product_id'=> $product_id[$key],'purchase_variation_id'=>$row_id],
+                $data_return_products
+              );
+
+            }
+
+          }
+        }
+
+
+        /*Add record to return table*/
+
+
+
+        return Redirect::route('stock-in-transit.index')
+               ->with('success','Stock-In-Transit modified successfully...!');  
         }
 
     public function StockHistoryDetails($purchase_id)

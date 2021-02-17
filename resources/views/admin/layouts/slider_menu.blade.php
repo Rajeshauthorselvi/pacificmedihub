@@ -88,7 +88,10 @@
             <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create') block @endif">
               <li class="nav-item @if($current_route=='stock-in-transit.index') active @endif">
                 <a href="{{ route('stock-in-transit.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit</p>
+                  <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit (Vendor)</p>
+                </a>
+                <a href="javascript:void(0)" class="nav-link">
+                  <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit (Customer)</p>
                 </a>
               </li>
               <li class="nav-item @if($current_route=='return.index'||$current_route=='return.edit') active @endif">
@@ -103,7 +106,7 @@
               </li>
               <li class="nav-item @if($current_route=='wastage.index'||$current_route=='wastage.create') active @endif">
                 <a href="{{ route('wastage.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Wastage</p>
+                  <i class="fas fa-angle-double-right"></i> <p>Wastage/Write Off</p>
                 </a>
               </li>
             </ul>

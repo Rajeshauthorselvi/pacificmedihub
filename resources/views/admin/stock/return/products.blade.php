@@ -52,16 +52,12 @@
 			                @foreach ($product['options'] as $option)
 			                	<th>{{ $option }}</th>
 			                @endforeach
-							{{-- <th>Base Price</th> --}}
-							{{-- <th>Retail Price</th> --}}
-							{{-- <th>Minimum Price</th> --}}
 							<th>Purchase Price</th>
 							<th>Total Purchase Quantity</th>
 							<th>Damage Quantity</th>
 							<th>Missed Quantity</th>
 							<th>Total Return Quantity</th>
 							<th>Total Return Amount</th>
-							<th>Reason</th>
 						</thead>
                         <tbody>
                         <?php $missed_quantity=$damage_quantity=$total_amount=$total_quantity=$final_price=0 ?>
@@ -121,7 +117,6 @@
                               		<input type="hidden" name="sub_total[{{ $variation_details['id'] }}]" value="{{ $total_return_amount }}" class="sub_total">
                               	</span>
                               </td>
-                              <td>{{ $variation_details['reason'] }}</td>
                           </tr>
                           <?php $total_amount +=$total_return_amount; ?>
                           <?php $damage_quantity +=$variation_details['damage_quantity']; ?>

@@ -77,7 +77,8 @@
                             ?>
                             <td>{{ $balance_amount['paid_amount'] }}</td>
                             <td class="balance">{{ $balance_amount['balance_amount'] }}</td>
-                            <td>{{ ($return['payment_status']==1)?'Paid':'Not Paid' }}</td>
+                            <?php $payment_status=[1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
+                            <td>{{ $payment_status[$return['payment_status']] }}</td>
                             <td>{{ $return['order_status'] }}</td>
                             <td>
                                 <div class="input-group-prepend">

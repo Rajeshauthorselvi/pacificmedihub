@@ -33,7 +33,7 @@ class PurchaseReturnController extends Controller
             $purchase=Purchase::where('id',$return->purchase_or_order_id)
                       ->value('purchase_order_number'); 
             $total_quantity=PurchaseProductReturn::where('purchase_return_id',$return->id)
-            ->sum(\DB::raw('damage_quantity + missed_quantity'));
+                            ->sum(DB::raw('damage_quantity'));
             $sub_total=PurchaseProductReturn::where('purchase_return_id',$return->id)->sum('return_sub_total');
             $vendor=Vendor::where('id',$return->customer_or_vendor_id)
                       ->value('name');
@@ -46,7 +46,7 @@ class PurchaseReturnController extends Controller
                 'order_type' =>$return->order_type,
                 'total_quantity' =>$total_quantity,
                 'sub_total' =>$sub_total,
-                'payment_status' =>1,
+                'payment_status' =>$return->payment_status,
                 'return_status' =>3,
                 'order_status'  => $order_status
             ];
@@ -326,20 +326,20 @@ class PurchaseReturnController extends Controller
         $data['damage_quantity']=PurchaseProductReturn::where('purchase_return_id',$id)
                          ->pluck('damage_quantity','purchase_variation_id')
                          ->toArray();
-        $data['missed_quantity']=PurchaseProductReturn::where('purchase_return_id',$id)
-                         ->pluck('missed_quantity','purchase_variation_id')
-                         ->toArray();
         $data['return_subtotal']=PurchaseProductReturn::where('purchase_return_id',$id)
                     ->pluck('return_sub_total','purchase_variation_id')
                     ->toArray();
         $data['return_quantity']=PurchaseProductReturn::where('purchase_return_id',$id)
                     ->pluck('return_quantity','purchase_variation_id')
                     ->toArray();
+
+        // dd($data);
         $purchase_id=$purchase_detail->purchase_or_order_id;
 
         $products=PurchaseProducts::where('purchase_id',$purchase_id)
                   ->groupBy('product_id')
                   ->get();
+
 
             $product_data=$product_variant=array();
             foreach ($products as $key => $product) {
@@ -364,10 +364,10 @@ class PurchaseReturnController extends Controller
                     'product_variant'  => $product_variant
                 ];
             }
- $data['purchase_products']=$product_data;
-$data['vendor_name']=Vendor::where('id',$purchase_detail->customer_or_vendor_id)
-                                 ->value('name');
+            $data['purchase_products']=$product_data;
+            $data['vendor_name']=Vendor::where('id',$purchase_detail->customer_or_vendor_id)->value('name');
                                  
+
             $data['purchase']=$purchase_detail;
             $data['purchase_id']=$purchase_id;
             $data['purchase_return_id']=$purchase_detail->id;
