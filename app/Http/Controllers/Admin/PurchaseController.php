@@ -52,17 +52,18 @@ class PurchaseController extends Controller
           $payment_status = 'Partly Paid';
         }
         $orders[] = [
-          'purchase_date'=>$purchase->purchase_date,
-          'purchase_id'=>$purchase->id,
-          'vendor'   =>$vendor_name,
-          'po_number'=>$purchase->purchase_order_number,
-          'quantity' => $product_details->quantity,
-          'grand_total' => $product_details->sub_total,
-          'amount' => $purchase->amount,
-          'balance' => ($product_details->sub_total)-($purchase->amount),
-          'payment_status' => $payment_status,
-          'order_status'  =>$order_status,
-          'status_id'     => $purchase->purchase_status
+          'purchase_date'    => $purchase->purchase_date,
+          'purchase_id'      => $purchase->id,
+          'vendor'           => $vendor_name,
+          'po_number'        => $purchase->purchase_order_number,
+          'quantity'         => $product_details->quantity,
+          'grand_total'      => $product_details->sub_total,
+          'amount'           => $purchase->amount,
+          'balance'          => ($product_details->sub_total)-($purchase->amount),
+          'payment_status'   => $payment_status,
+          'order_status'     => $order_status,
+          'status_id'        => $purchase->purchase_status,
+          'sgd_total_amount' => $purchase->sgd_total_amount
         ];
       }
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')

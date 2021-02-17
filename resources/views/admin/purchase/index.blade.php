@@ -68,7 +68,7 @@
                           <td>{{ $order['po_number'] }}</td>
                           <td>{{ $order['vendor'] }}</td>
                           <td>{{ $order['quantity'] }}</td>
-                          <td class="total_amount">{{ $order['grand_total'] }}</td>
+                          <td class="total_amount">{{ isset($order['sgd_total_amount'])?$order['sgd_total_amount']:'' }}</td>
                           <?php 
                               $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($order['purchase_id'],$order['grand_total'],1);
                             ?>

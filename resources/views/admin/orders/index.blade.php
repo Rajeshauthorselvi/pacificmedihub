@@ -74,15 +74,14 @@
                           <td>{{ $order->salesrep->emp_name }}</td>
                           <td><span class="badge badge-info">{{  $order->statusName->status_name  }}</span></td>
                           <td>
-                            <?php $sub_total=\App\Models\OrderProducts::OrderTotalProduct($order->id); ?>
-                            {{ $sub_total }}
+                            {{  isset($order->sgd_total_amount)?$order->sgd_total_amount:'' }}
                           </td>
                           <td>{{ isset($order->paid_amount)?$order->paid_amount:0 }}</td>
                           <td>
-                              {{ $sub_total-$order->paid_amount }}
+                              {{ $order->paid_amount }}
                           </td>
                           <td>
-                          <?php $payment_status=[0=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
+                          <?php $payment_status=[0=>'',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
                             {{ $payment_status[$order->payment_status] }}
                           </td>
                           <td>
