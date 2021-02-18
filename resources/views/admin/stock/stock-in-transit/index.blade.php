@@ -53,7 +53,7 @@
                           <td>{{ $order['vendor'] }}</td>
                           <td>{{ $order['quantity'] }}</td>
                           <td>{{ $order['qty_received'] }}</td>
-                          <td>{{ $order['status'] }}</td>
+                          <td><span class="badge" style="background:{{ $order['color_code'] }};color: #fff ">{{ $order['status'] }}</span></td>
                           <td>
                             
                                     <a href="{{route('stock-in-transit.edit',$order['purchase_id'])}}" class="btn btn-primary">Stock Update</a>

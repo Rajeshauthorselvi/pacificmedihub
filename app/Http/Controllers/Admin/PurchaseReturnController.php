@@ -37,7 +37,8 @@ class PurchaseReturnController extends Controller
             $sub_total=PurchaseProductReturn::where('purchase_return_id',$return->id)->sum('return_sub_total');
             $vendor=Vendor::where('id',$return->customer_or_vendor_id)
                       ->value('name');
-            $order_status=OrderStatus::where('id',$return->return_status)->value('status_name');
+            $order_status=OrderStatus::where('id',$return->return_status)->first();
+
             $data_return[]=[
                 'id'    => $return->id,
                 'date'  => date('d-m-Y',strtotime($return->created_at)),
@@ -48,7 +49,8 @@ class PurchaseReturnController extends Controller
                 'sub_total' =>$sub_total,
                 'payment_status' =>$return->payment_status,
                 'return_status' =>3,
-                'order_status'  => $order_status
+                'order_status'  => $order_status->status_name,
+                'color_code'     => $order_status->color_codes
             ];
         }
         $data['returns']=$data_return;

@@ -69,7 +69,7 @@
                     <div class="form-group">
                       <div class="col-sm-8">
                         <label for="prodct-add-sec">Products *</label>
-                        {!! Form::text('product',null, ['class'=>'form-control','id'=>'prodct-add-sec','readonly']) !!}
+                        {!! Form::text('product',null, ['class'=>'form-control','id'=>'prodct-add-sec']) !!}
                       </div>
                       <div class="col-sm-4">
                         <label for="vendorId">Vendor *</label>
@@ -99,7 +99,7 @@
                               <th scope="col"></th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody class="parent_tbody">
                             @foreach ($purchase_products as $product)
                               <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
                                 <td class="expand-button"></td>
@@ -141,6 +141,7 @@
                                             $variation_details = \App\Models\PurchaseProducts::VariationPrice($product['product_id'],$variant['variant_id'],$purchase->id);
                                           ?>
                                           <input type="hidden" name="variant[row_id][]" value="{{$variation_details->id}}">
+                                          <input type="hidden" name="variant[product_id][]" value="{{ $product['product_id'] }}" class="product_id">
                                           <tr class="parent_tr">
                                             <td>{{$variant['option_value1']}}</td>
                                             @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
@@ -186,7 +187,8 @@
                                 </td>
                               </tr>
                             @endforeach
-                            <tr class="total-calculation">
+
+                            <tr class="total-calculation first-calculation-tr">
                               <td colspan="3" class="title">Total</td>
                               <td><span class="all_amount">{{ $purchase->total_amount }}</span></td>
                               <input type="hidden" name="total_amount" id="total_amount_hidden" value="{{$purchase->total_amount}}">
@@ -292,6 +294,12 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
+      $(document).on('click', '.remove-product-row', function(event) {
+        event.preventDefault();
+        $(this).closest('tr').next('tr').remove();
+        $(this).closest('tr').remove();
+      });
+      
       $(function ($) {
         $('.read-only.select2bs4').select2({
           disabled: true
@@ -331,12 +339,13 @@
             url: "{{ url('admin/product-search') }}",
             data: {
               product_search_type: 'options',
-              product_id:ui.item.value
+              product_id:ui.item.value,
+              from:'edit'
             },
           })
           .done(function(response) {
-            $('.order-item-sec').append(response)
-            SumAllTotal();
+            $('.hide-table-padding:last').after(response);
+            // $('.first-calculation-tr').before().append(response);
           })
           .fail(function() {
             console.log("error");

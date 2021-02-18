@@ -43,7 +43,7 @@ class StockInTransitController extends Controller
             $total_qty_received=PurchaseStockHistory::where('purchase_id',$purchase->id)->sum('qty_received');
         $order_status=OrderStatus::where('status',1)
                               ->where('id',$purchase->purchase_status)
-                              ->value('status_name');
+                              ->first();
 
             $orders[]=[
                 'purchase_date'=>$purchase->purchase_date,
@@ -52,7 +52,8 @@ class StockInTransitController extends Controller
                 'po_number'=>$purchase->purchase_order_number,
                 'quantity' => $product_details->quantity,
                 'qty_received' => $total_qty_received,
-                'status' =>$order_status
+                'status' =>$order_status->status_name,
+                'color_code'     => $order_status->color_codes
             ];
         }
 

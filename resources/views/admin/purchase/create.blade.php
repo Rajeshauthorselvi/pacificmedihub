@@ -199,6 +199,10 @@
 
           var check_length=$('.product_id[value='+ui.item.value+']').length;
 
+
+
+          
+
           if (check_length>0) {
               alert('This product already exists');
               $(this).val('');
@@ -207,8 +211,12 @@
 
           /*Load Related Vendors*/
             $.ajax({
-              url: '{{ url('admin/search-vendor') }}'+'/'+ui.item.value,
-              type: 'GET',
+              url: '{{ url('admin/search-vendor') }}',
+              type: 'post',
+              data:{
+                '_token':"{{ csrf_token() }}",
+                product_id:ui.item.value,
+              }
             })
             .done(function(response) {
               $('.vendors').empty();
@@ -256,11 +264,13 @@
         });
       }
 
+      /*Remove Product Row*/
       $(document).on('click', '.remove-product-row', function(event) {
         event.preventDefault();
         $(this).closest('tr').next('tr').remove();
         $(this).closest('tr').remove();
       });
+      /*Remove Product Row*/
       
       $(document).on('click', '.remove-item', function(event) {
         $(this).closest('tr').remove();

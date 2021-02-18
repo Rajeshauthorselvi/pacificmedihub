@@ -61,6 +61,7 @@ class PurchaseController extends Controller
           'amount'           => $purchase->amount,
           'balance'          => ($product_details->sub_total)-($purchase->amount),
           'payment_status'   => $payment_status,
+          'p_status'         => $purchase->payment_status,
           'order_status'     => $order_status->status_name,
           'color_code'     => $order_status->color_codes,
           'status_id'        => $purchase->purchase_status,
@@ -295,6 +296,7 @@ class PurchaseController extends Controller
      */
     public function update(Request $request, Purchase $purchase)
     {
+
       $purchase_id = $purchase->id;
       $this->validate(request(),[
         'purchase_date'         => 'required',
@@ -337,6 +339,38 @@ class PurchaseController extends Controller
         PurchaseProducts::where('id',$row_id)->update($data);
       }
 
+      if ($request->has('new_variant')) {
+        $product_ids           = $request->new_variant['product_id'];
+        $variant               = $request->new_variant;
+        $product_id            = $variant['product_id'];
+        $stock_qty             = $variant['stock_qty'];
+        $base_price            = $variant['base_price'];
+        $retail_price          = $variant['retail_price'];
+        $minimum_selling_price = $variant['minimum_selling_price'];
+        $sub_total             = $variant['sub_total'];
+        $variant_id            = $variant['variant_id'];
+
+        foreach ($product_ids as $key => $variant) {
+          if ($stock_qty[$key]!=0) {
+            $data=[
+              'purchase_id'           => $purchase_id,
+              'product_id'            => $product_id[$key],
+              'product_variation_id'  => $variant_id[$key],
+              'base_price'            => $base_price[$key],
+              'retail_price'          => $retail_price[$key],
+              'minimum_selling_price' => $minimum_selling_price[$key],
+              'quantity'              => $stock_qty[$key],
+              'discount'              => 0,
+              'product_tax'           => 0,
+              'sub_total'             => $sub_total[$key],
+            ];
+            DB::table('purchase_products')->insert($data);
+          }
+        }
+      }
+
+
+
       return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');        
     }
 
@@ -360,6 +394,7 @@ class PurchaseController extends Controller
 
         $search_type=$request->product_search_type;
         $product_id=$request->product_id;
+        $from=$request->from;
         $data=$options=array();
 
         if ($search_type=="options") {
@@ -373,8 +408,12 @@ class PurchaseController extends Controller
             $data['option_count'] = $options['option_count'];
             $data['product_id'] = $product_id;
             $data['product_name']=Product::where('id',$product_id)->value('name');
-
-           $view=view('admin.purchase.variations',$data)->render();
+            if ($from=="edit") {
+                $view=view('admin.purchase.edit_variations',$data)->render();
+            }
+            else{
+               $view=view('admin.purchase.variations',$data)->render();
+            }
 
            return $view;
         }
@@ -406,8 +445,9 @@ class PurchaseController extends Controller
         }
         return response()->json($names);
     }
-    public function FindVendors($product_id)
+    public function FindVendors(Request $request)
     {
+      $product_id=$request->product_id;
       $product_variant=DB::table('product_variant_vendors as pvv')
                        ->leftjoin('vendors as v','pvv.vendor_id','v.id')
                        ->where('pvv.product_id',$product_id)
@@ -611,5 +651,37 @@ class PurchaseController extends Controller
                              ->toArray();
 
         return $all_payment_history;
+    }
+    public function PurchaseHistory(Request $request)
+    {
+      $data=array();
+      $purchase_id=$request->purchase_id;
+          $products = PurchaseProducts::where('purchase_id',$purchase_id)->groupBy('product_id')->get();
+
+      $product_data = $product_variant = array();
+      foreach ($products as $key => $product) {
+        $product_name    = Product::where('id',$product->product_id)->value('name');
+        $options         = $this->Options($product->product_id);
+        $all_variants    = PurchaseProducts::where('purchase_id',$purchase_id)->where('product_id',$product->product_id)
+                            ->pluck('product_variation_id')->toArray();
+        $product_variant = $this->Variants($product->product_id,$all_variants);
+
+        $product_data[$product->product_id] = [
+          'row_id'          => $product->id,
+          'purchase_id'     => $purchase_id,
+          'product_id'      => $product->product_id,
+          'product_name'    => $product_name,
+          'options'         => $options['options'],
+          'option_count'    => $options['option_count'],
+          'product_variant' => $product_variant
+        ];
+      }
+      $data['purchase_products'] = $product_data;
+      $purchase               = Purchase::find($purchase_id);
+      $data['purchase']       = $purchase;
+
+      $view=view('admin.purchase.show_products',$data)->render();
+
+      return $view;
     }
 }

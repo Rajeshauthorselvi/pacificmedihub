@@ -51,7 +51,7 @@
                         <th>Purchase Date</th>
                         <th>PO No</th>
                         <th>Vendor</th>
-                        <th>Quantity</th>
+                        <th>View Quantities</th>
                         <th>Grand Total</th>
                         <th>Paid</th>
                         <th>Balance</th>
@@ -65,9 +65,17 @@
                         <tr>
                           <td><input type="checkbox" name="currency_id" value="{{ $order['purchase_id'] }}"></td>
                           <td>{{ date('d-m-Y',strtotime($order['purchase_date'])) }}</td>
-                          <td>{{ $order['po_number'] }}</td>
+                          <td>
+                            <a href="{{ route('purchase.show',[$order['purchase_id']]) }}" class="btn btn-link">
+                              {{ $order['po_number'] }}
+                            </a>
+                          </td>
                           <td>{{ $order['vendor'] }}</td>
-                          <td>{{ $order['quantity'] }}</td>
+                          <td>
+                            <a href="javascript:void(0)" class="btn btn-primary show_products" purchase-id="{{ $order['purchase_id'] }}">
+                              <i class="fa fa-eye"></i>
+                            </a>
+                          </td>
                           <td class="total_amount">{{ $order['sgd_total_amount'] }}</td>
                           <?php 
                               $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($order['purchase_id'],$order['sgd_total_amount'],1);
@@ -77,7 +85,10 @@
                             {{ number_format($balance_amount['balance_amount'],2,'.','') }}
                           </td>
                           <td><span class="badge" style="background:{{ $order['color_code'] }};color: #fff ">{{ $order['order_status'] }}</span></td>
-                          <td>{{ $order['payment_status'] }}</td>
+                          <td>
+                            <?php $color_code=[1=>'#00a65a',2=>'#5bc0de','3'=>'#f0ad4e']?>
+                            <span class="badge" style="background:{{ $color_code[$order['p_status']] }};color: #fff ">{{ $order['payment_status'] }}</span>
+                          </td>
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
@@ -95,7 +106,7 @@
                                     <i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment
                                   </li>
                                 </a>
-                                @if ($order['status_id']==2)
+                                @if ($order['status_id']==2 || $order['status_id']==4)
                                   @php $status_class="disabled" @endphp
                                 @else
                                   @php $status_class="" @endphp
@@ -135,6 +146,21 @@
       </div>
     </section>
   </div>
+
+    <div class="modal fade" id="show_products" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Quantity List</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body"></div>
+      </div>
+    </div>
+  </div>
+
 
   <div class="modal fade" id="payment_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -221,6 +247,32 @@
 
   @push('custom-scripts')
     <script type="text/javascript">
+
+      $(document).on('click', '.show_products', function(event) {
+        event.preventDefault();
+        var purchase_id=$(this).attr('purchase-id');
+        $.ajax({
+          url: '{{ route('purchase.history') }}',
+          type: 'GET',
+          data: {purchase_id: purchase_id}
+        })
+        .done(function(response) {
+          $('#show_products .modal-body').html(response);
+          $('#show_products').modal('show');
+        })
+        .fail(function() {
+          console.log("error");
+        })
+        .always(function() {
+          console.log("complete");
+        });
+        
+
+          
+      });
+
+
+
       $(function ($) {
         $('.no-search.select2bs4').select2({
           minimumResultsForSearch: -1

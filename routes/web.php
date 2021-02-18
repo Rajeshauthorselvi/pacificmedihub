@@ -106,7 +106,7 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 
 	Route::post('create_return_payment',['as'=>'create.return.payment','uses'=>'Admin\PurchaseReturnController@CreatePurchasePayment']);
 
-	Route::get('search-vendor/{product_id}','Admin\PurchaseController@FindVendors');
+	Route::post('search-vendor','Admin\PurchaseController@FindVendors');
 
 	Route::get('product-commission-value','Admin\ProductController@productCommissionValue');
 
@@ -115,6 +115,7 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('tax','Admin\TaxController');
 
 	Route::post('purchase-stock-history', 'Admin\StockInTransitController@ListPurchaseStockHistory');
+	Route::get('purchase-history',['as'=>'purchase.history','uses'=>'Admin\PurchaseController@PurchaseHistory']);
 });
 
 
