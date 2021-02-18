@@ -77,6 +77,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 
 	Route::get('search-purchase-no','Admin\PurchaseReturnController@searchPurchaseNo');
 
+	Route::get('rfq-to-order/{id}','Admin\OrderController@rfqToOrder')->name('rfq.toOrder');
+
 	Route::resource('orders','Admin\OrderController');
 	Route::get('orders-product',['as'=>'orders.product','uses'=>'Admin\OrderController@ProductSearch']);
 
