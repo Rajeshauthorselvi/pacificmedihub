@@ -77,27 +77,6 @@ class OrderController extends Controller
             $data['order_code'] = str_replace($search,$replace, $data_original);
         }
 
-        if ($request->has('rfq_id')) {
-            $products = RFQProducts::where('rfq_id',$rfq_id)->groupBy('product_id')->get();
-            $product_data = $product_variant = array();
-            foreach ($products as $key => $product) {
-                $product_name    = Product::where('id',$product->product_id)->value('name');
-                $options         = $this->Options($product->product_id);
-                $product_variant = $this->Variants($product->product_id);
-
-                $product_data[$product->product_id] = [
-                    'rfq_id'          => $rfq_id,
-                    'product_id'      => $product->product_id,
-                    'product_name'    => $product_name,
-                    'options'         => $options['options'],
-                    'option_count'    => $options['option_count'],
-                    'product_variant' => $product_variant
-                ];
-            }
-            $data['product_datas'] = $product_data;
-            $data['rfq_id']        = $rfq_id;
-            return view('admin.orders.rfq_order',$data);
-        }
         return view('admin.orders.create',$data);
     }
 
@@ -109,11 +88,12 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-
+        dd($request->all());
         $this->validate(request(),[
             'order_status'   => 'required',
             'payment_status' => 'required'
         ]);
+
         $order_data=[
             'rfq_id'                => $request->rfq_id,
             'sales_rep_id'          => $request->sales_rep_id,
@@ -134,52 +114,35 @@ class OrderController extends Controller
             'created_at'            => date('Y-m-d H:i:s')
        ];
        
-       $order_id=Orders::insertGetId($order_data);
+        $order_id = Orders::insertGetId($order_data);
 
-       if ($request->has('rfq_id')) {
-           $pfq_products=RFQProducts::where('rfq_id',$request->rfq_id)->get();
-           foreach ($pfq_products as $key => $products) {
-               OrderProducts::insert([
-                    'order_id'              => $order_id,
-                    'product_id'            => $products->product_id,
-                    'product_variation_id'  => $products->product_variant_id,
-                    'base_price'            => $products->base_price,
-                    'retail_price'          => $products->retail_price,
-                    'minimum_selling_price' => $products->minimum_selling_price,
-                    'quantity'              => $products->quantity,
-                    'sub_total'             => $products->sub_total,
-               ]);
-           }
-       }
-       else{
-            $quantites=$request->quantity;
-            $variant=$request->variant;
-            $product_ids=$variant['product_id'];
-            $variant_id=$variant['idvariant_id'];
-            $base_price=$variant['base_price'];
-            $retail_price=$variant['retail_price'];
-            $minimum_selling_price=$variant['minimum_selling_price'];
-            $stock_qty=$variant['stock_qty'];
-            $sub_total=$variant['sub_total'];
-            $final_price=$variant['final_price'];
+        $quantites             = $request->quantity;
+        $variant               = $request->variant;
+        $product_ids           = $variant['product_id'];
+        $variant_id            = $variant['idvariant_id'];
+        $base_price            = $variant['base_price'];
+        $retail_price          = $variant['retail_price'];
+        $minimum_selling_price = $variant['minimum_selling_price'];
+        $stock_qty             = $variant['stock_qty'];
+        $sub_total             = $variant['sub_total'];
+        $final_price           = $variant['final_price'];
 
-            foreach ($product_ids as $key => $product_id) {
-                if ($stock_qty[$key]!=0) {
-                    $data=[
-                        'order_id'                  => $order_id,
-                        'product_id'                => $product_id,
-                        'product_variation_id'      => $variant_id[$key],
-                        'base_price'                => $base_price[$key],
-                        'retail_price'              => $retail_price[$key],
-                        'minimum_selling_price'     => $minimum_selling_price[$key],
-                        'quantity'                  => $stock_qty[$key],
-                        'sub_total'                 => $sub_total[$key],
-                        'final_price'               => $final_price[$key]
-                    ];
-                    OrderProducts::insert($data);
-                }
+        foreach ($product_ids as $key => $product_id) {
+            if ($stock_qty[$key]!=0) {
+                $data=[
+                    'order_id'                  => $order_id,
+                    'product_id'                => $product_id,
+                    'product_variation_id'      => $variant_id[$key],
+                    'base_price'                => $base_price[$key],
+                    'retail_price'              => $retail_price[$key],
+                    'minimum_selling_price'     => $minimum_selling_price[$key],
+                    'quantity'                  => $stock_qty[$key],
+                    'sub_total'                 => $sub_total[$key],
+                    'final_price'               => $final_price[$key]
+                ];
+                OrderProducts::insert($data);
             }
-       }
+        }
 
        if ($request->amount!="" || $request->amount!=0) {
            PaymentHistory::insert([
@@ -340,6 +303,64 @@ class OrderController extends Controller
         else return redirect()->route('orders.index')->with('error','Order deleted successfully.!');
     }
 
+
+    public function rfqToOrder($id)
+    {
+        $order_code = Settings::where('key','prefix')->where('code','order_no')->value('content');
+        $order_no = 'ORD-'.date('y-m-d');
+        if (isset($order_code)) {
+            $value              = unserialize($order_code);
+            $char_val           = $value['value'];
+            $explode_val        = explode('-',$value['value']);
+            $total_datas        = Orders::count();
+            $total_datas        = ($total_datas==0)?end($explode_val)+1:$total_datas+1;
+            $data_original      = $char_val;
+            $search             = ['[dd]', '[mm]', '[yyyy]', end($explode_val)];
+            $replace            = [date('d'), date('m'), date('Y'), $total_datas+1 ];
+            $order_no           = str_replace($search,$replace, $data_original);
+        }
+
+        $rfq = RFQ::find($id);
+        $order_data=[
+            'rfq_id'                => $rfq->id,
+            'sales_rep_id'          => $rfq->sales_rep_id,
+            'customer_id'           => $rfq->customer_id,
+            'order_no'              => $order_no,
+            'order_status'          => $rfq->status,
+            'order_tax'             => $rfq->order_tax,
+            'order_discount'        => $rfq->order_discount,
+            'currency'              => $rfq->currency,
+            'payment_term'          => $rfq->payment_term,
+            'payment_status'        => 3,
+            'order_tax_amount'      => $rfq->order_tax_amount,
+            'total_amount'          => $rfq->total_amount,
+            'sgd_total_amount'      => $rfq->sgd_total_amount,
+            'exchange_total_amount' => $rfq->exchange_rate,
+            'user_id'               => $rfq->user_id,
+            'notes'                 => $rfq->notes,
+            'created_at'            => date('Y-m-d H:i:s')
+        ];
+       
+        $order_id = Orders::insertGetId($order_data);
+       
+        $rfq_products = RFQProducts::where('rfq_id',$rfq->id)->get();
+
+        foreach ($rfq_products as $key => $products) {
+            OrderProducts::insert([
+                'order_id'              => $order_id,
+                'product_id'            => $products->product_id,
+                'product_variation_id'  => $products->product_variant_id,
+                'base_price'            => $products->base_price,
+                'retail_price'          => $products->retail_price,
+                'minimum_selling_price' => $products->minimum_selling_price,
+                'quantity'              => $products->quantity,
+                'sub_total'             => $products->sub_total,
+                'final_price'           => $products->rfq_price
+            ]);
+       }
+       return Redirect::route('orders.index')->with('success','Order created successfully...!');
+    }
+
     public function ProductSearch(Request $request)
     {
 
@@ -386,6 +407,7 @@ class OrderController extends Controller
         }
 
     }
+
     public function Variants($product_id,$variation_id=0)
     {
 

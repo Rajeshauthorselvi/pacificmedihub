@@ -42,7 +42,7 @@
                     <div class="clearfix"></div>
                     <ul class="list-unstyled">
                       <li>
-                        <a href="{{ route('orders.create',['rfq_id'=>$rfq_id]) }}" class="place-order">
+                        <a href="{{ route('rfq.toOrder',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
                           <i class="fa fa-plus-circle"></i>&nbsp; Place Order
                         </a>
                       </li>
@@ -56,12 +56,12 @@
                         <a href="" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
                       </li>
                       <li>
-                        <a href="{{ route('rfq.edit',[$rfq_id]) }}" class="edit">
+                        <a href="{{ route('rfq.edit',$rfq_id) }}" class="edit">
                           <i class="fa fa-edit"></i>&nbsp; Edit
                         </a>
                       </li>
                       <li>
-                        <a href="{{ route('rfq.delete',[$rfq_id]) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
+                        <a href="{{ route('rfq.delete',$rfq_id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
                           <i class="fa fa-trash"></i>&nbsp; Delete
                         </a>
                       </li>
