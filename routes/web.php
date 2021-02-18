@@ -82,6 +82,9 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('orders','Admin\OrderController');
 	Route::get('orders-product',['as'=>'orders.product','uses'=>'Admin\OrderController@ProductSearch']);
 
+	Route::post('create_order_payment',['as'=>'create.order.payment','uses'=>'Admin\OrderController@CreatePurchasePayment']);
+
+	Route::get('view_order_payment/{order_id}',['as'=>'view.order.payment','uses'=>'Admin\OrderController@ViewPurchasePayment']);
 
 	Route::resource('admin-profile','Admin\AdminProfileController');
 
@@ -96,6 +99,7 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::post('update_purchase_payment',['as'=>'edit.purchase.payment','uses'=>'Admin\PurchaseController@UpdatePurchasePayment']);
 
 	Route::post('create_purchase_payment',['as'=>'create.purchase.payment','uses'=>'Admin\PurchaseController@CreatePurchasePayment']);
+
 
 
 	Route::get('view_return_payment/{return_id}',['as'=>'view.return.payment','uses'=>'Admin\PurchaseReturnController@ViewReturnPayment']);

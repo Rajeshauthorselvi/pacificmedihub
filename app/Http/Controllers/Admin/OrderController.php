@@ -37,7 +37,8 @@ class OrderController extends Controller
     {
         $data=array();
         $data['orders']=Orders::with('customer','salesrep','statusName')->orderBy('orders.id','desc')->get();
-       
+        $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
+                                    ->toArray();
         return view('admin.orders.index',$data);
     }
 
@@ -359,6 +360,39 @@ class OrderController extends Controller
             ]);
        }
        return Redirect::route('orders.index')->with('success','Order created successfully...!');
+    }
+
+    public function CreatePurchasePayment(Request $request)
+    {
+        $data=[
+          'ref_id'          => $request->id,
+          'reference_no'    => $request->reference_no,
+          'payment_from'    => $request->payment_from,
+          'amount'          => $request->amount,
+          'payment_notes'   => $request->payment_notes,
+          'created_at'      => date('Y-m-d H:i:s'),
+          'payment_id'      => $request->payment_id,
+        ];
+        PaymentHistory::insert($data);
+
+        $total_amount   = $request->total_payment;
+        $total_paid     = $request->amount;
+        $balance_amount = $total_amount-$total_paid;
+        if ($balance_amount==0) 
+          $payment_status=1;
+        else
+          $payment_status=2; 
+
+        Orders::where('id',$request->id)->update(['payment_status'=>$payment_status]);
+        return Redirect::back()->with('success','Payment added successfully...!');
+    }
+
+
+    public function ViewPurchasePayment($order_id)
+    {
+        $all_payment_history = PaymentHistory::with('PaymentMethod')->where('ref_id',$order_id)
+                                    ->where('payment_from',2)->get()->toArray();
+        return $all_payment_history;
     }
 
     public function ProductSearch(Request $request)
