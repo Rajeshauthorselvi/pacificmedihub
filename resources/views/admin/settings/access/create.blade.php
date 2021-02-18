@@ -290,7 +290,7 @@
                     </table>
                   </div>
 
-                  <!-- <h4>Purchase</h4>
+                  <h4>Purchase</h4>
                   <div class="form-group"> 
                     <table id="purchaseTable" class="role-table">
                       <thead>
@@ -1182,7 +1182,7 @@
                         
                       </tbody>
                     </table>
-                  </div> -->
+                  </div>
 
                   <div class="form-group">
                     <a href="{{ route('access-control.index') }}" class="btn reset-btn">Cancel</a>

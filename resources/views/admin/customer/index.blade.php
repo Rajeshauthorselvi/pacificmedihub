@@ -49,7 +49,7 @@
                     <thead>
                       <tr>
                       	<th><input type="checkbox" class="select-all"></th>
-                        <th>Customer Number</th>
+                        <th>Customer Code</th>
                         <th>Customer Name</th>
                         <th>Company Name</th>
                         <th>Parent Company</th>

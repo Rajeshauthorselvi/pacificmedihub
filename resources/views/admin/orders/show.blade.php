@@ -61,7 +61,7 @@
                   <div class="address-sec col-sm-12">
                     <div class="col-sm-4">
                       <ul class="list-unstyled order-no-sec">
-                        <li><h5>Order No: <small>{{ $order->order_no }}</small></h5></li>
+                        <li><h5>Order Code: <small>{{ $order->order_no }}</small></h5></li>
                         <li><strong>Date: </strong>{{date('d F, Y',strtotime($order->created_at))}}</li>
                         <li><strong>Status: </strong>{{$order->statusName->status_name}}</li>
                         <li><strong>Sales Rep: </strong>{{$order->salesrep->emp_name}}</li>

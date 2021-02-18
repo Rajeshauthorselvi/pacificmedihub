@@ -49,7 +49,7 @@
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
                         <th>Date</th>
-                        <th>RFQ No</th>
+                        <th>RFQ Code</th>
                         <th>Customer</th>
                         <th>Sales Rep</th>
                         <th>Quantity</th>

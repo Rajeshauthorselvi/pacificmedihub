@@ -50,7 +50,7 @@
                         <th><input type="checkbox" class="select-all"></th>
                         <th>Ordered Date</th>
                         <th>Delivered Date</th>
-                        <th>Order No</th>
+                        <th>Order Code</th>
                         <th>Customer</th>
                         <th>Sales Rep</th>
                         <th>Order Status</th>

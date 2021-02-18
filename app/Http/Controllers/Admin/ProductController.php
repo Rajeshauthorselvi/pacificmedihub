@@ -14,7 +14,7 @@ use App\Models\ProductVariantVendor;
 use App\Models\PurchaseProducts;
 use App\Models\Option;
 use App\Models\OptionValue;
-use App\Models\Settings;
+use App\Models\Prefix;
 use App\Models\RFQ;
 use App\Models\RFQProducts;
 use App\Models\CommissionValue;
@@ -75,28 +75,31 @@ class ProductController extends Controller
         $data['commissions']     = CommissionValue::where('commission_id',2)->where('published',1)
                                         ->where('is_deleted',0)->get();
         $data['product_id']      = '';
-        $product_codee = Settings::where('key','prefix')->where('code','product_code')->value('content');
-        if (isset($product_codee)) {
-            $value=unserialize($product_codee);
-            $char_val=$value['value'];
-            $explode_val=explode('-',$value['value']);
-            $total_datas=Product::count();
-            if ($total_datas==0) {
-                $total_datas=1;
+        
+        $product_code = Prefix::where('key','prefix')->where('code','product_code')->value('content');
+        if (isset($product_code)) {
+            $value = unserialize($product_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Product::count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
             }
-            else{
-                if (is_numeric(end($explode_val))) {
-                    $total_datas=end($explode_val)+1;
-                }
-                else{
-                    $total_datas="";
-                }
-            }
-            $data_original=$char_val;
-            $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace=[date('d'), date('m'), date('Y'), $total_datas];
-            $data['product_id']=str_replace($search,$replace, $data_original);
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $data['product_id']=$replace_number;
         }
+
         return view('admin/products/create',$data);
     }
 
