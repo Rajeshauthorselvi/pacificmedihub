@@ -183,11 +183,14 @@
       var path ="{{ url('admin/product-search') }}";
       $('#prodct-add-sec').autocomplete({
         source: function( request, response) {
+          
+
           $.ajax({
-            url: "{{ url('admin/rfq-product') }}",
+            url: path,
             data: {
               name: request.term,
-              product_search_type:'product'
+              product_search_type:'product',
+              vendor_id:$('.vendors').val()
             },
             success: function( data ) {
               response( data );
@@ -198,26 +201,22 @@
         select: function( event, ui ) {
 
           var check_length=$('.product_id[value='+ui.item.value+']').length;
-
-
-
-          
-
           if (check_length>0) {
               alert('This product already exists');
               $(this).val('');
               return false;
           }
-
           /*Load Related Vendors*/
+          
             $.ajax({
               url: '{{ url('admin/search-vendor') }}',
               type: 'post',
               data:{
                 '_token':"{{ csrf_token() }}",
-                product_id:ui.item.value,
+                product_id:ui.item.value
               }
             })
+
             .done(function(response) {
               $('.vendors').empty();
               $.each(response.products, function(key, value) {

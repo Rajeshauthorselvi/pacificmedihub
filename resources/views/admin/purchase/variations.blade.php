@@ -26,8 +26,8 @@
           </thead>
           <tbody>
             <?php $total_amount=$total_quantity=0 ?>
-            <input type="hidden" name="variant[product_id][]" value="{{ $product_id }}" class="product_id">
             @foreach($product_variant as $key=>$variant)
+            <input type="hidden" name="variant[product_id][]" value="{{ $product_id }}" class="product_id">
               {{-- @if ($key==0)
                 <tr>
                   <td class="text-center" colspan="{{ $option_count+6 }}">{{ $product_name }}</td>

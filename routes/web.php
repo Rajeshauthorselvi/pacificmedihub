@@ -56,7 +56,7 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::post('create_purchase_payment',[
 		'as'=>'create.purchase.payment','uses'=>'Admin\PurchaseController@CreatePurchasePayment'
 	]);
-	Route::get('search-vendor/{product_id}','Admin\PurchaseController@FindVendors');
+	Route::post('search-vendor','Admin\PurchaseController@FindVendors');
 	Route::get('purchase-history',['as'=>'purchase.history','uses'=>'Admin\PurchaseController@PurchaseHistory']);
 	
 	//Stock In Transit

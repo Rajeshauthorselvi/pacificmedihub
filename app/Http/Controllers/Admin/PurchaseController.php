@@ -430,11 +430,14 @@ class PurchaseController extends Controller
         }
         elseif ($search_type=="product") {
 
-            $product_names=Product::where("name","LIKE","%".$request->input('name')."%")
+            $product_names=Product::leftjoin('product_variant_vendors as pvv','pvv.product_id','products.id')
+                          ->where("name","LIKE","%".$request->input('name')."%")
                           ->where('is_deleted',0)
-                          ->where('published',1)
-                          ->pluck('name','id')
-                          ->toArray();
+                          ->where('published',1);
+                          if ($request->vendor_id!="") {
+                            $product_names=$product_names->where('vendor_id',$request->vendor_id);
+                          }
+                          $product_names=$product_names->pluck('name','products.id')->toArray();
             $names=array();
             foreach ($product_names as $key => $name) {
                 $names[]=[
