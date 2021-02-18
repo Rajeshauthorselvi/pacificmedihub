@@ -53,6 +53,9 @@ class WastageController extends Controller
     public function create()
     {
         $data=array();
+        $wastage_count=Wastage::count();
+        $data['ref_data']='WTG-'.date('Y').'-'.($wastage_count+1);
+
         return view('admin.stock.wastage.create',$data);
     }
 
@@ -71,32 +74,29 @@ class WastageController extends Controller
         $variant=$request->get('variant');
         $wastage=[
             'reference_number'  =>$request->reference_number,
-            // 'product_id'    => $request->product_id,
             'notes'  => $request->note,
             'created_by'  =>Auth::user()->role_id,
             'created_at'  => date('Y-m-d H:i:s')
         ];
-
        $wastage_id=Wastage::insertGetId($wastage);
-
-        foreach ($variant['stock_qty'] as $variant_id => $stock_quantity) {
+       $product_id=$variant['product_id'];
+       $variant_id=$variant['variant_id'];
+        foreach ($variant['stock_qty'] as $key => $stock_quantity) {
             if ($stock_quantity>0) {
-                $product_id=$variant['product_id'][$variant_id];
+                $product_id=$product_id[$key];
+                $variant_id=$variant_id[$key];
 
                 $watage_products=WastageProducts::insert([
                     'wastage_id'    => $wastage_id,
                     'product_id'    => $product_id,
                     'product_variation_id'    => $variant_id,
-                    'quantity'    => $stock_quantity,
+                    'quantity'      => $stock_quantity,
                     'created_at'    => date('Y-m-d H:i:s')
                 ]);
-
                 $avalible_quantity=ProductVariantVendor::where('product_variant_id',$variant_id)
                                 ->where('product_id',$product_id)
                                 ->value('stock_quantity');
-
                 $total_quantity=$avalible_quantity-$stock_quantity;
-
                 ProductVariantVendor::where('product_variant_id',$variant_id)
                 ->where('product_id',$product_id)
                 ->update(['stock_quantity'=>$total_quantity]);
@@ -114,7 +114,35 @@ class WastageController extends Controller
      */
     public function show(Wastage $wastage)
     {
-        //
+        $data=$product_data=array();
+        $data['wastages']=Wastage::where('id',$wastage->id)->first();
+        $wastage_products=WastageProducts::where('wastage_id',$wastage->id)->groupBy('product_id')->get();
+        $data['wastage_quantity']=WastageProducts::where('wastage_id',$wastage->id)
+                          ->pluck('quantity','product_variation_id')
+                          ->toArray();
+
+        foreach ($wastage_products as $key => $product) {
+
+            $product_name    = Product::where('id',$product->product_id)->value('name');
+            $options         = $this->Options($product->product_id);
+
+            $all_variants    = WastageProducts::where('wastage_id',$wastage->id)
+                               ->where('product_id',$product->product_id)
+                               ->pluck('product_variation_id')
+                               ->toArray();
+            $product_variant = $this->Variants($product->product_id,$all_variants);
+            $product_data[$product->product_id] = [
+              'row_id'          => $product->id,
+              'purchase_id'     => $wastage->id,
+              'product_id'      => $product->product_id,
+              'product_name'    => $product_name,
+              'options'         => $options['options'],
+              'option_count'    => $options['option_count'],
+              'product_variant' => $product_variant
+            ];
+        }
+        $data['wastage_products']=$product_data;
+        return view('admin.stock.wastage.view',$data);
     }
 
     /**
@@ -127,6 +155,7 @@ class WastageController extends Controller
     {
         $data=array();
          $data['wastages']=$wastages=Wastage::where('id',$wastage->id)->first();
+
          $wastage_products=WastageProducts::where('wastage_id',$wastage->id)
                            ->get();
         $options=$this->Options($wastages->product_id);
@@ -216,7 +245,7 @@ class WastageController extends Controller
         if ($search_type=="options") {
             $options=$this->Options($product_id);
             $data['product_variant']=$this->Variants($product_id);
-            
+
              $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
             $data['options'] = $options['options'];
             $data['options_json'] = Response::json($options['options']);
@@ -258,10 +287,22 @@ class WastageController extends Controller
         }
         return response()->json($names);
     }
-    public function Variants($product_id)
+    public function Variants($product_id,$variation_id=0)
     {
         $variant = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->first();
-        $productVariants = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->get();
+
+        if ($variation_id!=0) {
+             $productVariants = ProductVariant::where('product_id',$product_id)
+                            ->where('is_deleted',0)
+                            ->whereIn('id',$variation_id)
+                            ->get();
+        }
+        else{
+            $productVariants = ProductVariant::where('product_id',$product_id)
+                               ->where('is_deleted',0)
+                               ->get();
+        }
+
         $product_variants = array();
         foreach ($productVariants as $key => $variants) {
             
@@ -270,6 +311,8 @@ class WastageController extends Controller
             $product_variants[$key]['variant_id'] = $variants->id;
             $product_variants[$key]['product_name']=Product::where('id',$variants->product_id)->value('name');
             $product_variants[$key]['product_id']=$product_id;
+            $product_variants[$key]['stock_quantity']=$variant_details->stock_quantity;
+
 
             if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
             {

@@ -125,7 +125,8 @@ table .dropdown-menu .dropdown-item button{padding:0}
 /* End Purchase Page */
 
 /* Common Design */
-.heading-top {background-color: #3287c7;color: #fff;}
+.heading-top {background-color: #3287c7;color: #fff !important;}
+.heading-top th {background-color: #3287c7!important;color: #fff !important;}
 .accordion-toggle {cursor: pointer;}
 .payment-note-sec .panel-body{background-color: #f6f6f6;padding: 20px;border: 1px solid #eee;}
 tr.hide-table-padding>td {padding: 0;}
