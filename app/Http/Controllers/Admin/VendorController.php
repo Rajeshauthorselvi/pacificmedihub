@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Vendor;
 use App\Models\VendorPoc;
-use App\Models\Settings;
+use App\Models\Prefix;
 use App\Models\Employee;
 use Redirect;
 use File;
@@ -36,21 +36,29 @@ class VendorController extends Controller
         $data = array();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
 
-        $key_val=Settings::where('key','prefix')
-                 ->where('code','employee')
-                 ->value('content');
-        $data['employee_id']='';
-        if (isset($key_val)) {
-            $value=unserialize($key_val);
+        $data['vendor_id']      = '';
+        $vendor_code = Prefix::where('key','prefix')->where('code','vendor')->value('content');
+        if (isset($vendor_code)) {
+            $value = unserialize($vendor_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Vendor::count();
+            $total_datas_count = $total_datas+1;
 
-            $char_val=$value['value'];
-            $total_datas=Vendor::count();
-            $data_original='VEN-[dd]-[mm]-[yyyy]-[Start No]';
-
-            $search=['[dd]', '[mm]', '[yyyy]', '[Start No]'];
-            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
-
-            $data['employee_id']=str_replace($search,$replace, $data_original);
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $data['vendor_id']=$replace_number;
         }
 
         return view('admin/vendor/create',$data);

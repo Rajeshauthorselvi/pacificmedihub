@@ -60,7 +60,7 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             <label for="vendorCode">Vendor Code</label>
-                            {!! Form::text('code', $employee_id, ['class'=>'form-control','readonly']) !!}
+                            {!! Form::text('code', $vendor_id, ['class'=>'form-control','readonly']) !!}
                           </div>
                           <div class="col-sm-5">
                             <label for="vendorName">Vendor Name *</label>

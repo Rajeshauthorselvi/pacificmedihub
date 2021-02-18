@@ -59,7 +59,7 @@
 
                       <div class="form-group">
                         <div class="col-sm-5">
-                          {!! Form::label('employeeId', 'Employee ID') !!}
+                          {!! Form::label('employeeId', 'Employee Code') !!}
                           {!! Form::text('emp_id',$employees->emp_id,['readonly','class'=>'form-control','id'=>'employeeId']) !!}
                         </div>
                         <div class="col-sm-5">

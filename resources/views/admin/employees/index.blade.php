@@ -48,7 +48,7 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                      	<th>ID</th>
+                      	<th>Code</th>
                       	<th>Name</th>
                         <th>Department</th>
                         <th>City</th>
