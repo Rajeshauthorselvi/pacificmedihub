@@ -69,7 +69,11 @@
                             <?php $total_quantity=\App\Models\RFQProducts::TotalDatas($rfq->id); ?>
                             {{ $total_quantity['quantity'] }}
                           </td>
-                          <td>{{  $rfq->statusName->status_name  }}</td>
+                          <td>
+                            <span class="badge" style="background: {{ $rfq->statusName->color_codes }};color: #fff">
+                            {{  $rfq->statusName->status_name  }}
+                            </span>
+                          </td>
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>

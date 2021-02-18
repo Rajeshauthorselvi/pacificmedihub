@@ -40,7 +40,7 @@ class PurchaseController extends Controller
         $vendor_name      = Vendor::find($purchase->vendor_id)->name;
         $product_details  = PurchaseProducts::select(DB::raw('sum(quantity) as quantity'),
                                 DB::raw('sum(sub_total) as sub_total'))->where('purchase_id',$purchase->id)->first();
-        $order_status     = DB::table('order_status')->where('id',$purchase->purchase_status)->value('status_name');
+        $order_status     = DB::table('order_status')->where('id',$purchase->purchase_status)->first();
 
         if($purchase->payment_status==1){
           $payment_status = 'Paid';
@@ -61,7 +61,8 @@ class PurchaseController extends Controller
           'amount'           => $purchase->amount,
           'balance'          => ($product_details->sub_total)-($purchase->amount),
           'payment_status'   => $payment_status,
-          'order_status'     => $order_status,
+          'order_status'     => $order_status->status_name,
+          'color_code'     => $order_status->color_codes,
           'status_id'        => $purchase->purchase_status,
           'sgd_total_amount' => $purchase->sgd_total_amount
         ];

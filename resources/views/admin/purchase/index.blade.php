@@ -76,7 +76,7 @@
                           <td class="balance">
                             {{ $balance_amount['balance_amount'] }}
                           </td>
-                          <td>{{ $order['order_status'] }}</td>
+                          <td><span class="badge" style="background:{{ $order['color_code'] }};color: #fff ">{{ $order['order_status'] }}</span></td>
                           <td>{{ $order['payment_status'] }}</td>
                           <td>
 

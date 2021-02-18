@@ -72,7 +72,11 @@
                           <td>{{ $order->order_no }}</td>
                           <td>{{ $order->customer->first_name }}</td>
                           <td>{{ $order->salesrep->emp_name }}</td>
-                          <td><span class="badge badge-info">{{  $order->statusName->status_name  }}</span></td>
+                          <td>
+                            <span class="badge" style="background: {{ $order->statusName->color_codes }};color: #fff">
+                            {{  $order->statusName->status_name  }}
+                            </span>
+                          </td>
                           <td>
                             {{  isset($order->sgd_total_amount)?$order->sgd_total_amount:'' }}
                           </td>
