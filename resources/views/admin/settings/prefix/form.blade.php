@@ -12,7 +12,8 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="#">Prefix</a></li>
+              <li class="breadcrumb-item">Settings</li>
+              <li class="breadcrumb-item">Prefix</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -28,7 +29,7 @@
           	<?php $check_error_place=Session::get('error_place'); ?>
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Order No</h3>
+                <h3 class="card-title">Order Code</h3>
               </div>
               <div class="card">
               	@include('admin.settings.prefix.order_no')
@@ -36,7 +37,7 @@
             </div>
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Purchase No</h3>
+                <h3 class="card-title">Purchase Code</h3>
               </div>
               <div class="card">
                 @include('admin.settings.prefix.purchase_products')
@@ -44,7 +45,7 @@
             </div>
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">RFQ No</h3>
+                <h3 class="card-title">RFQ Code</h3>
               </div>
               <div class="card">
               	@include('admin.settings.prefix.rfq')
@@ -52,7 +53,7 @@
             </div>
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Invoice</h3>
+                <h3 class="card-title">Invoice No</h3>
               </div>
               <div class="card">
               	@include('admin.settings.prefix.invoice')
@@ -63,14 +64,12 @@
                 <h3 class="card-title">Product Code</h3>
               </div>
               <div class="card">
-                <div class="card-body order-sec">
-                	@include('admin.settings.prefix.product_code')
-                </div>
+                @include('admin.settings.prefix.product_code')
               </div>
             </div>
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Customer</h3>
+                <h3 class="card-title">Customer Code</h3>
               </div>
               <div class="card">
               	@include('admin.settings.prefix.customer')
@@ -78,7 +77,7 @@
             </div>
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Vendor</h3>
+                <h3 class="card-title">Vendor Code</h3>
               </div>
               <div class="card">
               	@include('admin.settings.prefix.vendor')
@@ -86,7 +85,7 @@
             </div>
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Employee</h3>
+                <h3 class="card-title">Employee Code</h3>
               </div>
               <div class="card">
               	@include('admin.settings.prefix.employee')
@@ -99,8 +98,20 @@
     </div>
 
     <style type="text/css">
-    	.order-sec .col-sm-3 {
-			float: left;
-		}
+    	.form-group{display:flex}
+      .btn.save-btn.prefix {margin-top: 30px;}
     </style>
+
+  @push('custom-scripts')
+    <script type="text/javascript">
+      $(function ($) {
+        $('.read-only.select2bs4').select2({
+          disabled: true
+        });
+        $('.no-search.select2bs4').select2({
+          minimumResultsForSearch: -1
+        });
+      });
+    </script>
+  @endpush
 @endsection

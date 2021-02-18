@@ -55,7 +55,7 @@
                           <input type="text" class="form-control" name="created_at" value="{{ date('d/m/Y H:i') }}" readonly="true" />
                         </div>
                         <div class="col-sm-4">
-                          <label for="order_no">Order No *</label>
+                          <label for="order_no">Order Code *</label>
                           {!! Form::text('order_no',null,['class'=>'form-control','readonly']) !!}
                         </div>
                         <div class="col-sm-4">

@@ -13,7 +13,7 @@ use App\Models\OrderStatus;
 use App\Models\PaymentMethod;
 use App\Models\Vendor;
 use App\Models\Employee;
-use App\Models\Settings;
+use App\Models\Prefix;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
@@ -61,18 +61,31 @@ class RFQController extends Controller
       $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
 
       $data['rfq_id']='';
-      $key_val = Settings::where('key','prefix')->where('code','rfq')->value('content');
-      if (isset($key_val)) {
-        $value=unserialize($key_val);
-        $char_val=$value['value'];
-        $explode_val=explode('-',$value['value']);
-        $total_datas=RFQ::count();
-        $total_datas=($total_datas==0)?end($explode_val):$total_datas+1;
-        $data_original=$char_val;
-        $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-        $replace=[date('d'), date('m'), date('Y'), $total_datas ];
-        $data['rfq_id']=str_replace($search,$replace, $data_original);
+
+      $rfq_code = Prefix::where('key','prefix')->where('code','rfq')->value('content');
+      if (isset($rfq_code)) {
+        $value = unserialize($rfq_code);
+        $char_val = $value['value'];
+        $year = date('Y');
+        $total_datas = RFQ::count();
+        $total_datas_count = $total_datas+1;
+
+        if(strlen($total_datas_count)==1){
+            $start_number = '0000'.$total_datas_count;
+        }else if(strlen($total_datas_count)==2){
+            $start_number = '000'.$total_datas_count;
+        }else if(strlen($total_datas_count)==3){
+            $start_number = '00'.$total_datas_count;
+        }else if(strlen($total_datas_count)==4){
+            $start_number = '0'.$total_datas_count;
+        }else{
+            $start_number = $total_datas_count;
+        }
+        $replace_year = str_replace('[yyyy]', $year, $char_val);
+        $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+        $data['rfq_id']=$replace_number;
       }
+
       return view('admin.rfq.create',$data);
     }
 

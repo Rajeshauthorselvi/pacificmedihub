@@ -173,8 +173,8 @@
                     <div class="col-sm-12">
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="vendorName">Customer No *</label>
-                          {!! Form::text('customer[customer_no]',$product_id,['class'=>'form-control required','readonly']) !!}
+                          <label for="vendorName">Customer Code *</label>
+                          {!! Form::text('customer[customer_no]',$customer_code,['class'=>'form-control required','readonly']) !!}
                           <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">

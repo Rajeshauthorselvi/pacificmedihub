@@ -12,7 +12,7 @@ use App\Models\OrderStatus;
 use App\Models\PaymentMethod;
 use App\Models\Vendor;
 use App\Models\Employee;
-use App\Models\Settings;
+use App\Models\Prefix;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
@@ -64,18 +64,29 @@ class OrderController extends Controller
         $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                         ->pluck('name','id')->toArray();
 
-        $order_codee = Settings::where('key','prefix')->where('code','order_no')->value('content');
+        $data['order_code']= '';
+        $order_code = Prefix::where('key','prefix')->where('code','order_no')->value('content');
+        if (isset($order_code)) {
+            $value = unserialize($order_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Orders::count();
+            $total_datas_count = $total_datas+1;
 
-        if (isset($order_codee)) {
-            $value              = unserialize($order_codee);
-            $char_val           = $value['value'];
-            $explode_val        = explode('-',$value['value']);
-            $total_datas        = Orders::count();
-            $total_datas        = ($total_datas==0)?end($explode_val)+1:$total_datas+1;
-            $data_original      = $char_val;
-            $search             = ['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace            = [date('d'), date('m'), date('Y'), $total_datas+1 ];
-            $data['order_code'] = str_replace($search,$replace, $data_original);
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $data['order_code']=$replace_number;
         }
 
         return view('admin.orders.create',$data);
@@ -89,7 +100,6 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
         $this->validate(request(),[
             'order_status'   => 'required',
             'payment_status' => 'required'
@@ -307,18 +317,28 @@ class OrderController extends Controller
 
     public function rfqToOrder($id)
     {
-        $order_code = Settings::where('key','prefix')->where('code','order_no')->value('content');
-        $order_no = 'ORD-'.date('y-m-d');
+        $order_code = Prefix::where('key','prefix')->where('code','order_no')->value('content');
         if (isset($order_code)) {
-            $value              = unserialize($order_code);
-            $char_val           = $value['value'];
-            $explode_val        = explode('-',$value['value']);
-            $total_datas        = Orders::count();
-            $total_datas        = ($total_datas==0)?end($explode_val)+1:$total_datas+1;
-            $data_original      = $char_val;
-            $search             = ['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace            = [date('d'), date('m'), date('Y'), $total_datas+1 ];
-            $order_no           = str_replace($search,$replace, $data_original);
+            $value = unserialize($order_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Orders::count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $order_no=$replace_number;
         }
 
         $rfq = RFQ::find($id);

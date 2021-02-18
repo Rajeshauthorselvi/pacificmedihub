@@ -9,7 +9,7 @@ use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
 use App\Models\Countries;
 use App\Models\UserCompanyDetails;
-use App\Models\Settings;
+use App\Models\Prefix;
 use App\Models\Employee;
 use Redirect;
 use Arr;
@@ -50,24 +50,34 @@ class CustomerController extends Controller
         $data['sales_rep']=[''=>'Please Select']+Employee::where('role_id',4)
                              ->pluck('emp_name','id')->toArray();
 
-        $data['product_id']='';
+        $data['customer_code']='';
 
-        $product_codee=Settings::where('key','prefix')
-                         ->where('code','customer')
-                        ->value('content');
-                        
-        if (isset($product_codee)) {
-            $value=unserialize($product_codee);
+        $data['customer_code']= '';
+        $customer_code = Prefix::where('key','prefix')->where('code','customer')->value('content');
+        if (isset($customer_code)) {
+            $value = unserialize($customer_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = User::where('role_id',7)->count();
+            $total_datas_count = $total_datas+1;
 
-            $char_val=$value['value'];
-            $explode_val=explode('-',$value['value']);
-            $total_datas=User::where('role_id',7)->count();
-            $total_datas=($total_datas==0)?end($explode_val)+1:$total_datas+1;
-            $data_original=$char_val;
-            $search=['[dd]', '[mm]', '[yyyy]', end($explode_val)];
-            $replace=[date('d'), date('m'), date('Y'), $total_datas+1 ];
-            $data['product_id']=str_replace($search,$replace, $data_original);
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $data['customer_code']=$replace_number;
         }
+
+
         return view('admin.customer.create',$data);
     }
 
