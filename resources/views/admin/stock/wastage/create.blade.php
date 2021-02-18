@@ -59,7 +59,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="reference_number">Reference Number</label>
-                          {!! Form::text('reference_number',null,['class'=>'form-control']) !!}
+                          {!! Form::text('reference_number',$ref_data,['class'=>'form-control']) !!}
                         </div>
                     </div>
                   </div>
@@ -100,8 +100,48 @@
 @push('custom-scripts')
 <script type="text/javascript">
 
-  $(document).on('click', '.remove-item', function(event) {
-    $(this).parents('tr').remove();
+  $(document).on('click', '.save-btn', function(event) {
+    event.preventDefault();
+    var empty_field = $('.stock_qty').filter(function() {
+                          return parseInt($(this).val(), 10) > 0;
+                      });
+    if (empty_field.length>0) {
+        $('#productForm').submit();
+    }
+    else{
+      alert('Please select products');
+    }
+
+  });
+  
+
+  $(document).on('keyup', '.stock_qty', function(event) {
+    event.preventDefault();
+          /*If empty to set 0 */
+          if($(this).val()==""){ $(this).val(0); }
+          /*If empty to set 0 */
+
+          /*Allow only numbers*/
+          if (/\D/g.test(this.value)){
+            this.value = this.value.replace(/\D/g, '');
+            return false
+          }
+          /*Allow only numbers*/
+
+          var total_quantity=$(this).parents('.parent_tr').find('.total-avail-quantity').val();
+          var current_field_val=$(this).val();
+          if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
+            var current_field_val=Math.max(Math.min(current_field_val, parseInt(total_quantity)), -90);
+            $(this).val(current_field_val);
+          }
+          var balance_quantity=parseInt(total_quantity)-parseInt(current_field_val);
+          $(this).parents('.parent_tr').find('.total-quantity').val(balance_quantity);
+  });
+
+
+  $(document).on('click', '.remove-product-row', function(event) {
+        $(this).closest('tr').next('tr').remove();
+        $(this).closest('tr').remove();
   });
 
     $(document).on('keyup', '.stock_qty', function(event) {
@@ -169,11 +209,12 @@
         .done(function(response) {
           if (type=="header") {
             if ($('.vatiant_table').length==0) {
-              // createTable(response['options'])
+              createTable(response['options'])
             }
           }
           else if(type=="options"){
-            $('.order-item-sec').append(response);
+            // $('.order-item-sec').append(response);
+            $('.parent_tbody').append(response);
           }
         });
 
@@ -181,22 +222,14 @@
 function createTable(options){
   var html='';
       html += '<div class="table-responsive">';
-      html += '  <table  id="variantList" class="table table-striped table-bordered table-hover vatiant_table">';
-      html += '    <thead>';
+      html += '  <table  id="variantList" class="table table-striped table-bordered vatiant_table">';
+      html += '    <thead class="heading-top">';
       html += '      <tr>';
-      for(option of options){
-        html += '        <td class="text-left">' + option + '</td>';
-      }
-      // html += '        <td class="text-left">Base Price</td>';
-      // html += '        <td class="text-left">Retail Price</td>';
-      // html += '        <td class="text-left">Minimum Selling Price</td>';
-      html += '        <td class="text-left">Quantity</td>';
-      // html += '        <td class="text-left">Sub Total</td>';
-      html += '        <td class="text-left"></td>';
-      //html += '        <td></td>';
+      html += '        <th class="text-left">#</th>';
+      html += '        <th class="text-left" colspan="4">Products</th>';
       html += '      </tr>';
       html += '    </thead>';
-      html += '    <tbody>';
+      html += '    <tbody class="parent_tbody">';
       html += '    </tbody>';
       html += '  </table>';
       html += '</div>';

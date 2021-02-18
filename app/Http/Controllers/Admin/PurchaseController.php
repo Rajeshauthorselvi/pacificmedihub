@@ -336,58 +336,6 @@ class PurchaseController extends Controller
         PurchaseProducts::where('id',$row_id)->update($data);
       }
 
-     /*  if (isset($variant['option_id1'])) {
-           $option_id1=$variant['option_id1'];
-           $option_value_id1=$variant['option_value_id1'];
-       }
-       if(isset($variant['option_id2'])){
-           $option_id2=$variant['option_id2'];
-           $option_value_id2=$variant['option_value_id2'];
-       }
-
-       if (isset($variant['option_id3'])) {
-           $option_id3=$variant['option_id3'];
-           $option_value_id3=$variant['option_value_id3'];
-       }elseif (isset($variant['option_id4'])) {
-           $option_id4=$variant['option_id4'];
-           $option_value_id4=$variant['option_value_id4'];
-       }
-       elseif (isset($variant['option_id5'])) {
-           $option_id5=$variant['option_id5'];
-           $option_value_id5=$variant['option_value_id5'];
-       }
-       foreach ($product_ids as $key => $variant) {
-            $data[]=[
-                'purchase_id'   => $purchase_id,
-                'product_id'    => $product_id[$key],
-                'quantity'    => $stock_qty[$key],
-                'base_price'    => $base_price[$key],
-                'retail_price'    => $retail_price[$key],
-                'discount'    => 0,
-                'product_tax'    => 0,
-                'sub_total'    => $sub_total[$key],
-                'minimum_selling_price'    => $minimum_selling_price[$key],
-
-                'option_id'     => isset($option_id1[$key])?$option_id1[$key]:null,
-                'option_value_id' => isset( $option_value_id1[$key])? $option_value_id1[$key]:null,
-
-                'option_id2' => isset( $option_id2[$key])? $option_id2[$key]:null,
-                'option_value_id2' => isset($option_value_id2[$key])?$option_value_id2[$key]:null,
-
-                'option_id3' => isset($option_id3[$key])?$option_id3[$key]:null,
-                'option_value_id3' => isset($option_value_id3[$key])?$option_value_id3[$key]:null,
-
-                'option_id4' => isset($option_id4[$key])?$option_id4[$key][$key]:null,
-                'option_value_id4' => isset($option_value_id4[$key])?$variant['option_value_id4'][$key]:null,
-
-                'option_id5' => isset( $option_id5[$key])? $option_id5[$key]:null,
-                'option_value_id5' => isset($option_value_id5[$key])?$$option_value_id5[$key]:null,
-            ];
-           
-       }
-
-       DB::table('purchase_products')->insert($data);*/
-
       return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');        
     }
 
@@ -410,16 +358,14 @@ class PurchaseController extends Controller
     {
 
         $search_type=$request->product_search_type;
-            $product_id=$request->product_id;
-            $data=$options=array();
+        $product_id=$request->product_id;
+        $data=$options=array();
 
-
-            
         if ($search_type=="options") {
             $options=$this->Options($product_id);
             $data['product_variant']=$this->Variants($product_id);
             
-             $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
+            $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
             $data['options'] = $options['options'];
             $data['options_json'] = Response::json($options['options']);
 
@@ -440,7 +386,6 @@ class PurchaseController extends Controller
 
             $data['option_count'] = $options['option_count'];
 
-           // $data['view']=view('admin.purchase.variations',$data)->render();
            return Response::json($data);
         }
         elseif ($search_type=="product") {
