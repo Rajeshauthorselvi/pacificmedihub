@@ -83,7 +83,7 @@
                                 
                                 <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                 
-                                <a href="{{ route('rfq.toOrder',$rfq->id) }}"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
+                                <a href="{{ route('rfq.toOrder',$rfq->id) }}" onclick="return confirm('Are you sure want to Place Order?')"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
 
                                 <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
 
