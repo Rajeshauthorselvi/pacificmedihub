@@ -55,7 +55,7 @@
                       @foreach($vendors as $vendor)
                         <tr>
                           <td><input type="checkbox" value="{{ $vendor->id }}" name="vendor-ids"></td>
-                          <td>{{$vendor->code}}</td>
+                          <td><a href="{{route('vendor.show',$vendor->id)}}">{{$vendor->code}}</a></td>
                           <td>{{$vendor->name}}</td>
                           <td>{{$vendor->email}}</td>
                           <td>{{$vendor->contact_number}}</td>

@@ -165,7 +165,7 @@
                           </div>
                           <div class="col-sm-5" style="margin-top: 40px">
                             <div class="icheck-info d-inline">
-                              <input type="checkbox" name="emp_status" id="Status" @if(old('emp_status')=='on') checked @endif>
+                              <input type="checkbox" name="emp_status" id="Status" checked>
                               <label for="Status">Published</label>
                             </div>
                           </div>

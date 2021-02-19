@@ -67,7 +67,9 @@
                           <tr>
                             <td><input type="checkbox" value="{{ $return['id'] }}" name="return-ids"></td>
                             <td>{{ $return['date'] }}</td>
-                            <td>{{ $return['po_number'] }}</td>
+                            <td>
+                              <a href="{{route('purchase.show',$return['purchase_id'])}}">{{$return['po_number']}}
+                              </td>
                             <td>{{ ($return['order_type']==1)?'Purchase':'Order' }}</td>
                             <td>{{ $return['vendor'] }}</td>
                             <td>{{ $return['total_quantity'] }}</td>

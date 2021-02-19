@@ -66,7 +66,7 @@
                           ?>
                           <td style="width:25px"><img class="brand-img" style="width:50px;height:auto;" src="{{ asset($img_url)}}"></td>
                           <td>{{$product['name']}}</td>
-                          <td>{{$product['code']}}</td>
+                          <td><a href="{{route('products.show',$product['id'])}}">{{$product['code']}}</a></td>
                           <td>{{$product['category']}}</td>
                           <td>{{$product['stock']}}</td>
                           <td>{{$product['base_price']}}</td>

@@ -69,7 +69,7 @@
                           <td>
                             {{ isset($order->delivered_at)?date('d-m-Y H:i:s',strtotime($order->delivered_at)):'-' }}
                           </td>
-                          <td>{{ $order->order_no }}</td>
+                          <td><a href="{{route('orders.show',$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->first_name }}</td>
                           <td>{{ $order->salesrep->emp_name }}</td>
 

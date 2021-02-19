@@ -30,8 +30,7 @@ class PurchaseReturnController extends Controller
         $data_return=array();
         $returns=PurchaseReturn::orderBy('id','DESC')->get();
         foreach ($returns as $key => $return) {
-            $purchase=Purchase::where('id',$return->purchase_or_order_id)
-                      ->value('purchase_order_number'); 
+            $purchase=Purchase::where('id',$return->purchase_or_order_id)->first(); 
             $total_quantity=PurchaseProductReturn::where('purchase_return_id',$return->id)
                             ->sum(DB::raw('damage_quantity'));
             $sub_total=PurchaseProductReturn::where('purchase_return_id',$return->id)->sum('return_sub_total');
@@ -42,7 +41,8 @@ class PurchaseReturnController extends Controller
             $data_return[]=[
                 'id'    => $return->id,
                 'date'  => date('d-m-Y',strtotime($return->created_at)),
-                'po_number' =>$purchase,
+                'purchase_id' => $purchase->id,
+                'po_number' =>$purchase->purchase_order_number,
                 'vendor' =>$vendor,
                 'order_type' =>$return->order_type,
                 'total_quantity' =>$total_quantity,

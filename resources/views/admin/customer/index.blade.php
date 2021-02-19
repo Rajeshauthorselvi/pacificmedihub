@@ -67,7 +67,7 @@
                     			<td>
                     				<input type="checkbox" name="customer_ids" value="{{ $customer->id }}">
                     			</td>
-                          <th>{{$customer->customer_no}}</th>
+                          <th><a href="{{route('customers.show',$customer->id)}}">{{$customer->customer_no}}</a></th>
                     			<td> {{ $customer->first_name.' '.$customer->last_name }} </td>
                     			<td>{{ isset($customer->company->company_name)?$customer->company->company_name:'' }}</td>
                     			<td>

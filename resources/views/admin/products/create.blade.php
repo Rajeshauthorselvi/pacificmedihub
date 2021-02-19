@@ -206,18 +206,33 @@
 
                     <div class="form-group">
                       <label for="searchEngine">Search Engine Friendly Page Name *</label>
+                      <span title="Set a search engine friendly page name e.g. 'the-best-product' to make your page URL 'http://www.abcdxyz.com/the-best-product'." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
                       <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
+                      @if($errors->has('search_engine'))
+                        <span class="text-danger">{{ $errors->first('search_engine') }}</span>
+                      @endif
                     </div>
                     <div class="form-group">
                       <label for="metaTile">Meta Title</label>
+                      <span title="Override the page title. The default is the name of the product." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
                       <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title')}}">
                     </div>
                     <div class="form-group">
                       <label for="metaKeyword">Meta Keywords</label>
+                      <span title="Meta description to be added to product page header." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
                       <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword')}}</textarea>
                     </div>
                     <div class="form-group">
                       <label for="metaDescription">Meta Description</label>
+                      <span title="Meta description to be added to product page header." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
                       <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description')}}</textarea>
                     </div>
                   
@@ -408,6 +423,15 @@
         var rmvSplChr = product_name.replace(/[^\w\s]/gi, '');
         var slug = rmvSplChr.replace(/\s+/g, '-');
         $('#searchEngine').val(slug.toLowerCase());
+      });
+
+      $(document).on('keypress','#searchEngine',function(event) {
+        var regex = new RegExp("^[a-zA-Z0-9]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+          event.preventDefault();
+          return false;
+        }
       });
 
       //Add Variant

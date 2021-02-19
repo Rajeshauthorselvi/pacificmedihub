@@ -112,9 +112,10 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $this->validate(request(), [
-            'product_name' => 'required',
-            'product_code' => 'required',
-            'category'     => 'required'
+            'product_name'  => 'required',
+            'product_code'  => 'required',
+            'category'      => 'required',
+            'search_engine' => 'required'
         ]);
 
         if($request->published){$published = 1;}else{$published = 0;}
@@ -587,7 +588,8 @@ class ProductController extends Controller
          $this->validate(request(), [
             'product_name' => 'required',
             'product_code' => 'required',
-            'category'     => 'required'
+            'category'     => 'required',
+            'search_engine' => 'required'
         ]);
         $product_id=$id;
 

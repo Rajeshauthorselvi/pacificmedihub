@@ -62,7 +62,7 @@
                         <tr>
                           <td><input type="checkbox" name="rfq_ids" value="{{$rfq->id}}"></td>
                           <td>{{ date('m/d/Y',strtotime($rfq->created_at)) }}</td>
-                          <td>{{ $rfq->order_no }}</td>
+                          <td><a href="{{route('rfq.show',$rfq->id)}}">{{ $rfq->order_no }}</a></td>
                           <td>{{ $rfq->customer->first_name }}</td>
                           <td>{{ $rfq->salesrep->emp_name }}</td>
                           <td>
@@ -83,7 +83,7 @@
                                 
                                 <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                 
-                                <a href="{{ route('orders.create',['rfq_id'=>$rfq->id]) }}"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
+                                <a href="{{ route('rfq.toOrder',$rfq->id) }}"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
 
                                 <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
 

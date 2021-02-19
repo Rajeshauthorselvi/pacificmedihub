@@ -33,10 +33,10 @@ class RFQController extends Controller
      */
     public function index()
     {
-        $data=array();
-        $data['rfqs']=RFQ::with('customer','salesrep','statusName')->orderBy('rfq.id','desc')->get();
+      $data=array();
+      $data['rfqs']=RFQ::with('customer','salesrep','statusName')->orderBy('rfq.id','desc')->get();
 
-        return view('admin.rfq.index',$data);
+      return view('admin.rfq.index',$data);
     }
 
     /**
@@ -161,13 +161,16 @@ class RFQController extends Controller
      */
     public function show($id)
     {
-      $data=array();
-      $products=RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
-      $product_data=$product_variant=array();
+      $data = array();
+      $products = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
+      $product_data = $product_variant = array();
       foreach ($products as $key => $product) {
-        $product_name = Product::where('id',$product->product_id)->value('name');
-        $options=$this->Options($product->product_id);
-        $product_variant=$this->Variants($product->product_id);
+        $product_name    = Product::where('id',$product->product_id)->value('name');
+        $all_variants    = RFQProducts::where('rfq_id',$id)->where('product_id',$product->product_id)
+                            ->pluck('product_variant_id')->toArray();
+        $options         = $this->Options($product->product_id);
+        $product_variant = $this->Variants($product->product_id,$all_variants);
+
         $product_data[$product->product_id]=[
           'rfq_id'          => $id,
           'product_id'      => $product->product_id,

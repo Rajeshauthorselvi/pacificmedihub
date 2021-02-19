@@ -62,7 +62,7 @@
                     	@foreach($employees as $emp)
                         <tr>
                           <td><input type="checkbox" value="{{ $emp->id }}" name="emp-ids"></td>
-                          <td>{{$emp->emp_id}}</td>
+                          <td><a href="{{route('employees.show',$emp->id)}}">{{$emp->emp_id}}</a></td>
                           <td>{{$emp->emp_name}}</td>
                           <td>{{$emp->department->dept_name}}</td>
                           <td>{{$emp->city->name}}</td>
@@ -87,11 +87,11 @@
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
-                                <a href="{{route('employees.edit',$emp->id)}}"><li class="dropdown-item">
-                                  <i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li>
-                                </a>
                                 <a href="{{route('employees.show',$emp->id)}}"><li class="dropdown-item">
                                   <i class="fas fa-eye"></i>&nbsp;&nbsp;View</li>
+                                </a>
+                                <a href="{{route('employees.edit',$emp->id)}}"><li class="dropdown-item">
+                                  <i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li>
                                 </a>
                                 <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('employees.destroy',$emp->id) }}">@csrf 

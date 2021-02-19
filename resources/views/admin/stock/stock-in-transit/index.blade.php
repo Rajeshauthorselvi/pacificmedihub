@@ -37,7 +37,7 @@
                     <thead>
                       <tr>
                       	<th>Date</th>
-                        <th>Purchase Order No</th>
+                        <th>Purchase Code</th>
                         <th>Vendor</th>
                         <th>Qty Ordered</th>
                         <th>Qty Received</th>
@@ -49,7 +49,7 @@
                         @foreach ($orders as $order)
                           <tr>
                           <td>{{ date('d-m-Y',strtotime($order['purchase_date'])) }}</td>
-                          <td>{{ $order['po_number'] }}</td>
+                          <td><a href="{{route('purchase.show',$order['purchase_id'])}}">{{$order['po_number']}}</a></td>
                           <td>{{ $order['vendor'] }}</td>
                           <td>{{ $order['quantity'] }}</td>
                           <td>{{ $order['qty_received'] }}</td>
