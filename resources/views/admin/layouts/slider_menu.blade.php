@@ -187,12 +187,12 @@
               <li class="nav-item">
                 <a href="" class="nav-link"><i class="fas fa-angle-double-right"></i><p>General Settings</p></a>
               </li>
-              {{-- <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show') active @endif">
+              <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show') active @endif">
                                             <a href="{{route('access-control.index')}}" class="nav-link">
                                               <i class="fas fa-angle-double-right"></i>
                                               <p>Access Control</p>
                                             </a>
-                                          </li> --}}
+                                          </li>
               <li class="nav-item @if($current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit') active @endif">
                 <a href="{{route('departments.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i><p>Departments</p>

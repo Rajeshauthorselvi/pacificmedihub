@@ -45,7 +45,7 @@ class PurchaseController extends Controller
         if($purchase->payment_status==1){
           $payment_status = 'Paid';
         }
-        elseif($purchase->payment_status==3){
+        elseif($purchase->payment_status==2){
           $payment_status = 'Not Paid';
         }
         else{
@@ -620,7 +620,7 @@ class PurchaseController extends Controller
     public function CreatePurchasePayment(Request $request)
     {
 
-        $data=[
+       /* $data=[
           'ref_id'          => $request->id,
           'reference_no'    => $request->reference_no,
           'payment_from'    => $request->payment_from,
@@ -629,17 +629,23 @@ class PurchaseController extends Controller
           'created_at'      => date('Y-m-d H:i:s'),
           'payment_id'      => $request->payment_id,
         ];
-        PaymentHistory::insert($data);
+        PaymentHistory::insert($data);*/
 
 
         $total_amount=$request->total_payment;
         $total_paid=$request->amount;
         $balance_amount=$total_amount-$total_paid;
-        if ($balance_amount==0) 
+        if ($balance_amount==0) {
           $payment_status=1;
-        else
-          $payment_status=2; 
-
+        }
+        elseif ($balance_amount>0) {
+          $payment_status=3; 
+        }
+        else{
+          $payment_status=2;  
+        }
+          
+          dd($payment_status);
 
         Purchase::where('id',$request->id)->update(['payment_status'=>$payment_status]);
         return Redirect::back()->with('success','Payment added successfully...!');

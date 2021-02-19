@@ -81,7 +81,6 @@
                             <?php $payment_status=[1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
                             <?php $color_code=[1=>'#00a65a',2=>'#5bc0de','3'=>'#f0ad4e']?>
                             <td>
-
                             <span class="badge" style="background:{{ $color_code[$order['p_status']] }};color: #fff ">
                             {{ $payment_status[$return['payment_status']] }}</span></td>
 
