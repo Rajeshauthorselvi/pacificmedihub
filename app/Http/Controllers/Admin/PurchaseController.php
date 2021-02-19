@@ -315,6 +315,25 @@ class PurchaseController extends Controller
         'payment_status'        => 'required'
       ]);
 
+      $new_variant=$request->new_variant;
+      $variant=$request->variant;
+
+      $existing_product_id=$new_product_variant=array();
+      if (isset($variant['product_id'])) {
+        $existing_product_id=array_unique($variant['product_id']);
+      }
+      if (isset($new_variant['product_id'])) {
+        $new_product_variant=array_unique($new_variant['product_id']);
+      }
+      $active_product_ids=array_merge($existing_product_id,$new_product_variant);
+
+      $deleted_products=PurchaseProducts::whereNotIn('product_id',$active_product_ids)
+                        ->pluck('product_id')
+                        ->toArray();
+      if (isset($deleted_products)) {
+        PurchaseProducts::whereIn('product_id',array_unique($deleted_products))->delete();
+      }
+
       $purchase_data=[
         'purchase_order_number' => $request->purchase_order_number,
         'purchase_status'       => $request->purchase_status,
@@ -334,6 +353,8 @@ class PurchaseController extends Controller
       ];
 
       Purchase::where('id',$purchase_id)->update($purchase_data);
+
+
         
       // $product_ids=$request->variant['product_id'];
       $variant=$request->variant;

@@ -136,9 +136,10 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::get('get-state-list','Admin\DashboardController@getStateList');
 	Route::get('get-city-list','Admin\DashboardController@getCityList');
 
-	//Error Page
-	Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');	
 });
+
+//Error Page
+Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');	
 
 Route::resource('home','HomeController');
 Route::get('/','HomeController@index');
