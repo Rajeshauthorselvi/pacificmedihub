@@ -88,7 +88,7 @@
                             <span class="badge" style="background:{{ $order['color_code'] }};color: #fff ">{{ $order['order_status'] }}</span>
                           </td>
                           <td>
-                            <?php $color_code=[1=>'#00a65a',2=>'#5bc0de','3'=>'#f0ad4e']?>
+                            <?php $color_code=[1=>'#00a65a',3=>'#5bc0de',2=>'#f0ad4e']?>
                             <span class="badge" style="background:{{ $color_code[$order['p_status']] }};color: #fff ">{{ $order['payment_status'] }}</span>
                           </td>
                           <td>
