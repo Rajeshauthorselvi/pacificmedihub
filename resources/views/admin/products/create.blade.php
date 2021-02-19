@@ -205,7 +205,7 @@
                     </div> -->
 
                     <div class="form-group">
-                      <label for="searchEngine">Search Engine Friendly Page Name</label>
+                      <label for="searchEngine">Search Engine Friendly Page Name *</label>
                       <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
                     </div>
                     <div class="form-group">
@@ -401,6 +401,13 @@
             }
           }
         });
+      });
+
+      $(document).on('keyup','#productName',function(){
+        var product_name = $(this).val();
+        var rmvSplChr = product_name.replace(/[^\w\s]/gi, '');
+        var slug = rmvSplChr.replace(/\s+/g, '-');
+        $('#searchEngine').val(slug.toLowerCase());
       });
 
       //Add Variant
