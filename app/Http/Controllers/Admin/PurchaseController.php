@@ -36,7 +36,6 @@ class PurchaseController extends Controller
       $data = array();
       $orders = array();
       $purchases = Purchase::orderBy('id','DESC')->get();
-      dd($purchases);
       foreach ($purchases as $key => $purchase) {
         $vendor_name      = Vendor::find($purchase->vendor_id)->name;
         $product_details  = PurchaseProducts::select(DB::raw('sum(quantity) as quantity'),
