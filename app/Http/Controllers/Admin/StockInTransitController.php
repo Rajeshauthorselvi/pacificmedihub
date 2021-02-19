@@ -12,7 +12,6 @@ use App\Models\ProductVariantVendor;
 use App\Models\Product;
 use App\Models\PurchaseStockHistory;
 use App\Models\Vendor;
-use App\Models\Settings;
 use Illuminate\Http\Request;
 use App\Models\PurchaseReturn;
 use App\Models\PurchaseProductReturn;

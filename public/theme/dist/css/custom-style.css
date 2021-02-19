@@ -95,6 +95,7 @@ table .dropdown-menu .dropdown-item button{padding:0}
 .product #variantList th{text-align: center;border: 1px solid #ddd;background: #f1f1f1;}
 .product #variantList td{border: 1px solid #ddd;padding: 5px;}
 .product #variantList .form-group .form-control{border-radius: 1px;}
+.product #variantList td .form-group{margin:1px;}
 
 .text-left{text-align: left;} 
 .pull-left{float: left;}

@@ -7,16 +7,17 @@
 		<table class="list" id="variantList">
 			<thead>
 				<tr>
+					<th class="vendor-name">Vendor</th>
 					@foreach($options as $option)
 					<th class="option-head">
 						{{$option->option_name}}
 					</th>
 					@endforeach
+					<th class="variant-sku">SKU</th>
 					<th class="input-box">Base Price</th>
 					<th class="input-box">Retail Price</th>
 					<th class="input-box">Minimum Selling Price</th>
 					<th class="input-box">Stock Qty</th>
-					<th class="vendor-name">Vendor</th>
 					<th class="input-box">Order By</th>
 					<th class="input-box">Display</th>
 				</tr>
@@ -25,51 +26,71 @@
 			<?php $count=1;?>
 			@foreach($option_values as $key => $option_value)
 				<?php
-					$vendor_id = $vendors[$key]->id;
+					$vendor_id   = $vendors[$key]->id;
 					$vendor_name = $vendors[$key]->name;
+					$vendor_code = str_replace('VEN','', $vendors[$key]->code);
+					$vendor_code = str_replace(date('Y'),'', $vendor_code);
 				?>
 				@foreach($option_value as $k => $options)
 					<?php 
-						$option_id1 = $options->optionID1;
+
+						$sku_prefix = $product_code.'-'.$vendor_code;
+
+						$option_id1 	  = $options->optionID1;
 						$option_value_id1 = $options->optionValueID1;
-						$option1 = $options->optionValue1;
+						$option1 		  = $options->optionValue1;
+
+						$sku = $sku_prefix.'-'.preg_replace('/\s*/', '', $option1);
+
 						if($option_count==2||$option_count==3||$option_count==4||$option_count==5){
-							$option_id2 = $options->optionID2;
+							$option_id2       = $options->optionID2;
 							$option_value_id2 = $options->optionValueID2;
-							$option2 = $options->optionValue2;	
+							$option2          = $options->optionValue2;	
+
+							$sku = $sku_prefix.'-'.preg_replace('/\s*/', '', $option1).'-'.preg_replace('/\s*/', '', $option2);
 						}
 						if($option_count==3||$option_count==4||$option_count==5){
-							$option_id3 = $options->optionID3;
+							$option_id3       = $options->optionID3;
 							$option_value_id3 = $options->optionValueID3;
-							$option3 = $options->optionValue3;	
+							$option3          = $options->optionValue3;	
+
+							$sku = $sku_prefix.'-'.preg_replace('/\s*/', '', $option1).'-'.preg_replace('/\s*/', '', $option2).'-'.preg_replace('/\s*/', '', $option3);
 						}
 						if($option_count==4||$option_count==5){
-							$option_id4 = $options->optionID4;
+							$option_id4       = $options->optionID4;
 							$option_value_id4 = $options->optionValueID4;
-							$option4 = $options->optionValue4;	
+							$option4          = $options->optionValue4;	
+
+							$sku = $sku_prefix.'-'.preg_replace('/\s*/', '', $option1).'-'.preg_replace('/\s*/', '', $option2).'-'.preg_replace('/\s*/', '', $option3).'-'.preg_replace('/\s*/', '', $option4);
 						}
 						if($option_count==5){
-							$option_id5 = $options->optionID5;
+							$option_id5       = $options->optionID5;
 							$option_value_id5 = $options->optionValueID5;
-							$option5 = $options->optionValue5;	
+							$option5          = $options->optionValue5;	
+
+							$sku = $sku_prefix.'-'.preg_replace('/\s*/', '', $option1).'-'.preg_replace('/\s*/', '', $option2).'-'.preg_replace('/\s*/', '', $option3).'-'.preg_replace('/\s*/', '', $option4).'-'.preg_replace('/\s*/', '', $option5);
 						}
 
 						if($k<=0){
-							$base_price_row_id = 'base_price_row1';
-							$retail_price_row_id = 'retail_price_row1';
+							$base_price_row_id 	  = 'base_price_row1';
+							$retail_price_row_id  = 'retail_price_row1';
 							$minimum_price_row_id = 'minimum_price_row1';
-							$stock_qty_row_id = 'stock_qty_row1';
+							$stock_qty_row_id 	  = 'stock_qty_row1';
 						}else{
-							$base_price_row_id = 'base_price_row';
-							$retail_price_row_id = 'retail_price_row';
+							$base_price_row_id 	  = 'base_price_row';
+							$retail_price_row_id  = 'retail_price_row';
 							$minimum_price_row_id = 'minimum_price_row';
-							$stock_qty_row_id = 'stock_qty_row';
+							$stock_qty_row_id     = 'stock_qty_row';
 						}
 					?>
 					<tr>
 						@if($data_from=="edit")
 							<input type="hidden" name="variant[id][]" value=0>
 						@endif
+						<td>
+		                	<input type="hidden" name="variant[vendor_id][]" class="vendor_id" value="{{$vendor_id}}">
+							{{$vendor_name}}
+		                </td>
 						<td>
 							<input type="hidden" name="variant[option_id1][]" value="{{$option_id1}}">
 							<input type="hidden" name="variant[option_value_id1][]" value="{{$option_value_id1}}">
@@ -104,6 +125,10 @@
 							</td>
 						@endif
 						<td>
+							<input type="hidden" name="variant[sku][]" value="{{ $sku }}">
+							{{ $sku }}
+						</td>
+						<td>
 							<div class="form-group">
 		                        <input type="text" class="form-control base_price_row" id="{{$base_price_row_id}}" onkeyup="validateNum(event,this);" name="variant[base_price][]">
 		                    </div>
@@ -122,10 +147,6 @@
 		                	<div class="form-group">
 		                		<input type="text" class="form-control stock_qty_row" id="{{$stock_qty_row_id}}" onkeyup="validateNum(event,this);" name="variant[stock_qty][]">
 		                	</div>
-		                </td>
-		                <td>
-		                	<input type="hidden" name="variant[vendor_id][]" class="vendor_id" value="{{$vendor_id}}">
-							{{$vendor_name}}
 		                </td>
 		                <td>
 		                	<div class="form-group">

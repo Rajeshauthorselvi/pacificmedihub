@@ -117,6 +117,8 @@ class VendorController extends Controller
             $logo_image_name = NULL;
         }
 
+        if($request->vendor_status){$status = 1;}else{$status = 0;}
+
         $add_vendor = new Vendor;
         $add_vendor->code = $request->code;
         $add_vendor->uen = $request->vendor_uen;
@@ -141,7 +143,7 @@ class VendorController extends Controller
         $add_vendor->paynow_contact_number = $request->paynow_no;
         $add_vendor->bank_place = $request->place;
         $add_vendor->others = $request->others;
-        $add_vendor->status = $request->vendor_status;
+        $add_vendor->status = $status;
         $add_vendor->created_at = date('Y-m-d H:i:s');
         $add_vendor->save();
 

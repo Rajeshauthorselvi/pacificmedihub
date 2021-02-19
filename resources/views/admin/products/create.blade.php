@@ -63,10 +63,10 @@
                         @endif
                       </div>
 
-                      <div class="form-group">
+                      {{-- <div class="form-group">
                         <label for="productSku">SKU</label>
                         <input type="text" class="form-control" name="product_sku" id="productSku" value="{{old('product_sku')}}">
-                      </div>
+                      </div> --}}
                       <div class="form-group">
                         <label for="productCategory">Category *</label>
                         <select class="form-control select2bs4" name="category">
@@ -418,6 +418,7 @@
                 
           var selectedOption = JSON.stringify($('#productVariant').val());
           var selectedVendor = JSON.stringify($('#VendorSupplier').val());
+          var productCode    = $('#productCode').val();
           if($('#VendorSupplier').val().length==0 && $('#productVariant').val()){
             alert('Please select Vendor/Supplier.!');
             return false;
@@ -432,7 +433,7 @@
           $.ajax({
             url:"{{ url('admin/product_variant') }}",
             type:"POST",
-            data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor},
+            data:{"_token": "{{ csrf_token() }}",options:selectedOption,vendors:selectedVendor,product_code:productCode},
             success: function (data) { 
               //console.log(data);
               $('#product-variant-block').html(data);
