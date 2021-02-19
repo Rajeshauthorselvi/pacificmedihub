@@ -248,11 +248,14 @@ class StockInTransitController extends Controller
           $return_id=PurchaseReturn::updateOrCreate(['purchase_or_order_id'=> $id],$data_return);
           $variant_ids=$variant['variant_id'];
           foreach ($variant_ids as $key => $row_id) {
+            // var_dump($damaged_qty[$key]);
             if ($damaged_qty[$key]>0) {
 
-              $existing_damage=PurchaseProductReturn::where(['product_id'=> $product_id[$key],'purchase_variation_id'=>$row_id])
-              ->value('damage_quantity');
+              $existing_damage=PurchaseProductReturn::where(['product_id'=> $product_id[$key],'purchase_variation_id'=>$row_id,'purchase_return_id'=>$return_id->id])
+              ->sum('damage_quantity');
+
               $damage_total=$existing_damage+$damaged_qty[$key];
+
               $stock_price=PurchaseProducts::where('id',$id)->value('base_price');
               $data_return_products=[
                 'product_id'              => $product_id[$key],
@@ -264,6 +267,8 @@ class StockInTransitController extends Controller
               ];
 
 
+              // var_dump($data_return_products);
+
                $return_product_id=PurchaseProductReturn::updateOrCreate(
                 ['product_id'=> $product_id[$key],'purchase_variation_id'=>$row_id],
                 $data_return_products
@@ -274,9 +279,8 @@ class StockInTransitController extends Controller
           }
         }
 
-
         /*Add record to return table*/
-
+//exit();
 
 
         return Redirect::route('stock-in-transit.index')
