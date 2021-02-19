@@ -27,16 +27,6 @@
                   <i class="fas fa-angle-double-right"></i> <p>List Products</p>
                 </a>
               </li>
-              {{-- <li class="nav-item @if($current_route=='products.create') active @endif">
-                <a href="{{route('products.create')}}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Add Product</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ url('admin/product-import') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Import Products</p>
-                </a>
-              </li> --}}
               
               <li class="nav-item inner-menu @if($current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit') block menu-is-opening menu-open @endif">
                 <a href="javascript:void(0)" class="nav-link">
@@ -69,7 +59,6 @@
                   </li>
                 </ul>
               </li>
-
             </ul>
           </li>
 
@@ -90,6 +79,8 @@
                 <a href="{{ route('stock-in-transit.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit (Vendor)</p>
                 </a>
+              </li>
+              <li class="nav-item">
                 <a href="javascript:void(0)" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit (Customer)</p>
                 </a>
@@ -99,11 +90,6 @@
                   <i class="fas fa-angle-double-right"></i> <p>List Return</p>
                 </a>
               </li>
-{{--               <li class="nav-item @if($current_route=='return.create') active @endif">
-                <a href="{{ route('return.create') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Add Return</p>
-                </a>
-              </li> --}}
               <li class="nav-item @if($current_route=='wastage.index'||$current_route=='wastage.create') active @endif">
                 <a href="{{ route('wastage.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Wastage/Write Off</p>

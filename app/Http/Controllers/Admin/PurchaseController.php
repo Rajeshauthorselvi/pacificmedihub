@@ -11,7 +11,7 @@ use App\Models\PaymentMethod;
 use App\Models\ProductVariantVendor;
 use App\Models\Product;
 use App\Models\Vendor;
-use App\Models\Settings;
+use App\Models\Prefix;
 use App\Models\PaymentHistory;
 use App\Models\Tax;
 use App\Models\PaymentTerm;
@@ -63,7 +63,7 @@ class PurchaseController extends Controller
           'payment_status'   => $payment_status,
           'p_status'         => $purchase->payment_status,
           'order_status'     => $order_status->status_name,
-          'color_code'     => $order_status->color_codes,
+          'color_code'       => $order_status->color_codes,
           'status_id'        => $purchase->purchase_status,
           'sgd_total_amount' => $purchase->sgd_total_amount
         ];
@@ -91,22 +91,32 @@ class PurchaseController extends Controller
                                         ->pluck('name','id')->toArray();
       $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
 
-      $order_code = Settings::where('key','prefix')->where('code','purchase_no')->value('content');
-      $data['purchase_code']='';
-      if (isset($order_code)) {
-        $value         = unserialize($order_code);
-        $char_val      = $value['value'];
-        $explode_val   = explode('-',$value['value']);
-        $total_datas   = Purchase::count();
-        $total_datas   = ($total_datas==0)?end($explode_val):$total_datas+1;
-        $data_original = $char_val;
-        $search        = ['[dd]', '[mm]', '[yyyy]'];
-        $replace       = [date('d'), date('m'), date('Y')];
-        $purchase_code= str_replace($search,$replace, $data_original);
-        $purchase_code=explode('-', $purchase_code);
-        $purchase_code[4]=$total_datas;
-        $data['purchase_code']=implode('-',$purchase_code);
-      }
+      $data['purchase_code']      = '';
+        
+        $purchase_code = Prefix::where('key','prefix')->where('code','purchase_no')->value('content');
+        if (isset($purchase_code)) {
+            $value = unserialize($purchase_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Purchase::count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $data['purchase_code']=$replace_number;
+        }
+
       return view('admin.purchase.create',$data);
     }
 

@@ -54,7 +54,7 @@
                         {!! Form::text('purchase_date', null,['class'=>'form-control','readonly'=>true]) !!}
                       </div>
                       <div class="col-sm-4">
-                        <label for="purchase_order_number">Purchase Order Number *</label>
+                        <label for="purchase_order_number">Purchase Code *</label>
                         {!! Form::text('purchase_order_number',null,['class'=>'form-control','readonly']) !!}
                       </div>
                       <div class="col-sm-4">

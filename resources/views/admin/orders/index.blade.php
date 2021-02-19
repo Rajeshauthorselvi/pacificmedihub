@@ -88,8 +88,11 @@
 
                           </td>
                           <td>
-                          <?php $payment_status=[0=>'',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
-                            {{ $payment_status[$order->payment_status] }}
+                            <?php $color_code=[1=>'#00a65a',2=>'#5bc0de','3'=>'#f0ad4e']; ?>
+                            <?php $payment_status=[0=>'',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
+                              <span class="badge" style="background:{{ $color_code[$order->payment_status] }};color: #fff ">
+                                {{ $payment_status[$order->payment_status] }}
+                              </span>
                           </td>
                           <td>
                             <div class="input-group-prepend">
