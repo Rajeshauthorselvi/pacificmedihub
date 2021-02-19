@@ -542,6 +542,12 @@
         }
       }
 
+      $(document).on('keyup','#productName',function(){
+        var product_name = $(this).val();
+        var rmvSplChr = product_name.replace(/[^\w\s]/gi, '');
+        var slug = rmvSplChr.replace(/\s+/g, '-');
+        $('#searchEngine').val(slug.toLowerCase());
+      });
 
       function scroll_to(div){
         $('html, body').animate({
