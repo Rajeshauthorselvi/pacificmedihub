@@ -81,10 +81,13 @@
                             <?php $payment_status=[1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
                             <?php $color_code=[1=>'#00a65a',2=>'#5bc0de','3'=>'#f0ad4e']?>
                             <td>
-                            <span class="badge" style="background:{{ $color_code[$order['p_status']] }};color: #fff ">
+
+
+                            <span class="badge" style="background:{{ $color_code[$return['payment_status']] }};color: #fff ">
+
                             {{ $payment_status[$return['payment_status']] }}</span></td>
 
-                            <td><span class="badge" style="background:{{ $order['color_code'] }};color: #fff ">{{ $order['order_status'] }}</span></td>
+                            <td><span class="badge" style="background:{{ $return['color_code'] }};color: #fff ">{{ $return['order_status'] }}</span></td>
                             <td>
                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>

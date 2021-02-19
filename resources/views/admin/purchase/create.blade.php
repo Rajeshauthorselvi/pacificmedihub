@@ -55,7 +55,7 @@
                         <input type="text" class="form-control" name="purchase_date" value="{{ date('d/m/Y H:i') }}" readonly="true" />
                       </div>
                       <div class="col-sm-4">
-                        <label for="purchase_order_number">Purchase Order Number *</label>
+                        <label for="purchase_order_number">Purchase Code *</label>
                         {!! Form::text('purchase_order_number',$purchase_code,['class'=>'form-control','readonly']) !!}
                       </div>
                       <div class="col-sm-4">

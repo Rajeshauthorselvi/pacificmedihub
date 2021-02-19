@@ -48,14 +48,14 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Purchase Date</th>
-                        <th>PO No</th>
+                        <th>PO Date</th>
+                        <th>PO Code</th>
                         <th>Vendor</th>
                         <th>View Quantities</th>
                         <th>Grand Total</th>
                         <th>Paid</th>
                         <th>Balance</th>
-                        <th>Purchase Status</th>
+                        <th>PO Status</th>
                         <th>Payment Status</th>
                         <th>Action</th>
                       </tr>
@@ -84,7 +84,9 @@
                           <td class="balance">
                             {{ number_format($balance_amount['balance_amount'],2,'.','') }}
                           </td>
-                          <td><span class="badge" style="background:{{ $order['color_code'] }};color: #fff ">{{ $order['order_status'] }}</span></td>
+                          <td>
+                            <span class="badge" style="background:{{ $order['color_code'] }};color: #fff ">{{ $order['order_status'] }}</span>
+                          </td>
                           <td>
                             <?php $color_code=[1=>'#00a65a',2=>'#5bc0de','3'=>'#f0ad4e']?>
                             <span class="badge" style="background:{{ $color_code[$order['p_status']] }};color: #fff ">{{ $order['payment_status'] }}</span>
