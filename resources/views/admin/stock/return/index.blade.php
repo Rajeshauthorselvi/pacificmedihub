@@ -85,7 +85,7 @@
                             <span class="badge" style="background:{{ $color_code[$return['payment_status']] }};color: #fff ">
                             {{ $payment_status[$return['payment_status']] }}</span></td>
 
-                            <td><span class="badge" style="background:{{ $return['color_code'] }};color: #fff ">{{ $order['order_status'] }}</span></td>
+                            <td><span class="badge" style="background:{{ $return['color_code'] }};color: #fff ">{{ $return['order_status'] }}</span></td>
                             <td>
                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
