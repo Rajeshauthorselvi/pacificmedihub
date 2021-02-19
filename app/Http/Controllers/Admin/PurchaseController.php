@@ -11,7 +11,7 @@ use App\Models\PaymentMethod;
 use App\Models\ProductVariantVendor;
 use App\Models\Product;
 use App\Models\Vendor;
-use App\Models\Prefix;
+use App\Models\Settings;
 use App\Models\PaymentHistory;
 use App\Models\Tax;
 use App\Models\PaymentTerm;
@@ -63,7 +63,7 @@ class PurchaseController extends Controller
           'payment_status'   => $payment_status,
           'p_status'         => $purchase->payment_status,
           'order_status'     => $order_status->status_name,
-          'color_code'       => $order_status->color_codes,
+          'color_code'     => $order_status->color_codes,
           'status_id'        => $purchase->purchase_status,
           'sgd_total_amount' => $purchase->sgd_total_amount
         ];
@@ -91,32 +91,22 @@ class PurchaseController extends Controller
                                         ->pluck('name','id')->toArray();
       $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
 
-      $data['purchase_code']      = '';
-        
-        $purchase_code = Prefix::where('key','prefix')->where('code','purchase_no')->value('content');
-        if (isset($purchase_code)) {
-            $value = unserialize($purchase_code);
-            $char_val = $value['value'];
-            $year = date('Y');
-            $total_datas = Purchase::count();
-            $total_datas_count = $total_datas+1;
-
-            if(strlen($total_datas_count)==1){
-                $start_number = '0000'.$total_datas_count;
-            }else if(strlen($total_datas_count)==2){
-                $start_number = '000'.$total_datas_count;
-            }else if(strlen($total_datas_count)==3){
-                $start_number = '00'.$total_datas_count;
-            }else if(strlen($total_datas_count)==4){
-                $start_number = '0'.$total_datas_count;
-            }else{
-                $start_number = $total_datas_count;
-            }
-            $replace_year = str_replace('[yyyy]', $year, $char_val);
-            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
-            $data['purchase_code']=$replace_number;
-        }
-
+      $order_code = Settings::where('key','prefix')->where('code','purchase_no')->value('content');
+      $data['purchase_code']='';
+      if (isset($order_code)) {
+        $value         = unserialize($order_code);
+        $char_val      = $value['value'];
+        $explode_val   = explode('-',$value['value']);
+        $total_datas   = Purchase::count();
+        $total_datas   = ($total_datas==0)?end($explode_val):$total_datas+1;
+        $data_original = $char_val;
+        $search        = ['[dd]', '[mm]', '[yyyy]'];
+        $replace       = [date('d'), date('m'), date('Y')];
+        $purchase_code= str_replace($search,$replace, $data_original);
+        $purchase_code=explode('-', $purchase_code);
+        $purchase_code[4]=$total_datas;
+        $data['purchase_code']=implode('-',$purchase_code);
+      }
       return view('admin.purchase.create',$data);
     }
 
@@ -630,7 +620,7 @@ class PurchaseController extends Controller
     public function CreatePurchasePayment(Request $request)
     {
 
-       /* $data=[
+        $data=[
           'ref_id'          => $request->id,
           'reference_no'    => $request->reference_no,
           'payment_from'    => $request->payment_from,
@@ -639,23 +629,16 @@ class PurchaseController extends Controller
           'created_at'      => date('Y-m-d H:i:s'),
           'payment_id'      => $request->payment_id,
         ];
-        PaymentHistory::insert($data);*/
+        PaymentHistory::insert($data);
 
+        $total_paid_amount=PaymentHistory::where('ref_id',$request->id)->where('payment_from',1)->sum('amount');
+        $total_payment=Purchase::where('id',$request->id)->value('sgd_total_amount');
+        $balance_amount=$total_payment-$total_paid_amount;
 
-        $total_amount=$request->total_payment;
-        $total_paid=$request->amount;
-        $balance_amount=$total_amount-$total_paid;
-        if ($balance_amount==0) {
+        if ($balance_amount==0) 
           $payment_status=1;
-        }
-        elseif ($balance_amount>0) {
+        else
           $payment_status=3; 
-        }
-        else{
-          $payment_status=2;  
-        }
-          
-          dd($payment_status);
 
         Purchase::where('id',$request->id)->update(['payment_status'=>$payment_status]);
         return Redirect::back()->with('success','Payment added successfully...!');
