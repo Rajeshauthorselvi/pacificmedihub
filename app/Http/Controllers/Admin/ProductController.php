@@ -66,16 +66,16 @@ class ProductController extends Controller
             Session::put('active_vendor','yes');
             Session::put('vendor_id',$request->get('vendor_id'));
         }
-        $data['categories']      = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['brands']          = Brand::where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['vendors']         = Vendor::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['categories']      = Categories::where('published',1)->where('is_deleted',0)->orderBy('name','asc')
+                                        ->get();
+        $data['brands']          = Brand::where('published',1)->where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['vendors']         = Vendor::where('status',1)->where('is_deleted',0)->orderBy('name','asc')->get();
         $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')
                                         ->get();
         //Commission Id 2 is a Product Commission
         $data['commissions']     = CommissionValue::where('commission_id',2)->where('published',1)
                                         ->where('is_deleted',0)->get();
         $data['product_id']      = '';
-        
         $product_code = Prefix::where('key','prefix')->where('code','product_code')->value('content');
         if (isset($product_code)) {
             $value = unserialize($product_code);
@@ -560,9 +560,11 @@ class ProductController extends Controller
         }
 
         $data['product_images']  = ProductImage::where('product_id',$id)->where('is_deleted',0)->get();
-        $data['categories']      = Categories::where('is_deleted',0)->orderBy('name','asc')->get();
+        $data['categories']      = Categories::where('published',1)->where('is_deleted',0)->orderBy('name','asc')
+                                        ->get();
         $data['brands']          = Brand::where('published',1)->where('is_deleted',0)->orderBy('name','asc')->get();
-        $data['vendors']         = Vendor::where('is_deleted',0)->orderBy('name','asc')->pluck('name','id')->toArray();
+        $data['vendors']         = Vendor::where('status',1)->where('is_deleted',0)->orderBy('name','asc')
+                                        ->pluck('name','id')->toArray();
         $data['product_options'] = Option::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')
                                         ->pluck('option_name','id')->toArray();
         //Commission Id 2 is a Product Commission
