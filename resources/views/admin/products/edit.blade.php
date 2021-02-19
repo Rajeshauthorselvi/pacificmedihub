@@ -62,10 +62,10 @@
                           <span class="text-danger">{{ $errors->first('product_code') }}</span>
                         @endif
                       </div>
-                      <div class="form-group">
+                      {{-- <div class="form-group">
                         <label for="productSku">SKU</label>
                         <input type="text" class="form-control" name="product_sku" id="productSku" value="{{old('product_sku',$product->sku)}}">
-                      </div>
+                      </div> --}}
                       <div class="form-group">
                         <label for="productCategory">Category *</label>
                         <select class="form-control select2bs4" name="category">
@@ -272,14 +272,15 @@
     <table class="list {{ $class }}" id="variantList">
       <thead>
         <tr>
+          <th class="vendor-name">Vendor</th>
           @php 
             foreach($get_options as $option){ echo '<th class="option-head">'.$option.'</th>'; }
           @endphp
+          <th class="variant-sku">SKU</th>
           <th class="input-box">Base Price</th>
           <th class="input-box">Retail Price</th>
           <th class="input-box">Minimum Selling Price</th>
           <th class="input-box">Stock Qty</th>
-          <th class="vendor-name">Vendor</th>
           <th class="input-box">Order By</th>
           <th class="input-box">Display</th>
           @php if($type!="old"){ @endphp
@@ -292,6 +293,12 @@
         @php foreach($product_variant as $variant){ @endphp
           <tr>
             <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
+            <td>
+              <div class="form-group">
+                <input type="hidden" name="variant[vendor_id][]" value="{{$variant['vendor_id']}}">
+                {{$variant['vendor_name']}}
+              </div>
+            </td>
             <td>
               <div class="form-group">
                 <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">
@@ -337,6 +344,12 @@
             @endif
             <td>
               <div class="form-group">
+                <input type="hidden" name="variant[sku][]" value="{{$variant['sku']}}">
+                {{$variant['sku']}}
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
                 <input type="text" class="form-control base_price" onkeyup="validateNum(event,this);" name="variant[base_price][]" value="{{$variant['base_price']}}">
                 <span class="text-danger" style="display:none">Base Price is required</span>
               </div>
@@ -358,12 +371,7 @@
                 <span class="text-danger" style="display:none">Stock Qty is required</span>
               </div>
             </td>
-            <td>
-              <div class="form-group">
-                <input type="hidden" name="variant[vendor_id][]" value="{{$variant['vendor_id']}}">
-                {{$variant['vendor_name']}}
-              </div>
-            </td>
+            
             <td>
               <div class="form-group">
                 <input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]" value="{{$variant['display_order']}}">
@@ -492,6 +500,8 @@
         if(options.length > 0  && options.length <=5 ){
           var selectedOption = JSON.stringify($('#productVariant').val());
           var selectedVendor = JSON.stringify($('#VendorSupplier').val());
+          var productCode    = $('#productCode').val();
+
           if($('#VendorSupplier').val().length==0 && $('#productVariant').val()){
             alert('Please select Vendor/Supplier.!');
             return false;
@@ -513,7 +523,8 @@
               dataFrom:'edit',
               deleteRequest:delete_request,
               existOption:existingOption,
-              existVendor:existingVendor
+              existVendor:existingVendor,
+              product_code:productCode
             },
             success: function (data) { 
               console.log(data);

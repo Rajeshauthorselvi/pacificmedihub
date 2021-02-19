@@ -48,10 +48,10 @@
                       <label for="productCode">Product Code *</label>
                       <input type="text" class="form-control" id="productCode" readonly value="{{$product->code}}" readonly>
                     </div>
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                       <label for="productSku">SKU</label>
                       <input type="text" class="form-control" id="productSku" readonly value="{{$product->sku}}">
-                    </div>
+                    </div> --}}
                     <div class="form-group">
                       <label for="productCategory">Category *</label>
                       <select class="form-control select2bs4" name="category" disabled>
@@ -201,16 +201,17 @@
     <table class="list {{ $class }}" id="variantList">
       <thead>
         <tr>
+          <th class="vendor-name">Vendor</th>
           @php 
             foreach($get_options as $option){
              echo '<th class="option-head">'.$option.'</th>';
             }
           @endphp
+          <th class="variant-sku">SKU</th>
           <th class="input-box">Base Price</th>
           <th class="input-box">Retail Price</th>
           <th class="input-box">Minimum Selling Price</th>
           <th class="input-box">Stock Qty</th>
-          <th class="vendor-name">Vendor</th>
           <th class="input-box">Order By</th>
           <th class="input-box">Display</th>
           @php 
@@ -221,6 +222,7 @@
         <tbody>
           @php foreach($product_variant as $variant){ @endphp
             <tr>
+              <td>{{$variant['vendor_name']}}</td>
               <td>{{$variant['option_value1']}}</td>
               @if($option_count==2)
                 <td>{{$variant['option_value2']}}</td>
@@ -234,6 +236,7 @@
               @if($option_count==5)
                 <td>{{$variant['option_value5']}}</td>
               @endif
+              <td>{{$variant['sku']}}</td>
               <td>
                 <div class="form-group">
                   <input type="text" class="form-control base_price" readonly value="{{$variant['base_price']}}">
@@ -254,7 +257,6 @@
                   <input type="text" class="form-control stock_qty" readonly value="{{$variant['stock_quantity']}}">
                 </div>
               </td>
-              <td>{{$variant['vendor_name']}}</td>
               <td>
                 <div class="form-group">
                   <input type="text" class="form-control" readonly value="{{$variant['display_order']}}">
