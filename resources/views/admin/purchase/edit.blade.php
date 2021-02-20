@@ -115,6 +115,11 @@
                                     Total:&nbsp;
                                     <span class="total">{{ $total_based_products->sub_total }}</span>
                                   </td>
+                                  <td>
+                                    <a href="javascript:void(0)" class="btn btn-danger remove-product-row">
+                                      <i class="fa fa-trash"></i>
+                                    </a>
+                                  </td>                                  
                               </tr>
                               <tr class="hide-table-padding">
                                 <td></td>
@@ -298,6 +303,17 @@
         event.preventDefault();
         $(this).closest('tr').next('tr').remove();
         $(this).closest('tr').remove();
+
+/*        var currenct_tr=$(this).parents('tr');
+        var current_total_tr=currenct_tr.find('.total');
+        alert(current_total_tr);
+
+        // var all_amount = $('#allAmount').text();
+        // var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        
+
+        // overallCalculation(all_amount,tax_rate);*/
+
       });
       
       $(function ($) {
@@ -318,7 +334,8 @@
             url: "{{ url('admin/product-search') }}",
             data: {
               name: request.term,
-              product_search_type:'product'
+              product_search_type:'product',
+              vendor_id:$('.vendors').val()
             },
             success: function( data ) {
               response( data );
@@ -344,8 +361,8 @@
             },
           })
           .done(function(response) {
-            $('.hide-table-padding:last').after(response);
-            // $('.first-calculation-tr').before().append(response);
+            // $('.hide-table-padding:last').after(response);
+            $('.first-calculation-tr').before(response);
           })
           .fail(function() {
             console.log("error");
@@ -474,12 +491,20 @@
       });
 
       $(document).on('click', '.save-btn', function(event) {
-        if(validate()!=false){
+        event.preventDefault();
+         var check_length=$('.product_id').length;
+
+         if (check_length==0) {
+          alert('Please select products');
+         }
+
+        if(validate()!=false && check_length>0){
           $('.purchase-form').submit();
         }else{
           scroll_to();
           return false;
         }
+
 
       });
 
