@@ -42,57 +42,86 @@
      
                   {{ Form::model($option,['method' => 'PATCH', 'class'=>'optionForm' , 'route' =>['options.update',$option->id]]) }}
                   <div class="form-group">
-                    <label for="option_name">Option Name</label>
-                    {{ Form::text('option_name',null,['class'=>'form-control','id'=>'option_name']) }}
-                    @if($errors->has('option_name'))
-                      <span class="text-danger">{{ $errors->first('option_name') }}</span>
-                    @endif
-                  </div>
-                  <div class="form-group">
-                    <label for="display_order">Display Order</label>
-                    {{ Form::text('display_order',null,['class'=>'form-control','id'=>'display_order','onkeyup'=>'validateNum(event,this);']) }}
-                    @if($errors->has('display_order'))
-                      <span class="text-danger">{{ $errors->first('display_order') }}</span>
-                    @endif
-                  </div>
-                  <div class="form-group">
-
-
-                    <label for="option_values">Option Values</label>
-                    <div class="">
-                    {{ Form::text('options', null, array('class' => 'raters form-control','id'=>'option','placeholder'=>'Type Options')) }}
-                       <div id="chat-screen" class="well">
-                        <div style="padding: 5px">Add Option values</div>
-                        <ul class="chat-screen list-unstyled">
-
-                          @foreach($option_values as $option_id=>$option_value)
-                            <li class="multipleInput-value"> 
-                              {{$option_value}}
-                              <span>
-                                <input class="rater_value" value="{{$option_value}}" name="option_values[{{ $option_id }}]" type="hidden">
-                              </span>
-                                <a href="javascript:void(0)" class="multipleInput-close" title="Remove"><i class="fa fa-times-circle"></i> </a>
-                            </li>
-                          @endforeach
-            
-                        </ul>
-                       </div>
+                    <div class="col-sm-12">
+                      <label for="option_name">Option Name *</label>
+                      <span class="text-danger name" style="display:none;">Option Name is required</span>
+                      {{ Form::text('option_name',null,['class'=>'form-control','id'=>'option_name']) }}
+                      @if($errors->has('option_name'))
+                        <span class="text-danger">{{ $errors->first('option_name') }}</span>
+                      @endif
                     </div>
-                     @if($errors->has('option_values'))
-                      <span class="text-danger">{{ $errors->first('option_values') }}</span>
-                    @endif
                   </div>
+                  
                   <div class="form-group">
+                    <div class="col-sm-12">
+                      <label for="option_name">Option Value *</label>
+                      <div class="table-responsive"> 
+                        <table class="table table-bordered"> 
+                          <thead> 
+                            <tr> 
+                              <th class="text-center">#</th>
+                              <th class="text-center">Value</th> 
+                              <th class="text-center">
+                                Code &nbsp;
+                                <span title="This Code is used for Product Variant SKU." class="ico-help">
+                                  <i class="fa fa-question-circle"></i>
+                                </span>
+                              </th> 
+                              <th class="text-center">
+                                <button class="btn btn-md btn-primary" id="addBtn" type="button">
+                                  <i class="fas fa-plus"></i>
+                                </button>
+                              </th> 
+                            </tr> 
+                          </thead> 
+                          <tbody id="tbody"> 
+                            @foreach($option_values as $values)
+                              <tr id="R1" class="parent_tr"> 
+                                <input type="hidden" id="valueId" name="option_values[id][]" value="{{ $values->id }}">
+                                <td class="row-index text-center"> 
+                                  <p id="count">{{ $values->display_order }}</p>
+                                  <input type="hidden" id="hiddenCount" name="option_values[count][]" value="{{ $values->display_order }}">
+                                </td>
+                                <td>
+                                  <input type="text" class="form-control" id="value" name="option_values[value][]" autocomplete="off" value="{{ $values->option_value }}">
+                                </td>
+                                <td>
+                                  <input type="text" class="form-control" id="code" name="option_values[code][]" value="{{ $values->option_value_code }}">
+                                </td>
+                                <td class="text-center"> 
+                                  <button class="btn btn-danger delete" type="button"><i class="fas fa-trash"></i></i>
+                                  </button> 
+                                </td> 
+                              </tr>
+                            @endforeach
+                          </tbody> 
+                        </table> 
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-sm-6">
+                      <label for="display_order">Display Order *</label>
+                      {{ Form::text('display_order',null,['class'=>'form-control','id'=>'display_order','onkeyup'=>'validateNum(event,this);']) }}
+                      <span class="text-danger display" style="display:none;">Display Order of Option is required</span>
+                      @if($errors->has('display_order'))
+                        <span class="text-danger">{{ $errors->first('display_order') }}</span>
+                      @endif
+                    </div>
                     @if (isset($option->published) && $option->published==1)
                       @php $checked='checked'; @endphp
                     @else  
                       @php $checked=''; @endphp
                     @endif
-                    <div class="icheck-info d-inline">
-                      <input type="checkbox" name="status" id="Published" {{ $checked }}> 
-                      <label for="Published">Published</label>
+                    <div class="col-sm-6" style="margin-top: 35px">
+                      <div class="icheck-info d-inline">
+                        <input type="checkbox" name="status" id="Published" {{ $checked }}> 
+                        <label for="Published">Published</label>
+                      </div>
                     </div>
                   </div>
+
                   <div class="form-group">
                     <a href="{{route('options.index')}}" class="btn reset-btn">Cancel</a>
                     <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
@@ -105,86 +134,85 @@
       </div>
     </section>
   </div>
-<style type="text/css">
 
-.chat-screen {
-   
-    margin: 10px;
-    min-height: 80px;
-    max-height: 80px;
-    overflow: auto;
-    width: auto;
-}
-li.multipleInput-value {
-    float: left;
-    margin-right: 2px;
-    margin-bottom: 1px;
-    border: 1px #eee solid;
-    padding: 2px;
-    background: #eee;
-}
-.multipleInput-close {
-    width: 16px;
-    height: 16px;
-    display: block;
-    float: right;
-    margin: 0 3px;
-}
-#chat-screen{
-   padding: 0;
-   overflow: auto;
-   border: 1px solid #ccc;
-}
-.required{
-  border-color: #a94442 !important;
-}
-</style>
+  <style type="text/css">
+    .form-group{display: flex;}
+    #addBtn, .remove, .delete {font-size: 12px;padding: 5px 10px;}
+    .ico-help{cursor:pointer;}
+  </style>
+
   @push('custom-scripts')
-<script type="text/javascript">
+    <script type="text/javascript">
+      $(document).ready(function () { 
+        var rowIdx = <?php echo $values_count; ?>;
+        $('#addBtn').on('click', function () { 
+          $('#tbody:last').append(
+            `<tr id="R${++rowIdx}" class="parent_tr">
+              <input type="hidden" id="valueId" name="option_values[id][]" value="">
+              <td class="row-index text-center"> 
+                <p>${rowIdx}</p>
+                <input type="hidden" id="hiddenCount" name="option_values[count][]" value="${rowIdx}">
+              </td>
+              <td>
+                <input type="text" class="form-control" id="value" name="option_values[value][]" value="">
+              </td>
+              <td>
+                <input type="text" class="form-control" id="code" name="option_values[code][]" value="">
+              </td>
+              <td class="text-center"> 
+                <button class="btn btn-danger remove" type="button"><i class="fas fa-minus"></i></button> 
+              </td> 
+            </tr>`
+          );
+        }); 
+
+        $('#tbody').on('click', '.remove', function () { 
+          var child = $(this).closest('tr').nextAll(); 
+          child.each(function () { 
+            var id = $(this).attr('id'); 
+            var idx = $(this).children('.row-index').children('p'); 
+            var hideencount = $(this).children('.row-index').children('#hiddenCount'); 
+            var dig = parseInt(id.substring(1)); 
+            idx.html(`${dig - 1}`); 
+            hideencount.val(`${dig - 1}`);
+            $(this).attr('id', `R${dig - 1}`); 
+          }); 
+
+          var rowCount = $('#tbody tr').length;
+          if(rowCount<3){
+            $('.remove').css('pointer-events','none');
+            $('.remove').css('opacity','0.3');
+          }
+          $(this).closest('tr').remove(); 
+          rowIdx--;
+        }); 
+      }); 
+
+      $('#tbody').on('click', '.delete', function (event) { 
+        if (confirm('Are you sure you want to delete?')) {
+          $(this).closest('tr').remove(); 
+          var valueId = $(this).closest('.parent_tr').find('#valueId').val();
+          $.ajax({
+            url: "{{route('delete.option.value')}}",
+            type: "POST",
+            data: {"_token": "{{ csrf_token() }}",id:valueId},
+            dataType: "html",
+            success: function(response){       
+              alert("Value deleted successfully.!");
+            }
+          });
+        } else {
+          return false;
+        }
+
+      });
 
 
-$(".multipleInput-close").click(function(){
-    $(this).parent().remove();
-    return false;
-});
-
-$('#option').keydown(function(event) {
-
-    if (event.keyCode == 13 || event.keyCode == 9) {
-          var append_val = true;
-          var keypress_val=$(this).val();
-             $(".chat-screen .multipleInput-value").each(function(){
-                 if(keypress_val.trim() == $(this).text().trim())
-                 { 
-                    append_val = false;
-                 }
-             });
-
-      if ($(this).val()!=""  && append_val==true) {
-         $('.chat-screen').append($('<li class="multipleInput-value" > ' + $("#option").val() + '<span><input type="hidden" value="' + $("#option").val() + '" name="option_values[]"></span></li>')
-                      .append($('<a href="javascript:void(0)" class="multipleInput-close" title="Remove"><i class="fa fa-times-circle"></i></a>')
-                                   .click(function(e) {
-                                        $(this).parent().remove();
-                                        e.preventDefault();
-                                   })
-                              )
-                   );
-      }
-    else{
-      
-      if ($(this).val()!="" ) {
-       alert('This Rater already exists');
-      }
-    }
-    $('.remove-message').remove();
-    $('#chat-screen').removeClass('required');
-    $("#activate-step-2"). removeAttr("disabled");
-    $(this).val('');
-    event.preventDefault();
-    return false;
-    }
-});
-
+      $(document).on('keyup','#value',function(event) {
+        var value = $(this).val();
+        var valueCode = value.substr(0, 5);
+        $(this).closest('.parent_tr').find('#code').val(valueCode.toUpperCase());
+      });
 
       //Validate Number
       function validateNum(e , field) {
@@ -214,47 +242,59 @@ $('#option').keydown(function(event) {
           }
         });
       });
-/*Rater Field Keypress*/
 
-$('#rater').keydown(function(event) {
 
-    if (event.keyCode == 13 || event.keyCode == 9) {
-          var append_val = true;
-          var keypress_val=$(this).val();
-             $(".chat-screen .multipleInput-value").each(function(){
-                 if(keypress_val.trim() == $(this).text().trim())
-                 { 
-                    append_val = false;
-                 }
-             });
+      $('.optionForm').on('keyup keypress', function(e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) { 
+          e.preventDefault();
+          return false;
+        }
+      });
 
-      if ($(this).val()!=""  && append_val==true) {
-         $('.chat-screen').append($('<li class="multipleInput-value" > ' + $("#rater").val() + '<span><input type="hidden" value="' + $("#rater").val() + '" name="rater_value[]"></span></li>')
-                      .append($('<a href="javascript:void(0)" class="multipleInput-close" title="Remove"><i class="glyphicon glyphicon-remove-sign"></i></a>')
-                                   .click(function(e) {
-                                        $(this).parent().remove();
-                                        e.preventDefault();
-                                   })
-                              )
-                   );
+
+      $(document).on('click', '.save-btn', function(event) {
+        if(validate()!=false){
+          $('.optionForm').submit();
+        }else{
+          scroll_to();
+          return false;
+        }
+      });
+
+      function validate(){
+        var valid=true;
+        if ($("#option_name").val()=="") {
+          $("#option_name").closest('.form-group').find('span.text-danger.name').show();
+          valid = false;
+        }else{
+          $("#option_name").closest('.form-group').find('span.text-danger.name').hide();
+        }
+
+        if ($("#display_order").val()=="") {
+          $("#display_order").closest('.form-group').find('span.text-danger.display').show();
+          valid = false;
+        }else{
+          $("#display_order").closest('.form-group').find('span.text-danger.display').hide();
+        }
+
+        var empty_field = $('#tbody .form-control').filter(function(){
+          return !$(this).val();
+        }).length;
+
+        if (empty_field!=0) {
+          alert('Please fill the value before save.!');
+          return false;
+        }
+        return valid;
       }
-    else{
-      
-      if ($(this).val()!="" ) {
-       alert('This Rater already exists');
+
+      function scroll_to(form){
+        $('html, body').animate({
+          scrollTop: $(".optionForm").offset().top
+        },1000);
       }
-    }
-    $('.remove-message').remove();
-    $('#chat-screen').removeClass('required');
-    $("#activate-step-2"). removeAttr("disabled");
-    $(this).val('');
-    event.preventDefault();
-    return false;
-    }
-});
-/*End Rater Field Keypress*/
     </script>
   @endpush
-
 @endsection
 

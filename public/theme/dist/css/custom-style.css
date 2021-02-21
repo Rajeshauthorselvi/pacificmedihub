@@ -126,6 +126,10 @@ table .dropdown-menu .dropdown-item button{padding:0}
 /* End Purchase Page */
 
 /* Common Design */
+
+.icheck-info > input:first-child:checked + input[type="hidden"] + label::before, .icheck-info > input:first-child:checked + label::before {background-color: #3287c7;border-color: #3287c7;}
+.icheck-info > input:first-child:not(:checked):not(:disabled):hover + input[type="hidden"] + label::before, .icheck-info > input:first-child:not(:checked):not(:disabled):hover + label::before {border-color: #3287c7;}
+
 .heading-top {background-color: #3287c7;color: #fff !important;}
 .heading-top th {background-color: #3287c7!important;color: #fff !important;}
 .accordion-toggle {cursor: pointer;}

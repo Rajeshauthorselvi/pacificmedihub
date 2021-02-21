@@ -35,7 +35,9 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::post('delete-product-variant',['as'=>'delete.variant','uses'=>'Admin\ProductController@removeVariant']);
 	Route::resource('categories','Admin\CategoriesController');
 	Route::resource('options','Admin\OptionController');
-	Route::resource('option_values','Admin\OptionValueController');
+	Route::post('delete-option-value',[
+		'as'=>'delete.option.value','uses'=>'Admin\OptionController@deleteOptionValue'
+	]);
 	Route::resource('brands','Admin\BrandController');
 	Route::get('product-import',['as'=>'product.import','uses'=>'Admin\ProductController@ProductImportController']);
 	Route::post('post-product-import',[

@@ -9,6 +9,7 @@ use App\Models\OptionValue;
 use Redirect;
 use Arr;
 use DB;
+
 class OptionController extends Controller
 {
     /**
@@ -42,25 +43,48 @@ class OptionController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate(request(), ['option_name' => 'required','option_values' => 'required','display_order' => 'required']); 
-        $input=$request->all();
+
+        $this->validate(request(), [
+            'option_name' => 'required', 'option_values' => 'required', 'display_order' => 'required'
+        ]);
+
+        $input = $request->all();
         Arr::forget($input,['_token','status','options','option_values']);
-        $input['published']=($request->status=='on')?1:0;
+        $input['published']  = ($request->status=='on')?1:0;
         $input['created_at'] = date('Y-m-d H:i:s');
-        $option_id=Option::insertGetId($input);
+        $option_id           = Option::insertGetId($input);
 
-        $count = 1;
-        foreach ($request->option_values as $key => $values) {
-            OptionValue::insert([
-                'option_id'=>$option_id,
-                'option_value'=> $values,
-                'display_order'=>$count,
-                'created_at'=>date('Y-m-d H:i:s'),
-                'is_deleted'=>0
-            ]);
-        $count++;
+        if($option_id){
+            if($request->option_values){
+                $values_data = [];
+                $i = 0;
+                foreach ($request->option_values['count'] as $count) {
+                    $values_data[$i]['count'] = $count;
+                    $i = $i+1;
+                }
+
+                $i = 0;
+                foreach ($request->option_values['value'] as $value) {
+                    $values_data[$i]['value'] = $value;
+                    $i = $i+1;
+                }
+
+                $i = 0;
+                foreach ($request->option_values['code'] as $code) {
+                    $values_data[$i]['code'] = $code;
+                    $i = $i+1;
+                }
+            }
+
+            foreach ($values_data as $values) {
+                $option_value = new OptionValue;
+                $option_value->option_id         = $option_id;
+                $option_value->option_value      = $values['value'];
+                $option_value->display_order     = $values['count'];
+                $option_value->option_value_code = $values['code'];
+                $option_value->save();
+            }
         }
-
         return Redirect::route('options.index')->with('success','New Option added successfully.!');
     }
 
@@ -83,13 +107,12 @@ class OptionController extends Controller
      */
     public function edit($id)
     {
-        $data['option']=Option::find($id);
-        $data['type']="edit";
-        $data['option_values'] = OptionValue::where('option_id',$id)
-                                 ->where('is_deleted',0)
-                                 ->orderBy('created_at','desc')
-                                 ->pluck('option_value','id');
-
+        $data['option']        = Option::find($id);
+        $data['type']          = "edit";
+        $option_values         = OptionValue::where('option_id',$id)->where('is_deleted',0)
+                                    ->orderBy('display_order','asc')->get();
+        $data['option_values'] = $option_values;
+        $data['values_count']  = count($option_values);
         return view('admin/options/edit',$data);
     }
 
@@ -102,45 +125,75 @@ class OptionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate(request(), ['option_name' => 'required','option_values' => 'required','display_order' => 'required']);
-        $status=($request->status=='on')?1:0;
-        $option=Option::find($id);
-        $option->option_name=$request->option_name;
-        $option->display_order=$request->display_order;
-        $option->published=$status;
-        $option->save();
+        // dd($request->all());
 
-        $option_cunt=OptionValue::where('option_id',$id)->count();
-            $count = 1;
-            foreach ($request->option_values as $key => $values) {
-                $check_val=OptionValue::where('option_id',$id)
-                           ->where('id',$key)
-                           ->exists();
-                if ($check_val) {
-                    OptionValue::where('id',$key)->update([
-                        'option_value'   => $values
-                    ]);
+        $this->validate(request(), [
+            'option_name' => 'required','option_values' => 'required','display_order' => 'required'
+        ]);
+        $status = ($request->status=='on')?1:0;
+        $option = Option::find($id);
+        $option->option_name   = $request->option_name;
+        $option->display_order = $request->display_order;
+        $option->published     = $status;
+        $option->update();
+
+
+        if($request->option_values){
+            $values_data = [];
+
+            if(isset($request->option_values['id'])){
+                $i = 0;
+                foreach ($request->option_values['id'] as $id) {
+                    $values_data[$i]['id'] = $id;
+                    $i = $i + 1;
                 }
-                else{
-                    OptionValue::insert([
-                        'option_id'=>$id,
-                        'option_value'=>$values,
-                        'display_order'=>$count,
-                        'created_at'=>date('Y-m-d H:i:s'),
-                        'is_deleted'=>0,
-                    ]);
+            }else{
+                $i = 0;
+                foreach ($request->option_values['base_price'] as $base_price) {
+                    $values_data[$i]['id'] = null;
+                    $i = $i + 1;
                 }
-                $count++;
             }
-        if (count($request->option_values) < $option_cunt) {
 
-            $data_check=OptionValue::whereNotIn('option_value',$request->option_values)
-                        ->where('option_id',$id)
-                        ->update([
-                            'is_deleted'=>1,
-                            'deleted_at'=>date('Y-m-d H:i:s')
-                        ]);
+            $i = 0;
+            foreach ($request->option_values['count'] as $count) {
+                $values_data[$i]['count'] = $count;
+                $i = $i+1;
+            }
 
+            $i = 0;
+            foreach ($request->option_values['value'] as $value) {
+                $values_data[$i]['value'] = $value;
+                $i = $i+1;
+            }
+
+            $i = 0;
+            foreach ($request->option_values['code'] as $code) {
+                $values_data[$i]['code'] = $code;
+                $i = $i+1;
+            }
+        }
+
+
+        foreach ($values_data as $values) {
+            $option_value = OptionValue::find($values['id']);
+            if($option_value!=null)
+            {
+                $option_value->option_id         = $option->id;
+                $option_value->option_value      = $values['value'];
+                $option_value->display_order     = $values['count'];
+                $option_value->option_value_code = $values['code'];
+                $option_value->update();
+            }
+            elseif($option_value==null)
+            {
+                $add_option_value = new OptionValue;
+                $add_option_value->option_id         = $option->id;
+                $add_option_value->option_value      = $values['value'];
+                $add_option_value->display_order     = $values['count'];
+                $add_option_value->option_value_code = $values['code'];
+                $add_option_value->save();
+            }
         }
         return Redirect::route('options.index')->with('info','Option updated successfully.!');
     }
@@ -168,5 +221,14 @@ class OptionController extends Controller
         
         if ($request->ajax())  return ['status'=>true];
         else return Redirect::route('options.index')->with('error','Option deleted successfully...!');
+    }
+
+    public function deleteOptionValue(Request $request)
+    {
+        $option_value = OptionValue::find($request->id);
+        $option_value->is_deleted = 1;
+        $option_value->deleted_at = date('Y-m-d H:i:s');
+        $option_value->update();
+        return ['status'=>true];
     }
 }

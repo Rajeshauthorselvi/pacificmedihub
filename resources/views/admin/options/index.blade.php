@@ -65,7 +65,7 @@
                             $option_value=\App\Models\Option::optionvalue($option->id); 
                             $values = array_slice($option_value,0,5);
                           ?>
-                    			<td>{{ implode(',',$values) }}</td>
+                    			<td>{{ implode(', ',$values) }}</td>
                           <td>{{$option->display_order}}</td>
                           <?php
                             if($option->published==1){$published = "fa-check";}
