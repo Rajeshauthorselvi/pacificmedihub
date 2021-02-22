@@ -428,12 +428,12 @@
                       <tbody>
                         <tr>
                           <td>1</td>
-                          <td class="name">Stock-In-Transit</td>
+                          <td class="name">Stock-In-Transit (Vendor)</td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-<?php $read=(isset($permissions['stock_transist']) && $permissions['stock_transist']['read']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="stock[stock_transist][read]" class="stock-read" id="stockRead" {{ $read }}>
+<?php $read=(isset($permissions['stock_transist_vendor']) && $permissions['stock_transist_vendor']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="stock[stock_transist_vendor][read]" class="stock-read" id="stockRead" {{ $read }}>
                                 <label for="stockRead"></label>
                               </div>
                             </div>
@@ -442,8 +442,8 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-<?php $update=(isset($permissions['stock_transist']) && $permissions['stock_transist']['update']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="stock[stock_transist][update]" class="stock-update" id="stockReadWrite" {{ $update }}>
+<?php $update=(isset($permissions['stock_transist_vendor']) && $permissions['stock_transist_vendor']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="stock[stock_transist_vendor][update]" class="stock-update" id="stockReadWrite" {{ $update }}>
                                 <label for="stockReadWrite"></label>
                               </div>
                             </div>
@@ -452,6 +452,30 @@
                         </tr>
                         <tr>
                           <td>2</td>
+                          <td class="name">Stock-In-Transit (Customer)</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['stock_transist_customer']) && $permissions['stock_transist_customer']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="stock[stock_transist_customer][read]" class="stock-read" id="stockRead" {{ $read }}>
+                                <label for="stockRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['stock_transist_customer']) && $permissions['stock_transist_customer']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="stock[stock_transist_customer][update]" class="stock-update" id="stockReadWrite" {{ $update }}>
+                                <label for="stockReadWrite"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
                           <td class="name">Return</td>
                           <td>
                             <div class="form-group clearfix">
@@ -491,7 +515,7 @@
                           </td>
                         </tr>
                         <tr>
-                          <td>4</td>
+                          <td>5</td>
                           <td class="name">Wastage</td>
                           <td>
                             <div class="form-group clearfix">
