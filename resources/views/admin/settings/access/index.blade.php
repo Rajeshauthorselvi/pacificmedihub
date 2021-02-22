@@ -48,32 +48,31 @@
                   <table id="example2" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th><input type="checkbox" class="select-all"></th>
+                        <th>S.No</th>
                         <th>Role Name</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
+                      <?php $s_no=1 ?>
                       @foreach ($roles as $role)
                         <tr>
-                          <td><input type="checkbox" name="role-ids" value="{{ $role->id }}"></td>
+                          <td>{{ $s_no }}</td>
                           <td>{{ $role->name }}</td>
-                          <td>
-                            <div class="input-group-prepend">
-                              <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
-                              <ul class="dropdown-menu">
-                                <a href="{{route('access-control.show',$role->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                <a href="{{route('access-control.edit',$role->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-                                <a href="#"><li class="dropdown-item">
-                                  <form method="POST" action="{{ route('access-control.destroy',$role->id) }}">@csrf 
-                                    <input name="_method" type="hidden" value="DELETE">
-                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
-                                  </form>
-                                </li></a>
-                              </ul>
-                            </div>
+                          <td class="text-center">
+          <?php $check_role_exists=\App\Models\RoleAccessPermission::CheckRecordExists($role->id); ?>
+                                @if ($check_role_exists)
+                                  <a href="{{route('access-control.edit',$role->id)}}" class="btn btn-primary">
+                                      <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
+                                  </a>
+                                @else
+                                  <a href="{{route('access-control.create',['role_id'=>$role->id])}}" class="btn btn-primary">
+                                      <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
+                                  </a>
+                                @endif
                           </td>
                         </tr>
+                        <?php $s_no++; ?>
                       @endforeach
                     </tbody>
                   </table>
