@@ -14,9 +14,8 @@ class AddRoleDetailsToRoleAccessPermissions extends Migration
     public function up()
     {
         Schema::table('role_access_permissions', function (Blueprint $table) {
-            $table->dropColumn(['menu_id','permission_id']);
-            $table->string('object', 100)->nullable();
-            $table->string('operation', 100)->nullable();
+            $table->string('object', 100)->nullable()->after('role_id');
+            $table->string('operation', 100)->nullable()->after('object');
         });
     }
 
