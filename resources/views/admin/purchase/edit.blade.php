@@ -304,16 +304,21 @@
         $(this).closest('tr').next('tr').remove();
         $(this).closest('tr').remove();
 
-/*        var currenct_tr=$(this).parents('tr');
-        var current_total_tr=currenct_tr.find('.total');
-        alert(current_total_tr);
+        var currenct_tr=$(this).parents('tr');
+        var current_total_tr=currenct_tr.find('.total').text();
+        var all_amount = $('#allAmount').text();
+        var balance_amount=parseInt(all_amount)-parseInt(current_total_tr);
 
-        // var all_amount = $('#allAmount').text();
-        // var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        var all_quantity = $('.all_quantity').text();
+        var current_total_qn_tr=currenct_tr.find('.total-quantity').text();
+
+        var balance_quantity=parseInt(all_quantity)-parseInt(current_total_qn_tr);
+
+        $('.all_amount').text(balance_amount);
+        $('.all_quantity').text(balance_quantity);
+        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        overallCalculation(balance_amount,tax_rate);
         
-
-        // overallCalculation(all_amount,tax_rate);*/
-
       });
       
       $(function ($) {

@@ -262,8 +262,7 @@ class PurchaseController extends Controller
     {
       $data=array();
 
-      $data['vendors']        = [''=>'Please Select']+Vendor::where('is_deleted',0)->where('status',1)
-                                    ->pluck('name','id')->toArray();
+
       $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,2,8])
                                     ->pluck('status_name','id')->toArray();
       $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
@@ -272,7 +271,7 @@ class PurchaseController extends Controller
       $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
 
       $products = PurchaseProducts::where('purchase_id',$purchase->id)->groupBy('product_id')->get();
-      $product_data = $product_variant = array();
+      $product_data = $product_variant=$all_product_ids = array();
       foreach ($products as $key => $product) {
         $product_name    = Product::where('id',$product->product_id)->value('name');
         $options         = $this->Options($product->product_id);
@@ -289,7 +288,15 @@ class PurchaseController extends Controller
           'option_count'    => $options['option_count'],
           'product_variant' => $product_variant
         ];
+        $all_product_ids[]=$product->product_id;
       }
+      $all_vendors=DB::table('product_variant_vendors as pvv')
+                   ->leftjoin('vendors as v','v.id','pvv.vendor_id')
+                   ->where('status',1)
+                   ->whereIn('product_id',$all_product_ids)
+                   ->pluck('name','v.id')->toArray();
+
+      $data['vendors']        = [''=>'Please Select']+$all_vendors;
       $data['purchase_products'] = $product_data;
       $data['purchase']          = Purchase::find($purchase->id);
       $data['product_name']      = $product_name;
