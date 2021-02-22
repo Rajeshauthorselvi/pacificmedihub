@@ -91,7 +91,7 @@
                     <div class="form-group">
                       <div class="col-sm-12">
                         <label for="product">Products *</label>
-                        {!! Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec','readonly']) !!}
+                        {!! Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec']) !!}
                       </div>
                     </div>
                   </div>
@@ -118,6 +118,7 @@
                                   Total Amount:&nbsp;
                                   <span class="all_amount" id="allAmount">{{ $total_products->sub_total }}</span>
                               </th>
+                              <th></th>
   						              </tr>
   						            </thead>
 						              <tbody>
@@ -136,6 +137,11 @@
                                 <th class="total-head">
                                   Total: &nbsp;<span class="total">{{ $total_based_products->sub_total }}</span>
                                 </th>
+                                <td>
+                                    <a href="javascript:void(0)" class="btn btn-danger remove-product-row">
+                                      <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
               							  </tr>
             								  <tr class="hide-table-padding">
 								                <td></td>
@@ -342,6 +348,73 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
+
+      $('#prodct-add-sec').autocomplete({
+        source: function( request, response) {
+          $.ajax({
+            url: "{{ url('admin/rfq-product') }}",
+            data: {
+              name: request.term,
+              product_search_type:'product'
+            },
+            success: function( data ) {
+              response( data );
+            }
+          });
+        },
+        minLength: 1,
+        select: function( event, ui ) {
+          var check_length=$('.product_id[value='+ui.item.value+']').length;
+
+          if (check_length>0) {
+            alert('This Product is already exists');
+            $(this).val('');
+            return false;
+          }
+
+          $.ajax({
+            url: "{{ url('admin/rfq-product') }}",
+            data: {
+              product_search_type: 'product_options',
+              product_id:ui.item.value,
+              from:'edit'
+            },
+          })
+          .done(function(response) {
+            $('.total-calculation:first').before(response);
+          });
+           $(this).val('');
+          return false;
+        },
+        open: function() {
+          $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+          $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+      });
+
+
+      $(document).on('click', '.remove-product-row', function(event) {
+        event.preventDefault();
+        var curr_tr_quantity=$(this).closest('tr').find('.total_quantity').text();
+        var curr_tr_total=$(this).closest('tr').find('.total').text();
+
+        $(this).closest('tr').next('tr').remove();
+        $(this).closest('tr').remove();
+
+        var all_amount = $('#allAmount').text();
+        var all_quantity = $('.all_quantity').text();
+        var balance_amount=parseInt(all_amount)-parseInt(curr_tr_total);
+        var balance_quantity=parseInt(all_quantity)-parseInt(curr_tr_quantity);
+
+        $('.all_amount').text(balance_amount);
+        $('.all_quantity').text(balance_quantity);
+        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        overallCalculation(balance_amount,tax_rate);
+      });
+
+
       $(function ($) {
         $('.no-search.select2bs4').select2({
           minimumResultsForSearch: -1

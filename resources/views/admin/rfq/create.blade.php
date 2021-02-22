@@ -158,6 +158,28 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
+
+     $(document).on('click', '.remove-product-row', function(event) {
+        event.preventDefault();
+        
+        var curr_tr_quantity=$(this).closest('tr').find('.total_quantity').text();
+        var curr_tr_total=$(this).closest('tr').find('.total').text();
+
+        $(this).closest('tr').next('tr').remove();
+        $(this).closest('tr').remove();
+
+        var all_amount = $('#allAmount').text();
+        var all_quantity = $('.all_quantity').text();
+
+        var balance_amount=parseInt(all_amount)-parseInt(curr_tr_total);
+        var balance_quantity=parseInt(all_quantity)-parseInt(curr_tr_quantity);
+        $('.all_amount').text(balance_amount);
+        $('.all_quantity').text(balance_quantity);
+        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        overallCalculation(balance_amount,tax_rate);
+
+     });
+
       $(function ($) {
         $('.no-search.select2bs4').select2({
           minimumResultsForSearch: -1
@@ -371,6 +393,7 @@
             data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
             // data +='<th>Total Price:&nbsp;<span class="all_rfq_price"></span></th>';
             data +='<th>Total Amount:&nbsp<span class="all_amount" id="allAmount"></span></th>'; 
+            data +='<th></th>'
             data +='</tr>';
             data +='</thead>';
             data +='<tbody class="parent_tbody">';

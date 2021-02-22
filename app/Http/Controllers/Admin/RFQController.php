@@ -254,6 +254,26 @@ class RFQController extends Controller
         'customer_id'  => 'required',
         'sales_rep_id' => 'required'
       ]);
+      $variant=$request->variant;
+      $new_variant=$request->new_variant;
+
+      $existing_product_id=$new_product_variant=array();
+      if (isset($variant['product_id'])) {
+        $existing_product_id=array_unique($variant['product_id']);
+      }
+      if (isset($new_variant['product_id'])) {
+        $new_product_variant=array_unique($new_variant['product_id']);
+      }
+      $active_product_ids=array_merge($existing_product_id,$new_product_variant);
+       
+
+      $deleted_products=RFQProducts::whereNotIn('product_id',$active_product_ids)
+                        ->pluck('product_id')
+                        ->toArray();
+
+      if(isset($deleted_products)) {
+        RFQProducts::whereIn('product_id',array_unique($deleted_products))->delete();
+      }
 
       $rfq_details=[
         'order_no'              => $request->order_no,
@@ -292,6 +312,34 @@ class RFQController extends Controller
         ];
         RFQProducts::where('id',$row_id)->update($data);
       }
+      if ($request->has('new_variant')) {
+          $variant               = $request->new_variant;
+          $product_ids           = $variant['product_id'];
+          $variant_id            = $variant['id'];
+          $base_price            = $variant['base_price'];
+          $retail_price          = $variant['retail_price'];
+          $minimum_selling_price = $variant['minimum_selling_price'];
+          $stock_qty             = $variant['stock_qty'];
+          $rfq_price             = $variant['rfq_price'];
+          $sub_total             = $variant['sub_total'];
+
+        foreach ($product_ids as $key => $product_id) {
+          if ($stock_qty[$key]!=0 && $stock_qty[$key]!="") {
+            $data=[
+              'rfq_id'                    => $id,
+              'product_id'                => $product_id,
+              'product_variant_id'        => $variant_id[$key],
+              'base_price'                => $base_price[$key],
+              'retail_price'              => $retail_price[$key],
+              'minimum_selling_price'     => $minimum_selling_price[$key],
+              'quantity'                  => $stock_qty[$key],
+              'rfq_price'                 => $rfq_price[$key],
+              'sub_total'                 => $sub_total[$key]
+            ];
+            RFQProducts::insert($data);
+          }
+        }
+      }
       return Redirect::route('rfq.index')->with('success','RFQ added successfully.!');
     }
 
@@ -316,6 +364,7 @@ class RFQController extends Controller
     {
 
         $search_type=$request->product_search_type;
+        $from=$request->from;
         if ($search_type=="product") {
 
             $product_names=Product::where("name","LIKE","%".$request->input('name')."%")
@@ -340,7 +389,13 @@ class RFQController extends Controller
             $data['product_id'] = $product_id;
             $data['product_name']=Product::where('id',$product_id)->value('name');
             $data['product_variant']=$this->Variants($product_id);
-            $view=view('admin.rfq.variants',$data)->render();
+
+            if ($from=="edit") {
+                $view=view('admin.rfq.edit_variants',$data)->render();
+            }
+            else{
+              $view=view('admin.rfq.variants',$data)->render();
+            }
             return $view;
         }
 
