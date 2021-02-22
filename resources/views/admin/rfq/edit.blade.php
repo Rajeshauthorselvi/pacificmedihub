@@ -124,7 +124,7 @@
 						              <tbody>
                             @foreach ($product_datas as $product)
             						      <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
-              								  <td class="expand-button"></td>
+              								  <td class="expand-button" style="width:10px"></td>
                                 <?php
                                 $total_based_products=\App\Models\RFQProducts::TotalDatas($rfqs->id,$product['product_id']);
                                  ?>
