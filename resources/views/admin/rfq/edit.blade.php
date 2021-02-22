@@ -144,8 +144,7 @@
                                 </td>
               							  </tr>
             								  <tr class="hide-table-padding">
-								                <td></td>
-								                <td colspan="4">
+								                <td colspan="5">
                                   <div id="collapse{{ $product['product_id'] }}" class="collapse in p-3">
                                     <table class="table table-bordered" style="width: 100%">
                                       <thead>
