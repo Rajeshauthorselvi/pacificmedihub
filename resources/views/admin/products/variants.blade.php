@@ -33,42 +33,41 @@
 				?>
 				@foreach($option_value as $k => $options)
 					<?php 
-
 						$sku_prefix = $product_code.'-'.$vendor_code;
 
-						$option_id1 	  = $options->optionID1;
-						$option_value_id1 = $options->optionValueID1;
-						$option1 		  = $options->optionValue1;
-
-						$sku = $sku_prefix.'-'.preg_replace('/\s*/', '', $option1);
-
+						$option_id1 	    = $options->optionID1;
+						$option_value_id1   = $options->optionValueID1;
+						$option1 		    = $options->optionValue1;
+						
+						$sku = $sku_prefix.'-'.$options->optionValueCode1;
+						
 						if($option_count==2||$option_count==3||$option_count==4||$option_count==5){
 							$option_id2       = $options->optionID2;
 							$option_value_id2 = $options->optionValueID2;
 							$option2          = $options->optionValue2;	
 
-							$sku = $sku_prefix.'-'.preg_replace('/\s*/', '', $option1).'-'.preg_replace('/\s*/', '', $option2);
+							$sku = $sku_prefix.'-'.$options->optionValueCode1.'-'.$options->optionValueCode2;
 						}
 						if($option_count==3||$option_count==4||$option_count==5){
 							$option_id3       = $options->optionID3;
 							$option_value_id3 = $options->optionValueID3;
 							$option3          = $options->optionValue3;	
 
-							$sku = $sku_prefix.'-'.preg_replace('/\s*/', '', $option1).'-'.preg_replace('/\s*/', '', $option2).'-'.preg_replace('/\s*/', '', $option3);
+							$sku = $sku_prefix.'-'.$options->optionValueCode1.'-'.$options->optionValueCode2.'-'.$options->optionValueCode3;
 						}
 						if($option_count==4||$option_count==5){
 							$option_id4       = $options->optionID4;
 							$option_value_id4 = $options->optionValueID4;
 							$option4          = $options->optionValue4;	
 
-							$sku = $sku_prefix.'-'.preg_replace('/\s*/', '', $option1).'-'.preg_replace('/\s*/', '', $option2).'-'.preg_replace('/\s*/', '', $option3).'-'.preg_replace('/\s*/', '', $option4);
+							$sku = $sku_prefix.'-'.$options->optionValueCode1.'-'.$options->optionValueCode2.'-'.$options->optionValueCode3.'-'.$options->optionValueCode4;
 						}
 						if($option_count==5){
 							$option_id5       = $options->optionID5;
 							$option_value_id5 = $options->optionValueID5;
 							$option5          = $options->optionValue5;	
 
-							$sku = $sku_prefix.'-'.preg_replace('/\s*/', '', $option1).'-'.preg_replace('/\s*/', '', $option2).'-'.preg_replace('/\s*/', '', $option3).'-'.preg_replace('/\s*/', '', $option4).'-'.preg_replace('/\s*/', '', $option5);
+							$sku = $sku_prefix.'-'.$options->optionValueCode1.'-'.$options->optionValueCode2.'-'.$options->optionValueCode3.'-'.$options->optionValueCode4.'-'.$options->optionValueCode5;
 						}
 
 						if($k<=0){

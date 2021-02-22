@@ -210,7 +210,8 @@
 
       $(document).on('keyup','#value',function(event) {
         var value = $(this).val();
-        var valueCode = value.substr(0, 5);
+        value = value.replace(/[_\W]+/g, "");
+        var valueCode = value.substr(0, 6);
         $(this).closest('.parent_tr').find('#code').val(valueCode.toUpperCase());
       });
 
