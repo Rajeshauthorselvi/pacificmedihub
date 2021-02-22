@@ -11,6 +11,7 @@ use App\Models\Orders;
 use App\Models\Vendor;
 use App\User;
 use Carbon\Carbon;
+use App\Models\CommissionValue;
 
 class DashboardController extends Controller
 {
@@ -38,6 +39,13 @@ class DashboardController extends Controller
     {
     	$state = City::where('state_id',$request->state_id)->pluck("name","id");    
         return response()->json($state);
+    }
+
+    public function commissionValue(Request $request)
+    {
+        $commission = CommissionValue::find($request->id);
+        $value = $commission->commission_value;
+        return $value;
     }
 
     public function errorPage()

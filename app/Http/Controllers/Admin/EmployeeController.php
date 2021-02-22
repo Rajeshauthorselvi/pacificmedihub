@@ -12,6 +12,7 @@ use App\Models\City;
 use App\Models\Prefix;
 use App\Models\EmpSalaryHistory;
 use App\Models\EmpSalaryStatus;
+use App\Models\CommissionValue;
 use Session;
 use Redirect;
 use Arr;
@@ -42,6 +43,12 @@ class EmployeeController extends Controller
 
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
 
+        //Commission Id 1 is a Base Commission
+        $data['base_commissions']     = CommissionValue::where('commission_id',1)->where('published',1)
+                                            ->where('is_deleted',0)->get();
+        //Commission Id 3 is a Target Commission
+        $data['target_commissions']   = CommissionValue::where('commission_id',3)->where('published',1)
+                                            ->where('is_deleted',0)->get();                                          
 
         $employee_code = Prefix::where('key','prefix')->where('code','employee')->value('content');
         if (isset($employee_code)) {
@@ -88,7 +95,6 @@ class EmployeeController extends Controller
             'country_id'     => 'required',
             'basic'          => 'required'
         ]);
-
         $emp_image= $request->hasFile('emp_image');
         if($emp_image){
             $photo          = $request->file('emp_image');            

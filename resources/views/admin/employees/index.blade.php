@@ -65,15 +65,19 @@
                           <td><a href="{{route('employees.show',$emp->id)}}">{{$emp->emp_id}}</a></td>
                           <td>{{$emp->emp_name}}</td>
                           <td>{{$emp->department->dept_name}}</td>
-                          <td>{{$emp->city->name}}</td>
+                          <td>{{isset($emp->city->name)?$emp->city->name:''}}</td>
                           <?php 
-                            if($emp->basic_commission_type==0) {
-                              $com_type ='%';
-                              $com_value = $emp->basic_commission_value.' '.($com_type);
+                            if(isset($emp->basic_commission_type)) {
+                              if($emp->baseCommission->commission_type=='f'){
+                                $com_type  = '$';
+                                $com_value = $com_type.' '.$emp->basic_commission_value;  
+                              }else{
+                                $com_type  = '%';
+                                $com_value = $emp->basic_commission_value.' '.($com_type);
+                              }
                             }
                             else{
-                              $com_type ='$';
-                              $com_value =  $com_type.' '.$emp->basic_commission_value;
+                              $com_value = '';
                             }
                           ?>
                           <td>{{$com_value}}</td>

@@ -1425,10 +1425,4 @@ class ProductController extends Controller
         return Response::download($path, $attachment);
     }
 
-    public function productCommissionValue(Request $request)
-    {
-        $commission = CommissionValue::find($request->id);
-        $value = $commission->commission_value;
-        return $value;
-    }
 }

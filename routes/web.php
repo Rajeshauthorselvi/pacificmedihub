@@ -44,7 +44,6 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 		'as'=>'post.product.import','uses'=>'Admin\ProductController@ProductImportPostController'
 	]);
 	Route::get('product-sample-sheet','Admin\ProductController@DownloadSampleImportSheet');
-	Route::get('product-commission-value','Admin\ProductController@productCommissionValue');
 	
 	//Purchase
 	Route::resource('purchase','Admin\PurchaseController');
@@ -133,10 +132,12 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::resource('access-control','Admin\AccessController');	
 
 
-
 	//Get Sate and City
 	Route::get('get-state-list','Admin\DashboardController@getStateList');
 	Route::get('get-city-list','Admin\DashboardController@getCityList');
+
+	//Get Commission Value
+	Route::get('get-commission-value','Admin\DashboardController@commissionValue');
 
 });
 
