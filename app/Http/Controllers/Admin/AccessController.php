@@ -243,14 +243,23 @@ class AccessController extends Controller
 
     public function EntireStockSec($role_id,$total_opration,$product_data)
     {
-            /*Stock In Transist*/
-            if (isset($product_data['stock_transist'])) {
-                $this->DataLoop(4,$total_opration,'stock_transist',$product_data['stock_transist'],$role_id);
+            /*Stock In Transist Vendor*/
+            if (isset($product_data['stock_transist_vendor'])) {
+                $this->DataLoop(4,$total_opration,'stock_transist_vendor',$product_data['stock_transist_vendor'],$role_id);
             }
             else{
-                RoleAccessPermission::where('object','stock_transist')->update(['allow_access'=>'no']);
+                RoleAccessPermission::where('object','stock_transist_vendor')->update(['allow_access'=>'no']);
             }
-            /*Stock In Transist*/
+            /*Stock In Transist Vendor*/
+            
+            /*Stock In Transist Customer*/
+            if (isset($product_data['stock_transist_customer'])) {
+                $this->DataLoop(4,$total_opration,'stock_transist_customer',$product_data['stock_transist_customer'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','stock_transist_customer')->update(['allow_access'=>'no']);
+            }
+            /*Stock In Transist Customer*/
 
             /*Return*/
             if (isset($product_data['return'])) {
