@@ -40,10 +40,23 @@ body, html {
   text-align: center;
 }
 
+.middle .login-btn{
+  padding: 10px;
+  border-radius: 3px;
+  background-color: #67b7aa;
+  color:#fff;
+  text-decoration: none;
+  border: 1px solid #fff;
+}
+.middle .login-btn:hover {
+    background-color: #fff;
+    color: #67b7aa;
+}
 hr {
   margin: auto;
   width: 40%;
 }
+
 </style>
 <body>
 
@@ -51,6 +64,7 @@ hr {
 
   <div class="middle">
     <h1>COMING SOON</h1>
+    <a class="login-btn" href="{{ route('admin.login') }}">ADMIN LOGIN</a>
   </div>
 
 </div>
