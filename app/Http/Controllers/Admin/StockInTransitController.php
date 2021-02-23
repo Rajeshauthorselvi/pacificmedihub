@@ -266,9 +266,6 @@ class StockInTransitController extends Controller
                 'purchase_return_id'      => $return_id->id
               ];
 
-
-              // var_dump($data_return_products);
-
                $return_product_id=PurchaseProductReturn::updateOrCreate(
                 ['product_id'=> $product_id[$key],'purchase_variation_id'=>$row_id,'purchase_return_id'=>$return_id->id],
                 $data_return_products
@@ -280,8 +277,6 @@ class StockInTransitController extends Controller
         }
 
         /*Add record to return table*/
-//exit();
-
 
         return Redirect::route('stock-in-transit.index')
                ->with('success','Stock-In-Transit modified successfully...!');  
