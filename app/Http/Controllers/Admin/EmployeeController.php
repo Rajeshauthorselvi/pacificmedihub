@@ -13,9 +13,15 @@ use App\Models\Prefix;
 use App\Models\EmpSalaryHistory;
 use App\Models\EmpSalaryStatus;
 use App\Models\CommissionValue;
+use App\Models\Orders;
+use App\Models\OrderProducts;
+use App\Models\OrderStatus;
+use App\Models\Product;
+use Carbon\Carbon;
 use Session;
 use Redirect;
 use Arr;
+use DB;
 
 class EmployeeController extends Controller
 {
@@ -173,6 +179,13 @@ class EmployeeController extends Controller
     {
         $data = array();
         $data['employees'] = Employee::find($id);
+        //Commission Id 1 is a Base Commission
+        $data['base_commissions']     = CommissionValue::where('commission_id',1)->where('published',1)
+                                            ->where('is_deleted',0)->get();
+        //Commission Id 3 is a Target Commission
+        $data['target_commissions']   = CommissionValue::where('commission_id',3)->where('published',1)
+                                            ->where('is_deleted',0)->get();
+
         return view('admin.employees.show',$data);
     }
 
@@ -188,6 +201,12 @@ class EmployeeController extends Controller
         $data['employees'] = Employee::find($id);
         $data['departments'] = [''=>'Please Select']+Department::where('is_deleted',0)->where('status',1)->pluck('dept_name','id')->toArray();
         $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        //Commission Id 1 is a Base Commission
+        $data['base_commissions']     = CommissionValue::where('commission_id',1)->where('published',1)
+                                            ->where('is_deleted',0)->get();
+        //Commission Id 3 is a Target Commission
+        $data['target_commissions']   = CommissionValue::where('commission_id',3)->where('published',1)
+                                            ->where('is_deleted',0)->get();
         return view('admin.employees.edit',$data);
     }
 
@@ -299,20 +318,64 @@ class EmployeeController extends Controller
 
     public function salaryList()
     {
-        $data = array();
-        $get_employees = Employee::where('status',1)->where('is_deleted',0)->get();
+        $data     = array();
         $employee = array();
-        foreach ($get_employees as $key => $emp) {
-            $salaryStatus=EmpSalaryStatus::where('emp_id',$emp->id)->whereRaw('MONTH(paid_date)=?',date('m'))->first();
-            $employee[$key]['id'] = $emp->id;
-            $employee[$key]['name'] = $emp->emp_name;
-            $employee[$key]['basic_salary'] = $emp->basic;
-            $employee[$key]['self_cpf'] = $emp->self_cpf;
-            $employee[$key]['emp_cpf'] = $emp->emp_cpf;
-            $employee[$key]['sdl'] = $emp->sdl;
-            $salary = $emp->basic;
 
-            $total_salary = $salary;
+        $get_employees = Employee::where('status',1)->where('is_deleted',0)->get();
+        $pre_month     = Carbon::now()->subMonth()->format('m');
+         
+        foreach ($get_employees as $key => $emp) {
+            $salaryStatus   = EmpSalaryStatus::where('emp_id',$emp->id)->whereRaw('MONTH(paid_date)=?',date('m'))
+                                ->first();
+            $get_product_id = DB::table('orders as o')
+                                ->where('o.sales_rep_id',$emp->id)
+                                ->where('o.order_status',13)
+                                ->whereRaw('MONTH(o.order_completed_at)=?',$pre_month)
+                                ->leftJoin('order_products as op','o.id','=','op.order_id')
+                                ->pluck('op.product_id')->toArray();
+
+            $product_id = array_unique($get_product_id);
+            $product_commission = 0;
+            foreach($product_id as $id){
+                $product = Product::find($id);
+                if($product->commissionType->commission_type=='p'){
+                    $order_per        = OrderProducts::where('product_id',$id)->sum('final_price');
+                    $percentage_value = ($product->commission_value/100)*$order_per;
+                }else{
+                    $fixed_value      = $product->commission_value;
+                }
+                $product_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
+            }
+
+            if($emp->baseCommission->commission_type=='f'){
+                $commission = $product_commission*$emp->basic_commission_value;
+            }else{
+                $commission = $product_commission*($emp->basic_commission_value/100);
+            }
+            
+            $targetCommissions  = Orders::where('sales_rep_id',$emp->id)->where('order_status',13)
+                                        ->whereRaw('MONTH(order_completed_at)=?',$pre_month)->sum('total_amount');
+            $t_commission       = (float)$targetCommissions;
+            $target_commissions = 0;
+
+            if($t_commission>=$emp->target_value){
+                if($emp->targetCommission->commission_type=='f'){
+                    $target_commissions = $emp->target_commission_value;
+                }else{
+                    $target_commissions = $emp->target_value*($emp->target_commission_value/100);
+                }
+            }
+
+            $employee[$key]['id']         = $emp->id;
+            $employee[$key]['name']       = $emp->emp_name;
+            $employee[$key]['department'] = $emp->department->dept_name;
+            $payment                      = $emp->basic + $commission + $target_commissions;
+            $deduction                    = $emp->self_cpf + $emp->sdl;
+            $employee[$key]['payment']    = $payment;
+            $employee[$key]['deduction']  = $deduction;
+
+            $total_salary = $payment - $deduction;
+
             if($salaryStatus){
                 $paid_date = date('d/m/Y',strtotime($salaryStatus->paid_date));
                 if($salaryStatus->status==1) {
@@ -330,37 +393,232 @@ class EmployeeController extends Controller
                 $action = 'Paynow';
             }
             $employee[$key]['total_salary'] = $total_salary;
-            $employee[$key]['paid_date'] = $paid_date;
-            $employee[$key]['status'] = $status;
-            $employee[$key]['action'] = $action;
+            $employee[$key]['paid_date']    = $paid_date;
+            $employee[$key]['status']       = $status;
+            $employee[$key]['action']       = $action;
         }
-        
         $data['employee_salary'] = $employee;
+
+        return view('admin.employees.salary_list',$data);
+    }
+
+    public function salaryView($emp_id)
+    {
+        $id = base64_decode($emp_id);
+        $employee = Employee::find($id);
+        $data['employee'] = $employee;
+        $pre_month     = Carbon::now()->subMonth()->format('m');
+        $salaryStatus     = EmpSalaryStatus::where('emp_id',$id)->whereRaw('MONTH(paid_date)=?',date('m'))
+                                ->first();
+        if($salaryStatus){
+            $data['paid_date'] = date('d/m/Y',strtotime($salaryStatus->paid_date));
+        }else{
+            $data['paid_date'] = 'Not Paid';
+        }
+
+        $get_product_id = DB::table('orders as o')->where('o.sales_rep_id',$id)->where('o.order_status',13)
+                                ->whereRaw('MONTH(o.order_completed_at)=?',$pre_month)
+                                ->leftJoin('order_products as op','o.id','=','op.order_id')
+                                ->pluck('op.product_id')->toArray();
+
+        $product_id = array_unique($get_product_id);
+        $product_commission = 0;
+        foreach($product_id as $id){
+            $product = Product::find($id);
+            if($product->commissionType->commission_type=='p'){
+                $order_per        = OrderProducts::where('product_id',$id)->sum('final_price');
+                $percentage_value = ($product->commission_value/100)*$order_per;
+            }else{
+                $fixed_value      = $product->commission_value;
+            }
+            $product_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
+        }
+
+        if($employee->baseCommission->commission_type=='f'){
+            $commission = $product_commission*$employee->basic_commission_value;
+        }else{
+            $commission = $product_commission*($employee->basic_commission_value/100);
+        }
+          
+        $targetCommissions  = Orders::where('sales_rep_id',$employee->id)->where('order_status',13)
+                                    ->whereRaw('MONTH(order_completed_at)=?',$pre_month)->sum('total_amount');
+        $t_commission       = (float)$targetCommissions;
+        $target_commissions = 0;
+
+        if($t_commission>=$employee->target_value){
+            if($employee->targetCommission->commission_type=='f'){
+                $target_commissions = $employee->target_commission_value;
+            }else{
+                $target_commissions = $employee->target_value*($employee->target_commission_value/100);
+            }
+        }
+
+        $data['base_salary']        = isset($employee->basic)?$employee->basic:'0.00';
+        $data['commission']         = isset($commission)?$commission:'0.00';
+        $data['target_commissions'] = isset($target_commissions)?$target_commissions:'0.00';
+        $data['cpf']                = isset($employee->cpf_self)?$employee->cpf_self:'0.00';
+        $data['sdl']                = isset($employee->sdl)?$employee->sdl:'0.00';
+        $data['employer_cpf']       = isset($employee->employer_cpf)?$employee->employer_cpf:'0.00';
+
+        $payment_total              = $employee->basic + $commission + $target_commissions;
+        $deduction_total            = $employee->self_cpf + $employee->sdl;
+        $data['payment_total']      = $payment_total;
+        $data['deduction_total']    = $deduction_total;    
+        $data['new_salary']         = $payment_total - $deduction_total;
+
+        return view('admin.employees.view_salary',$data);
+    }
+
+
+    public function monthSalaryList(Request $request)
+    {
+        dd($request->all());
+        
+        $data     = array();
+        $employee = array();
+
+        $get_employees = Employee::where('status',1)->where('is_deleted',0)->get();
+        $pre_month     = Carbon::now()->subMonth()->format('m');
+         
+        foreach ($get_employees as $key => $emp) {
+            $salaryStatus   = EmpSalaryStatus::where('emp_id',$emp->id)->whereRaw('MONTH(paid_date)=?',date('m'))
+                                ->first();
+            $get_product_id = DB::table('orders as o')
+                                ->where('o.sales_rep_id',$emp->id)
+                                ->where('o.order_status',13)
+                                ->whereRaw('MONTH(o.order_completed_at)=?',$pre_month)
+                                ->leftJoin('order_products as op','o.id','=','op.order_id')
+                                ->pluck('op.product_id')->toArray();
+
+            $product_id = array_unique($get_product_id);
+            $product_commission = 0;
+            foreach($product_id as $id){
+                $product = Product::find($id);
+                if($product->commissionType->commission_type=='p'){
+                    $order_per        = OrderProducts::where('product_id',$id)->sum('final_price');
+                    $percentage_value = ($product->commission_value/100)*$order_per;
+                }else{
+                    $fixed_value      = $product->commission_value;
+                }
+                $product_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
+            }
+
+            if($emp->baseCommission->commission_type=='f'){
+                $commission = $product_commission*$emp->basic_commission_value;
+            }else{
+                $commission = $product_commission*($emp->basic_commission_value/100);
+            }
+            
+            $targetCommissions  = Orders::where('sales_rep_id',$emp->id)->where('order_status',13)
+                                        ->whereRaw('MONTH(order_completed_at)=?',$pre_month)->sum('total_amount');
+            $t_commission       = (float)$targetCommissions;
+            $target_commissions = 0;
+
+            if($t_commission>=$emp->target_value){
+                if($emp->targetCommission->commission_type=='f'){
+                    $target_commissions = $emp->target_commission_value;
+                }else{
+                    $target_commissions = $emp->target_value*($emp->target_commission_value/100);
+                }
+            }
+
+            $employee[$key]['id']         = $emp->id;
+            $employee[$key]['name']       = $emp->emp_name;
+            $employee[$key]['department'] = $emp->department->dept_name;
+            $payment                      = $emp->basic + $commission + $target_commissions;
+            $deduction                    = $emp->self_cpf + $emp->sdl;
+            $employee[$key]['payment']    = $payment;
+            $employee[$key]['deduction']  = $deduction;
+
+            $total_salary = $payment - $deduction;
+
+            if($salaryStatus){
+                $paid_date = date('d/m/Y',strtotime($salaryStatus->paid_date));
+                if($salaryStatus->status==1) {
+                    $status = 'Paid'; 
+                    $action = 'Payslip';
+                    $total_salary = $salaryStatus->paid_amount;
+                }
+                else{
+                    $status = 'Not Paid';
+                    $action = 'Paynow';
+                }
+            }else{
+                $paid_date = '-';
+                $status = 'Not Paid';
+                $action = 'Paynow';
+            }
+            $employee[$key]['total_salary'] = $total_salary;
+            $employee[$key]['paid_date']    = $paid_date;
+            $employee[$key]['status']       = $status;
+            $employee[$key]['action']       = $action;
+        }
+        $data['employee_salary'] = $employee;
+
         return view('admin.employees.salary_list',$data);
     }
 
     public function paymentForm(Request $request)
     {
         $emp = Employee::find($request->emp_id);
-        $data['id'] = $emp->id;
-        $data['name'] = $emp->emp_name;
-        $salary = $emp->basic+$emp->hr+$emp->da+$emp->conveyance;
-        $deduction = $emp->esi+$emp->pf;
-        $total_salary = $salary - $deduction;
-        $data['total_salary'] = number_format($total_salary,2,'.',',');
+        $pre_month      = Carbon::now()->subMonth()->format('m');
+        $get_product_id = DB::table('orders as o')->where('o.sales_rep_id',$emp->id)
+                                ->where('o.order_status',13)->whereRaw('MONTH(o.order_completed_at)=?',$pre_month)
+                                ->leftJoin('order_products as op','o.id','=','op.order_id')
+                                ->pluck('op.product_id')->toArray();
+
+        $product_id = array_unique($get_product_id);
+        $product_commission = 0;
+        foreach($product_id as $id){
+            $product = Product::find($id);
+            if($product->commissionType->commission_type=='p'){
+                $order_per        = OrderProducts::where('product_id',$id)->sum('final_price');
+                $percentage_value = ($product->commission_value/100)*$order_per;
+            }else{
+                $fixed_value      = $product->commission_value;
+            }
+            $product_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
+        }
+
+        if($emp->baseCommission->commission_type=='f'){
+            $commission = $product_commission*$emp->basic_commission_value;
+        }else{
+            $commission = $product_commission*($emp->basic_commission_value/100);
+        }
+        
+        $targetCommissions  = Orders::where('sales_rep_id',$emp->id)->where('order_status',13)
+                                    ->whereRaw('MONTH(order_completed_at)=?',$pre_month)->sum('total_amount');
+        $t_commission       = (float)$targetCommissions;
+        $target_commissions = 0;
+
+        if($t_commission>=$emp->target_value){
+            if($emp->targetCommission->commission_type=='f'){
+                $target_commissions = $emp->target_commission_value;
+            }else{
+                $target_commissions = $emp->target_value*($emp->target_commission_value/100);
+            }
+        }
+        $data['id']           = $emp->id;
+        $data['name']         = $emp->emp_name;
+        $data['department']   = $emp->department->dept_name;
+        $payment              = $emp->basic + $commission + $target_commissions;
+        $deduction            = $emp->self_cpf + $emp->sdl;
+        $total_salary         = $payment - $deduction;
+        $data['total_salary'] = number_format($total_salary,2,'.','');
         $data['salary_month'] = date('F Y');
         return view('admin.employees.payment_form',$data);
     }
 
     public function confirmSalary(Request $request)
     {
-        $salary = new EmpSalaryStatus;
-        $salary->emp_id = $request->emp_id;
-        $salary->paid_amount = floatval(str_replace(",","",$request->total_salary));
-        $salary->paid_date = date('Y-m-d');
-        $salary->status = 1;
-        $salary->created_at = date('Y-m-d H:i:s');
+        $salary              = new EmpSalaryStatus;
+        $salary->emp_id      = $request->emp_id;
+        $salary->paid_amount = $request->total_salary;
+        $salary->paid_date   = date('Y-m-d');
+        $salary->status      = 1;
+        $salary->created_at  = date('Y-m-d H:i:s');
         $salary->save();
+
         return Redirect::route('salary.list')->with('success','Paid Successfully.!');
     }
 }

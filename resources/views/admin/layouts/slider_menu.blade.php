@@ -124,14 +124,9 @@
               <p>Employees<i class="fas fa-angle-left right"></i></p>
             </a>
             <ul class="nav nav-treeview" style="display:@if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show'||$current_route=='salary.list') block @endif">
-              <li class="nav-item @if($current_route=='employees.index'||$current_route=='employees.edit'||$current_route=='employees.show') active @endif">
+              <li class="nav-item @if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show') active @endif">
                 <a href="{{route('employees.index')}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i><p>List Employees</p>
-                </a>
-              </li>
-              <li class="nav-item @if($current_route=='employees.create') active @endif">
-                <a href="{{route('employees.create')}}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i><p>Add Employee</p>
                 </a>
               </li>
               <li class="nav-item @if($current_route=='salary.list') active @endif">

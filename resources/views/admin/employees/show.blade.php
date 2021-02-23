@@ -120,14 +120,14 @@
                         </div>
                         <div class="col-sm-5">
                           {!! Form::label('State', 'State') !!}
-                          {!! Form::text('state_id',$employees->state->name,['readonly','class'=>'form-control', 'id'=>'State']) !!}
+                          {!! Form::text('state_id',isset($employees->state->name)?$employees->state->name:'',['readonly','class'=>'form-control', 'id'=>'State']) !!}
                         </div>
                       </div>
 
                       <div class="form-group">
                         <div class="col-sm-5">
                           {!! Form::label('City', 'City') !!}
-                          {!! Form::text('city_id',$employees->city->name,['readonly','class'=>'form-control', 'id'=>'City']) !!}
+                          {!! Form::text('city_id',isset($employees->city->name)?$employees->city->name:'',['readonly','class'=>'form-control', 'id'=>'City']) !!}
                         </div>
                         <div class="col-sm-5">
                           {!! Form::label('PostCode', 'Post Code') !!}
@@ -141,7 +141,7 @@
                       <div class="form-group">
                         <div class="col-sm-5">
                           {!! Form::label('empImage', 'Employee Photo (JPEG,PNG)') !!}<br>
-                          <img title="Click to Change" class="img-employee" id="output_image" style="width:125px;height:100px;" src="{{asset($image)}}">
+                          <img title="Click to Change" class="img-employee" id="output_image" style="width:125px;height:110px;" src="{{asset($image)}}">
                         </div>
                         <div class="col-sm-5">
                           <div class="icheck-info d-inline">
@@ -215,7 +215,7 @@
                     <h5>Basic Commission:</h5>
                     <div class="form-group">
                       <?php 
-                        if($employees->basic_commission_type==0){
+                        if($employees->baseCommission->commission_type=='f'){
                           $basic_commission_type = 'Percentage (%)';
                         }else{
                           $basic_commission_type = 'Fixed (amount)';
@@ -234,12 +234,8 @@
                     </div><br>
                     <h5>Target Commission:</h5>
                     <div class="form-group">
-                      <div class="col-sm-3">
-                        <label for="targetValue">Target Value</label>
-                        <input type="text" name="target_value" class="form-control" id="targetValue" readonly value="{{$employees->target_value}}">
-                      </div>
                       <?php 
-                        if($employees->target_commission_type==0){
+                       if($employees->targetCommission->commission_type=='f'){
                           $target_commision_type = 'Percentage (%)';
                         }else{
                           $target_commision_type = 'Fixed (amount)';
@@ -247,12 +243,19 @@
                       ?>
                       <div class="col-sm-3">
                         <label for="targetCommissionType">Commission Type</label>
-                         <input type="text" class="form-control" id="target_commision_type" readonly value="{{$target_commision_type}}">
+                        <input type="text" class="form-control" id="target_commision_type" readonly value="{{$target_commision_type}}">
                       </div>
+
                       <div class="col-sm-3">
                         <label for="targetCommissionValue">Value</label>
                         <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" readonly value="{{$employees->target_commission_value}}">
                       </div>
+
+                      <div class="col-sm-3">
+                        <label for="targetValue">Target Value</label>
+                        <input type="text" name="target_value " class="form-control" id="targetValue" readonly value="{{$employees->target_value}}">
+                      </div>
+
                     </div>
                   </div>
 

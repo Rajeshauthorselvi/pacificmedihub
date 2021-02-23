@@ -34,7 +34,7 @@
                 <div class="card-body">
                   <div class="date-filter">
                     <div class="input-group date" id="dateFilter" data-target-input="nearest">
-                      <input type="text" name="date" class="form-control datetimepicker-input" data-target="#dateFilter" value="{{old('date')}}"/>
+                      <input type="text" name="date" class="form-control datetimepicker-input" data-target="#dateFilter" value="{{date('m/Y')}}"/>
                       <div class="input-group-append" data-target="#dateFilter" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -45,67 +45,61 @@
                     <thead>
                       <tr>
                       	<th>Name</th>
-                        <th colspan="4">Payments</th>
-                        <th colspan="3">Deductables</th>
-                        <th colspan="2">Employer Contribution</th>
-                        <th>Total Salary</th>
+                        <th>Department</th>
+                        <th>
+                          Payments
+                          <span title="(Basic Salary + Commission + Target Bonus)" class="ico-help">
+                            <i class="fa fa-question-circle"></i>
+                          </span>
+                        </th>
+                        <th>
+                          Deductables
+                          <span title="(CPF + SDL)" class="ico-help">
+                            <i class="fa fa-question-circle"></i>
+                          </span>
+                        <th>Total Salary 
+                          <span title="(Payments - Deductables)" class="ico-help">
+                            <i class="fa fa-question-circle"></i>
+                          </span>
                         <th>Paid Date</th>
                       	<th>Status</th>
                       	<th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                          <td></td>
-                          <td>Basic Salary</td>
-                          <td>Commission</td>
-                          <td>Bonus</td>
-                          <td>Claims/Others</td>
-
-                          <td>CPF</td>
-                          <td>SDL</td>
-                          <td>Others</td>
-
-                          <td>Employer CPF</td>
-                          <td>Others</td>
-                          
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-
-                        </tr>
                     	@foreach($employee_salary as $emp)
                         <tr>
                           <input type="hidden" name="emp_id" value="{{$emp['id']}}">
                           <td>{{$emp['name']}}</td>
-
-                          <td>{{$emp['basic_salary']}}</td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-
-                          <td>{{$emp['self_cpf']}}</td>
-                          <td>{{$emp['sdl']}}</td>
-                          <td></td>
-
-                          <td>{{$emp['emp_cpf']}}</td>
-                          <td></td>
-                          
-                          
-                          <td>{{$emp['total_salary']}}</td>
+                          <td>{{$emp['department']}}</td>
+                          <td>{{number_format($emp['payment'],2,'.','')}}</td>
+                          <td>{{number_format($emp['deduction'],2,'.','')}}</td>
+                          <td>{{number_format($emp['total_salary'],2,'.','')}}</td>
                           <td>{{$emp['paid_date']}}</td>
                           <td>
-                            <span style="background: @if($emp['status']=='Paid') #3287c7 @else #fb9a19 @endif ;color:#fff">
-                              {{$emp['status']}}
-                            </span>
+                            <?php $color_code=['Paid'=>'#00a65a','Not Paid'=>'#f0ad4e']?>
+                            <span class="badge" style="background:{{ $color_code[$emp['status']] }};color: #fff ">{{ $emp['status'] }}</span>
                           </td>
                           <td>
-                            @if($emp['action']=='Payslip')
-                              <a href="#" class="btn btn-info">Payslip</a>
-                            @else
-                              <button type="button" class="btn btn-success paynow" employee-id="{{$emp['id']}}" data-toggle="modal" data-target="#payment-form">Pay Now</button>
-                            @endif
+                            <div class="input-group-prepend">
+                              <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
+                              <ul class="dropdown-menu">
+                                <a href="{{ route('salary.view',base64_encode($emp['id'])) }}"><li class="dropdown-item">
+                                  <i class="fas fa-eye"></i>&nbsp;&nbsp;View</li>
+                                </a>
+                                @if($emp['action']=='Payslip')
+                                  <a href="javascript:void(0);"><li class="dropdown-item">
+                                    <i class="fas fa-file-invoice"></i>&nbsp;&nbsp;Payslip</li></a>
+                                @else
+                                <a href="javascript:void(0);">
+                                  <li class="dropdown-item paynow" employee-id="{{$emp['id']}}" data-toggle="modal" data-target="#payment-form"><i class="fas fa-credit-card"></i>&nbsp;&nbsp;Pay Now</li>
+                                </a>
+                                @endif
+                                <a href="javascript:void(0);"><li class="dropdown-item">
+                                  <i class="fas fa-file-invoice-dollar"></i>&nbsp;&nbsp;List Commission</li>
+                                </a>
+                              </ul>
+                            </div>
                           </td>
                         </tr>
                       @endforeach
@@ -149,7 +143,8 @@
       //Date range picker
       $(function() {
         $('#dateFilter').datetimepicker({
-            format: 'MM/yy'
+          language: 'en',
+          format: 'MM/yy'
         });
       });
 

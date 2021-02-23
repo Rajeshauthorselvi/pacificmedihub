@@ -16,4 +16,8 @@ class Product extends Model
     {
         return $this->belongsTo('App\Models\Brand','brand_id');
     }
+
+    public function commissionType(){
+        return $this->belongsTo('App\Models\CommissionValue','commission_type');
+    }
 }

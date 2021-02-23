@@ -161,3 +161,19 @@ tr.hide-table-padding>td {padding: 0;}
 .show-page tr.hide-table-padding>td {padding: 0;}
 .show-page .expand-button {position: relative;}
 .show-page .order-no-sec {line-height: 30px;font-size: 16px;}
+
+
+/* Salary View Page */
+.details-box {width: 75%;float: left;}
+.details-box .employee-details {width: 100%;display: flex;padding: 5px;}
+.details-box .employee-details .title {width: 20%;}
+.details-box .employee-details .details {width: 60%;padding-left: 10px;}
+.profile-image {width: 20%;float: left;text-align: center;}
+.profile-image .img-employee{width:100px;height:100px;}
+.table-responsive {padding: 20px 0;}
+.salary.table th, .salary.table td {border: 1px solid #ddd;}
+.salary.table .all-totals {background: #eaf3f9;}
+.salary.table .block, .net-salary{display: flex;}
+.salary.table .title, .net-salary .title{width: 60%;}
+.salary.table .value, .net-salary .value{width: 40%;text-align: right;}
+.net-salary {width: 35%;display: flex;float: right;padding: 0 10px;}

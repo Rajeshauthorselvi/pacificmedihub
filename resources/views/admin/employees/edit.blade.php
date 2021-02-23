@@ -164,18 +164,20 @@
 
                         <div class="form-group">
                           <div class="col-sm-5">
-                            {!! Form::label('empImage', 'Employee Photo (JPEG,PNG)') !!}<br>
-                            <input type="file" name="emp_image" id="empImage" accept="image/*" onchange="preview_image(event)" style="display:none;" value="{{$employees->emp_image}}">
-                            <img title="Click to Change" class="img-employee" id="output_image" onclick="$('#empImage').trigger('click'); return true;" style="width:125px;height:100px;cursor:pointer;" src="{{asset($image)}}">
+                            {!! Form::label('empImage', 'Employee Photo (JPEG,PNG)') !!}
+                            <div class="custom-file">
+                              <input type="file" class="custom-file-input" name="emp_image" id="empImage" accept="image/*" value="{{old('emp_image')}}">
+                              <label class="custom-file-label" for="empImage">Choose file</label>
+                            </div><br><br>
+                            <img class="img-employee" id="output_image" style="width:125px;height:110px;" src="{{asset($image)}}">
                           </div>
                           <div class="col-sm-5" style="margin-top: 40px">
                             <div class="icheck-info d-inline">
-                              <input type="checkbox" name="emp_status" id="Status" @if((old('emp_status')=='on')||$employees->status==1) checked @endif>
+                              <input type="checkbox" name="emp_status" id="Status" @if((old('emp_status')=='on')||($employees->status==1)) checked @endif>
                               <label for="Status">Published</label>
                             </div>
                           </div>
                         </div>
-
                       </div>
                       <button type="button" id="validateStep1" class="btn btn-primary next-step">Next</button>
                     </div>
@@ -259,14 +261,19 @@
                       <div class="form-group">
                         <div class="col-sm-3">
                           <label for="commissionType">Commission Type</label>
-                          <select class="form-control commission select2bs4" name="commision_type" id="commissionType">
-                            <option @if($employees->basic_commission_type==0) selected="selected" @endif value="0">Percentage (%)</option>
-                            <option @if($employees->basic_commission_type==1) selected="selected" @endif value="1">Fixed (amount)</option>
+                          <select class="form-control commission no-search select2bs4" name="commision_type" id="commissionType">
+                            @foreach($base_commissions as $base)
+                              <?php 
+                                if($base->commission_type=='f') $type = 'Fixed (amount)';
+                                else $type = 'Percentage (%)';
+                              ?>
+                              <option @if($employees->basic_commission_type==$base->id) selected="selected" @endif value="{{$base->id}}" {{ (collect(old('commision_type'))->contains($base->id)) ? 'selected':'' }}>{{$type}}</option>
+                            @endforeach
                           </select>
                         </div>
                         <div class="col-sm-3">
                           <label for="commissionValue">Value</label>
-                          <input type="text" name="commision_value" class="form-control" id="commissionValue" value="{{old('commision_value',$employees->basic_commission_value)}}">
+                          <input type="text" name="commision_value" class="form-control" id="commissionValue" autocomplete="off" value="{{old('commision_value',$employees->basic_commission_value)}}">
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-3"></div>
@@ -274,20 +281,27 @@
                       <h5>Target Commission:</h5>
                       <div class="form-group">
                         <div class="col-sm-3">
-                          <label for="targetValue">Target Value</label>
-                          <input type="text" name="target_value" class="form-control" id="targetValue" value="{{old('target_value',$employees->target_value)}}">
-                        </div>
-                        <div class="col-sm-3">
                           <label for="targetCommissionType">Commission Type</label>
-                          <select class="form-control commission select2bs4" name="target_commision_type" id="targetCommissionType">
-                            <option @if($employees->target_commission_type==0) selected="selected" @endif value="0">Percentage (%)</option>
-                            <option @if($employees->target_commission_type==1) selected="selected" @endif value="1">Fixed (amount)</option>
+                          <select class="form-control target-commission no-search select2bs4" name="target_commision_type" id="targetCommissionType">
+                           <option selected="selected" value="">Select Target Commission</option>
+                            @foreach($target_commissions as $target)
+                              <?php 
+                                if($target->commission_type=='f') $target_type = 'Fixed (amount)';
+                                else $target_type = 'Percentage (%)';
+                              ?>
+                              <option @if($employees->target_commission_type==$target->id) selected="selected" @endif value="{{$target->id}}" {{ (collect(old('target_commision_type'))->contains($target->id)) ? 'selected':'' }}>{{$target_type}}</option>
+                            @endforeach
                           </select>
                         </div>
                         <div class="col-sm-3">
-                          <label for="targetCommissionValue">Value</label>
-                          <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" value="{{old('target_commission_value',$employees->target_commission_value)}}">
+                          <label for="targetCommissionValue"> Value</label>
+                          <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" autocomplete="off"  value="{{old('target_commission_value',$employees->target_commission_value)}}">
                         </div>
+                        <div class="col-sm-3">
+                          <label for="targetValue">Target Value</label>
+                          <input type="text" name="target_value" class="form-control" id="targetValue" autocomplete="off"  value="{{old('target_value',$employees->target_value)}}">
+                        </div>
+
                       </div>
                       <ul class="float-left">
                         <li class="list-inline-item">
@@ -312,6 +326,12 @@
 
   @push('custom-scripts')
     <script type="text/javascript">
+      $(function ($) {
+        $('.no-search.select2bs4').select2({
+          minimumResultsForSearch: -1
+        });
+      });
+
       $(document).ready(function () {
         $(document).ajaxSend(function() {
           $("#overlay").fadeIn(300);　
@@ -401,6 +421,48 @@
         $(elem).parent().prev().find('a[data-toggle="tab"]').click();
       }
 
+      //Get Basic Commission
+      $('.commission').on('change',function(){
+        var commissionTypeId = $('#commissionType option:selected').val();
+        if(commissionTypeId!=""){
+          $('#commissionValue').removeAttr('disabled');  
+        }else{
+          $('#commissionValue').attr('disabled','disabled');
+          $('#commissionValue').val("");
+        }
+        
+        $.ajax({
+          url:"{{ url('admin/get-commission-value') }}",
+          type:"GET",
+          data:{"_token": "{{ csrf_token() }}",id:commissionTypeId},
+          success: function (data) { 
+            $('#commissionValue').val(data);
+          }
+        });
+      });
+
+      //Get Target Commission
+      $('.target-commission').on('change',function(){
+        var targetCommissionTypeId = $('#targetCommissionType option:selected').val();
+        if(targetCommissionTypeId!=""){
+          $('#targetValue').removeAttr('disabled');
+          $('#targetCommissionValue').removeAttr('disabled');
+        }else{
+          $('#targetValue').attr('disabled','disabled');
+          $('#targetCommissionValue').attr('disabled','disabled');
+          $('#targetValue').val("");
+          $('#targetCommissionValue').val("");
+        }
+        $.ajax({
+          url:"{{ url('admin/get-commission-value') }}",
+          type:"GET",
+          data:{"_token": "{{ csrf_token() }}",id:targetCommissionTypeId},
+          success: function (data) { 
+            $('#targetCommissionValue').val(data);
+          }
+        });
+      });
+
       //Get State
       $(document).ready(function(){
         var country_id = "<?php echo json_decode($employees->emp_country); ?>";
@@ -482,17 +544,6 @@
         }
       });
 
-      
-      function preview_image(event) 
-      {
-        var reader = new FileReader();
-        reader.onload = function()
-        {
-          var output = document.getElementById('output_image');
-          output.src = reader.result;
-        }
-        reader.readAsDataURL(event.target.files[0]);
-      }
     </script>
   @endpush
 @endsection

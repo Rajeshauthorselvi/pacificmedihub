@@ -29,4 +29,8 @@ class Employee extends Model
     public function baseCommission(){
         return $this->belongsTo('App\Models\CommissionValue','basic_commission_type');
     }
+
+    public function targetCommission(){
+        return $this->belongsTo('App\Models\CommissionValue','target_commission_type');
+    }
 }

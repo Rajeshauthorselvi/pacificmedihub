@@ -5,13 +5,17 @@
 		{!! Form::text('emp_name',$name,['class'=>'form-control','id'=>'employeeName','readonly']) !!}
 		{!! Form::hidden('emp_id',$id,['class'=>'form-control']) !!}
 	</div>
+	<div class="form-group">
+		{!! Form::label('employeeDept', 'Department') !!}
+		{!! Form::text('emp_dept',$department,['class'=>'form-control','id'=>'employeeDept','readonly']) !!}
+	</div>
 	<div class="form-group" style="display:flex;">
-		<div class="col-sm-9" style="padding-left:0">
+		<div class="col-sm-10">
 			{!! Form::label('totalSalary', 'Total Salary') !!}
 			{!! Form::text('total_salary',$total_salary,['class'=>'form-control','id'=>'totalSalary','readonly']) !!}
 		</div>
-		<div class="col-sm-3" style="padding:0;margin-top:30px">
-			<button type="button" class="btn btn-info form-contro change-salary">Please Edit</button>
+		<div class="col-sm-2" style="margin-top:30px">
+			<button type="button" class="btn btn-info form-contro change-salary">Edit</button>
 		</div>
 	</div>
 	<div class="form-group">
@@ -20,7 +24,7 @@
 	</div>
 	<div class="form-group">
 		<button type="button" class="btn reset-btn" data-dismiss="modal">Cancel</button>
-        <button type="submit" id="submit-btn" class="btn save-btn">Confirm</button>
+        <button type="submit" id="submit-btn" class="btn save-btn" onclick="return confirm('Are you sure want to Pay Now?');">Confirm</button>
 	</div>
 </form>
 <script type="text/javascript">

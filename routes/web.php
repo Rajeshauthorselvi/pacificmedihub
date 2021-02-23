@@ -108,6 +108,8 @@ Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
 	Route::get('salary-list','Admin\EmployeeController@salaryList')->name('salary.list');
 	Route::get('payment_form','Admin\EmployeeController@paymentForm');
 	Route::post('confirm_salary','Admin\EmployeeController@confirmSalary')->name('confirm.salary');
+	Route::get('salary-view/{emp_id}','Admin\EmployeeController@salaryView')->name('salary.view');
+	Route::get('month-salary-list/{date}','Admin\EmployeeController@monthSalaryList')->name('month.salary.list');
 
 
 	//Delivery Zone

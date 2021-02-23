@@ -256,7 +256,6 @@
                         <div class="col-sm-3">
                           <label for="commissionType">Commission Type</label>
                           <select class="form-control commission no-search select2bs4" name="commision_type" id="commissionType">
-                            <option selected="selected" value="">Select Base Commission</option>
                             @foreach($base_commissions as $base)
                               <?php 
                                 if($base->commission_type=='f') $type = 'Fixed (amount)';
@@ -268,7 +267,7 @@
                         </div>
                         <div class="col-sm-3">
                           <label for="commissionValue">Value</label>
-                          <input type="text" name="commision_value" class="form-control" id="commissionValue" disabled  autocomplete="offf" value="{{old('commision_value')}}">
+                          <input type="text" name="commision_value" class="form-control" id="commissionValue" disabled  autocomplete="off" value="{{old('commision_value')}}">
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-3"></div>
@@ -290,7 +289,7 @@
                         </div>
                         <div class="col-sm-3">
                           <label for="targetCommissionValue"> Value</label>
-                          <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" disabled  autocomplete="offf"  value="{{old('target_commission_value')}}">
+                          <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" disabled  autocomplete="off"  value="{{old('target_commission_value')}}">
                         </div>
                         <div class="col-sm-3">
                           <label for="targetValue">Target Value</label>
