@@ -71,7 +71,7 @@
                             </a>
                           </td>
                           <td>{{ $order['vendor'] }}</td>
-                          <td>
+                          <td class="text-center">
                             <a href="javascript:void(0)" class="btn btn-primary show_products" purchase-id="{{ $order['purchase_id'] }}">
                               <i class="fa fa-eye"></i>
                             </a>
