@@ -13,7 +13,9 @@ use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
 use App\Models\Option;
 use App\Models\OptionValue;
-
+use App\Models\Product;
+use Str;
+use Log;
 class ProductVariationsSheetImport implements ToCollection, WithValidation, WithHeadingRow
 {
     /**
@@ -54,6 +56,7 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
         			'option_value_id4'	=> $option_4_value_id,
         			'option_id5'		=> $option_5_id,
         			'option_value_id5'	=> $option_5_value_id,
+                    'sku'               => $this->Sku($row),
         			'is_deleted'		=> 0,
         			'created_at'		=> date('Y-m-d H:i:s'),
         			'disabled'			=> 0
@@ -76,6 +79,22 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
         	}
         }
     }
+
+    
+    public function rules(): array
+    {
+        return [
+            // Above is alias for as it always validates in batches
+            'vendorname'    => 'required|exists:vendors,name',
+            'option1'       => 'required',
+            'optionvalue1'  => 'required',
+            'baseprice'     => 'required',
+            'retailprice'   => 'required',
+            'minimumsellingprice' => 'required',
+            'stockqty'      => 'required',
+        ];
+    }
+
 
     public function OptionId($option)
     {
@@ -116,6 +135,7 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
 	    			[
 	    				'option_id'			=> $option_id,
 	    				'option_value'	 	=> $option_value,
+                        'option_value_code' => $this->OptionValueCode($option_value),
 	    				'display_order'		=> 0,
 	    				'created_at'		=> date('Y-m-d H:i:s'),
 	    				'is_deleted'		=> 0
@@ -129,12 +149,58 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
 
     	return $option_value_id;
     }
-    public function rules(): array
+
+    public function OptionValueCode($option_value='')
     {
-        return [
-            // Above is alias for as it always validates in batches
-            'vendorname'=>'required|exists:vendors,name'
-        ];
+        $option_value_code=str_replace(' ','',$option_value);
+        $option_value_code=strtoupper(substr($option_value_code,0, 6));
+        return $option_value_code;
     }
 
+
+    public function Sku($row)
+    {
+        $product=Product::where('id',$row['productid'])->first();
+        $product_code=isset($product->code)?$product->code:'';
+        $vendor=Vendor::where('name','like','%'.$row['vendorname'].'%')->first();
+        $vendor_code = str_replace('VEN','', $vendor->code);
+        $vendor_code = str_replace(date('Y'),'', $vendor_code);
+        $sku_prefix = $product_code.'-'.$vendor_code;
+
+        $sku = $sku_prefix=$sku_prefix.'-'.$this->OptionValueCode($row['optionvalue1']);
+        Log::info($sku_prefix);
+        if ($row['optionvalue5']!="" && $row['optionvalue4']!="" && $row['optionvalue3']!="" && $row['optionvalue2'] && $row['optionvalue1']) {
+            $option_value1 = $this->OptionValueCode($row['optionvalue1']);
+            $option_value2 = $this->OptionValueCode($row['optionvalue2']);
+            $option_value3 = $this->OptionValueCode($row['optionvalue3']);
+            $option_value4 = $this->OptionValueCode($row['optionvalue4']);
+            $option_value5 = $this->OptionValueCode($row['optionvalue5']);
+
+            $sku=$sku_prefix.'-'.$option_value2.'-'.$option_value3.'-'.$option_value4.'-'.$option_value5;
+        }
+        elseif ($row['optionvalue4']!="" && $row['optionvalue3']!="" && $row['optionvalue2'] && $row['optionvalue1']) {
+            $option_value1 = $this->OptionValueCode($row['optionvalue1']);
+            $option_value2 = $this->OptionValueCode($row['optionvalue2']);
+            $option_value3 = $this->OptionValueCode($row['optionvalue3']);
+            $option_value4 = $this->OptionValueCode($row['optionvalue4']);
+
+            $sku=$sku_prefix.'-'.$option_value2.'-'.$option_value3.'-'.$option_value4;
+        }
+        elseif ($row['optionvalue3']!="" && $row['optionvalue2'] && $row['optionvalue1']) {
+            $option_value1 = $this->OptionValueCode($row['optionvalue1']);
+            $option_value2 = $this->OptionValueCode($row['optionvalue2']);
+            $option_value3 = $this->OptionValueCode($row['optionvalue3']);
+
+            $sku=$sku_prefix.'-'.$option_value2.'-'.$option_value3;
+        }
+        elseif ($row['optionvalue2'] && $row['optionvalue1']) {
+            $option_value1 = $this->OptionValueCode($row['optionvalue1']);
+            $option_value2 = $this->OptionValueCode($row['optionvalue2']);
+
+            $sku=$sku_prefix.'-'.$option_value2;
+        }
+
+        return $sku;
+    }
+    
 }

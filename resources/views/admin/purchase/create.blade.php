@@ -379,7 +379,7 @@
 
       $(document).on('change', '#payment_status', function() {
         var paymentStatus = $('option:selected', this).val();
-        if((paymentStatus==1) || (paymentStatus==2)){
+        if((paymentStatus==1) || (paymentStatus==3)){
           $('.panel-body').show();
         }else{
           $('.panel-body').hide();
