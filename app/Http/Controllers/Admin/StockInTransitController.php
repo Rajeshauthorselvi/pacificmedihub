@@ -270,7 +270,7 @@ class StockInTransitController extends Controller
               // var_dump($data_return_products);
 
                $return_product_id=PurchaseProductReturn::updateOrCreate(
-                ['product_id'=> $product_id[$key],'purchase_variation_id'=>$row_id],
+                ['product_id'=> $product_id[$key],'purchase_variation_id'=>$row_id,'purchase_return_id'=>$return_id->id],
                 $data_return_products
               );
 
