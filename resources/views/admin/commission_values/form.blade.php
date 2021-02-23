@@ -62,7 +62,7 @@
                   </div>
                   <div class="form-group">
                     <label for="commission_value">Commission Value</label>
-                    {{ Form::text('commission_value',null,['class'=>'form-control','id'=>'commission_value']) }}
+                    {{ Form::text('commission_value',null,['class'=>'form-control','id'=>'commission_value','onkeyup'=>'validateNum(event,this);']) }}
                     @if($errors->has('commission_value'))
                       <span class="text-danger">{{ $errors->first('commission_value') }}</span>
                     @endif

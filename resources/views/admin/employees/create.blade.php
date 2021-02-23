@@ -220,7 +220,7 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             <label for="basic">Basic *</label>
-                            <input type="text" class="form-control" name="basic" id="basic" value="{{old('basic')}}">
+                            <input type="text" class="form-control" name="basic" id="basic" value="{{old('basic')}}" onkeyup="validateNum(event,this);">
                             <span class="text-danger" style="display:none">Basic is required</span>
                           </div>
                           <div class="col-sm-5">
@@ -255,14 +255,20 @@
                       <div class="form-group">
                         <div class="col-sm-3">
                           <label for="commissionType">Commission Type</label>
-                          <select class="form-control commission select2bs4" name="commision_type" id="commissionType">
-                            <option selected="selected" value="0">Percentage (%)</option>
-                            <option value="1">Fixed (amount)</option>
+                          <select class="form-control commission no-search select2bs4" name="commision_type" id="commissionType">
+                            <option selected="selected" value="">Select Base Commission</option>
+                            @foreach($base_commissions as $base)
+                              <?php 
+                                if($base->commission_type=='f') $type = 'Fixed (amount)';
+                                else $type = 'Percentage (%)';
+                              ?>
+                              <option value="{{$base->id}}" {{ (collect(old('commision_type'))->contains($base->id)) ? 'selected':'' }}>{{$type}}</option>
+                            @endforeach
                           </select>
                         </div>
                         <div class="col-sm-3">
                           <label for="commissionValue">Value</label>
-                          <input type="text" name="commision_value" class="form-control" id="commissionValue" value="{{old('commision_value')}}">
+                          <input type="text" name="commision_value" class="form-control" id="commissionValue" disabled  autocomplete="offf" value="{{old('commision_value')}}">
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-3"></div>
@@ -270,19 +276,25 @@
                       <h5>Target Commission:</h5>
                       <div class="form-group">
                         <div class="col-sm-3">
-                          <label for="targetValue">Target Value</label>
-                          <input type="text" name="target_value" class="form-control" id="targetValue" value="{{old('target_value')}}">
-                        </div>
-                        <div class="col-sm-3">
                           <label for="targetCommissionType">Commission Type</label>
-                          <select class="form-control commission select2bs4" name="target_commision_type" id="targetCommissionType">
-                            <option selected="selected" value="0">Percentage (%)</option>
-                            <option value="1">Fixed (amount)</option>
+                          <select class="form-control target-commission no-search select2bs4" name="target_commision_type" id="targetCommissionType">
+                            <option selected="selected" value="">Select Target Commission</option>
+                            @foreach($target_commissions as $target)
+                              <?php 
+                                if($target->commission_type=='f') $target_type = 'Fixed (amount)';
+                                else $target_type = 'Percentage (%)';
+                              ?>
+                              <option value="{{$target->id}}" {{ (collect(old('target_commision_type'))->contains($target->id)) ? 'selected':'' }}>{{$target_type}}</option>
+                            @endforeach
                           </select>
                         </div>
                         <div class="col-sm-3">
-                          <label for="targetCommissionValue">Value</label>
-                          <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" value="{{old('target_commission_value')}}">
+                          <label for="targetCommissionValue"> Value</label>
+                          <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" disabled  autocomplete="offf"  value="{{old('target_commission_value')}}">
+                        </div>
+                        <div class="col-sm-3">
+                          <label for="targetValue">Target Value</label>
+                          <input type="text" name="target_value " class="form-control" id="targetValue" disabled  autocomplete="offf"  value="{{old('target_value')}}">
                         </div>
                       </div>
                       <ul class="float-left">
@@ -308,6 +320,13 @@
 
   @push('custom-scripts')
     <script type="text/javascript">
+
+      $(function ($) {
+        $('.no-search.select2bs4').select2({
+          minimumResultsForSearch: -1
+        });
+      });
+
       $(document).ready(function () {
         $(document).ajaxSend(function() {
           $("#overlay").fadeIn(300);　
@@ -371,6 +390,10 @@
 
         function validateStep4(e){
           var valid=true;
+          if(($('#targetCommissionValue').val()!="")&& ($('#targetValue').val()=="")){
+            alert('Please enter the target Value.!');
+            valid = false;
+          }
           return valid;
         }
 
@@ -401,6 +424,49 @@
       function prevTab(elem) {
         $(elem).parent().prev().find('a[data-toggle="tab"]').click();
       }
+
+
+      //Get Basic Commission
+       $('.commission').on('change',function(){
+        var commissionTypeId = $('#commissionType option:selected').val();
+        if(commissionTypeId!=""){
+          $('#commissionValue').removeAttr('disabled');  
+        }else{
+          $('#commissionValue').attr('disabled','disabled');
+          $('#commissionValue').val("");
+        }
+        
+        $.ajax({
+          url:"{{ url('admin/get-commission-value') }}",
+          type:"GET",
+          data:{"_token": "{{ csrf_token() }}",id:commissionTypeId},
+          success: function (data) { 
+            $('#commissionValue').val(data);
+          }
+        });
+      });
+
+      //Get Target Commission
+       $('.target-commission').on('change',function(){
+        var targetCommissionTypeId = $('#targetCommissionType option:selected').val();
+        if(targetCommissionTypeId!=""){
+          $('#targetValue').removeAttr('disabled');
+          $('#targetCommissionValue').removeAttr('disabled');
+        }else{
+          $('#targetValue').attr('disabled','disabled');
+          $('#targetCommissionValue').attr('disabled','disabled');
+          $('#targetValue').val("");
+          $('#targetCommissionValue').val("");
+        }
+        $.ajax({
+          url:"{{ url('admin/get-commission-value') }}",
+          type:"GET",
+          data:{"_token": "{{ csrf_token() }}",id:targetCommissionTypeId},
+          success: function (data) { 
+            $('#targetCommissionValue').val(data);
+          }
+        });
+      });
 
       //Get State
       $('#Country').change(function() {

@@ -45,10 +45,9 @@
                     <thead>
                       <tr>
                       	<th>Name</th>
-                        <th>Basic Salary</th>
-                        <th>SDL</th>
-                        <th>CPF (Self)</th>
-                        <th>CPF (Employer)</th>
+                        <th colspan="4">Payments</th>
+                        <th colspan="3">Deductables</th>
+                        <th colspan="2">Employer Contribution</th>
                         <th>Total Salary</th>
                         <th>Paid Date</th>
                       	<th>Status</th>
@@ -56,14 +55,43 @@
                       </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                          <td></td>
+                          <td>Basic Salary</td>
+                          <td>Commission</td>
+                          <td>Bonus</td>
+                          <td>Claims/Others</td>
+
+                          <td>CPF</td>
+                          <td>SDL</td>
+                          <td>Others</td>
+
+                          <td>Employer CPF</td>
+                          <td>Others</td>
+                          
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+
+                        </tr>
                     	@foreach($employee_salary as $emp)
                         <tr>
                           <input type="hidden" name="emp_id" value="{{$emp['id']}}">
                           <td>{{$emp['name']}}</td>
+
                           <td>{{$emp['basic_salary']}}</td>
-                          <td>{{$emp['sdl']}}</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+
                           <td>{{$emp['self_cpf']}}</td>
+                          <td>{{$emp['sdl']}}</td>
+                          <td></td>
+
                           <td>{{$emp['emp_cpf']}}</td>
+                          <td></td>
+                          
                           
                           <td>{{$emp['total_salary']}}</td>
                           <td>{{$emp['paid_date']}}</td>

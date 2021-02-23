@@ -25,4 +25,8 @@ class Employee extends Model
     {
     	return $this->belongsTo('App\Models\City','emp_city');
     }
+
+    public function baseCommission(){
+        return $this->belongsTo('App\Models\CommissionValue','basic_commission_type');
+    }
 }
