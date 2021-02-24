@@ -43,7 +43,7 @@ class Handler extends ExceptionHandler
     {
          if (ExceptionHandler::isHttpException($e)) {
 
-            return redirect()->route('oops.page');
+            return redirect()->route('error.page');
         }
         
         parent::report($e);

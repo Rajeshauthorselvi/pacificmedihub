@@ -130,13 +130,8 @@
                 </a>
               </li>
               <li class="nav-item @if($current_route=='salary.list') active @endif">
-                <a href="{{route('salary.list')}}" class="nav-link">
+                <a href="{{route('salary.list',date('m-Y'))}}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i><p>Salary</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i><p>Commission</p>
                 </a>
               </li>
             </ul>

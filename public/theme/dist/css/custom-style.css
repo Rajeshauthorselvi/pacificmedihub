@@ -177,3 +177,32 @@ tr.hide-table-padding>td {padding: 0;}
 .salary.table .title, .net-salary .title{width: 60%;}
 .salary.table .value, .net-salary .value{width: 40%;text-align: right;}
 .net-salary {width: 35%;display: flex;float: right;padding: 0 10px;}
+
+
+/* PaySlip Page */
+.btn.btn-primary.btnPrint {position: absolute;z-index: 999;right: 20px;top: 123px;}
+.print-area{width: 80%;margin: auto;}
+.company-details {padding: 25px 0;}
+.address-box {margin: 5px 0 10px;}
+.address-box div {margin-bottom: 3px;font-size: 14px;}
+.payslip.table thead {border-top: 2px solid #000;}
+.payslip.table thead tr th {border-bottom: 2px solid #000 !important;}
+.payslip.table tbody tr td {border: none;padding: .3rem .75rem;}
+.payslip.table tbody tr.break-bold {border: 2px solid #000;}
+.payslip.table tbody tr.break {border: 1px solid #bbb;}
+
+/* Emp-Commission-List Page */
+.commission.table th, .commission.table td {
+    border: 1px solid #ddd;
+}
+.commission.table tr.total {
+    background: #eaf3f9;
+}
+.overall.text-center {
+    padding-bottom: 30px;
+}
+.overall_commission {
+    padding: 15px;
+    background: #eee;
+    border: 1px solid #ddd;
+}

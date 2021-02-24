@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('salary.list')}}">Salary</a></li>
+              <li class="breadcrumb-item"><a href="{{route('salary.list',$date)}}">Salary</a></li>
               <li class="breadcrumb-item active">Salary Details</li>
             </ol>
           </div><!-- /.col -->
@@ -26,7 +26,7 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('salary.list')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route('salary.list',$date)}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid toggle-tabs">
@@ -51,11 +51,6 @@
                       </div>
                     </div>
                     <div class="profile-image">
-                       {{-- <?php 
-                          if(!empty($employee->emp_image)){$image = "theme/images/employees/".$employee->emp_image;}
-                          else {$image = "theme/images/no_image.jpg";}
-                        ?>
-                      <img class="img-employee" title="Employee Profile Image" src="{{asset($image)}}"> --}}
                     </div>
                     <div class="table-responsive">
                       <table class="salary table">

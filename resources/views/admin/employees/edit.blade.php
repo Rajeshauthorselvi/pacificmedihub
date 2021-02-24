@@ -282,14 +282,14 @@
                       <div class="form-group">
                         <div class="col-sm-3">
                           <label for="targetCommissionType">Commission Type</label>
-                          <select class="form-control target-commission no-search select2bs4" name="target_commision_type" id="targetCommissionType">
+                          <select class="form-control target-commission no-search select2bs4" name="target_commission_type" id="targetCommissionType">
                            <option selected="selected" value="">Select Target Commission</option>
                             @foreach($target_commissions as $target)
                               <?php 
                                 if($target->commission_type=='f') $target_type = 'Fixed (amount)';
                                 else $target_type = 'Percentage (%)';
                               ?>
-                              <option @if($employees->target_commission_type==$target->id) selected="selected" @endif value="{{$target->id}}" {{ (collect(old('target_commision_type'))->contains($target->id)) ? 'selected':'' }}>{{$target_type}}</option>
+                              <option @if($employees->target_commission_type==$target->id) selected="selected" @endif value="{{$target->id}}" {{ (collect(old('target_commission_type'))->contains($target->id)) ? 'selected':'' }}>{{$target_type}}</option>
                             @endforeach
                           </select>
                         </div>

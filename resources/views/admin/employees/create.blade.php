@@ -267,7 +267,7 @@
                         </div>
                         <div class="col-sm-3">
                           <label for="commissionValue">Value</label>
-                          <input type="text" name="commision_value" class="form-control" id="commissionValue" disabled  autocomplete="off" value="{{old('commision_value')}}">
+                          <input type="text" name="commision_value" class="form-control" id="commissionValue" readonly  autocomplete="off" value="1">
                         </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-3"></div>
@@ -276,24 +276,24 @@
                       <div class="form-group">
                         <div class="col-sm-3">
                           <label for="targetCommissionType">Commission Type</label>
-                          <select class="form-control target-commission no-search select2bs4" name="target_commision_type" id="targetCommissionType">
+                          <select class="form-control target-commission no-search select2bs4" name="target_commission_type" id="targetCommissionType">
                             <option selected="selected" value="">Select Target Commission</option>
                             @foreach($target_commissions as $target)
                               <?php 
                                 if($target->commission_type=='f') $target_type = 'Fixed (amount)';
                                 else $target_type = 'Percentage (%)';
                               ?>
-                              <option value="{{$target->id}}" {{ (collect(old('target_commision_type'))->contains($target->id)) ? 'selected':'' }}>{{$target_type}}</option>
+                              <option value="{{$target->id}}" {{ (collect(old('target_commission_type'))->contains($target->id)) ? 'selected':'' }}>{{$target_type}}</option>
                             @endforeach
                           </select>
                         </div>
                         <div class="col-sm-3">
                           <label for="targetCommissionValue"> Value</label>
-                          <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" disabled  autocomplete="off"  value="{{old('target_commission_value')}}">
+                          <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" readonly  autocomplete="off"  value="{{old('target_commission_value')}}">
                         </div>
                         <div class="col-sm-3">
                           <label for="targetValue">Target Value</label>
-                          <input type="text" name="target_value " class="form-control" id="targetValue" disabled  autocomplete="offf"  value="{{old('target_value')}}">
+                          <input type="text" name="target_value" class="form-control" id="targetValue" readonly  autocomplete="off"  value="{{old('target_value')}}">
                         </div>
                       </div>
                       <ul class="float-left">
@@ -429,9 +429,9 @@
        $('.commission').on('change',function(){
         var commissionTypeId = $('#commissionType option:selected').val();
         if(commissionTypeId!=""){
-          $('#commissionValue').removeAttr('disabled');  
+          $('#commissionValue').removeAttr('readonly');  
         }else{
-          $('#commissionValue').attr('disabled','disabled');
+          $('#commissionValue').attr('readonly','readonly');
           $('#commissionValue').val("");
         }
         
@@ -449,11 +449,11 @@
        $('.target-commission').on('change',function(){
         var targetCommissionTypeId = $('#targetCommissionType option:selected').val();
         if(targetCommissionTypeId!=""){
-          $('#targetValue').removeAttr('disabled');
-          $('#targetCommissionValue').removeAttr('disabled');
+          $('#targetValue').removeAttr('readonly');
+          $('#targetCommissionValue').removeAttr('readonly');
         }else{
-          $('#targetValue').attr('disabled','disabled');
-          $('#targetCommissionValue').attr('disabled','disabled');
+          $('#targetValue').attr('readonly','readonly');
+          $('#targetCommissionValue').attr('readonly','readonly');
           $('#targetValue').val("");
           $('#targetCommissionValue').val("");
         }

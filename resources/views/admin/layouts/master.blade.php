@@ -98,10 +98,9 @@
 <script src="{{ asset('theme/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
 <!-- InputMask -->
 <script src="{{ asset('theme/plugins/moment/moment.min.js') }}"></script>
-<script src="{{ asset('theme/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
-
 <!-- daterangepicker -->
 <script src="{{ asset('theme/plugins/daterangepicker/daterangepicker.js') }}"></script>
+<script src="{{ asset('theme/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{ asset('theme/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 <!-- overlayScrollbars -->

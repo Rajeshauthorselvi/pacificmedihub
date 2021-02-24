@@ -236,9 +236,9 @@
                     <div class="form-group">
                       <?php 
                        if($employees->targetCommission->commission_type=='f'){
-                          $target_commision_type = 'Percentage (%)';
-                        }else{
                           $target_commision_type = 'Fixed (amount)';
+                        }else{
+                          $target_commision_type = 'Percentage (%)';
                         }
                       ?>
                       <div class="col-sm-3">
