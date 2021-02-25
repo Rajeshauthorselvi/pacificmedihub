@@ -162,6 +162,10 @@ tr.hide-table-padding>td {padding: 0;}
 .show-page .expand-button {position: relative;}
 .show-page .order-no-sec {line-height: 30px;font-size: 16px;}
 
+/* Employee */
+#salaryCommission h5.title {margin: 15px 0 0 5px;background: #eaf3f9;width: 100%;padding: 5px 10px;}
+#salaryCommission .block {margin: 0px 5px 10px;border: 1px solid #eaf3f9;padding: 10px;}
+
 
 /* Salary View Page */
 .details-box {width: 75%;float: left;}
@@ -192,17 +196,5 @@ tr.hide-table-padding>td {padding: 0;}
 .payslip.table tbody tr.break {border: 1px solid #bbb;}
 
 /* Emp-Commission-List Page */
-.commission.table th, .commission.table td {
-    border: 1px solid #ddd;
-}
-.commission.table tr.total {
-    background: #eaf3f9;
-}
-.overall.text-center {
-    padding-bottom: 30px;
-}
-.overall_commission {
-    padding: 15px;
-    background: #eee;
-    border: 1px solid #ddd;
-}
+.commission.table th, .commission.table td {border: 1px solid #ddd;}
+.commission.table tr.total {background: #eaf3f9;}

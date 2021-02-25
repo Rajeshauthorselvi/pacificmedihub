@@ -62,6 +62,7 @@
                             <th>Total Amount</th>
                             <th>Product Commission</th>
                             <th>Target Commission</th>
+                            <th>Total Commission</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -76,6 +77,7 @@
                               <td class="text-right amount">{{$order['total_amount']}}</td>
                               <td class="prod_com text-right">{{$order['product_commission']}}</td>
                               <td class="tar_com text-right">{{$order['target_commission']}}</td>
+                              <td class="text-right">{{ $order['total_commission'] }}</td>
                             </tr>
                           @endforeach
                           <tr class="total">
@@ -83,12 +85,10 @@
                             <th class="text-right"><span class="total_amount"></span></th>
                             <th class="text-right"><span class="total_prod_com"></span></th>
                             <th class="text-right"><span class="total_tar_com"></span></th>
+                            <th class="text-right"><span class="overall_commission"></span></th>
                           </tr>
                         </tbody>
                       </table>
-                    </div>
-                    <div class="overall text-center">
-                      <h5><storang class="overall_commission"></storang></h5>
                     </div>
 
                   </div>
@@ -127,7 +127,7 @@
         var product_commission = $('.total_prod_com').text();        
         var target_commission  = $('.total_tar_com').text();
         overall = parseFloat(product_commission)+parseFloat(target_commission);
-        $('.overall_commission').text('Total Commission ='+overall.toFixed(2));
+        $('.overall_commission').text(overall.toFixed(2));
      });
    </script>
   @endpush

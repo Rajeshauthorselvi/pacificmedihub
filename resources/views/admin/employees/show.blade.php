@@ -29,9 +29,13 @@
           <a href="{{route('employees.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
+
       <div class="container-fluid toggle-tabs">
         <div class="row">
           <div class="col-md-12">
+            <a href="{{route('employees.edit',$employees->id)}}" class="btn emp-edit">
+              <i class="far fa-edit"></i>&nbsp;Edit
+            </a>
             <div class="card card-outline card-primary">
               <div class="card-header">
                 <h3 class="card-title">Employee Details</h3>
@@ -45,13 +49,9 @@
                     <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab" title="Step 2"> Bank Accounts </a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab" title="Step 3"> Salary </a>
-                  </li>
-                  <li role="presentation" class="nav-item">
-                    <a href="#step4" class="nav-link" data-toggle="tab" aria-controls="step4" role="tab" title="Step 4"> Commission </a>
+                    <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab" title="Step 3"> Salary & Commission</a>
                   </li>
                 </ul>
-              <a href="{{route('employees.edit',$employees->id)}}" class="btn emp-edit"><i class="far fa-edit"></i>&nbsp;Edit</a>
                 <div class="tab-content py-2">
                   <!-- Step1 -->
                   <div class="tab-pane active" role="tabpanel" id="step1">
@@ -184,83 +184,81 @@
                       </div>
                     </div>
                   </div>
+
                   <!-- Step3 -->
+
                   <div class="tab-pane" role="tabpanel" id="step3">
-                    <div class="" id="banck_account">
-                      <div class="form-group">
-                        <div class="col-sm-5">
-                          <label for="basic">Basic *</label>
-                          <input type="text" class="form-control" name="basic" id="basic" readonly value="{{$employees->basic}}">
-                        </div>
-                        <div class="col-sm-5">
-                          <label for="sdl">SDL</label>
-                          <input type="text" class="form-control" name="sdl" readonly value="{{$employees->sdl}}">
+                    <div id="salaryCommission">
+                      <h5 class="title">Payments</h5>
+                      <div class="col-md-12 payment block">
+                        <div class="form-group">
+                          <div class="col-sm-4">
+                            <label for="basic">Basic Salary*</label>
+                            <input type="text" class="form-control" name="basic" id="basic" readonly value="{{$employees->basic}}">
+                          </div>
+                          <div class="col-sm-4">
+                             <?php 
+                                if($employees->baseCommission->commission_type=='f'){
+                                  $basic_commission_type = 'Percentage (%)';
+                                }else{
+                                  $basic_commission_type = 'Fixed (amount)';
+                                }
+                              ?>
+                            <label for="commissionType">Basic Commission Type</label>
+                            <input type="text" class="form-control" id="commissionType" readonly value="{{$basic_commission_type}}">
+                          </div>
+                            <div class="col-sm-4">
+                              <label for="commissionValue">Basic Commission Value</label>
+                              <input type="text" name="commision_value" class="form-control" id="commissionValue" readonly value="{{$employees->basic_commission_value}}">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                          <div class="col-sm-4">
+                            <?php 
+                             if($employees->targetCommission->commission_type=='f'){
+                                $target_commision_type = 'Fixed (amount)';
+                              }else{
+                                $target_commision_type = 'Percentage (%)';
+                              }
+                            ?>
+                            <label for="targetCommissionType">Target Commission Type</label>
+                            <input type="text" class="form-control" id="target_commision_type" readonly value="{{$target_commision_type}}">
+                          </div>
+                          <div class="col-sm-4">
+                            <label for="targetCommissionValue">Target Commission Value</label>
+                            <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" readonly value="{{$employees->target_commission_value}}">
+                          </div>
+                          <div class="col-sm-4">
+                            <label for="targetValue">Target Value</label>
+                            <input type="text" name="target_value " class="form-control" id="targetValue" readonly value="{{$employees->target_value}}">
+                          </div>
                         </div>
                       </div>
-                      <div class="form-group">
-                        <div class="col-sm-5">
-                          <label for="cpfSelf">CPF (Self)</label>
-                          <input type="text" class="form-control" name="cpf_self" id="cpfSelf" readonly value="{{$employees->self_cpf}}">
+                      <h5 class="title">Deductables</h5>
+                      <div class="col-md-12 deductable block">
+                        <div class="form-group">
+                          <div class="col-sm-4">
+                            <label for="sdl">SDL</label>
+                            <input type="text" class="form-control" name="sdl" readonly value="{{$employees->sdl}}">
+                          </div>
+                          <div class="col-sm-4">
+                            <label for="cpfSelf">CPF (Self)</label>
+                            <input type="text" class="form-control" name="cpf_self" id="cpfSelf" readonly value="{{$employees->self_cpf}}">
+                          </div>
                         </div>
-                        <div class="col-sm-5">
-                          <label for="cpfEmp">CPF (Employer)</label>
-                          <input type="text" class="form-control" name="cpf_emp" id="cpfEmp" readonly value="{{$employees->emp_cpf}}">
+                      </div>
+                      <h5 class="title">Contribution</h5>
+                      <div class="col-md-12 contribution block">
+                        <div class="form-group">
+                          <div class="col-sm-4">
+                            <label for="cpfEmp">Employer CPF</label>
+                            <input type="text" class="form-control" name="cpf_emp" id="cpfEmp" readonly value="{{$employees->emp_cpf}}">
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-
-                  <!-- Step4 -->
-                  <div class="tab-pane" role="tabpanel" id="step4">
-                    <h5>Basic Commission:</h5>
-                    <div class="form-group">
-                      <?php 
-                        if($employees->baseCommission->commission_type=='f'){
-                          $basic_commission_type = 'Percentage (%)';
-                        }else{
-                          $basic_commission_type = 'Fixed (amount)';
-                        }
-                      ?>
-                      <div class="col-sm-3">
-                        <label for="commissionType">Commission Type</label>
-                        <input type="text" class="form-control" id="commissionType" readonly value="{{$basic_commission_type}}">
-                      </div>
-                      <div class="col-sm-3">
-                        <label for="commissionValue">Value</label>
-                        <input type="text" name="commision_value" class="form-control" id="commissionValue" readonly value="{{$employees->basic_commission_value}}">
-                      </div>
-                      <div class="col-sm-3"></div>
-                      <div class="col-sm-3"></div>
-                    </div><br>
-                    <h5>Target Commission:</h5>
-                    <div class="form-group">
-                      <?php 
-                       if($employees->targetCommission->commission_type=='f'){
-                          $target_commision_type = 'Fixed (amount)';
-                        }else{
-                          $target_commision_type = 'Percentage (%)';
-                        }
-                      ?>
-                      <div class="col-sm-3">
-                        <label for="targetCommissionType">Commission Type</label>
-                        <input type="text" class="form-control" id="target_commision_type" readonly value="{{$target_commision_type}}">
-                      </div>
-
-                      <div class="col-sm-3">
-                        <label for="targetCommissionValue">Value</label>
-                        <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" readonly value="{{$employees->target_commission_value}}">
-                      </div>
-
-                      <div class="col-sm-3">
-                        <label for="targetValue">Target Value</label>
-                        <input type="text" name="target_value " class="form-control" id="targetValue" readonly value="{{$employees->target_value}}">
-                      </div>
-
-                    </div>
-                  </div>
-
                 </div>
-
               </div>
             </div>
           </div>

@@ -613,7 +613,8 @@ class EmployeeController extends Controller
                 'order_code'   => $order->order_no,
                 'total_amount' => $order->total_amount,
                 'product_commission' => $product_commission,
-                'target_commission'  => $target_commissions
+                'target_commission'  => $target_commissions,
+                'total_commission'   => $product_commission+$target_commissions
             ];
         }
         $data['order_data'] = $order_data;
@@ -672,7 +673,9 @@ class EmployeeController extends Controller
         $deduction            = $emp->self_cpf + $emp->sdl;
         $total_salary         = $payment - $deduction;
         $data['total_salary'] = number_format($total_salary,2,'.','');
-        $data['salary_month'] = date('F Y');
+        $salary_month         = date_create('01-'.$request->date);
+        $data['salary_month'] = date_format($salary_month,"F Y");
+        $data['date']         = $request->date;
         return view('admin.employees.payment_form',$data);
     }
 
@@ -686,7 +689,7 @@ class EmployeeController extends Controller
         $salary->created_at  = date('Y-m-d H:i:s');
         $salary->save();
 
-        return Redirect::route('salary.list')->with('success','Paid Successfully.!');
+        return Redirect::route('salary.list',$request->date)->with('success','Paid Successfully.!');
     }
 
 }

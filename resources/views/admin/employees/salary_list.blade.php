@@ -168,14 +168,16 @@
 
       });
 
-      $('.paynow').click(function(){
+      $('body').on('click','.paynow',function(){
+        var selectedDate = $('.datetimepicker-input').val();
         var empId = $(this).attr('employee-id');
         $.ajax({
-          url:"{{ url('admin/payment_form') }}?emp_id="+empId,
+          url:"{{ url('admin/payment_form') }}",
           type:"GET",
-          success: function (data) { 
+          data:{emp_id:empId,date:selectedDate},
+          success: function (response) { 
             //console.log(data);
-            $('#form-block').html(data);
+            $('#form-block').html(response);
           }
         });
       });

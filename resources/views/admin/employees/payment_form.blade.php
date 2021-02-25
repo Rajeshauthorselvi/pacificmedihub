@@ -4,6 +4,7 @@
 		{!! Form::label('employeeName', 'Employee Name') !!}
 		{!! Form::text('emp_name',$name,['class'=>'form-control','id'=>'employeeName','readonly']) !!}
 		{!! Form::hidden('emp_id',$id,['class'=>'form-control']) !!}
+		{!! Form::hidden('date',$date,['class'=>'form-control']) !!}
 	</div>
 	<div class="form-group">
 		{!! Form::label('employeeDept', 'Department') !!}

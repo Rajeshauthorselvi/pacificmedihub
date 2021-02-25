@@ -50,10 +50,9 @@
                         <th><input type="checkbox" class="select-all"></th>
                       	<th>Code</th>
                       	<th>Name</th>
-                        <th>Email</th>
                         <th>Department</th>
-                        <th>Commission</th>
-                        <th>Salary</th>
+                        <th>Email</th>
+                        <th>Contact No</th>
                       	<th>Published</th>
                       	<th>Action</th>
                       </tr>
@@ -64,25 +63,9 @@
                           <td><input type="checkbox" value="{{ $emp->id }}" name="emp-ids"></td>
                           <td><a href="{{route('employees.show',$emp->id)}}">{{$emp->emp_id}}</a></td>
                           <td>{{$emp->emp_name}}</td>
-                          <td>{{ $emp->emp_email }}</td>
                           <td>{{$emp->department->dept_name}}</td>
-                          <?php 
-                            if(isset($emp->basic_commission_type)) {
-                              if($emp->baseCommission->commission_type=='f'){
-                                $com_type  = '$';
-                                $com_value = number_format($emp->basic_commission_value,2,'.','');
-                                $com_value = $com_type.' '.$com_value;
-                              }else{
-                                $com_type  = '%';
-                                $com_value = $emp->basic_commission_value.' '.($com_type);
-                              }
-                            }
-                            else{
-                              $com_value = '';
-                            }
-                          ?>
-                          <td>{{$com_value}}</td>
-                          <td>{{number_format($emp->basic,2,'.',',')}}</td>
+                          <td>{{ $emp->emp_email }}</td>
+                          <td>{{ $emp->emp_mobile_no }}</td>
                           <?php
                             if($emp->status==1){$status = "fa-check";}
                             else{$status = "fa-ban";}

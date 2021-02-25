@@ -56,7 +56,7 @@
                       <table class="salary table">
                         <thead class="heading-top">
                           <tr>
-                            <th>PayMents</th>
+                            <th>Payments</th>
                             <th>Deductables</th>
                             <th>Contribution</th>
                           </tr>
@@ -125,13 +125,9 @@
                       </div>
                     </div>
 
-
                   </div>
                 </div>
              
-                 
-                       
-
               </div>
             </div>
           </div>

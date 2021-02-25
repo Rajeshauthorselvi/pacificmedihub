@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('employees.index')}}">List Employee</a></li>
+              <li class="breadcrumb-item"><a href="{{route('employees.index')}}">Employee</a></li>
               <li class="breadcrumb-item active">Edit Employee</li>
             </ol>
           </div><!-- /.col -->
@@ -46,10 +46,7 @@
                     <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab" title="Step 2"> Bank Accounts </a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab" title="Step 3"> Salary </a>
-                  </li>
-                  <li role="presentation" class="nav-item">
-                    <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step4" role="tab" title="Step 4"> Commission </a>
+                    <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab" title="Step 3"> Salary & Commission</a>
                   </li>
                 </ul>
                 <form action="{{route('employees.update',$employees->id)}}" method="post" enctype="multipart/form-data">
@@ -222,86 +219,78 @@
                     </div>
                     <!-- Step3 -->
                     <div class="tab-pane" role="tabpanel" id="step3">
-                      <div class="" id="banck_account">
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="basic">Basic *</label>
-                            <input type="text" class="form-control" name="basic" id="basic" value="{{old('basic',$employees->basic)}}">
-                            <span class="text-danger" style="display:none">Basic is required</span>
+                      <div id="salaryCommission">
+                        <h5 class="title">Payments</h5>
+                        <div class="col-md-12 payment block">
+                          <div class="form-group">
+                            <div class="col-sm-4">
+                              <label for="basic">Basic Salary*</label>
+                              <input type="text" class="form-control" name="basic" id="basic" value="{{old('basic',$employees->basic)}}" onkeyup="validateNum(event,this);">
+                              <span class="text-danger" style="display:none">Basic is required</span>
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="commissionType">Basic Commission Type</label>
+                              <select class="form-control commission no-search select2bs4" name="commision_type" id="commissionType">
+                                @foreach($base_commissions as $base)
+                                  <?php 
+                                    if($base->commission_type=='f') $type = 'Fixed (amount)';
+                                    else $type = 'Percentage (%)';
+                                  ?>
+                                  <option @if($employees->basic_commission_type==$base->id) selected="selected" @endif value="{{$base->id}}" {{ (collect(old('commision_type'))->contains($base->id)) ? 'selected':'' }}>{{$type}}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="commissionValue">Basic Commission Value</label>
+                              <input type="text" name="commision_value" class="form-control" id="commissionValue" autocomplete="off" value="{{old('commision_value',$employees->basic_commission_value)}}" onkeyup="validateNum(event,this);">
+                            </div>
                           </div>
-                          <div class="col-sm-5">
-                            <label for="sdl">SDL</label>
-                            <input type="text" class="form-control" name="sdl" id="sdl" value="{{old('sdl',$employees->sdl)}}">
+                          <div class="form-group">
+                            <div class="col-sm-4">
+                              <label for="targetCommissionType">Target Commission Type</label>
+                              <select class="form-control target-commission no-search select2bs4" name="target_commission_type" id="targetCommissionType">
+                                <option selected="selected" value="">Select Target Commission</option>
+                                @foreach($target_commissions as $target)
+                                  <?php 
+                                    if($target->commission_type=='f') $target_type = 'Fixed (amount)';
+                                    else $target_type = 'Percentage (%)';
+                                  ?>
+                                  <option @if($employees->target_commission_type==$target->id) selected="selected" @endif value="{{$target->id}}" {{ (collect(old('target_commission_type'))->contains($target->id)) ? 'selected':'' }}>{{$target_type}}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="targetCommissionValue">Target Commission Value</label>
+                              <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" autocomplete="off"  value="{{old('target_commission_value',$employees->target_commission_value)}}" onkeyup="validateNum(event,this);">
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="targetValue">Target Value</label>
+                              <input type="text" name="target_value" class="form-control" id="targetValue" autocomplete="off" value="{{old('target_value',$employees->target_value)}}" onkeyup="validateNum(event,this);">
+                            </div>
                           </div>
                         </div>
-                        <div class="form-group">
-                          <div class="col-sm-5">
-                            <label for="cpfSelf">CPF (Self)</label>
-                            <input type="text" class="form-control" name="cpf_self" id="cpfSelf" value="{{old('cpf_self',$employees->self_cpf)}}">
+                        <h5 class="title">Deductables</h5>
+                        <div class="col-md-12 deductable block">
+                          <div class="form-group">
+                            <div class="col-sm-4">
+                              <label for="sdl">SDL</label>
+                              <input type="text" class="form-control" name="sdl" id="sdl" value="{{old('sdl',$employees->sdl)}}" onkeyup="validateNum(event,this);">
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="cpfSelf">CPF (Self)</label>
+                              <input type="text" class="form-control" name="cpf_self" id="cpfSelf" value="{{old('cpf_self',$employees->self_cpf)}}" onkeyup="validateNum(event,this);">
+                            </div>
                           </div>
-                          <div class="col-sm-5">
-                            <label for="cpfEmp">CPF (Employer)</label>
-                            <input type="text" class="form-control" name="cpf_emp" id="cpfEmp" value="{{old('cpf_emp',$employees->emp_cpf)}}">
+                        </div>
+                        <h5 class="title">Contribution</h5>
+                        <div class="col-md-12 contribution block">
+                          <div class="form-group">
+                            <div class="col-sm-4">
+                              <label for="cpfEmp">Employer CPF</label>
+                              <input type="text" class="form-control" name="cpf_emp" id="cpfEmp" value="{{old('cpf_emp',$employees->emp_cpf)}}" onkeyup="validateNum(event,this);">
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <ul class="float-left">
-                        <li class="list-inline-item">
-                          <button type="button" class="btn btn-outline-primary prev-step">Previous</button>
-                        </li>
-                        <li class="list-inline-item">
-                          <button type="button" id="validateStep2" class="btn btn-primary next-step">Next</button>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <!-- Step4 -->
-                    <div class="tab-pane" role="tabpanel" id="step4">
-                      <h5>Basic Commission:</h5>
-                      <div class="form-group">
-                        <div class="col-sm-3">
-                          <label for="commissionType">Commission Type</label>
-                          <select class="form-control commission no-search select2bs4" name="commision_type" id="commissionType">
-                            @foreach($base_commissions as $base)
-                              <?php 
-                                if($base->commission_type=='f') $type = 'Fixed (amount)';
-                                else $type = 'Percentage (%)';
-                              ?>
-                              <option @if($employees->basic_commission_type==$base->id) selected="selected" @endif value="{{$base->id}}" {{ (collect(old('commision_type'))->contains($base->id)) ? 'selected':'' }}>{{$type}}</option>
-                            @endforeach
-                          </select>
-                        </div>
-                        <div class="col-sm-3">
-                          <label for="commissionValue">Value</label>
-                          <input type="text" name="commision_value" class="form-control" id="commissionValue" autocomplete="off" value="{{old('commision_value',$employees->basic_commission_value)}}">
-                        </div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-3"></div>
-                      </div><br>
-                      <h5>Target Commission:</h5>
-                      <div class="form-group">
-                        <div class="col-sm-3">
-                          <label for="targetCommissionType">Commission Type</label>
-                          <select class="form-control target-commission no-search select2bs4" name="target_commission_type" id="targetCommissionType">
-                           <option selected="selected" value="">Select Target Commission</option>
-                            @foreach($target_commissions as $target)
-                              <?php 
-                                if($target->commission_type=='f') $target_type = 'Fixed (amount)';
-                                else $target_type = 'Percentage (%)';
-                              ?>
-                              <option @if($employees->target_commission_type==$target->id) selected="selected" @endif value="{{$target->id}}" {{ (collect(old('target_commission_type'))->contains($target->id)) ? 'selected':'' }}>{{$target_type}}</option>
-                            @endforeach
-                          </select>
-                        </div>
-                        <div class="col-sm-3">
-                          <label for="targetCommissionValue"> Value</label>
-                          <input type="text" name="target_commission_value" class="form-control" id="targetCommissionValue" autocomplete="off"  value="{{old('target_commission_value',$employees->target_commission_value)}}">
-                        </div>
-                        <div class="col-sm-3">
-                          <label for="targetValue">Target Value</label>
-                          <input type="text" name="target_value" class="form-control" id="targetValue" autocomplete="off"  value="{{old('target_value',$employees->target_value)}}">
-                        </div>
-
                       </div>
                       <ul class="float-left">
                         <li class="list-inline-item">
@@ -312,6 +301,7 @@
                         </li>
                       </ul>
                     </div>
+
 
                   </div>
 
@@ -389,6 +379,10 @@
           if($("[name='basic']").val()=="") {
             $("[name='basic']").closest('.form-group').find('span.text-danger').show();
             valid=false;
+          }
+          if(($('#targetCommissionValue').val()!="")&& ($('#targetValue').val()=="")){
+            alert('Please enter the target Value.!');
+            valid = false;
           }
           return valid;
         }
