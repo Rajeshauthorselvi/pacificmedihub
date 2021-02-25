@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
-
+use Auth;
+use Redirect;
+use Session;
 class IsEmployee
 {
     /**
@@ -15,6 +17,12 @@ class IsEmployee
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        if (!Auth::guard('employee')->check() && !Auth::check()) {
+            Session::flash('info', 'You must be logged in!');
+            return Redirect::to('/who-you-are');
+        }
+        else{
+            return $next($request);
+        }
     }
 }

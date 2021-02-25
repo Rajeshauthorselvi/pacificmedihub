@@ -41,12 +41,12 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $e)
     {
-         if (ExceptionHandler::isHttpException($e)) {
+/*         if (ExceptionHandler::isHttpException($e)) {
 
-            return redirect()->route('oops.page');
+            return redirect()->route('error.page');
         }
-        
-        parent::report($e);
+        */
+        return parent::report($e);
     }
 
     /**
@@ -60,9 +60,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
-        if (ExceptionHandler::isHttpException($e)) {
+/*        if (ExceptionHandler::isHttpException($e)) {
             return redirect()->route('error.page');
-        }
+        }*/
 
         return parent::render($request, $e);
     }

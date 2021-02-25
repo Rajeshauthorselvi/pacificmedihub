@@ -1,20 +1,29 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Employee;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
-class HomeController extends Controller
+use Hash;
+use Log;
+use Session;
+class EmployeeLoginController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        // $this->middleware('guest:employee')->except('logout');
+    }
     public function index()
     {
-        // dd(Auth::guard('employee')->user());
-        return view('welcome');
+        $data=array();
+        return view('employee.auth.login',$data);
     }
 
     /**
@@ -35,7 +44,18 @@ class HomeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Session::flash('error_from','employee');
+        $this->validate($request, [
+            'emp_email'   => 'required|email',
+            'emp_password' => 'required|min:6'
+        ]);
+            
+        if (Auth::guard('employee')->attempt(['email'=>$request->emp_email,'password'=>$request->emp_password]
+        )) {
+            Session::forget('error_from');
+            return redirect()->route('admin.dashboard');
+        }
+        return back()->withInput($request->only('email'))->with('error','Please Check your data...!');
     }
 
     /**

@@ -37,9 +37,6 @@ class PurchaseController extends Controller
       $orders = array();
       $purchases = Purchase::orderBy('id','DESC')->get();
       foreach ($purchases as $key => $purchase) {
-
-        $paid_amount=PaymentHistory::where(['ref_id'=> $purchase->id,'payment_from'=> 1])->sum('amount');
-
         $vendor_name      = Vendor::find($purchase->vendor_id)->name;
         $product_details  = PurchaseProducts::select(DB::raw('sum(quantity) as quantity'),
                                 DB::raw('sum(sub_total) as sub_total'))->where('purchase_id',$purchase->id)->first();
@@ -61,8 +58,8 @@ class PurchaseController extends Controller
           'po_number'        => $purchase->purchase_order_number,
           'quantity'         => $product_details->quantity,
           'grand_total'      => $product_details->sub_total,
-          'amount'           => $paid_amount,
-          'balance'          => ($product_details->sub_total)-($paid_amount),
+          'amount'           => $purchase->amount,
+          'balance'          => ($product_details->sub_total)-($purchase->amount),
           'payment_status'   => $payment_status,
           'p_status'         => $purchase->payment_status,
           'order_status'     => $order_status->status_name,
