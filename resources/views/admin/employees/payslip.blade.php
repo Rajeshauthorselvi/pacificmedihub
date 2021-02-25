@@ -59,7 +59,7 @@
                           <thead>
                             <tr>
                               <th>EMPLOYEE PAYSLIP</th>
-                              <th>{{date('M Y'),strtotime($paid_date)}}</th>
+                              <th>{{$salary_month}}</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -70,7 +70,7 @@
                               <td>Department of Employee</td><td>{{$employee->department->dept_name}}</td>
                             </tr>
                             <tr>
-                              <td>Date of Payment</td><td>{{date('d M Y'),strtotime($paid_date)}}</td>
+                              <td>Month of Payment</td><td>{{$salary_month}}</td>
                             </tr>
                             <tr class="break-bold"></tr>
                             <tr>

@@ -396,8 +396,9 @@ class EmployeeController extends Controller
             foreach($product_id as $id){
                 $product = Product::find($id);
                 if($product->commissionType->commission_type=='p'){
-                    $order_per        = OrderProducts::where('product_id',$id)->sum('final_price');
-                    $percentage_value = ($product->commission_value/100)*$order_per;
+                    $order_per        = OrderProducts::where('product_id',$id)->sum('sub_total');
+                    $get_prod_commission = $product->commission_value/100;
+                    $percentage_value = $order_per*$get_prod_commission;
                 }else{
                     $fixed_value      = $product->commission_value;
                 }
@@ -407,11 +408,12 @@ class EmployeeController extends Controller
             if($emp->baseCommission->commission_type=='f'){
                 $commission = $product_commission*$emp->basic_commission_value;
             }else{
-                $commission = $product_commission*($emp->basic_commission_value/100);
+                $get_base_commission_value = $emp->basic_commission_value/100;
+                $commission = $product_commission*$get_base_commission_value;
             }
             
             $targetCommissions  = Orders::where('sales_rep_id',$emp->id)->where('order_status',13)
-                                        ->whereRaw('MONTH(order_completed_at)=?',$pre_month)->sum('total_amount');
+                                        ->whereMonth('order_completed_at',$pre_month)->sum('total_amount');
             $t_commission       = (float)$targetCommissions;
             $target_commissions = 0;
 
@@ -419,11 +421,10 @@ class EmployeeController extends Controller
                 if($emp->targetCommission->commission_type=='f'){
                     $target_commissions = $emp->target_commission_value;
                 }else{
-                    $target_commissions = $emp->target_value*($emp->target_commission_value/100);
+                    $get_target_commission_value = $emp->target_commission_value/100;
+                    $target_commissions = $t_commission*$get_target_commission_value;
                 }
             }
-
-
 
             $employee[$key]['id']         = $emp->id;
             $employee[$key]['name']       = $emp->emp_name;
@@ -436,7 +437,7 @@ class EmployeeController extends Controller
             $total_salary = $payment - $deduction;
 
             $paid_amount    = PaymentHistory::where('ref_id',$emp->id)->where('payment_from',3)
-                                            ->whereRaw('MONTH(payment_month)=?',$month)->sum('amount');
+                                            ->whereMonth('payment_month',$month)->sum('amount');
             $balance_amount = $total_salary;
             $action = 'Paynow';
             $status = 'Not Paid';
@@ -474,19 +475,15 @@ class EmployeeController extends Controller
         $month = $split_date[0];
         $year  = $split_date[1];
 
-        $pre_month        = (int)$month-1;
+        $pre_month = (int)$month-1;
         if($pre_month==0){
             $pre_month = 12;
             $year = (int)$year-1;
         }
 
-        $salaryStatus     = EmpSalaryStatus::where('emp_id',$id)->whereRaw('MONTH(paid_date)=?',date('m'))
-                                ->first();
-        if($salaryStatus){
-            $data['paid_date'] = date('d/m/Y',strtotime($salaryStatus->paid_date));
-        }else{
-            $data['paid_date'] = 'Not Paid';
-        }
+
+        $salary_month         = date_create('01-'.$pre_month.'-'.$year);
+        $data['salary_month'] = date_format($salary_month,"F Y");
 
         $get_product_id = DB::table('orders as o')->where('o.sales_rep_id',$id)->where('o.order_status',13)
                                 ->whereMonth('o.order_completed_at',$pre_month)
@@ -499,9 +496,9 @@ class EmployeeController extends Controller
         foreach($product_id as $id){
             $product = Product::find($id);
             if($product->commissionType->commission_type=='p'){
-                $order_per        = OrderProducts::where('product_id',$id)->sum('final_price');
-                $get_product_commission_value = $product->commission_value/100;
-                $percentage_value = $order_per*$get_product_commission_value;
+                $order_per        = OrderProducts::where('product_id',$id)->sum('sub_total');
+                $get_prod_commission = $product->commission_value/100;
+                $percentage_value = $order_per*$get_prod_commission;
             }else{
                 $fixed_value      = $product->commission_value;
             }
@@ -511,12 +508,12 @@ class EmployeeController extends Controller
         if($employee->baseCommission->commission_type=='f'){
             $commission = $product_commission*$employee->basic_commission_value;
         }else{
-            $get_basic_commission_value = $employee->basic_commission_value/100;
-            $commission = $product_commission*$get_basic_commission_value;
+            $get_base_commission_value = $employee->basic_commission_value/100;
+            $commission = $product_commission*$get_base_commission_value;
         }
           
         $targetCommissions  = Orders::where('sales_rep_id',$employee->id)->where('order_status',13)
-                                    ->whereRaw('MONTH(order_completed_at)=?',$pre_month)->sum('total_amount');
+                                    ->whereMonth('order_completed_at',$pre_month)->sum('total_amount');
         $t_commission       = (float)$targetCommissions;
         $target_commissions = 0;
 
@@ -524,7 +521,8 @@ class EmployeeController extends Controller
             if($employee->targetCommission->commission_type=='f'){
                 $target_commissions = $employee->target_commission_value;
             }else{
-                $target_commissions = $employee->target_value*($employee->target_commission_value/100);
+                $get_target_commission_value = $employee->target_commission_value/100;
+                $target_commissions = $t_commission*$get_target_commission_value;
             }
         }
 
@@ -534,7 +532,6 @@ class EmployeeController extends Controller
         $data['cpf']                = $employee->self_cpf;
         $data['sdl']                = $employee->sdl;
         $data['employer_cpf']       = $employee->emp_cpf;
-
         $payment_total              = $employee->basic + $commission + $target_commissions;
         $deduction_total            = $employee->self_cpf + $employee->sdl;
         $data['payment_total']      = $payment_total;
@@ -581,8 +578,9 @@ class EmployeeController extends Controller
             $product = Product::find($order->product_id);
 
             if($product->commissionType->commission_type=='p'){
-                $order_per        = OrderProducts::where('order_id',$order->order_id)->where('product_id',$order->product_id)->sum('final_price');
-                $percentage_value = ($product->commission_value/100)*$order_per;
+                $order_per        = OrderProducts::where('order_id',$order->order_id)->where('product_id',$order->product_id)->sum('sub_total');
+                $get_prod_commission = $product->commission_value/100;
+                $percentage_value = $order_per*$get_prod_commission;
             }else{
                 $fixed_value      = $product->commission_value;
             }
@@ -591,7 +589,8 @@ class EmployeeController extends Controller
             if($employee->baseCommission->commission_type=='f'){
                 $product_commission = $p_commission*$employee->basic_commission_value;
             }else{
-                $product_commission = $p_commission*($employee->basic_commission_value/100);
+                $get_base_commission_value = $employee->basic_commission_value/100;
+                $product_commission = $p_commission*$get_base_commission_value;
             }
               
             $targetCommissions  = Orders::where('sales_rep_id',$employee->id)->where('order_status',13)
@@ -604,7 +603,8 @@ class EmployeeController extends Controller
                 if($employee->targetCommission->commission_type=='f'){
                     $target_commissions = $employee->target_commission_value;
                 }else{
-                    $target_commissions = $employee->target_value*($employee->target_commission_value/100);
+                    $get_target_commission_value = $employee->target_commission_value/100;
+                    $target_commissions = $t_commission*$get_target_commission_value;
                 }
             }
 
@@ -619,8 +619,14 @@ class EmployeeController extends Controller
                 'total_commission'   => $product_commission+$target_commissions
             ];
         }
+
+        $commission_month         = date_create('01-'.$pre_month.'-'.$year);
+        $data['commission_month'] = date_format($commission_month,"F Y");
+
         $data['order_data'] = $order_data;
+        
         $data['date'] = $request->date;
+
         $data['count'] = 1;
         //dd($data);
         return view('admin.employees.commission_list',$data);
