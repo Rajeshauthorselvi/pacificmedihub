@@ -34,6 +34,16 @@ ul li {
 .tabs {
   font-size: 17px;
 }
+.nav-link{
+  font-weight: bold;
+}
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  color: #fff;
+  background-color: #3287c7;
+  border-color: #3287c7;
+  font-weight: bold;
+}
+
   </style>
 </head>
 <body>
@@ -42,10 +52,11 @@ ul li {
       <div class="col-md-6 pull-left"></div>
     <div class="col-md-6 sign-in-bac">
 <!-- Tabs navs -->
-      <div class="login-box-logo text-center">
+<div class="login-box">
+    <div class="login-box-logo text-center">
         <img class="admin-logo" src="{{ asset('theme/images/logo.png') }}" >
-      </div>
-      <br>
+    </div>
+  <br>
 
 <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
   <li class="nav-item" role="presentation">
@@ -145,11 +156,12 @@ ul li {
       </div>
   </div>
 </div>
+</div>
 <!-- Tabs content -->
 
-      <p class="mb-1">
+{{--       <p class="mb-1">
         <a href="#">Forgot password</a>
-      </p>
+      </p> --}}
     
       </div>
     </div>

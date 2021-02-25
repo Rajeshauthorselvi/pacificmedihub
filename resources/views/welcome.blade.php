@@ -64,7 +64,7 @@ hr {
 
   <div class="middle">
     <h1>COMING SOON</h1>
-    <a class="login-btn" href="{{ route('admin.login') }}">ADMIN LOGIN</a>
+    <a class="login-btn" href="{{ url('/who-you-are') }}">GoTo LOGIN</a>
   </div>
 
 </div>
