@@ -12,6 +12,8 @@ use App\Models\City;
 use App\Models\Prefix;
 use App\Models\EmpSalaryHistory;
 use App\Models\EmpSalaryStatus;
+use App\Models\PaymentHistory;
+use App\Models\PaymentMethod;
 use App\Models\EmpCommissionHistory;
 use App\Models\CommissionValue;
 use App\Models\Orders;
@@ -367,14 +369,12 @@ class EmployeeController extends Controller
 
         if(($month==date('m'))&&($year==date('Y'))){
 
-            $get_employees = Employee::where('status',1)->whereMonth('created_at',$month)->whereYear('created_at',$year)
-                                     ->where('is_deleted',0)->get();
+            $get_employees = Employee::where('status',1)->whereMonth('created_at','<=',$month)
+                                     ->whereYear('created_at','<=',$year)->where('is_deleted',0)->get();
             $pre_month     = Carbon::now()->subMonth()->format('m');
-
         }else{
-
-            $get_employees = Employee::where('status',1)->whereMonth('created_at',$month)->whereYear('created_at',$year)
-                                     ->get();
+            $get_employees = Employee::where('status',1)->whereMonth('created_at','<=',$month)
+                                     ->whereYear('created_at','<=',$year)->get();
             $pre_month     = (int)$month-1;
             if($pre_month==0){
                 $pre_month = 12;
@@ -383,8 +383,6 @@ class EmployeeController extends Controller
         }
          
         foreach ($get_employees as $key => $emp) {
-            $salaryStatus   = EmpSalaryStatus::where('emp_id',$emp->id)->whereRaw('MONTH(paid_date)=?',date('m'))
-                                ->first();
             $get_product_id = DB::table('orders as o')
                                 ->where('o.sales_rep_id',$emp->id)
                                 ->where('o.order_status',13)
@@ -425,6 +423,8 @@ class EmployeeController extends Controller
                 }
             }
 
+
+
             $employee[$key]['id']         = $emp->id;
             $employee[$key]['name']       = $emp->emp_name;
             $employee[$key]['department'] = $emp->department->dept_name;
@@ -435,26 +435,26 @@ class EmployeeController extends Controller
 
             $total_salary = $payment - $deduction;
 
-            if($salaryStatus){
-                $paid_date = date('d/m/Y',strtotime($salaryStatus->paid_date));
-                if($salaryStatus->status==1) {
-                    $status = 'Paid'; 
+            $paid_amount    = PaymentHistory::where('ref_id',$emp->id)->where('payment_from',3)
+                                            ->whereRaw('MONTH(payment_month)=?',$month)->sum('amount');
+            $balance_amount = $total_salary;
+            $action = 'Paynow';
+            $status = 'Not Paid';
+            if($paid_amount!=0){
+                $balance_amount = $total_salary - $paid_amount;
+                if($balance_amount==0){
                     $action = 'Payslip';
-                    $total_salary = $salaryStatus->paid_amount;
+                    $status = 'Paid';
+                }elseif(($balance_amount!=0)&&($balance_amount<$total_salary)){
+                    $status = 'Partly Paid';
                 }
-                else{
-                    $status = 'Not Paid';
-                    $action = 'Paynow';
-                }
-            }else{
-                $paid_date = '-';
-                $status = 'Not Paid';
-                $action = 'Paynow';
             }
-            $employee[$key]['total_salary'] = $total_salary;
-            $employee[$key]['paid_date']    = $paid_date;
-            $employee[$key]['status']       = $status;
-            $employee[$key]['action']       = $action;
+            
+            $employee[$key]['total_salary']   = $total_salary;
+            $employee[$key]['paid_amount']    = $paid_amount;
+            $employee[$key]['balance_amount'] = $balance_amount;
+            $employee[$key]['status']         = $status;
+            $employee[$key]['action']         = $action;
         }
         $data['date'] = $date;
         $data['employee_salary'] = $employee;
@@ -629,50 +629,11 @@ class EmployeeController extends Controller
     public function paymentForm(Request $request)
     {
         $emp = Employee::find($request->emp_id);
-        $pre_month      = Carbon::now()->subMonth()->format('m');
-        $get_product_id = DB::table('orders as o')->where('o.sales_rep_id',$emp->id)
-                                ->where('o.order_status',13)->whereRaw('MONTH(o.order_completed_at)=?',$pre_month)
-                                ->leftJoin('order_products as op','o.id','=','op.order_id')
-                                ->pluck('op.product_id')->toArray();
-
-        $product_id = array_unique($get_product_id);
-        $product_commission = 0;
-        foreach($product_id as $id){
-            $product = Product::find($id);
-            if($product->commissionType->commission_type=='p'){
-                $order_per        = OrderProducts::where('product_id',$id)->sum('final_price');
-                $percentage_value = ($product->commission_value/100)*$order_per;
-            }else{
-                $fixed_value      = $product->commission_value;
-            }
-            $product_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
-        }
-
-        if($emp->baseCommission->commission_type=='f'){
-            $commission = $product_commission*$emp->basic_commission_value;
-        }else{
-            $commission = $product_commission*($emp->basic_commission_value/100);
-        }
-        
-        $targetCommissions  = Orders::where('sales_rep_id',$emp->id)->where('order_status',13)
-                                    ->whereRaw('MONTH(order_completed_at)=?',$pre_month)->sum('total_amount');
-        $t_commission       = (float)$targetCommissions;
-        $target_commissions = 0;
-
-        if($t_commission>=$emp->target_value){
-            if($emp->targetCommission->commission_type=='f'){
-                $target_commissions = $emp->target_commission_value;
-            }else{
-                $target_commissions = $emp->target_value*($emp->target_commission_value/100);
-            }
-        }
+        $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
         $data['id']           = $emp->id;
         $data['name']         = $emp->emp_name;
         $data['department']   = $emp->department->dept_name;
-        $payment              = $emp->basic + $commission + $target_commissions;
-        $deduction            = $emp->self_cpf + $emp->sdl;
-        $total_salary         = $payment - $deduction;
-        $data['total_salary'] = number_format($total_salary,2,'.','');
+        $data['pay_amount']   = number_format($request->balance,2,'.','');
         $salary_month         = date_create('01-'.$request->date);
         $data['salary_month'] = date_format($salary_month,"F Y");
         $data['date']         = $request->date;
@@ -681,14 +642,15 @@ class EmployeeController extends Controller
 
     public function confirmSalary(Request $request)
     {
-        $salary              = new EmpSalaryStatus;
-        $salary->emp_id      = $request->emp_id;
-        $salary->paid_amount = $request->total_salary;
-        $salary->paid_date   = date('Y-m-d');
-        $salary->status      = 1;
-        $salary->created_at  = date('Y-m-d H:i:s');
-        $salary->save();
-
+        $date = date_create('01-'.$request->date);
+        $payment                = new PaymentHistory;
+        $payment->ref_id        = $request->emp_id;
+        $payment->payment_from  = 3;
+        $payment->amount        = $request->pay_amount;
+        $payment->payment_id    = $request->payby;
+        $payment->payment_month = date_format($date,"Y-m-d");
+        $payment->created_at    = date('Y-m-d H:i:s');
+        $payment->save();
         return Redirect::route('salary.list',$request->date)->with('success','Paid Successfully.!');
     }
 

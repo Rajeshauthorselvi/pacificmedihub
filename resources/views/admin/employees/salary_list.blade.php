@@ -62,7 +62,8 @@
                             <span title="(Payments - Deductables)" class="ico-help">
                               <i class="fa fa-question-circle"></i>
                             </span></th>
-                          <th>Paid Date</th>
+                          <th>Paid Amount</th>
+                          <th>Balance</th>
                         	<th>Status</th>
                         	<th>Action</th>
                         </tr>
@@ -76,9 +77,12 @@
                             <td>{{number_format($emp['payment'],2,'.','')}}</td>
                             <td>{{number_format($emp['deduction'],2,'.','')}}</td>
                             <td>{{number_format($emp['total_salary'],2,'.','')}}</td>
-                            <td>{{$emp['paid_date']}}</td>
+                            <td>{{number_format($emp['paid_amount'],2,'.','')}}</td>
+                            <td class="balance">
+                              {{number_format($emp['balance_amount'],2,'.','')}}
+                            </td>
                             <td>
-                              <?php $color_code=['Paid'=>'#00a65a','Not Paid'=>'#f0ad4e']?>
+                              <?php $color_code=['Paid'=>'#00a65a','Not Paid'=>'#f0ad4e','Partly Paid'=>'#5bc0de']?>
                               <span class="badge" style="background:{{ $color_code[$emp['status']] }};color: #fff ">{{ $emp['status'] }}</span>
                             </td>
                             <td>
@@ -169,18 +173,27 @@
       });
 
       $('body').on('click','.paynow',function(){
-        var selectedDate = $('.datetimepicker-input').val();
+        event.preventDefault();
         var empId = $(this).attr('employee-id');
+        var selectedDate = $('.datetimepicker-input').val();
+        var balance_amount=$(this).parents('tr').find('.balance').text();
+        var balance_amount=parseFloat(balance_amount);
+        if (balance_amount==0) {
+          alert('Payment is already paid.');
+          return false;
+        }
         $.ajax({
           url:"{{ url('admin/payment_form') }}",
           type:"GET",
-          data:{emp_id:empId,date:selectedDate},
+          data:{emp_id:empId,date:selectedDate,balance:balance_amount},
           success: function (response) { 
             //console.log(data);
             $('#form-block').html(response);
           }
         });
       });
+
+      
 
     </script>
   @endpush
