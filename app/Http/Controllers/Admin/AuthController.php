@@ -40,7 +40,7 @@ class AuthController extends Controller
         else
         {
            Session::flash('error_from','admin');
-           return redirect()->route('admin.login')->with('error','Please Check your data...!');
+           return Redirect::back()->withInput($request->only('email'))->with('error','Please Check your data...!');
         }
     }
     public function logout()
