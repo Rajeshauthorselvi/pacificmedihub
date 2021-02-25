@@ -107,9 +107,12 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	
 	//Employee	
 	Route::resource('employees','Admin\EmployeeController');
-	Route::get('salary-list','Admin\EmployeeController@salaryList')->name('salary.list');
+	Route::get('salary-list/{date}','Admin\EmployeeController@salaryList')->name('salary.list');
 	Route::get('payment_form','Admin\EmployeeController@paymentForm');
 	Route::post('confirm_salary','Admin\EmployeeController@confirmSalary')->name('confirm.salary');
+	Route::get('salary-view/{emp_id}/{page}','Admin\EmployeeController@salaryView')->name('salary.view');
+	Route::get('pay-slip/{emp_id}/{page}','Admin\EmployeeController@salaryView')->name('pay.slip');
+	Route::get('employee-commission-list/{emp_id}','Admin\EmployeeController@commissionList')->name('emp.commission.list');
 
 
 	//Delivery Zone

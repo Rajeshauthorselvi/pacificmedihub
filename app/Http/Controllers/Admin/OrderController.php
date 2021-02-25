@@ -105,6 +105,12 @@ class OrderController extends Controller
             'payment_status' => 'required'
         ]);
 
+        if($request->order_status==13){
+            $order_completed_at = date('Y-m-d H:i:s');
+        }else{
+            $order_completed_at = NULL;
+        }
+
         $order_data=[
             'rfq_id'                => $request->rfq_id,
             'sales_rep_id'          => $request->sales_rep_id,
@@ -122,6 +128,7 @@ class OrderController extends Controller
             'exchange_total_amount' => $request->exchange_rate,
             'user_id'               => Auth::id(),
             'notes'                 => $request->note,
+            'order_completed_at'    => $order_completed_at,
             'created_at'            => date('Y-m-d H:i:s')
        ];
        
@@ -268,7 +275,14 @@ class OrderController extends Controller
             'order_status'   => 'required',
             'payment_status' => 'required'
         ]);
-        //dd($request->all());
+            
+        if($request->order_status==13){
+            $order_completed_at = date('Y-m-d H:i:s');
+        }else{
+            $order_completed_at = NULL;
+        }
+
+
         $order_data=[
             'sales_rep_id'          => $request->sales_rep_id,
             'customer_id'           => $request->customer_id,
@@ -287,6 +301,7 @@ class OrderController extends Controller
             'total_amount'          => $request->total_amount,
             'sgd_total_amount'      => $request->sgd_total_amount,
             'exchange_total_amount' => $request->exchange_rate,
+            'order_completed_at'    => $order_completed_at,
             'updated_at'            => date('Y-m-d H:i:s')
        ];
 

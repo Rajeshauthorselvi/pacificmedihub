@@ -161,3 +161,40 @@ tr.hide-table-padding>td {padding: 0;}
 .show-page tr.hide-table-padding>td {padding: 0;}
 .show-page .expand-button {position: relative;}
 .show-page .order-no-sec {line-height: 30px;font-size: 16px;}
+
+/* Employee */
+#salaryCommission h5.title {margin: 15px 0 0 5px;background: #eaf3f9;width: 100%;padding: 5px 10px;}
+#salaryCommission .block {margin: 0px 5px 10px;border: 1px solid #eaf3f9;padding: 10px;}
+
+
+/* Salary View Page */
+.details-box {width: 75%;float: left;}
+.details-box .employee-details {width: 100%;display: flex;padding: 5px;}
+.details-box .employee-details .title {width: 20%;}
+.details-box .employee-details .details {width: 60%;padding-left: 10px;}
+.profile-image {width: 20%;float: left;text-align: center;}
+.profile-image .img-employee{width:100px;height:100px;}
+.table-responsive {padding: 20px 0;}
+.salary.table th, .salary.table td {border: 1px solid #ddd;}
+.salary.table .all-totals {background: #eaf3f9;}
+.salary.table .block, .net-salary{display: flex;}
+.salary.table .title, .net-salary .title{width: 60%;}
+.salary.table .value, .net-salary .value{width: 40%;text-align: right;}
+.net-salary {width: 35%;display: flex;float: right;padding: 0 10px;}
+
+
+/* PaySlip Page */
+.btn.btn-primary.btnPrint {position: absolute;z-index: 999;right: 20px;top: 123px;}
+.print-area{width: 80%;margin: auto;}
+.company-details {padding: 25px 0;}
+.address-box {margin: 5px 0 10px;}
+.address-box div {margin-bottom: 3px;font-size: 14px;}
+.payslip.table thead {border-top: 2px solid #000;}
+.payslip.table thead tr th {border-bottom: 2px solid #000 !important;}
+.payslip.table tbody tr td {border: none;padding: .3rem .75rem;}
+.payslip.table tbody tr.break-bold {border: 2px solid #000;}
+.payslip.table tbody tr.break {border: 1px solid #bbb;}
+
+/* Emp-Commission-List Page */
+.commission.table th, .commission.table td {border: 1px solid #ddd;}
+.commission.table tr.total {background: #eaf3f9;}

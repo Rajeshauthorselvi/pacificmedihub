@@ -17,7 +17,7 @@
   		margin: 0;
 	}
 	.error-page {
-	  background-image: url('../theme/images/background_image/error.jpg');
+	  background-image: url('theme/images/background_image/error.jpg');
 	  height: 100%;
 	  background-position: center;
 	  background-size: cover;

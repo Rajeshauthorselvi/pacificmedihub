@@ -4,14 +4,19 @@
 		{!! Form::label('employeeName', 'Employee Name') !!}
 		{!! Form::text('emp_name',$name,['class'=>'form-control','id'=>'employeeName','readonly']) !!}
 		{!! Form::hidden('emp_id',$id,['class'=>'form-control']) !!}
+		{!! Form::hidden('date',$date,['class'=>'form-control']) !!}
+	</div>
+	<div class="form-group">
+		{!! Form::label('employeeDept', 'Department') !!}
+		{!! Form::text('emp_dept',$department,['class'=>'form-control','id'=>'employeeDept','readonly']) !!}
 	</div>
 	<div class="form-group" style="display:flex;">
-		<div class="col-sm-9" style="padding-left:0">
-			{!! Form::label('totalSalary', 'Total Salary') !!}
-			{!! Form::text('total_salary',$total_salary,['class'=>'form-control','id'=>'totalSalary','readonly']) !!}
+		<div class="col-sm-10">
+			{!! Form::label('payAmount', 'Pay Amount') !!}
+			{!! Form::text('pay_amount',$pay_amount,['class'=>'form-control','id'=>'payAmount','readonly','onkeyup'=>'validateNum(event,this);']) !!}
 		</div>
-		<div class="col-sm-3" style="padding:0;margin-top:30px">
-			<button type="button" class="btn btn-info form-contro change-salary">Please Edit</button>
+		<div class="col-sm-2" style="margin-top:30px">
+			<button type="button" class="btn btn-info form-contro change-salary">Edit</button>
 		</div>
 	</div>
 	<div class="form-group">
@@ -19,14 +24,39 @@
 		{!! Form::text('salary_month',$salary_month,['class'=>'form-control','id'=>'salaryMonth','readonly']) !!}
 	</div>
 	<div class="form-group">
+		{!! Form::label('payBy', 'Payment Method') !!}
+		{!! Form::select('payby',$payment_method,['class'=>'form-control select2bs4','id'=>'payBy']) !!}
+	</div>
+	<div class="form-group">
 		<button type="button" class="btn reset-btn" data-dismiss="modal">Cancel</button>
-        <button type="submit" id="submit-btn" class="btn save-btn">Confirm</button>
+        <button type="submit" id="submit-btn" class="btn save-btn" onclick="return confirm('Are you sure want to Pay Now?');">Confirm</button>
 	</div>
 </form>
+
 <script type="text/javascript">
 	$(document).ready(function() {
         $('.change-salary').click(function(){
-          $('#totalSalary').removeAttr('readonly');
+        	var balance_amount = <?php echo $pay_amount; ?>;
+          	$('#payAmount').removeAttr('readonly');
+          	$('#payAmount').val(parseInt(balance_amount));
         });
+        
     });
+	$(function ($) {
+    	$('.select2bs4').select2({
+      		minimumResultsForSearch: -1
+    	});
+  	});
+
+  	
+  	$(document).on('keyup','#payAmount',function(event) {
+  		var balance_amount = <?php echo $pay_amount; ?>;
+  		var amount = $('#payAmount').val();
+
+    	if ((amount !== '') && (amount.indexOf('.') === -1)) {
+            var amount = Math.max(Math.min(amount, parseInt(balance_amount)), -90);
+            $('#payAmount').val(amount);
+      	}
+  	});
+
 </script>

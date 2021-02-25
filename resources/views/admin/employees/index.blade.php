@@ -51,9 +51,8 @@
                       	<th>Code</th>
                       	<th>Name</th>
                         <th>Department</th>
-                        <th>City</th>
-                        <th>Commission</th>
-                        <th>Salary</th>
+                        <th>Email</th>
+                        <th>Contact No</th>
                       	<th>Published</th>
                       	<th>Action</th>
                       </tr>
@@ -65,23 +64,8 @@
                           <td><a href="{{route('employees.show',$emp->id)}}">{{$emp->emp_id}}</a></td>
                           <td>{{$emp->emp_name}}</td>
                           <td>{{$emp->department->dept_name}}</td>
-                          <td>{{isset($emp->city->name)?$emp->city->name:''}}</td>
-                          <?php 
-                            if(isset($emp->basic_commission_type)) {
-                              if($emp->baseCommission->commission_type=='f'){
-                                $com_type  = '$';
-                                $com_value = $com_type.' '.$emp->basic_commission_value;  
-                              }else{
-                                $com_type  = '%';
-                                $com_value = $emp->basic_commission_value.' '.($com_type);
-                              }
-                            }
-                            else{
-                              $com_value = '';
-                            }
-                          ?>
-                          <td>{{$com_value}}</td>
-                          <td>{{$emp->basic}}</td>
+                          <td>{{ $emp->emp_email }}</td>
+                          <td>{{ $emp->emp_mobile_no }}</td>
                           <?php
                             if($emp->status==1){$status = "fa-check";}
                             else{$status = "fa-ban";}

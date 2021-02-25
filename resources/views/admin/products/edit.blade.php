@@ -118,7 +118,7 @@
                         <div class="col-sm-6" style="padding-left:0">
                           <label for="productBrand">Commission Type</label>
                           <select class="form-control commission select2bs4" name="commision_type">
-                            <option selected="selected" value="">Select Brand</option>
+                            <option selected="selected" value="">Select Commission</option>
                             @foreach($commissions as $commission)
                               <?php 
                                 if($commission->commission_type=='f') $type = 'Fixed (amount)';
@@ -701,10 +701,12 @@
         });
       });
 
+
+      //Get Commission
       $('.commission').on('change',function(){
         var commissionTypeId = $('.commission').val();
         $.ajax({
-          url:"{{ url('admin/product-commission-value') }}",
+          url:"{{ url('admin/get-commission-value') }}",
           type:"GET",
           data:{"_token": "{{ csrf_token() }}",id:commissionTypeId},
           success: function (data) { 
@@ -712,6 +714,7 @@
           }
         });
       });
+
 
       //Validate Number
       function validateNum(e , field) {
