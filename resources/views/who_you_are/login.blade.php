@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="{{ asset('theme/dist/css/custom-style.css') }}">
   <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
   <style type="text/css">
-.half-back{background:transparent url(/./theme/images/background_image/background.jpg) no-repeat center center / cover;position: fixed;top: 0px;left:0;width:50%;height: 100%}
+.half-back{background:transparent url(http://selvisoftware.in/pacificmedihub/theme/images/background_image/background.jpg) no-repeat center center / cover;position: fixed;top: 0px;left:0;width:50%;height: 100%}
 .sign-in-bac .form-control {
   text-align: center;
   font-size: 18px;
