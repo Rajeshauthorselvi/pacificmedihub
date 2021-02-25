@@ -47,7 +47,7 @@
                         <div class="title"><b>Department</b></div>:<div class="details">{{$employee->department->dept_name}}</div>
                       </div>
                       <div class="employee-details">
-                        <div class="title"><b>Date of Payment</b></div>:<div class="details">{{$paid_date}}</div>
+                        <div class="title"><b>Month of Payment</b></div>:<div class="details">{{$salary_month}}</div>
                       </div>
                     </div>
                     <div class="profile-image">
