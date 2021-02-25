@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,9 +21,10 @@ use Illuminate\Support\Facades\Route;
 //Admin Routes
 Route::get('admin','Admin\AuthController@index')->name('admin.login');
 Route::post('admin','Admin\AuthController@store')->name('admin.store');
+Route::get('who-you-are','WhoYouAreController@index');
+Route::resource('employee', 'Employee\EmployeeLoginController');
 
-
-Route::group(['prefix' => 'admin','middleware' => 'superAdmin'], function () {
+Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], function () {
 	//Admin
 	Route::get('admin-dashboard','Admin\DashboardController@index')->name('admin.dashboard');
 	Route::get('admin-logout','Admin\AuthController@logout')->name('admin.logout');

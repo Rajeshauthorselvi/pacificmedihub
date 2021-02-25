@@ -9,7 +9,6 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('theme/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
   <link rel="stylesheet" href="{{ asset('theme/plugins/fontawesome-free/css/all.min.css') }}">
   <!-- icheck bootstrap -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
@@ -25,12 +24,12 @@
       <div class="login-box-logo">
         <img class="admin-logo" src="{{ asset('theme/images/logo.png') }}" >
       </div>
-      <h4>ADMIN</h4>
-      <form action="{{ route('admin.store') }}" method="post">
+      <h4>Employee</h4>
+      <form action="{{ route('employee.store') }}" method="post">
         @csrf 
         @include('flash-message')
         <div class="input-group mb-3">
-          <input type="email" class="form-control" name="email" placeholder="Email">
+          <input type="email" class="form-control" name="emp_email" placeholder="Email">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -38,7 +37,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" name="password" placeholder="Password">
+          <input type="password" class="form-control" name="emp_password" placeholder="Password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -64,9 +63,7 @@
 <!-- jQuery -->
 <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
 <!-- Bootstrap 4 -->
-
 <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
 <!-- AdminLTE App -->
 <script src="{{ asset('theme/dist/js/adminlte.min.js') }}"></script>
 
