@@ -102,13 +102,20 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             {!! Form::label('Email', 'Email *') !!}
-                            {!! Form::text('emp_email',null,['class'=>'form-control validate-email','id'=>'Email']) !!}
+                            {!! Form::text('email',null,['class'=>'form-control validate-email','id'=>'Email']) !!}
                             <span class="email-error" style="display:none;color:red;">Invalid email</span>
                             <span class="text-danger" style="display:none">Email is required</span>
                             @if($errors->has('emp_email'))
-                              <span class="text-danger">{{ $errors->first('emp_email') }}</span>
+                              <span class="text-danger">{{ $errors->first('email') }}</span>
                             @endif
                           </div>
+                          <div class="col-sm-5">
+                            {!! Form::label('Password', 'Password *') !!}
+                            {!! Form::text('password',Str::random(8),['class'=>'form-control','id'=>'Password','readonly']) !!}
+                            <span class="text-danger" style="display:none">Password is required</span>
+                          </div>
+                        </div>
+                        <div class="form-group">
                           <div class="col-sm-5">
                             {!! Form::label('Mobile', 'Contact No *') !!}
                             {!! Form::text('emp_contact',null,['class'=>'form-control','id'=>'Mobile' , 'onkeyup'=>"validateNum(event,this);"]) !!}
@@ -219,7 +226,7 @@
                           <div class="form-group">
                             <div class="col-sm-4">
                               <label for="basic">Basic Salary*</label>
-                              <input type="text" class="form-control" name="basic" id="basic" value="{{old('basic')}}" onkeyup="validateNum(event,this);">
+                              <input type="text" class="form-control" name="basic" id="basic" value="{{old('basic')}}" onkeyup="validateNum(event,this);" autocomplete="off">
                               <span class="text-danger" style="display:none">Basic is required</span>
                             </div>
                             <div class="col-sm-4">

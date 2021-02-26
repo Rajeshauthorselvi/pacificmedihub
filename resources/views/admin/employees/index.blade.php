@@ -64,7 +64,7 @@
                           <td><a href="{{route('employees.show',$emp->id)}}">{{$emp->emp_id}}</a></td>
                           <td>{{$emp->emp_name}}</td>
                           <td>{{$emp->department->dept_name}}</td>
-                          <td>{{ $emp->emp_email }}</td>
+                          <td>{{ $emp->email }}</td>
                           <td>{{ $emp->emp_mobile_no }}</td>
                           <?php
                             if($emp->status==1){$status = "fa-check";}
