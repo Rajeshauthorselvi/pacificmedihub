@@ -12,11 +12,8 @@ class AuthController extends Controller
 {
     public function index()
     {
-    	if(Auth::check()) {
-           return redirect()->route('admin.dashboard');   
-        }
-        elseif (Auth::guard('employee')->check()) {
-            return redirect()->route('admin.dashboard');
+        if (Auth::check() || Auth::guard('employee')->check()) {
+            return Redirect::route('admin.dashboard');
         }
     	return view('admin/auth/login');
     }
@@ -47,6 +44,6 @@ class AuthController extends Controller
     {
         Auth::Logout();
         Session::flush();
-        return Redirect::to('who-you-are')->with('info','Logout Successfully..!');
+        return Redirect::to('/login')->with('info','Logout Successfully..!');
     }
 }

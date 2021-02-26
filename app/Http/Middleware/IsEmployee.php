@@ -19,7 +19,7 @@ class IsEmployee
     {
         if (!Auth::guard('employee')->check() && !Auth::check()) {
             Session::flash('info', 'You must be logged in!');
-            return Redirect::to('/who-you-are');
+            return Redirect::to('/login');
         }
         else{
             return $next($request);
