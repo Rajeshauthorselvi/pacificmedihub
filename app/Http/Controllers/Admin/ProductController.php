@@ -585,6 +585,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+
          $this->validate(request(), [
             'product_name' => 'required',
             'product_code' => 'required',
@@ -609,18 +610,15 @@ class ProductController extends Controller
             $diff_vendor=array_diff($vendors, $existing_vendor);
         }
         
-        if (!$order_exists && !$rfq_exists && $request->has('new_variant')) {
-            ProductVariant::where('product_id',$product->id)->delete();
-            ProductVariantVendor::where('product_id',$product->id)->delete();
-        }else if($request->has('new_variant')){
-            $product_variants = ProductVariant::where('product_id',$product->id)->get();
+        if (!$order_exists && !$rfq_exists) {
+            ProductVariant::where('product_id',$id)->delete();
+            ProductVariantVendor::where('product_id',$id)->delete();
+        }elseif($order_exists || $rfq_exists){
+            $product_variants = ProductVariant::where('product_id',$id)->get();
             foreach ($product_variants as $key => $value) {
-                $variant = ProductVariant::where('id',$value->id)->first();
-                $variant->disabled=1;
-                $variant->update();
+                ProductVariant::where('id',$value->id)->update(['disabled'=>1]);
             }
         }
-
         if($request->published){$published = 1;}else{$published = 0;}
         if($request->homepage){$homepage = 1;}else{$homepage = 0;}
 
@@ -951,9 +949,8 @@ class ProductController extends Controller
                         $delete_variant = DB::table('product_variants')->where('id',$value->id)->delete();
                         $delete_variant_vendor = DB::table('product_variant_vendors')->where('vendor_id',$value->vendor_id)->delete();
                     }else{
-                        $variant = ProductVariant::where('id',$value->id)->first();
-                        $variant->disabled=1;
-                        $variant->update();
+                        ProductVariant::where('id',$value->product_variant_id)->update(['disabled'=>1]);
+                        
                         $disable_variant_vendor = ProductVariantVendor::where('vendor_id',$value->vendor_id)->get();
                         foreach ($disable_variant_vendor as $key => $vendorValue) {
                             $get_disable_vendor = ProductVariantVendor::where('id',$vendorValue->id)->first();
@@ -1131,6 +1128,7 @@ class ProductController extends Controller
                                ->where('is_deleted',0)
                                ->get();
          }
+         //dd($productVariants);
         $product_variants = array();
         foreach ($productVariants as $key => $variants) {
             
