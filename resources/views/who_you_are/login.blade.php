@@ -16,7 +16,7 @@
   <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
 
   <style type="text/css">
-    .left-half{background:transparent url('theme/images/background_image/background.png') no-repeat center center/cover;position: fixed;top: 0px;left:0;width:50%;height: 100%;background-color: #3287c7;}
+    .left-half{background:transparent url('theme/images/background_image/background.png') no-repeat center center/cover;position: fixed;top: 0px;left:0;width:50%;height: 100%;background-color: #297ab5;}
     .login-page {width: 100%;display: flex;}
     .login-page .right-half {width: 50%;position: fixed;right: 0;background-color: #297ab5;height:100%;}
     .login-page .login-box {width: 75%;margin: auto;position: relative;top: 15%;padding: 20px 30px 30px;background: #fff;border-radius: 5px;box-shadow: 0 0 1px rgb(200, 213, 221),0 0 0 rgba(0,0,0,.5);}
