@@ -18,27 +18,28 @@ class EmployeeAuth extends Authenticatable
     protected $fillable = [ 'name', 'email', 'password' ];
   protected $hidden = [ 'password' ];
 
-    public function isAuthorized($object, $operation)
+
+   public function isAuthorized($object, $operation)
     {
         if (Auth::guard('employee')->check()) {
             $employee_role=Auth::guard('employee')->user()->role_id;
-            $permission=DB::select("select * from `role_access_permissions` as `rsp` inner join `roles` as `r` on `r`.`id` = `rsp`.`role_id` where `object` = 'stock_transist_vendor' and `operation` = 'read' and `rsp`.`allow_access` = 'yes' and `r`.`id` = 4");
+/*            $permission=DB::select("select * from `role_access_permissions` as `rsp` inner join `roles` as `r` on `r`.`id` = `rsp`.`role_id` where `object` = 'stock_transist_vendor' and `operation` = 'read' and `rsp`.`allow_access` = 'yes' and `r`.`id` = 4");
+*/
 
             $permission=DB::table('role_access_permissions as rap')
-            		    ->leftjoin('roles as r','r.id','rap.role_id')
-            		    ->where('rap.allow_access','yes')
-            		    ->where('object', $object)
-            		    ->where('operation', $operation)
-            		    ->where('rap.role_id',4)
-            		    ->where('rap.role_id', $employee_role)
-            		    ->exists();
+                        ->leftjoin('roles as r','r.id','rap.role_id')
+                        ->where('rap.allow_access','yes')
+                        ->where('object', $object)
+                        ->where('operation', $operation)
+                        ->where('rap.role_id', $employee_role)
+                        ->exists();
         }
         else{
             $permission=true;
         }
+
+
         return $permission;
 
     }
-
-
 }

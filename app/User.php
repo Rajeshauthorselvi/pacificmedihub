@@ -60,5 +60,4 @@ class User extends Authenticatable
         return $this->hasMany(UserAddress::class,'customer_id','id');
     }
 
-
 }

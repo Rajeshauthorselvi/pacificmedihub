@@ -148,6 +148,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 
 //Error Page
 Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');	
-
-Route::resource('home','HomeController');
-Route::get('/','HomeController@index');
+Route::get('about-us','front\AboutController@index');
+Route::get('home','front\HomePageController@index');
+Route::get('','front\HomePageController@index');
+/*Route::resource('home','HomeController');
+Route::get('/','HomeController@index');*/

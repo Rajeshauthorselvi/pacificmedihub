@@ -1,3 +1,36 @@
+<?php 
+$purchase=$stock_vendor_allow=$stock_customer_allow=$return=$wastage=$rfq=$order=$customer=$vendor="";
+
+if(Auth::guard('employee')->user()->isAuthorized('stock_transist_vendor','read')){
+  $stock_vendor_allow="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('purchase','read')){
+  $purchase="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('stock_transist_customer','read')){
+  $stock_customer_allow="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('return','read')){
+  $return="yes";
+}
+
+if(Auth::guard('employee')->user()->isAuthorized('wastage','read')){
+  $wastage="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('rfq','read')){
+  $rfq="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('order','read')){
+  $order="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('customer','read')){
+  $customer="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('vendor','read')){
+  $vendor="yes";
+}
+
+?>
   <span style="display: none;">{{$current_route=request()->route()->getName()}}</span>
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-light-primary">
@@ -61,62 +94,77 @@
               </li>
             </ul>
           </li>
-
+          @if ($purchase!="")
           <!-- Purchase Menu -->
           <li class="nav-item @if($current_route=='purchase.index'||$current_route=='purchase.create'||$current_route=='purchase.edit'||$current_route=='purchase.show') active @endif">
             <a href="{{route('purchase.index')}}" class="nav-link">
               <i class="fas fa-shopping-cart"></i><p>Purchase</p>
             </a>
           </li>
+          @endif
 
-          <!-- Stock Menu -->
+          @if ($stock_vendor_allow !="" || $stock_customer_allow || $return!="" || $wastage!="")
           <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-boxes"></i> <p>Stock <i class="fas fa-angle-left right"></i></p>
             </a>
             <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create') block @endif">
+              @if($stock_vendor_allow!="")
               <li class="nav-item @if($current_route=='stock-in-transit.index') active @endif">
                 <a href="{{ route('stock-in-transit.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit (Vendor)</p>
                 </a>
               </li>
+              @endif
+              @if ($stock_customer_allow!="")
               <li class="nav-item">
                 <a href="javascript:void(0)" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit (Customer)</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='return.index'||$current_route=='return.edit') active @endif">
-                <a href="{{ route('return.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>List Return</p>
-                </a>
-              </li>
-              <li class="nav-item @if($current_route=='wastage.index'||$current_route=='wastage.create') active @endif">
-                <a href="{{ route('wastage.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Wastage/Write Off</p>
-                </a>
-              </li>
+              @endif
+              @if($return!="")
+                <li class="nav-item @if($current_route=='return.index'||$current_route=='return.edit') active @endif">
+                  <a href="{{ route('return.index') }}" class="nav-link">
+                    <i class="fas fa-angle-double-right"></i> <p>List Return</p>
+                  </a>
+                </li>
+              @endif
+              @if ($wastage!="")
+                <li class="nav-item @if($current_route=='wastage.index'||$current_route=='wastage.create') active @endif">
+                  <a href="{{ route('wastage.index') }}" class="nav-link">
+                    <i class="fas fa-angle-double-right"></i> <p>Wastage/Write Off</p>
+                  </a>
+                </li>
+              @endif
             </ul>
           </li>
-
-          <!-- RFQ Menu -->
-          <li class="nav-item @if($current_route=='rfq.index'||$current_route=='rfq.create'||$current_route=='rfq.edit'||$current_route=='rfq.show') active @endif">
-            <a href="{{route('rfq.index')}}" class="nav-link"><i class="fas fa-clipboard-list"></i> <p>RFQ</p></a>
-          </li>
-
+          @endif
+          <!-- Stock Menu -->
+          @if ($rfq!="")
+            <!-- RFQ Menu -->
+            <li class="nav-item @if($current_route=='rfq.index'||$current_route=='rfq.create'||$current_route=='rfq.edit'||$current_route=='rfq.show') active @endif">
+              <a href="{{route('rfq.index')}}" class="nav-link"><i class="fas fa-clipboard-list"></i> <p>RFQ</p></a>
+            </li>
+          @endif
+          @if ($order!="")
           <!-- Orders Menu -->
           <li class="nav-item @if($current_route=='orders.index'||$current_route=='orders.create'||$current_route=='orders.edit'||$current_route=='orders.show') active @endif">
             <a href="{{route('orders.index')}}" class="nav-link"><i class="fas fa-dolly-flatbed"></i> <p>Orders</p></a>
           </li>
-          
+          @endif
+          @if ($customer!="")
           <!-- Customer Menu -->
           <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit'||$current_route=='customers.show') active @endif">
             <a href="{{ route('customers.index') }}" class="nav-link"><i class="fas fa-users"></i><p>Customers</p></a>
           </li>
-          
+          @endif
+          @if ($vendor!="")
           <!-- Vendor Menu -->
           <li class="nav-item @if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit'||$current_route=='vendor.show'||$current_route=='vendor-products.index') active @endif">
             <a href="{{route('vendor.index')}}" class="nav-link"><i class="fas fa-people-carry"></i><p>Vendor</p></a>
           </li>
+          @endif
 
           <!-- Employee Menu -->
           <li class="nav-item @if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show'||$current_route=='salary.list'||$current_route=='salary.view'||$current_route=='pay.slip'||$current_route=='emp.commission.list') menu-is-opening menu-open @endif">

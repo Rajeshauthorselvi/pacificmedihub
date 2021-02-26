@@ -53,7 +53,12 @@
     <!-- End of Topbar -->
 
     <!-- Sidebar -->
-    @include('admin.layouts.slider_menu')
+    @if(Auth::guard('employee')->check())
+      @include('admin.layouts.auth_guard')
+      @include('admin.layouts.employee_menu')
+    @else
+      @include('admin.layouts.slider_menu')
+    @endif
     <!-- End of Sidebar -->
 
     <!-- Begin Page Content -->

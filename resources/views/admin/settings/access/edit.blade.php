@@ -433,8 +433,8 @@
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
 <?php $read=(isset($permissions['stock_transist_vendor']) && $permissions['stock_transist_vendor']['read']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="stock[stock_transist_vendor][read]" class="stock-read" id="stockRead" {{ $read }}>
-                                <label for="stockRead"></label>
+                                <input type="checkbox" name="stock[stock_transist_vendor][read]" class="stock-read" id="stockReadVendor" {{ $read }}>
+                                <label for="stockReadVendor"></label>
                               </div>
                             </div>
                           </td>
@@ -457,8 +457,8 @@
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
 <?php $read=(isset($permissions['stock_transist_customer']) && $permissions['stock_transist_customer']['read']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="stock[stock_transist_customer][read]" class="stock-read" id="stockRead" {{ $read }}>
-                                <label for="stockRead"></label>
+                                <input type="checkbox" name="stock[stock_transist_customer][read]" class="stock-read" id="stockReadCustomer" {{ $read }}>
+                                <label for="stockReadCustomer"></label>
                               </div>
                             </div>
                           </td>
