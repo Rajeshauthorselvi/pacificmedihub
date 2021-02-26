@@ -20,7 +20,7 @@ class OptionController extends Controller
     public function index()
     {
         $data=array();
-        $data['product_options']=Option::where('is_deleted',0)->orderBy('created_at','desc')->get();
+        $data['product_options']=Option::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/options/index',$data);
     }
 

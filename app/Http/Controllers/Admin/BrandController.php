@@ -17,7 +17,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $data['brands'] = Brand::where('is_deleted',0)->orderBy('created_at','desc')->get();
+        $data['brands'] = Brand::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/brands/index',$data);
     }
 
@@ -130,7 +130,6 @@ class BrandController extends Controller
             $check_brand->manf_country_id = $request->country_id;
             $check_brand->image  = $image_name;
             $check_brand->published = $published;
-            $check_brand->created_at = date('Y-m-d H:i:s');
             $check_brand->save();
             return redirect()->route('brands.index')->with('info','Brand modified successfully...!');
         }else{

@@ -402,19 +402,19 @@ class RFQController extends Controller
     }
     public function Variants($product_id,$variation_id=0)
     {
-      $variant = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->first();
+      $variant = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->first();
 
       if ($variation_id!=0) {
-        $productVariants = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)
+        $productVariants = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)
                             ->whereIn('id',$variation_id)->get();
       }
       else{
-        $productVariants = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->get();
+        $productVariants = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->get();
       }
       $product_variants = array();
       foreach ($productVariants as $key => $variants) {            
         $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)
-                            ->where('product_variant_id',$variants->id)->first();
+                            ->where('product_variant_id',$variants->id)->where('display_variant',1)->first();
         $product_variants[$key]['variant_id'] = $variants->id;
         $product_variants[$key]['product_name']=Product::where('id',$variants->product_id)->value('name');
         $product_variants[$key]['product_id']=$product_id;
@@ -493,7 +493,7 @@ class RFQController extends Controller
     }
     public function Options($id)
     {
-        $variant = ProductVariant::where('product_id',$id)->where('is_deleted',0)->first();
+        $variant = ProductVariant::where('product_id',$id)->where('disabled',0)->where('is_deleted',0)->first();
 
         $options = array();
         

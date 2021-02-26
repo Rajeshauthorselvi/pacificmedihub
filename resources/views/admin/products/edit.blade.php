@@ -116,8 +116,8 @@
                       
                       <div class="form-group" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
-                          <label for="productBrand">Commission Type</label>
-                          <select class="form-control commission select2bs4" name="commision_type">
+                          <label for="commissionType">Commission Type</label>
+                          <select class="form-control commission select2bs4" id="commissionType" name="commision_type">
                             <option selected="selected" value="">Select Commission</option>
                             @foreach($commissions as $commission)
                               <?php 
@@ -127,6 +127,7 @@
                               <option @if($product->commission_type==$commission->id) selected="selected" @endif value="{{$commission->id}}" {{ (collect(old('commision_type'))->contains($commission->id)) ? 'selected':'' }}>{{$type}}</option>
                             @endforeach
                           </select>
+                          <span class="text-danger commission_required hidden">Product Commission is reqiured</span>
                         </div>
                         <div class="col-sm-6" style="padding:0">
                           <label for="commissionValue">Value</label>
@@ -474,6 +475,7 @@
 
         if((db_exist_options_id==exist_options_id) && (db_exist_vendors_id==exist_vendors_id)){
           alert('This variants are already Existing');
+          $('.product-variant-block').css('display','block');
         }else{
           if(db_exist_options_id==exist_options_id){
             createVendorBlock();
@@ -643,6 +645,8 @@
         var product_name=$('[name=product_name]').val();
         var product_code=$('[name=product_code]').val();
         var category=$('[name=category]').val();
+        var commissionType = $('#commissionType').val();
+        var commissionValue = $('#commissionValue').val();
 
         if (product_name=="") {
             $('.product_required').removeClass('hidden');
@@ -664,9 +668,22 @@
           $('.category_required').addClass('hidden');
         }
 
-        if (product_name=="" || product_code=="" || category=="") {
-            return false;
+        if(commissionType==""){
+          $('.commission_required').removeClass('hidden');
+        }
+
+        if(commissionValue==""){
+          $('.commission_required').removeClass('hidden');
+        }
+        if((commissionType!="") &&(commissionValue!="")){
+          $('.commission_required').addClass('hidden');
+        }
+
+        if (product_name=="" || product_code=="" || category==""||commissionType==""||commissionValue=="") {
+          scroll_up();
+          return false;
         } 
+
         else{
           $('#productForm').submit();
         }
@@ -715,6 +732,11 @@
         });
       });
 
+      function scroll_up(){
+        $('html, body').animate({
+          scrollTop: $("#productForm").offset().top
+        },1000);
+      }
 
       //Validate Number
       function validateNum(e , field) {

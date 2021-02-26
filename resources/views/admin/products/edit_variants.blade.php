@@ -123,7 +123,7 @@
 					</td>
 				@endif
 				<td>
-					<input type="hidden" name="variant[sku][]" value="{{ $sku }}">
+					<input type="hidden" name="new_variant[sku][]" value="{{ $sku }}">
 					{{ $sku }}
 				</td>
 				<td>
