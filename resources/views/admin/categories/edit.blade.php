@@ -55,9 +55,16 @@
                   <div class="form-group">
                     <label>Parent Category</label>
                     <select class="form-control select2bs4" name="parent_category">
-                      <option selected="selected" value="">[None]</option>
-                      @foreach($category_list as $cat)
-                        <option @if($category->parent_category_id==$cat->id) selected="selected" @endif  value="{{$cat->id}}" {{ (collect(old('parent_category'))->contains($cat->id)) ? 'selected':'' }}>{{$cat->name}}</option>
+                      <option value="">[None]</option>
+                      @foreach($category_list as $category)
+                        <?php
+                          $category_name = $category->name;
+                          if($category->parent_category_id!=NULL){
+                            $category_name = $category->parent->name.'  >>  '.$category->name;
+                            $selected_parent_id = isset($category->parent->id)?$category->parent->id:0;
+                          }
+                        ?>
+                        <option @if($category->parent_category_id==$selected_parent_id) selected="selected" @endif value="{{$category->id}}" {{ (collect(old('parent_category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
                       @endforeach
                     </select>
                   </div>

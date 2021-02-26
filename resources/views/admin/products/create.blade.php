@@ -81,7 +81,7 @@
                             <option value="{{$category->id}}" {{ (collect(old('category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
                           @endforeach
                         </select>
-                        <span class="text-danger category_required hidden">Product name is reqiured</span>
+                        <span class="text-danger category_required hidden">Category is reqiured</span>
                         @if($errors->has('category'))
                           <span class="text-danger">{{ $errors->first('category') }}</span>
                         @endif
@@ -118,8 +118,8 @@
                       <div class="clearfix"></div>
                       <div class="form-group" style="display:flex;">
                         <div class="col-sm-6" style="padding-left:0">
-                          <label for="productBrand">Commission Type</label>
-                          <select class="form-control commission select2bs4" name="commision_type">
+                          <label for="commissionType">Commission Type *</label>
+                          <select class="form-control commission select2bs4" id="commissionType" name="commision_type">
                             <option selected="selected" value="">Select Commission</option>
                             @foreach($commissions as $commission)
                               <?php 
@@ -129,10 +129,11 @@
                               <option value="{{$commission->id}}" {{ (collect(old('commision_type'))->contains($commission->id)) ? 'selected':'' }}>{{$type}}</option>
                             @endforeach
                           </select>
+                        <span class="text-danger commission_required hidden">Product Commission is reqiured</span>
                         </div>
                         <div class="col-sm-6" style="padding:0">
-                          <label for="commissionValue">Value</label>
-                          <input type="text" class="form-control" name="commision_value" id="commissionValue" onkeyup="validateNum(event,this);" value="{{old('commision_value')}}">
+                          <label for="commissionValue">Value *</label>
+                          <input type="text" class="form-control" name="commision_value" id="commissionValue" onkeyup="validateNum(event,this);" value="{{old('commision_value')}}" autocomplete="off">
                         </div>
                       </div>
                       
@@ -342,20 +343,21 @@
 
       $(document).on('click', '#submit-btn', function(event) {
         event.preventDefault();
-
         var product_name=$('[name=product_name]').val();
         var product_code=$('[name=product_code]').val();
         var category=$('[name=category]').val();
+        var commissionType = $('#commissionType').val();
+        var commissionValue = $('#commissionValue').val();
 
         if (product_name=="") {
-            $('.product_required').removeClass('hidden');
+          $('.product_required').removeClass('hidden');
         }
         else{
-           $('.product_required').addClass('hidden');
+          $('.product_required').addClass('hidden');
         }
 
         if (product_code=="") {
-            $('.product_code_required').removeClass('hidden');
+          $('.product_code_required').removeClass('hidden');
         }
         else{
           $('.product_code_required').addClass('hidden');
@@ -367,12 +369,26 @@
           $('.category_required').addClass('hidden');
         }
 
-        if (product_name=="" || product_code=="" || category=="") {
-            return false;
+        if(commissionType==""){
+          $('.commission_required').removeClass('hidden');
+        }else{
+          $('.commission_required').addClass('hidden'); 
+        }
+
+        if(commissionValue==""){
+          $('.commission_required').removeClass('hidden');
+        }else{
+          $('.commission_required').addClass('hidden'); 
+        }
+
+        if (product_name=="" || product_code=="" || category==""||commissionType==""||commissionValue=="") {
+          scroll_up();
+          return false;
         } 
 
         if ($('#variantList').length==0) {
           alert('Please add variants');
+          scroll_up();
           return false
         }
         var empty_field = $('#variantList .form-control').filter(function(){
@@ -479,6 +495,12 @@
       function scroll_to(div){
         $('html, body').animate({
           scrollTop: $("#product-variant-block").offset().top
+        },1000);
+      }
+
+      function scroll_up(){
+        $('html, body').animate({
+          scrollTop: $("#productForm").offset().top
         },1000);
       }
 

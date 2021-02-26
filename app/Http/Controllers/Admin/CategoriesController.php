@@ -16,7 +16,7 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $data['categories'] = Categories::where('is_deleted',0)->orderBy('created_at','desc')->get();
+        $data['categories'] = Categories::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/categories/index',$data);
     }
 
@@ -27,7 +27,7 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        $data['categories'] = Categories::where('is_deleted',0)->orderBy('created_at','desc')->get();
+        $data['categories'] = Categories::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/categories/create',$data);
     }
 
@@ -96,7 +96,7 @@ class CategoriesController extends Controller
      */
     public function edit($id)
     {
-        $data['category_list'] = Categories::where('is_deleted',0)->orderBy('created_at','desc')->get();
+        $data['category_list'] = Categories::where('is_deleted',0)->orderBy('id','desc')->get();
         $data['category'] = Categories::find($id);
         return view('admin/categories/edit',$data);
     }

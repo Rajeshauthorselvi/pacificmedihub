@@ -34,10 +34,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $get_products = Product::where('is_deleted',0)->orderBy('created_at','desc')->get();
+        $get_products = Product::where('is_deleted',0)->orderBy('id','desc')->get();
         $products = array();
         foreach($get_products as $key => $product){
-            $variant_details = ProductVariantVendor::where('product_id',$product->id)->orderBy('id','asc')->first();
+            $variant_details = ProductVariantVendor::where('product_id',$product->id)->orderBy('id','desc')->first();
             $total_quantity = ProductVariantVendor::where('product_id',$product->id)->sum('stock_quantity');
             $products[$key]['id'] = $product->id;
             $products[$key]['image'] = $product->main_image;
