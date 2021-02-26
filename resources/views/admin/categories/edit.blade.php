@@ -55,21 +55,20 @@
                   <div class="form-group">
                     <label>Parent Category</label>
                     <select class="form-control select2bs4" name="parent_category">
-                      <option value="">[None]</option>
-                      @foreach($category_list as $category)
+                      <option selected="selected" value="">[None]</option>
+                      @foreach($category_list as $cat)
                         <?php
-                          $category_name = $category->name;
-                          if($category->parent_category_id!=NULL){
-                            $category_name = $category->parent->name.'  >>  '.$category->name;
-                            $selected_parent_id = isset($category->parent->id)?$category->parent->id:0;
+                          $category_name = $cat->name;
+                          if($cat->parent_category_id!=NULL){
+                            $category_name = $cat->parent->name.'  >>  '.$cat->name;
                           }
                         ?>
-                        <option @if($category->parent_category_id==$selected_parent_id) selected="selected" @endif value="{{$category->id}}" {{ (collect(old('parent_category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
+                        <option  @if($category->id==$cat->id) selected="selected" @endif  value="{{$cat->id}}" {{ (collect(old('parent_category'))->contains($cat->id)) ? 'selected':'' }}>{{$category_name}}</option>
                       @endforeach
                     </select>
                   </div>
                   <?php 
-                    if(!empty($category->image)){$image = "theme/images/categories/".$category->image;}
+                    if(!empty($cat->image)){$image = "theme/images/categories/".$cat->image;}
                     else {$image = "theme/images/no_image.jpg";}
                   ?>
                   <div class="form-group">

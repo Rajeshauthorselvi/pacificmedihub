@@ -656,7 +656,7 @@ class ProductController extends Controller
         $product->meta_keyword = $request->meta_keyword;
         $product->meta_description = $request->meta_description;
         $product->update();
-
+        //dd($request->new_variant);
         if ($request->has('new_variant')) {
             $this->AddNewVariants($request->new_variant,$product->id);
             return redirect()->route('products.index')->with('success','Product modified successfully...!');
@@ -1029,7 +1029,7 @@ class ProductController extends Controller
         foreach ($ids as $key => $id) {
             $add = new ProductVariant();
             $add->product_id = $product_id;
-            $add->sku = $sku;
+            $add->sku = $sku[$key];
             $add->option_id = $option_id1[$key];
             $add->option_value_id = $option_value_id1[$key];
 
@@ -1318,16 +1318,19 @@ class ProductController extends Controller
 
             }
         }
-
         $data['removed_vendors_id'] = $removed_vendors_id;
-        if($request->dataFrom=="edit"){
+
+        //dd($options,$vendors);
+
+
+        /*if($request->dataFrom=="edit"){
             if(count($diff_options)==0 && count($diff_vendor)==0){
                 $check_vendors = ProductVariantVendor::whereIn('vendor_id',$vendors)->exists();
                 if($check_vendors){
                     $vendors = [];
                 }    
             }
-        }
+        }*/
 
         $vendor_data = array();
 

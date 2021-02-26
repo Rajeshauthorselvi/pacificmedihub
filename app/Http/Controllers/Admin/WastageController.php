@@ -95,9 +95,11 @@ class WastageController extends Controller
                 ]);
                 $avalible_quantity=ProductVariantVendor::where('product_variant_id',$variant_id)
                                 ->where('product_id',$product_id)
+                                ->where('display_variant',1)
                                 ->value('stock_quantity');
                 $total_quantity=$avalible_quantity-$stock_quantity;
                 ProductVariantVendor::where('product_variant_id',$variant_id)
+                ->where('display_variant',1)
                 ->where('product_id',$product_id)
                 ->update(['stock_quantity'=>$total_quantity]);
             }
@@ -165,7 +167,7 @@ class WastageController extends Controller
         $pro_wastage=array();
         foreach ($wastage_products as $key => $products) {
             $product_name=Product::where('id',$products->product_id)->value('name');
-            $variant=ProductVariant::where('id',$products->product_variation_id)->first();
+            $variant=ProductVariant::where('id',$products->product_variation_id)->where('disabled',0)->where('is_deleted',0)->first();
             $pro_wastage[]=[
                 'id'  => $products->id,
                 'product_id'  => $products->product_id,
@@ -289,24 +291,24 @@ class WastageController extends Controller
     }
     public function Variants($product_id,$variation_id=0)
     {
-        $variant = ProductVariant::where('product_id',$product_id)->where('is_deleted',0)->first();
+        $variant = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->first();
 
         if ($variation_id!=0) {
              $productVariants = ProductVariant::where('product_id',$product_id)
-                            ->where('is_deleted',0)
+                            ->where('disabled',0)->where('is_deleted',0)
                             ->whereIn('id',$variation_id)
                             ->get();
         }
         else{
             $productVariants = ProductVariant::where('product_id',$product_id)
-                               ->where('is_deleted',0)
+                               ->where('disabled',0)->where('is_deleted',0)
                                ->get();
         }
 
         $product_variants = array();
         foreach ($productVariants as $key => $variants) {
             
-            $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)->where('product_variant_id',$variants->id)->first();
+            $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)->where('product_variant_id',$variants->id)->where('display_variant',1)->first();
 
             $product_variants[$key]['variant_id'] = $variants->id;
             $product_variants[$key]['product_name']=Product::where('id',$variants->product_id)->value('name');
@@ -389,7 +391,7 @@ class WastageController extends Controller
     }
     public function Options($id)
     {
-        $variant = ProductVariant::where('product_id',$id)->where('is_deleted',0)->first();
+        $variant = ProductVariant::where('product_id',$id)->where('disabled',0)->where('is_deleted',0)->first();
 
         $options = array();
         

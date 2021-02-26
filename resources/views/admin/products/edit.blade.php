@@ -475,6 +475,7 @@
 
         if((db_exist_options_id==exist_options_id) && (db_exist_vendors_id==exist_vendors_id)){
           alert('This variants are already Existing');
+          $('.product-variant-block').css('display','block');
         }else{
           if(db_exist_options_id==exist_options_id){
             createVendorBlock();
