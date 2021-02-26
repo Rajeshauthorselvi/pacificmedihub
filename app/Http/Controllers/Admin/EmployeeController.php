@@ -39,7 +39,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $data = array();
-        $data['employees'] = Employee::where('is_deleted',0)->orderBy('created_at','desc')->get();
+        $data['employees'] = Employee::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.employees.index',$data);
     }
 

@@ -22,7 +22,7 @@ class VendorController extends Controller
     public function index()
     {
         $data = array();
-        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('created_at','desc')->get();
+        $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/vendor/index',$data);
     }
 

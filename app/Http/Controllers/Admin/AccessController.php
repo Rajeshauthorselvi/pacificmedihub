@@ -19,7 +19,7 @@ class AccessController extends Controller
     public function index()
     {
         $data = array();
-        $data['roles'] = Role::whereNotIn('id',[1,7])->where('is_delete',0)->orderBy('created_at','desc')->get();
+        $data['roles'] = Role::whereNotIn('id',[1,7])->where('is_delete',0)->orderBy('id','desc')->get();
         return view('admin.settings.access.index',$data);
     }
 

@@ -29,7 +29,7 @@ class CustomerController extends Controller
         $data['all_customers']=User::with('company')
                                ->where('users.role_id',7)
                                ->where('is_deleted',0)
-                               ->orderBy('created_at','desc')
+                               ->orderBy('id','desc')
                                ->get();
         return view('admin.customer.index',$data);
     }

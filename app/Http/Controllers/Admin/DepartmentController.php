@@ -20,7 +20,7 @@ class DepartmentController extends Controller
     public function index()
     {
         $data=array();
-        $data['departments'] = Department::where('is_deleted',0)->orderBy('created_at','desc')->get();
+        $data['departments'] = Department::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.department.index',$data);
     }
 

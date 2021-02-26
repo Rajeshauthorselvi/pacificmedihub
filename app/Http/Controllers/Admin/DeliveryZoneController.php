@@ -18,7 +18,7 @@ class DeliveryZoneController extends Controller
     public function index()
     {
         $data=array();
-        $data['delivery_zones']=DeliveryZone::where('is_deleted',0)->orderBy('created_at','desc')->get();
+        $data['delivery_zones']=DeliveryZone::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.delivery_zone.index',$data);
     }
 

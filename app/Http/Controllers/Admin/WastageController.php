@@ -25,7 +25,7 @@ class WastageController extends Controller
     public function index()
     {
         $data=array();
-        $wastages=Wastage::orderBy('created_at','desc')->get();
+        $wastages=Wastage::orderBy('id','desc')->get();
         
         $w_stage=array();
         foreach ($wastages as $key => $wastage) {
