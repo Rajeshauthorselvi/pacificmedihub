@@ -122,10 +122,9 @@ class EmployeeController extends Controller
         if($request->emp_status){$status = 1;}else{$status = 0;}
 
         $role = Department::where('id',$request->dept_id)->first();
-        
         $add_emp = new Employee;
         $add_emp->emp_id = $request->emp_id;
-        $add_emp->role_id = $role->id;
+        $add_emp->role_id = $role->role_id;
         $add_emp->emp_name = $request->emp_name;
         $add_emp->emp_department = $request->dept_id;
         $add_emp->emp_designation = $request->designation;
