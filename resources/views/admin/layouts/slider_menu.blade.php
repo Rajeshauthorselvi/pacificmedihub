@@ -76,13 +76,12 @@
             </a>
             <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create') block @endif">
               
-              @if(Auth::guard('employee')->user()->isAuthorized('stock_transist_vendor','read'))
               <li class="nav-item @if($current_route=='stock-in-transit.index') active @endif">
                 <a href="{{ route('stock-in-transit.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit (Vendor)</p>
                 </a>
               </li>
-              @endif
+              
               <li class="nav-item">
                 <a href="javascript:void(0)" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit (Customer)</p>
