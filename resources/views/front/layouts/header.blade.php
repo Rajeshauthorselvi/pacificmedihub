@@ -32,14 +32,24 @@
 		<div class="header_bottom">
 			<div class="row">
 				<div class="col-sm-3 col-xs-2">
-					<div class="dropdown">
+					<div class="category-dropdown dropdown">
 						<button id="header-category-dropdown" class="hamburger-menu btn">
 	                        <i class="fas fa-bars"></i> &nbsp; <span>SHOP BY CATEGORIES</span>
 	                    </button>
 						<ul class="toogle-menu dropdown-menu">
-							@foreach($categories as $categoy)
+							{{-- @foreach($categories as $categoy)
 								<li><a class="dropdown-item" href="">{{ $categoy->name }}</a></li>
-							@endforeach
+							@endforeach  --}}
+							<li>
+								<a id="menu1" class="dropdown-item" href="#">Test 1</a>
+								<div class="toogle-menu1 dropdown-menu">
+									<ul class="subchildmenu">
+										<li class="ui-menu-item level1 "><a href="#">Test 4</a></li>
+									</ul>
+								</div>
+							</li>
+							<li><a href="">Test 2</a></li>
+							<li><a href="">Test 3</a></li>
 						</ul>
 					</div>
                 </div>
@@ -51,9 +61,9 @@
 			                    	<span id="search_concept">All Categories </span> <span class="caret"></span>
 			                    </button>
 			                    <ul class="dropdown-menu" role="menu">
-			                    	@foreach($categories as $categoy)
+			                    	{{-- @foreach($categories as $categoy)
 										<li><a href="">{{ $categoy->name }}</a></li>
-									@endforeach
+									@endforeach --}}
 			                    </ul>
 			                </div>
 			                <input type="hidden" name="search_param" value="all" id="search_param">         
@@ -103,6 +113,10 @@
 $ (document).ready(function() {
 	$('#header-category-dropdown').click(function(event){
 		$('.toogle-menu').slideToggle('slow');
+		$(this).toggleClass('active');
+	});
+	$('#menu1').click(function(event){
+		$('.toogle-menu1').slideToggle('slow');
 		$(this).toggleClass('active');
 	});
     $('.search-panel .dropdown-menu').find('a').click(function(e) {
