@@ -12,11 +12,8 @@ class AuthController extends Controller
 {
     public function index()
     {
-    	if(Auth::check()) {
-           return redirect()->route('admin.dashboard');   
-        }
-        elseif (Auth::guard('employee')->check()) {
-            return redirect()->route('admin.dashboard');
+        if (Auth::check() || Auth::guard('employee')->check()) {
+            return Redirect::route('admin.dashboard');
         }
     	return view('admin/auth/login');
     }

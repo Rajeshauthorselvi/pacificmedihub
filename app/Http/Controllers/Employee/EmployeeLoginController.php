@@ -9,6 +9,7 @@ use Auth;
 use Hash;
 use Log;
 use Session;
+use Redirect;
 class EmployeeLoginController extends Controller
 {
     /**
@@ -22,6 +23,9 @@ class EmployeeLoginController extends Controller
     }
     public function index()
     {
+        if (Auth::check() || Auth::guard('employee')->check()) {
+            return Redirect::route('admin.dashboard');
+        }
         $data=array();
         return view('employee.auth.login',$data);
     }
