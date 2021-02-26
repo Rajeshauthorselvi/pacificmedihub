@@ -1,3 +1,6 @@
+<?php 
+	$categories = App\Models\Categories::where('published',1)->where('is_deleted',0)->get();
+?>
 <div class="header">
 	<div class="container">
 		<div class="header-top">
@@ -34,12 +37,9 @@
 	                        <i class="fas fa-bars"></i> &nbsp; <span>SHOP BY CATEGORIES</span>
 	                    </button>
 						<ul class="toogle-menu dropdown-menu">
-							<li><a class="dropdown-item" href="">Hair Loss</a></li>
-							<li><a class="dropdown-item" href="">Hair Removal</a></li>
-							<li><a class="dropdown-item" href="">Blood Pressure</a></li>
-							<li><a class="dropdown-item" href="">Vitamin Supplements</a></li>
-							<li><a class="dropdown-item" href="">Athlete's Foot</a></li>
-							<li><a class="dropdown-item" href="">High Cholesterol</a></li>
+							@foreach($categories as $categoy)
+								<li><a class="dropdown-item" href="">{{ $categoy->name }}</a></li>
+							@endforeach
 						</ul>
 					</div>
                 </div>
@@ -51,12 +51,9 @@
 			                    	<span id="search_concept">All Categories </span> <span class="caret"></span>
 			                    </button>
 			                    <ul class="dropdown-menu" role="menu">
-			                      	<li><a href="">Hair Loss</a></li>
-									<li><a href="">Hair Removal</a></li>
-									<li><a href="">Blood Pressure</a></li>
-									<li><a href="">Vitamin Supplements</a></li>
-									<li><a href="">Athlete's Foot</a></li>
-									<li><a href="">High Cholesterol</a></li>
+			                    	@foreach($categories as $categoy)
+										<li><a href="">{{ $categoy->name }}</a></li>
+									@endforeach
 			                    </ul>
 			                </div>
 			                <input type="hidden" name="search_param" value="all" id="search_param">         

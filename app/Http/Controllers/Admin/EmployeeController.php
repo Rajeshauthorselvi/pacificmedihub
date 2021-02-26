@@ -125,7 +125,7 @@ class EmployeeController extends Controller
         
         $add_emp = new Employee;
         $add_emp->emp_id = $request->emp_id;
-        $add_emp->role_id = $request->emp_id;
+        $add_emp->role_id = $role->id;
         $add_emp->emp_name = $request->emp_name;
         $add_emp->emp_department = $request->dept_id;
         $add_emp->emp_designation = $request->designation;
