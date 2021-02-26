@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Log;
 //Admin Routes
 Route::get('admin','Admin\AuthController@index')->name('admin.login');
 Route::post('admin','Admin\AuthController@store')->name('admin.store');
-Route::get('who-you-are','WhoYouAreController@index');
+Route::get('login','WhoYouAreController@index');
 Route::resource('employee', 'Employee\EmployeeLoginController');
 
 Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], function () {

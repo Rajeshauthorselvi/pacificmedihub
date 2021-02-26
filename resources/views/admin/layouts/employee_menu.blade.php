@@ -1,5 +1,5 @@
 <?php 
-$purchase=$stock_vendor_allow=$stock_customer_allow=$return=$wastage=$rfq=$order=$customer=$vendor="";
+$purchase=$stock_vendor_allow=$stock_customer_allow=$return=$wastage=$rfq=$order=$customer=$vendor=$settings=$reports="";
 
 if(Auth::guard('employee')->user()->isAuthorized('stock_transist_vendor','read')){
   $stock_vendor_allow="yes";
@@ -13,7 +13,6 @@ if(Auth::guard('employee')->user()->isAuthorized('stock_transist_customer','read
 if(Auth::guard('employee')->user()->isAuthorized('return','read')){
   $return="yes";
 }
-
 if(Auth::guard('employee')->user()->isAuthorized('wastage','read')){
   $wastage="yes";
 }
@@ -28,6 +27,9 @@ if(Auth::guard('employee')->user()->isAuthorized('customer','read')){
 }
 if(Auth::guard('employee')->user()->isAuthorized('vendor','read')){
   $vendor="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('settings','read')){
+  $settings="yes";
 }
 
 ?>
@@ -184,25 +186,26 @@ if(Auth::guard('employee')->user()->isAuthorized('vendor','read')){
               </li>
             </ul>
           </li>
-
+          
           <!-- Delivery Menu -->
           <li class="nav-item @if($current_route=='delivery_zone.index'||$current_route=='delivery_zone.create'||$current_route=='delivery_zone.edit') active @endif">
             <a href="{{ route('delivery_zone.index') }}" class="nav-link">
               <i class="fas fa-map-marker-alt"></i><p>Delivery Zone</p>
             </a>
           </li>
-
+          
+          @if ($reports!="")
           <!-- Reports Menu -->
           <li class="nav-item">
             <a href="javascript:void(0)" class="nav-link"><i class="fas fa-chart-bar"></i><p>Reports</p></a>
           </li>
+          @endif
           
           <!-- Static Page Menu -->
           <li class="nav-item">
             <a href="javascript:void(0)" class="nav-link"><i class="fas fa-laptop"></i><p>Static Page</p></a>
           </li>
-
-          <!-- Settings Menu -->
+          @if ($settings!="")
           <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings-prefix.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit'||$current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link"><i class="fas fa-cog"></i>
               <p>Settings<i class="fas fa-angle-left right"></i></p>
@@ -262,6 +265,8 @@ if(Auth::guard('employee')->user()->isAuthorized('vendor','read')){
                
             </ul>
           </li>
+          @endif
+          <!-- Settings Menu -->
       
         </ul>
       </nav>
