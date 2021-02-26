@@ -8,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
 use App\Models\UserCompanyDetails;
+use DB;
+use Auth;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -58,5 +60,5 @@ class User extends Authenticatable
         return $this->hasMany(UserAddress::class,'customer_id','id');
     }
 
-    
+
 }

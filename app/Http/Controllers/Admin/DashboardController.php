@@ -12,11 +12,13 @@ use App\Models\Vendor;
 use App\User;
 use Carbon\Carbon;
 use App\Models\CommissionValue;
-
+use Auth;
 class DashboardController extends Controller
 {
     public function index()
     {
+
+         
         $data = array();
         $data['rfq_count'] = RFQ::where('status',1)->count();
         $data['orders_count'] = Orders::where('created_at', '>', Carbon::now()->startOfWeek())

@@ -28,7 +28,7 @@ use Session;
 use Redirect;
 use Arr;
 use DB;
-
+use Hash;
 class EmployeeController extends Controller
 {
     /**
@@ -101,7 +101,7 @@ class EmployeeController extends Controller
             'emp_name'       => 'required',
             'dept_id'        => 'required',
             'designation'    => 'required',
-            'emp_email'      => 'required|email|unique:employees',
+            'email'         => 'required|email|unique:employees',
             'emp_contact'    => 'required',
             'address1'       => 'required',
             'country_id'     => 'required',
@@ -125,14 +125,15 @@ class EmployeeController extends Controller
         
         $add_emp = new Employee;
         $add_emp->emp_id = $request->emp_id;
-        $add_emp->role_id = $role->role_id;
+        $add_emp->role_id = $request->emp_id;
         $add_emp->emp_name = $request->emp_name;
         $add_emp->emp_department = $request->dept_id;
         $add_emp->emp_designation = $request->designation;
         $add_emp->emp_identification_no = $request->identification_no;
         $add_emp->emp_doj = date('Y-m-d',strtotime($request->doj_date));
         $add_emp->emp_mobile_no = $request->emp_contact;
-        $add_emp->emp_email = $request->emp_email;
+        $add_emp->email = $request->email;
+        $add_emp->password =Hash::make($request->password);
         $add_emp->emp_address_line1 = $request->address1;
         $add_emp->emp_address_line2 = $request->address2;
         $add_emp->emp_postcode = $request->postcode;
@@ -238,7 +239,7 @@ class EmployeeController extends Controller
             'emp_name'       => 'required',
             'dept_id'        => 'required',
             'designation'    => 'required',
-            'emp_email'      => 'required|email|unique:employees,emp_email,'.$id,
+            'email'      => 'required|email|unique:employees,email,'.$id,
             'emp_contact'    => 'required',
             'address1'       => 'required',
             'country_id'     => 'required',
@@ -268,7 +269,7 @@ class EmployeeController extends Controller
         $update_emp->emp_identification_no = $request->identification_no;
         $update_emp->emp_doj = date('Y-m-d',strtotime($request->doj_date));
         $update_emp->emp_mobile_no = $request->emp_contact;
-        $update_emp->emp_email = $request->emp_email;
+        $update_emp->email = $request->email;
         $update_emp->emp_address_line1 = $request->address1;
         $update_emp->emp_address_line2 = $request->address2;
         $update_emp->emp_postcode = $request->postcode;

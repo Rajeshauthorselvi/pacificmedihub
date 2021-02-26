@@ -103,11 +103,11 @@
                         <div class="form-group">
                           <div class="col-sm-5">
                             {!! Form::label('Email', 'Email *') !!}
-                            {!! Form::text('emp_email',$employees->emp_email,['class'=>'form-control validate-email','id'=>'Email']) !!}
+                            {!! Form::text('email',$employees->email,['class'=>'form-control validate-email','id'=>'Email']) !!}
                             <span class="email-error" style="display:none;color:red;">Invalid email</span>
                             <span class="text-danger" style="display:none">Email is required</span>
-                            @if($errors->has('emp_email'))
-                              <span class="text-danger">{{ $errors->first('emp_email') }}</span>
+                            @if($errors->has('email'))
+                              <span class="text-danger">{{ $errors->first('email') }}</span>
                             @endif
                           </div>
                           <div class="col-sm-5">
@@ -225,7 +225,7 @@
                           <div class="form-group">
                             <div class="col-sm-4">
                               <label for="basic">Basic Salary*</label>
-                              <input type="text" class="form-control" name="basic" id="basic" value="{{old('basic',$employees->basic)}}" onkeyup="validateNum(event,this);">
+                              <input type="text" class="form-control" name="basic" id="basic" value="{{old('basic',$employees->basic)}}" onkeyup="validateNum(event,this);" autocomplete="off">
                               <span class="text-danger" style="display:none">Basic is required</span>
                             </div>
                             <div class="col-sm-4">
@@ -352,8 +352,8 @@
             $("[name='designation']").closest('.form-group').find('span.text-danger').show();
             valid=false;
           }
-          if($("[name='emp_email']").val()=="") {
-            $("[name='emp_email']").closest('.form-group').find('span.text-danger').show();
+          if($("[name='email']").val()=="") {
+            $("[name='email']").closest('.form-group').find('span.text-danger').show();
             valid=false;
           }
           if($("[name='emp_contact']").val()=="") {
