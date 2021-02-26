@@ -44,6 +44,6 @@ class AuthController extends Controller
     {
         Auth::Logout();
         Session::flush();
-        return Redirect::to('who-you-are')->with('info','Logout Successfully..!');
+        return Redirect::to('/login')->with('info','Logout Successfully..!');
     }
 }
