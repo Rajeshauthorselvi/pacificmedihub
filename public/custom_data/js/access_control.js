@@ -358,6 +358,49 @@ $(document).ready(function() {
       });
 
 /*Commission*/
+/*Zone*/
+  Check_SelectAllButton('.zone-read-all','.zone-read');
+      $('.zone-read-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.zone-read').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.zone-read').prop('checked',false);
+        }
+      });
+
+     Check_SelectAllButton('.zone-create-all','.zone-create');
+      $('.zone-create-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.zone-create').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.zone-create').prop('checked',false);
+        }
+      });
+
+      Check_SelectAllButton('.zone-update-all','.zone-update');
+      $('.zone-update-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.zone-update').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.zone-update').prop('checked',false);
+        }
+      });
+
+      Check_SelectAllButton('.zone-delete-all','.zone-delete');
+
+      $('.zone-delete-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.zone-delete').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.zone-delete').prop('checked',false);
+        }
+      });
+
+/*Zone*/
 
 });
 

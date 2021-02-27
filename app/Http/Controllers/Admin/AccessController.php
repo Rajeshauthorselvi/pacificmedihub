@@ -125,6 +125,14 @@ class AccessController extends Controller
             RoleAccessPermission::where('object','employee')->update(['allow_access'=>'no']);
         }
 
+        if ($request->has('zone')) {
+            $product_data=$request->get('zone');
+            $this->EntireDeliveryZoneSec($role_id,$total_opration,$product_data);
+        }
+        else{
+            RoleAccessPermission::where('object','delivery_zone')->update(['allow_access'=>'no']);
+        }
+
 
         return Redirect::route('access-control.index')->with('success','Role permissions added successfully...!');
 
@@ -143,6 +151,17 @@ class AccessController extends Controller
         RoleAccessPermission::updateOrCreate(['object'=>$slug,'operation'=>$opration[$i]],$produt_sec);
         }
 
+    }
+    public function EntireDeliveryZoneSec($role_id,$total_opration,$product_data)
+    {
+            /*Employee*/
+            if (isset($product_data['delivery_zone'])) {
+                $this->DataLoop(4,$total_opration,'delivery_zone',$product_data['delivery_zone'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','delivery_zone')->update(['allow_access'=>'no']);
+            }
+            /*Employee*/ 
     }
     public function EntireEmployeSec($role_id,$total_opration,$product_data)
     {

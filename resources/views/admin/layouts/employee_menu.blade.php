@@ -1,6 +1,18 @@
 <?php 
-$purchase=$stock_vendor_allow=$stock_customer_allow=$return=$wastage=$rfq=$order=$customer=$vendor=$settings=$reports="";
+$product=$category=$option=$brands=$purchase=$stock_vendor_allow=$stock_customer_allow=$return=$wastage=$rfq=$order=$customer=$vendor=$settings=$reports=$employee=$salary=$delivery_zone=$static_page="";
 
+if(Auth::guard('employee')->user()->isAuthorized('product','read')){
+  $product="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('category','read')){
+  $category="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('option','read')){
+  $option="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('brands','read')){
+  $brands="yes";
+}
 if(Auth::guard('employee')->user()->isAuthorized('stock_transist_vendor','read')){
   $stock_vendor_allow="yes";
 }
@@ -31,6 +43,17 @@ if(Auth::guard('employee')->user()->isAuthorized('vendor','read')){
 if(Auth::guard('employee')->user()->isAuthorized('settings','read')){
   $settings="yes";
 }
+if(Auth::guard('employee')->user()->isAuthorized('employee','read')){
+  $employee="yes";
+}
+
+if(Auth::guard('employee')->user()->isAuthorized('salary','read')){
+  $salary="yes";
+}
+
+if(Auth::guard('employee')->user()->isAuthorized('delivery_zone','read')){
+  $delivery_zone="yes";
+}
 
 ?>
   <span style="display: none;">{{$current_route=request()->route()->getName()}}</span>
@@ -50,52 +73,61 @@ if(Auth::guard('employee')->user()->isAuthorized('settings','read')){
           <li class="nav-item @if($current_route=='admin.dashboard') active @endif">
             <a href="{{route('admin.dashboard')}}" class="nav-link"><i class="fas fa-home"></i><p>Dashboard</p></a>
           </li>
-          
+          @if ($product!="" && $category!="" && $option!="" && $brands!="")
           <!-- Products -->
           <li class="nav-item @if($current_route=='products.index'||$current_route=='products.create'||$current_route=='products.edit'||$current_route=='products.show'||$current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit'||$current_route=='product.import') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-list"></i> <p>Products <i class="fas fa-angle-left right"></i></p>
             </a>
             <ul class="nav nav-treeview" style="display:@if($current_route=='products.index'||$current_route=='products.create'||$current_route=='products.edit'||$current_route=='product.import') block @endif">
-              <li class="nav-item @if($current_route=='products.index'||$current_route=='products.edit'||$current_route=='products.show'||$current_route=='product.import'||$current_route=='products.create') active @endif">
-                <a href="{{route('products.index')}}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>List Products</p>
-                </a>
+              @if ($product!="")
+                  <li class="nav-item @if($current_route=='products.index'||$current_route=='products.edit'||$current_route=='products.show'||$current_route=='product.import'||$current_route=='products.create') active @endif">
+                    <a href="{{route('products.index')}}" class="nav-link">
+                      <i class="fas fa-angle-double-right"></i> <p>List Products</p>
+                    </a>
+                  </li>
+                @endif
+                <li class="nav-item inner-menu @if($current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit') block menu-is-opening menu-open @endif">
+                   @if ($category!="" && $option!="" && $brands!="")
+                  <a href="javascript:void(0)" class="nav-link">
+                    <i class="fas fa-angle-double-right"></i>
+                    <p>
+                      Product Settings
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                 
+                    <ul class="nav nav-treeview" style="display:@if($current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit') block @endif">
+                      @if ($category!="")
+                      <li class="nav-item @if($current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit') active @endif">
+                        <a href="{{route('categories.index')}}" class="nav-link">
+                          <i class="fas fa-angle-double-right"></i>
+                          <p>Categories</p>
+                        </a>
+                      </li>
+                      @endif
+                      @if ($option!="")
+                        <li class="nav-item @if($current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit') active @endif">
+                          <a href="{{route('options.index')}}" class="nav-link">
+                            <i class="fas fa-angle-double-right"></i>
+                            <p>Options</p>
+                          </a>
+                        </li>
+                      @endif
+                      @if ($brands!="")
+                        <li class="nav-item @if($current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit') active @endif">
+                          <a href="{{route('brands.index')}}" class="nav-link">
+                            <i class="fas fa-angle-double-right"></i>
+                            <p>Brands</p>
+                          </a>
+                        </li>
+                    @endif
+                  </ul>
               </li>
-              
-              <li class="nav-item inner-menu @if($current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit') block menu-is-opening menu-open @endif">
-                <a href="javascript:void(0)" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i>
-                  <p>
-                    Product Settings
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-
-                <ul class="nav nav-treeview" style="display:@if($current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit') block @endif">
-
-                  <li class="nav-item @if($current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit') active @endif">
-                    <a href="{{route('categories.index')}}" class="nav-link">
-                      <i class="fas fa-angle-double-right"></i>
-                      <p>Categories</p>
-                    </a>
-                  </li>
-                  <li class="nav-item @if($current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit') active @endif">
-                    <a href="{{route('options.index')}}" class="nav-link">
-                      <i class="fas fa-angle-double-right"></i>
-                      <p>Options</p>
-                    </a>
-                  </li>
-                  <li class="nav-item @if($current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit') active @endif">
-                    <a href="{{route('brands.index')}}" class="nav-link">
-                      <i class="fas fa-angle-double-right"></i>
-                      <p>Brands</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
+                @endif
             </ul>
           </li>
+          @endif
           @if ($purchase!="")
           <!-- Purchase Menu -->
           <li class="nav-item @if($current_route=='purchase.index'||$current_route=='purchase.create'||$current_route=='purchase.edit'||$current_route=='purchase.show') active @endif">
@@ -168,43 +200,50 @@ if(Auth::guard('employee')->user()->isAuthorized('settings','read')){
           </li>
           @endif
 
-          <!-- Employee Menu -->
-          <li class="nav-item @if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show'||$current_route=='salary.list'||$current_route=='salary.view'||$current_route=='pay.slip'||$current_route=='emp.commission.list') menu-is-opening menu-open @endif">
-            <a href="javascript:void(0)" class="nav-link"><i class="fas fa-address-card"></i>
-              <p>Employees<i class="fas fa-angle-left right"></i></p>
-            </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show'||$current_route=='salary.list'||$current_route=='salary.view'||$current_route=='pay.slip'||$current_route=='emp.commission.list') block @endif">
-              <li class="nav-item @if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show') active @endif">
-                <a href="{{route('employees.index')}}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i><p>List Employees</p>
-                </a>
-              </li>
-              <li class="nav-item @if($current_route=='salary.list'||$current_route=='salary.view'||$current_route=='pay.slip'||$current_route=='emp.commission.list') active @endif">
-                <a href="{{route('salary.list',date('m-Y'))}}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i><p>Salary</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          
-          <!-- Delivery Menu -->
-          <li class="nav-item @if($current_route=='delivery_zone.index'||$current_route=='delivery_zone.create'||$current_route=='delivery_zone.edit') active @endif">
-            <a href="{{ route('delivery_zone.index') }}" class="nav-link">
-              <i class="fas fa-map-marker-alt"></i><p>Delivery Zone</p>
-            </a>
-          </li>
-          
+          @if ($employee!="" || $salary!="")
+            <li class="nav-item @if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show'||$current_route=='salary.list'||$current_route=='salary.view'||$current_route=='pay.slip'||$current_route=='emp.commission.list') menu-is-opening menu-open @endif">
+              <a href="javascript:void(0)" class="nav-link"><i class="fas fa-address-card"></i>
+                <p>Employees<i class="fas fa-angle-left right"></i></p>
+              </a>
+              <ul class="nav nav-treeview" style="display:@if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show'||$current_route=='salary.list'||$current_route=='salary.view'||$current_route=='pay.slip'||$current_route=='emp.commission.list') block @endif">
+                @if ($employee!="")
+                  <li class="nav-item @if($current_route=='employees.index'||$current_route=='employees.create'||$current_route=='employees.edit'||$current_route=='employees.show') active @endif">
+                    <a href="{{route('employees.index')}}" class="nav-link">
+                      <i class="fas fa-angle-double-right"></i><p>List Employees</p>
+                    </a>
+                  </li>
+                @endif
+                @if ($salary!="")
+                  <li class="nav-item @if($current_route=='salary.list'||$current_route=='salary.view'||$current_route=='pay.slip'||$current_route=='emp.commission.list') active @endif">
+                    <a href="{{route('salary.list',date('m-Y'))}}" class="nav-link">
+                      <i class="fas fa-angle-double-right"></i><p>Salary</p>
+                    </a>
+                  </li>
+                @endif
+              </ul>
+            </li>
+          @endif
+          @if ($delivery_zone!="")
+            <!-- Delivery Menu -->
+            <li class="nav-item @if($current_route=='delivery_zone.index'||$current_route=='delivery_zone.create'||$current_route=='delivery_zone.edit') active @endif">
+              <a href="{{ route('delivery_zone.index') }}" class="nav-link">
+                <i class="fas fa-map-marker-alt"></i><p>Delivery Zone</p>
+              </a>
+            </li>
+          @endif
           @if ($reports!="")
           <!-- Reports Menu -->
           <li class="nav-item">
             <a href="javascript:void(0)" class="nav-link"><i class="fas fa-chart-bar"></i><p>Reports</p></a>
           </li>
           @endif
-          
-          <!-- Static Page Menu -->
-          <li class="nav-item">
-            <a href="javascript:void(0)" class="nav-link"><i class="fas fa-laptop"></i><p>Static Page</p></a>
-          </li>
+            
+            @if ($static_page!="")
+            <!-- Static Page Menu -->
+            <li class="nav-item">
+              <a href="javascript:void(0)" class="nav-link"><i class="fas fa-laptop"></i><p>Static Page</p></a>
+            </li>
+            @endif
           @if ($settings!="")
           <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings-prefix.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit'||$current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link"><i class="fas fa-cog"></i>

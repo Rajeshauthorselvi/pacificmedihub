@@ -1077,6 +1077,80 @@
                     </table>
                   </div>
 
+                  <h4>Delivery Zone</h4>
+                  <div class="form-group"> 
+                    <table id="commissionTable" class="role-table">
+                      <thead>
+                        <tr>
+                          <th>SI No</th>
+                          <th>Menu Name</th>
+                          <th>
+                            Read ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="zone-read-all" id="zoneReadAll">
+                                <label for="zoneReadAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Create ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="zone-create-all" id="zoneCreateAll">
+                                <label for="zoneCreateAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Update ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="zone-update-all" id="zoneUpdateAll">
+                                <label for="zoneUpdateAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Delete ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="zone-delete-all" id="zoneDeleteAll">
+                                <label for="zoneDeleteAll"></label>
+                              </div>all)
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td class="name">Delivery Zone</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="zone[delivery_zone][read]" class="zone-read" id="zoneRead">
+                                <label for="zoneRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="zone[delivery_zone][create]" class="zone-create" id="zoneCreate">
+                                <label for="zoneCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="zone[delivery_zone][update]" class="zone-update" id="zoneUpdate">
+                                <label for="zoneUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="zone[delivery_zone][delete]" class="zone-delete" id="zoneDelete">
+                                <label for="zoneDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
                   <div class="form-group">
                     <a href="{{ route('access-control.index') }}" class="btn reset-btn">Cancel</a>
                     <button class="btn save-btn" type="submit">Save</button>
