@@ -151,5 +151,7 @@ Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');
 Route::get('about-us','front\AboutController@index');
 Route::get('home','front\HomePageController@index');
 Route::get('','front\HomePageController@index');
+Route::get('{slug}','front\ShopController@category');
+Route::get('{category_slug}/{product_slug}','front\ShopController@product');
 /*Route::resource('home','HomeController');
 Route::get('/','HomeController@index');*/
