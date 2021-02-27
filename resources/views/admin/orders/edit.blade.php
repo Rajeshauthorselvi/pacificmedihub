@@ -273,7 +273,7 @@
                         </div>
                         <div class="col-sm-3">
                           <label for="purchase_date">Payment Status *</label>
-                          <?php $payment_status=[1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
+                          <?php $payment_status=[1=>'Paid',3=>'Partly Paid',2=>'Not Paid']; ?>
                           {!! Form::select('payment_status',$payment_status, $order->payment_status,['class'=>'form-control no-search select2bs4','id'=>'payment_status']) !!}
                         </div>
                       </div>
@@ -563,7 +563,7 @@
         
       $(document).on('change', '#payment_status', function() {
         var paymentStatus = $('option:selected', this).val();
-        if((paymentStatus==1) || (paymentStatus==2)){
+        if((paymentStatus==1) || (paymentStatus==3)){
           $('.payment-note-sec').css('display','block');
         }else{
           $('.payment-note-sec').css('display','none');
