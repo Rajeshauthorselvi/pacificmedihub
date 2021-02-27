@@ -67,14 +67,15 @@
                         </div>
                         <?php
                           if($customer->company->parent_company==0){
-                            $parent = '';
-                          }else{
-                            $parent = $customer->company->company_name;
+                            $parent = '-';
+                          }elseif($customer->company->parent_company!=0){
+                            $get_parent = App\Models\UserCompanyDetails::where('id',$customer->company->parent_company)->first();
+                            $parent = $get_parent->company_name;
                           }
                         ?>
                         <div class="col-sm-6">
                           <label for="">Parent Company</label>
-                          {!! Form::text('null',$parent,['readonly','class'=>'form-control']) !!}
+                          {!! Form::text('null',isset($parent)?$parent:'',['readonly','class'=>'form-control']) !!}
                         </div>
                       </div>
                       

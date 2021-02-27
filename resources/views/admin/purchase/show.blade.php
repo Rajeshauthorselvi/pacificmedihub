@@ -104,29 +104,39 @@
                             </div>
                           </div>
                         @endif
-                        <div class="col-sm-6 admin address">
-                          <div class="col-sm-2">
-                            <span><i class="fas fa-people-carry"></i></span>
+                        @if(isset($admin_address))
+                          <div class="col-sm-6 admin address">
+                            <div class="col-sm-2">
+                              <span><i class="fas fa-people-carry"></i></span>
+                            </div>
+                            <div class="col-sm-10">
+                              <h4>{{$vendor_address->name}}</h4>
+                              <p>
+                                <span>
+                                  {{$vendor_address->address_line1}},&nbsp;{{isset($vendor_address->address_line2)?$vendor_address->address_line2:''}}
+                                </span><br>
+                                <span>
+                                  {{$vendor_address->getCountry->name}},&nbsp;{{isset($vendor_address->getState->name)?$vendor_address->getState->name:''}}
+                                </span><br>
+                                <span>
+                                  {{isset($vendor_address->getCity->name)?$vendor_address->getCity->name:''}}&nbsp;-&nbsp;{{isset($vendor_address->post_code)?$vendor_address->post_code:''}}.
+                                </span>
+                              </p>
+                              <p>
+                                <span>Tel: {{$vendor_address->contact_number}}</span><br>
+                                <span>Email: {{$vendor_address->email}}</span>
+                              </p>
+                            </div>
                           </div>
-                          <div class="col-sm-10">
-                            <h4>{{$vendor_address->name}}</h4>
-                            <p>
-                              <span>
-                                {{$vendor_address->address_line1}},&nbsp;{{$vendor_address->address_line2}}
-                              </span><br>
-                              <span>
-                                {{$vendor_address->getCountry->name}},&nbsp;{{$vendor_address->getState->name}}
-                              </span><br>
-                              <span>
-                                {{$vendor_address->getCity->name}}&nbsp;-&nbsp;{{$vendor_address->post_code}}.
-                              </span>
-                            </p>
-                            <p>
-                              <span>Tel: {{$vendor_address->contact_number}}</span><br>
-                              <span>Email: {{$vendor_address->email}}</span>
-                            </p>
+                        @else
+                          <div class="col-sm-6 admin address">
+                            <div class="col-sm-2 icon">
+                              <span><i class="fas fa-people-carry"></i></span>
+                            </div>
+                            <div class="col-sm-10">
+                            </div>
                           </div>
-                        </div>
+                        @endif
                       </div>
                     </div>
                   </div>

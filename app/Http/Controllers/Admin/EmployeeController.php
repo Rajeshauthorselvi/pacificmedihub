@@ -416,13 +416,15 @@ class EmployeeController extends Controller
                                         ->whereMonth('order_completed_at',$pre_month)->sum('total_amount');
             $t_commission       = (float)$targetCommissions;
             $target_commissions = 0;
-
-            if($t_commission>=$emp->target_value){
-                if($emp->targetCommission->commission_type=='f'){
-                    $target_commissions = $emp->target_commission_value;
-                }else{
-                    $get_target_commission_value = $emp->target_commission_value/100;
-                    $target_commissions = $t_commission*$get_target_commission_value;
+            
+            if($targetCommissions!=0){
+                if($t_commission>=$emp->target_value){
+                    if($emp->targetCommission->commission_type=='f'){
+                        $target_commissions = $emp->target_commission_value;
+                    }else{
+                        $get_target_commission_value = $emp->target_commission_value/100;
+                        $target_commissions = $t_commission*$get_target_commission_value;
+                    }
                 }
             }
 
@@ -517,12 +519,14 @@ class EmployeeController extends Controller
         $t_commission       = (float)$targetCommissions;
         $target_commissions = 0;
 
-        if($t_commission>=$employee->target_value){
-            if($employee->targetCommission->commission_type=='f'){
-                $target_commissions = $employee->target_commission_value;
-            }else{
-                $get_target_commission_value = $employee->target_commission_value/100;
-                $target_commissions = $t_commission*$get_target_commission_value;
+        if($targetCommissions!=0){
+            if($t_commission>=$employee->target_value){
+                if($employee->targetCommission->commission_type=='f'){
+                    $target_commissions = $employee->target_commission_value;
+                }else{
+                    $get_target_commission_value = $employee->target_commission_value/100;
+                    $target_commissions = $t_commission*$get_target_commission_value;
+                }
             }
         }
 
@@ -599,12 +603,14 @@ class EmployeeController extends Controller
             $t_commission       = (float)$targetCommissions;
             $target_commissions = 0;
 
-            if($t_commission>=$employee->target_value){
-                if($employee->targetCommission->commission_type=='f'){
-                    $target_commissions = $employee->target_commission_value;
-                }else{
-                    $get_target_commission_value = $employee->target_commission_value/100;
-                    $target_commissions = $t_commission*$get_target_commission_value;
+            if($targetCommissions!=0){
+                if($t_commission>=$employee->target_value){
+                    if($employee->targetCommission->commission_type=='f'){
+                        $target_commissions = $employee->target_commission_value;
+                    }else{
+                        $get_target_commission_value = $employee->target_commission_value/100;
+                        $target_commissions = $t_commission*$get_target_commission_value;
+                    }
                 }
             }
 

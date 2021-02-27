@@ -215,11 +215,15 @@
                           <div class="form-group">
                           <div class="col-sm-4">
                             <?php 
+                            if($employees->target_commission_type!=NULL){
                              if($employees->targetCommission->commission_type=='f'){
                                 $target_commision_type = 'Fixed (amount)';
                               }else{
                                 $target_commision_type = 'Percentage (%)';
                               }
+                            }else{
+                              $target_commision_type = '';
+                            }
                             ?>
                             <label for="targetCommissionType">Target Commission Type</label>
                             <input type="text" class="form-control" id="target_commision_type" readonly value="{{$target_commision_type}}">
