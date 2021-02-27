@@ -9,7 +9,7 @@ use App\Models\OptionValue;
 use Redirect;
 use Arr;
 use DB;
-
+use Auth;
 class OptionController extends Controller
 {
     /**
@@ -19,6 +19,11 @@ class OptionController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('option','read')) {
+                abort(404);
+            }
+        }
         $data=array();
         $data['product_options']=Option::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/options/index',$data);
@@ -31,6 +36,11 @@ class OptionController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('option','create')) {
+                abort(404);
+            }
+        }
         $data['type']='create';
         return view('admin/options/form',$data);
     }
@@ -107,6 +117,11 @@ class OptionController extends Controller
      */
     public function edit($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('option','update')) {
+                abort(404);
+            }
+        }
         $data['option']        = Option::find($id);
         $data['type']          = "edit";
         $option_values         = OptionValue::where('option_id',$id)->where('is_deleted',0)

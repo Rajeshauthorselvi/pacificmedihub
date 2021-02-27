@@ -44,7 +44,6 @@ class AccessController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
       /*  $this->validate(request(), [
             'role_name' => 'required|unique:roles'
         ]);
@@ -59,7 +58,7 @@ class AccessController extends Controller
             $this->EntireProductSec($role_id,$total_opration,$product_data);
         }
         else{
-           RoleAccessPermission::where('object','product')->update(['allow_access'=>'no']);
+           RoleAccessPermission::whereIn('object',['product','import','category','option','option_value','brands'])->update(['allow_access'=>'no']);
         }
         /*Purchase*/
         if ($request->has('purchase')) {
@@ -70,13 +69,14 @@ class AccessController extends Controller
            RoleAccessPermission::where('object','purchase')->update(['allow_access'=>'no']);
         }
         /*Purchase*/
-
         if ($request->has('stock')) {
             $product_data=$request->get('stock');
             $this->EntireStockSec($role_id,$total_opration,$product_data);
         }
         else{
-           RoleAccessPermission::where('object','stock')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','like','%stock_transist%')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','return')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','wastage')->update(['allow_access'=>'no']);
         }
 
         if ($request->has('rfq')) {

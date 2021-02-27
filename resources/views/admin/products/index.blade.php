@@ -27,17 +27,34 @@
         <div class="row">
           <div class="col-md-12 action-controllers ">
             <div class="col-sm-6 text-left pull-left">
-              <a href="javascript:void(0)" class="btn btn-danger delete-all">
-                <i class="fa fa-trash"></i> Delete (selected)
-              </a>
+                @if (Auth::check() || Auth::guard('employee')->check()) 
+                    @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('product','delete')) 
+                    <a href="javascript:void(0)" class="btn btn-danger delete-all">
+                      <i class="fa fa-trash"></i> Delete (selected)
+                    </a>
+                    @endif
+                @endif
+
             </div>
+
             <div class="col-sm-6 text-right pull-right">
-              <a class="btn add-new" href="{{route('products.create')}}">
-              <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
-            </a>
-            <a href="{{ url('admin/product-import') }}" class="btn btn-success">
-              <i class="fa fa-upload"></i> Import Products
-            </a>
+
+                @if (Auth::check() || Auth::guard('employee')->check()) 
+                    @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('product','create')) 
+                      <a class="btn add-new" href="{{route('products.create')}}">
+                        <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
+                      </a>
+                    @endif
+                @endif
+
+                @if (Auth::check() || Auth::guard('employee')->check()) 
+                    @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('import','create')) 
+                    <a href="{{ url('admin/product-import') }}" class="btn btn-success">
+                      <i class="fa fa-upload"></i> Import Products
+                    </a>
+                    @endif
+                @endif
+
             </div>
           </div>
           <div class="col-md-12">
@@ -82,13 +99,33 @@
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
                                 <a href="{{route('products.show',$product['id'])}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                <a href="{{route('products.edit',$product['id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-                                <a href="#"><li class="dropdown-item">
-                                  <form method="POST" action="{{ route('products.destroy',$product['id']) }}">@csrf 
-                                    <input name="_method" type="hidden" value="DELETE">
-                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
-                                  </form>
-                                </li></a>
+                                      @if (Auth::check() || Auth::guard('employee')->check()) 
+                                          @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('product','update')) 
+                                              <a href="{{route('products.edit',$product['id'])}}">
+                                                <li class="dropdown-item">
+                                                  <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
+                                                </li>
+                                              </a>
+                                          @endif
+                                      @endif
+
+                                      @if (Auth::check() || Auth::guard('employee')->check()) 
+                                        @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('product','delete')) 
+                                          <a href="#">
+                                            <li class="dropdown-item">
+                                              <form method="POST" action="{{ route('products.destroy',$product['id']) }}">
+                                                @csrf 
+                                                <input name="_method" type="hidden" value="DELETE">
+                                                <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');">
+                                                  <i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete
+                                                </button>
+                                              </form>
+                                            </li>
+                                          </a>
+                                        @endif
+                                      @endif
+
+
                               </ul>
                             </div>
                           </td>
