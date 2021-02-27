@@ -74,8 +74,9 @@
                             <?php
                               if($customer->company->parent_company==0){
                                 $parent = '-';
-                              }else{
-                                $parent = $customer->company->company_name;
+                              }elseif($customer->company->parent_company!=0){
+                                $get_parent = App\Models\UserCompanyDetails::where('id',$customer->company->parent_company)->first();
+                                $parent = $get_parent->company_name;
                               }
                              ?>
                             {{ isset($parent)?$parent:'-' }}

@@ -8,7 +8,7 @@ a:hover{text-decoration:none;}
 .header ul,.footer ul,.breadcrumbs ul{list-style:none;margin:auto;padding:0}
 .header li,.footer li,.breadcrumbs li{float:left}
 .header ul{float:right;}
-.header-top{padding:20px 0}
+.header-top{padding:10px 0 15px}
 .header-top li {
     margin-right: 25px;
     border-right: 1px solid #ddd;
@@ -43,7 +43,7 @@ a:hover{text-decoration:none;}
     padding: 18px;
     font-weight: bold;
 }
-.search-form input,.search-form input:focus,.search-form .btn,.search-form .btn:focus,.dropdown button,.dropdown button:focus{border:0;outline:0;box-shadow:0 0 0;}
+.search-form input,.search-form input:focus,.search-form .btn,.search-form .btn:focus,.dropdown button,.dropdown button:focus{border:0;outline:0;box-shadow:none;}
 .dropdown button:hover{color:#fff;}
 .header_bottom ul::after {
     content: "";
@@ -186,7 +186,7 @@ a:hover{text-decoration:none;}
 #home_slider .btn{background:#3e72b1;padding:6px 20px;color:#fff;border-radius:6px;margin-top:1em;}
 .ser-sec ul {
     margin: auto;
-    padding: 40px 0;
+    padding:40px 0 0;
     list-style: none;
     font-size: 14px;
     display:inline-block;
@@ -214,7 +214,7 @@ a:hover{text-decoration:none;}
     left: 0;
 }
 .slide-products {
-    margin: 30px auto 50px;
+    padding:60px 0;
 }
 .slider-title{position:relative;}
 .slider-title::before{
@@ -236,6 +236,46 @@ a:hover{text-decoration:none;}
     position: relative;
     margin-bottom: 20px;
 }
+.lgt-bg .slider-title h4,.lgt-bg.slide-products .owl-prev, .lgt-bg.slide-products .owl-next {background:#f7f9fb !important}
+
+.slide-products .owl-prev, .slide-products .owl-next {
+    position: absolute;
+    top: -34px;
+    transform: translateY(-50%);
+    background: #fff !important;
+    width: 45px;
+    height: 45px;
+    outline:none
+}
+.slide-products .owl-prev {
+  right: 45px   ;
+}
+.slide-products .owl-next {
+  right: 0;
+}
+.slide-products .owl-nav i {
+    font-size: 20px;
+    color: #aaa;
+    line-height: 2;
+    background: #ededed;
+    width: 40px;
+    height: 40px;
+    border-radius:3px;
+}
+.slide-products .owl-nav i:hover{color:#888;}
+button:focus{outline:none}
+.lgt-bg{background: #f7f9fb}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

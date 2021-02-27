@@ -1,5 +1,6 @@
 <?php 
-	$categories = App\Models\Categories::where('published',1)->where('is_deleted',0)->get();
+	$parent_categories = App\Models\Categories::where('published',1)->where('is_deleted',0)
+											  ->where('parent_category_id',NULL)->where('show_home',1)->limit(6)->get();
 ?>
 <div class="header">
 	<div class="container">
@@ -29,27 +30,43 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="header_bottom">
 			<div class="row">
 				<div class="col-sm-3 col-xs-2">
 					<div class="category-dropdown dropdown">
-						<button id="header-category-dropdown" class="hamburger-menu btn">
+						<button id="header-category-dropdown" class="hamburger-menu btn active">
 	                        <i class="fas fa-bars"></i> &nbsp; <span>SHOP BY CATEGORIES</span>
 	                    </button>
-						<ul class="toogle-menu dropdown-menu">
-							{{-- @foreach($categories as $categoy)
-								<li><a class="dropdown-item" href="">{{ $categoy->name }}</a></li>
-							@endforeach  --}}
-							<li>
-								<a id="menu1" class="dropdown-item" href="#">Test 1</a>
-								<div class="toogle-menu1 dropdown-menu">
-									<ul class="subchildmenu">
-										<li class="ui-menu-item level1 "><a href="#">Test 4</a></li>
-									</ul>
-								</div>
-							</li>
-							<li><a href="">Test 2</a></li>
-							<li><a href="">Test 3</a></li>
+						<ul class="toogle-menu dropdown-menu" style="display:block">
+							@foreach($parent_categories as $p_categoy)
+								@php 
+									$child_category = App\Models\Categories::where('published',1)->where('is_deleted',0)
+																	->where('parent_category_id',$p_categoy->id)->get();
+								@endphp
+								@if(count($child_category)!=0)
+									<li class="menu-list" get-id="{{ $p_categoy->id }}">
+										<a id="menu{{ $p_categoy->id }}" class="dropdown-item" href="javascript:void(0);">{{$p_categoy->name}}</a>
+										<div class="toogle-menu{{ $p_categoy->id }} dropdown-menu">
+											<ul class="subchildmenu">
+												
+												@foreach($child_category as $c_category)
+													<li class="ui-menu-item level1 "><a href="javascript:void(0);">{{ $c_category->name }}</a></li>
+												@endforeach
+											</ul>
+										</div>
+									</li>
+								@elseif(count($child_category)==0)
+									<li>
+										<a href="javascript:void(0);">{{$p_categoy->name}}</a>
+									</li>
+								@endif
+							@endforeach
+							@if(count($parent_categories)==6)
+								<li>
+									<a href="javascript:void(0);">More...</a>
+								</li>
+							@endif
 						</ul>
 					</div>
                 </div>
@@ -61,18 +78,20 @@
 			                    	<span id="search_concept">All Categories </span> <span class="caret"></span>
 			                    </button>
 			                    <ul class="dropdown-menu" role="menu">
-			                    	{{-- @foreach($categories as $categoy)
-										<li><a href="">{{ $categoy->name }}</a></li>
-									@endforeach --}}
+			                    	@foreach($parent_categories as $categoy)
+										<li><a class="search-category" href="" catgory-id="{{ $categoy->id }}">{{ $categoy->name }}</a></li>
+									@endforeach
 			                    </ul>
 			                </div>
+			                <input type="hidden" value="" id="selected_category">
 			                <input type="hidden" name="search_param" value="all" id="search_param">         
-			                <input type="text" class="form-control" name="x" placeholder="Search entire store here...">
+			                <input type="text" class="form-control" id="txtSearch" name="search_text" placeholder="Search entire store here...">
 			                <span class="input-group-btn">
 			                    <button class="btn btn-default" type="button"><i class="fas fa-search"></i></button>
 			                </span>
 			            </div>
                 	</div>
+			        <ul id="search_result" style="display: none"></ul>
                	</div>
                	<div class="col-sm-4 col-xs-3">
                		<div class="bottom-nav">
@@ -80,7 +99,7 @@
                				<li><a class="nav-link" href="">My Wishlist</a></li>
                				<li><a class="nav-link" href="">Sign In</a></li>
                				<li>
-								<a class="nav-link" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+								<a class="nav-link" href="javascript:void(0);" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
 				                  <i class="fas fa-shopping-cart"></i>
 				                  <span class="badge rounded-pill badge-notification">12</span>
 				                </a>
@@ -110,22 +129,51 @@
 
 @push('custom-scripts')
 <script type="text/javascript">
-$ (document).ready(function() {
-	$('#header-category-dropdown').click(function(event){
-		$('.toogle-menu').slideToggle('slow');
-		$(this).toggleClass('active');
+	$(document).ready(function() {
+		$('#header-category-dropdown').click(function(event){
+			$('.toogle-menu').slideToggle('slow');
+			$(this).toggleClass('active');
+		});
+		$('.menu-list').click(function(event){
+			var id = $(this).attr('get-id');
+			$('.toogle-menu'+id).slideToggle('slow');
+			$('#menu'+id).toggleClass('active');
+		});
+	    $('.search-panel .dropdown-menu').find('a').click(function(e) {
+			e.preventDefault();
+			var param = $(this).attr("href").replace("javascript:void(0);","");
+			var concept = $(this).text();
+			$('.search-panel span#search_concept').text(concept);
+			$('.input-group #search_param').val(param);
+		});
+
+	    $('.search-category').on('click',function(){
+	    	var catgoryId = $(this).attr('catgory-id');
+	    	$('#selected_category').val(catgoryId);
+	    });
+
+	    $('#txtSearch').on('keyup', function(){
+        	var keyWords = $(this).val();
+	        if(keyWords!=''){
+	        	$('#search_result').css('display','block');
+          		var text = $('#txtSearch').val();
+          		var catgoryId = $('#selected_category').val();
+          		if(catgoryId==''){
+          			catgoryId = 0;
+          		}
+          		$.ajax({
+            		url: '{{route("seach.text")}}',
+            		method: 'POST',
+            		data: {_token: "{{csrf_token()}}",search_text:text,catgory_id:catgoryId},
+            		success: function(data) {
+            			$("#search_result").html(data);
+            		}
+          		});
+	        }else{
+	          $('#search_result').css('display','none');
+	        }
+      	});
+
 	});
-	$('#menu1').click(function(event){
-		$('.toogle-menu1').slideToggle('slow');
-		$(this).toggleClass('active');
-	});
-    $('.search-panel .dropdown-menu').find('a').click(function(e) {
-		e.preventDefault();
-		var param = $(this).attr("href").replace("#","");
-		var concept = $(this).text();
-		$('.search-panel span#search_concept').text(concept);
-		$('.input-group #search_param').val(param);
-	});
-});
 </script>
 @endpush
