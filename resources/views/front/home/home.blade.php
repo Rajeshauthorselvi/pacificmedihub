@@ -67,10 +67,14 @@
 			</div>
 			<div id="product-scroll" class="owl-carousel product-scroll owl-theme">
 				@foreach($products as $product)
+					<?php 
+                        if(!empty($product->main_image)){$image = "theme/images/products/main/".$product->main_image;}
+                        else {$image = "front/img/product_1.jpg";}
+                      ?>
 				    <div class="item">
 				    	<div class="product-inner">
 				    		<div class="product-thumb">
-				    			<a href=""><img src="{{ asset('front/img/product_1.jpg') }}" alt="product name" width="269" height="232" /></a>
+				    			<a href=""><img src="{{asset($image)}}" alt="product name" width="269" height="232" /></a>
 				    			<div class="pro-tag"><span class="new-label">NEW</span></div>
 				    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
 				    		</div>
