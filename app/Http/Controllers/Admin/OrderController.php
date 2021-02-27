@@ -35,6 +35,11 @@ class OrderController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('order','read')) {
+                abort(404);
+            }
+        }
         $data=array();
         $data['orders']=Orders::with('customer','salesrep','statusName')->orderBy('orders.id','desc')->get();
         $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
@@ -49,6 +54,11 @@ class OrderController extends Controller
      */
     public function create(Request $request)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('order','create')) {
+                abort(404);
+            }
+        }
         $rfq_id=$request->rfq_id;
         $data=array();
         $data['rfqs']           = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();     
@@ -223,6 +233,11 @@ class OrderController extends Controller
      */
     public function edit(Orders $orders,$order_id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('order','update')) {
+                abort(404);
+            }
+        }
         $data['order']          = Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
                                         ->first();
         $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
