@@ -129,7 +129,7 @@
                           <td>2</td>
                           <td class="name">Import Products</td>
                           <td>
-        <?php $read=(isset($permissions['product']) && $permissions['import']['read']=='yes')?'checked':'' ?>
+        <?php $read=(isset($permissions['import']) && $permissions['import']['read']=='yes')?'checked':'' ?>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
                                 <input type="checkbox" name="product_sec[import][read]" class="product-read" id="productImportRead" {{ $read }}>
@@ -140,7 +140,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $create=(isset($permissions['product']) && $permissions['import']['create']=='yes')?'checked':'' ?>
+        <?php $create=(isset($permissions['import']) && $permissions['import']['create']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[import][create]" class="product-create" id="productImportReadWrite" {{ $create }}>
                                 <label for="productImportReadWrite"></label>
                               </div>
@@ -155,7 +155,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $read=(isset($permissions['product']) && $permissions['category']['read']=='yes')?'checked':'' ?>
+        <?php $read=(isset($permissions['category']) && $permissions['category']['read']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[category][read]" class="product-read" id="productCategoryRead" {{ $read }}>
                                 <label for="productCategoryRead"></label>
                               </div>
@@ -164,7 +164,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $create=(isset($permissions['product']) && $permissions['category']['create']=='yes')?'checked':'' ?>
+        <?php $create=(isset($permissions['category']) && $permissions['category']['create']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[category][create]" class="product-create" id="productCategoryCreate" {{ $create }}>
                                 <label for="productCategoryCreate"></label>
                               </div>
@@ -173,7 +173,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $update=(isset($permissions['product']) && $permissions['category']['update']=='yes')?'checked':'' ?>
+        <?php $update=(isset($permissions['category']) && $permissions['category']['update']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[category][update]" class="product-update" id="productCategoryUpdate" {{ $update }}>
                                 <label for="productCategoryUpdate"></label>
                               </div>
@@ -182,7 +182,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $delete=(isset($permissions['product']) && $permissions['category']['delete']=='yes')?'checked':'' ?>
+        <?php $delete=(isset($permissions['category']) && $permissions['category']['delete']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[category][delete]" class="product-delete" id="productCategoryDelete" {{ $delete }}>
                                 <label for="productCategoryDelete"></label>
                               </div>
@@ -195,7 +195,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $read=(isset($permissions['product']) && $permissions['option']['read']=='yes')?'checked':'' ?>
+        <?php $read=(isset($permissions['option']) && $permissions['option']['read']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[option][read]" class="product-read" id="productOptionRead" {{ $read }}>
                                 <label for="productOptionRead"></label>
                               </div>
@@ -204,7 +204,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $create=(isset($permissions['product']) && $permissions['option']['create']=='yes')?'checked':'' ?>
+        <?php $create=(isset($permissions['option']) && $permissions['option']['create']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[option][create]" class="product-create" id="productOptionReadWrite" {{ $create }}>
                                 <label for="productOptionReadWrite"></label>
                               </div>
@@ -213,7 +213,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $update=(isset($permissions['product']) && $permissions['option']['update']=='yes')?'checked':'' ?>
+        <?php $update=(isset($permissions['option']) && $permissions['option']['update']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[option][update]" class="product-update" id="productOptionUpdate" {{ $update }}>
                                 <label for="productOptionUpdate"></label>
                               </div>
@@ -222,7 +222,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $delete=(isset($permissions['product']) && $permissions['option']['delete']=='yes')?'checked':'' ?>
+        <?php $delete=(isset($permissions['option']) && $permissions['option']['delete']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[option][delete]" class="product-delete" id="productOptionDelete" {{ $delete }}>
                                 <label for="productOptionDelete"></label>
                               </div>
@@ -235,7 +235,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $read=(isset($permissions['product']) && $permissions['option_value']['read']=='yes')?'checked':'' ?>
+        <?php $read=(isset($permissions['option']) && $permissions['option_value']['read']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[option_value][read]" class="product-read" id="productOptionValueRead" {{ $read }}>
                                 <label for="productOptionValueRead"></label>
                               </div>
@@ -244,7 +244,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-        <?php $create=(isset($permissions['product']) && $permissions['option_value']['create']=='yes')?'checked':'' ?>
+        <?php $create=(isset($permissions['option']) && $permissions['option_value']['create']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[option_value][create]" class="product-create" id="productOptionValueReadWrite" {{ $create }}>
                                 <label for="productOptionValueReadWrite"></label>
                               </div>
@@ -253,7 +253,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-          <?php $update=(isset($permissions['product']) && $permissions['option_value']['update']=='yes')?'checked':'' ?>                                
+          <?php $update=(isset($permissions['option']) && $permissions['option_value']['update']=='yes')?'checked':'' ?>                                
                                 <input type="checkbox" name="product_sec[option_value][update]" class="product-update" id="productOptionValueUpdate" {{ $update }}>
                                 <label for="productOptionValueUpdate"></label>
                               </div>
@@ -262,7 +262,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-          <?php $delete=(isset($permissions['product']) && $permissions['option_value']['delete']=='yes')?'checked':'' ?> 
+          <?php $delete=(isset($permissions['option']) && $permissions['option_value']['delete']=='yes')?'checked':'' ?> 
                                 <input type="checkbox" name="product_sec[option_value][delete]" class="product-delete" id="productOptionValueDelete" {{ $delete }}>
                                 <label for="productOptionValueDelete"></label>
                               </div>
@@ -275,7 +275,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-          <?php $read=(isset($permissions['product']) && $permissions['brands']['read']=='yes')?'checked':'' ?> 
+          <?php $read=(isset($permissions['option']) && $permissions['brands']['read']=='yes')?'checked':'' ?> 
                                 <input type="checkbox" name="product_sec[brands][read]" class="product-read" id="productBrandRead" {{ $read }}>
                                 <label for="productBrandRead"></label>
                               </div>
@@ -284,7 +284,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-          <?php $create=(isset($permissions['product']) && $permissions['brands']['create']=='yes')?'checked':'' ?>
+          <?php $create=(isset($permissions['option']) && $permissions['brands']['create']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[brands][create]" class="product-create" id="productBrandCreate" {{  $create }}>
                                 <label for="productBrandCreate"></label>
                               </div>
@@ -293,7 +293,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-          <?php $update=(isset($permissions['product']) && $permissions['brands']['update']=='yes')?'checked':'' ?>
+          <?php $update=(isset($permissions['option']) && $permissions['brands']['update']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[brands][update]" class="product-update" id="productBrandUpdate" {{ $update }}>
                                 <label for="productBrandUpdate"></label>
                               </div>
@@ -302,7 +302,7 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-          <?php $delete=(isset($permissions['product']) && $permissions['brands']['delete']=='yes')?'checked':'' ?>
+          <?php $delete=(isset($permissions['option']) && $permissions['brands']['delete']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="product_sec[brands][delete]" class="product-delete" id="productBrandDelete" {{ $delete }}>
                                 <label for="productBrandDelete"></label>
                               </div>
