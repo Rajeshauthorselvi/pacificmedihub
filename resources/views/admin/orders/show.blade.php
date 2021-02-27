@@ -289,8 +289,8 @@
                       {!! $order->notes !!}
                     </div>
                     <div class="created-sec col-sm-3 pull-right">
-                      Created by : {{$order->createdBy->first_name}} {{$order->createdBy->last_name}}<br>
-                      Date: {{ date('d/m/Y H:i a',strtotime($order->created_at)) }}
+                      Created by : {{isset($order->createdBy->first_name)?$order->createdBy->first_name:''}} {{isset($order->createdBy->last_name)?$order->createdBy->last_name:''}}<br>
+                      Date: {{ date('d/m/Y H:i a',strtotime(isset($order->created_at)?$order->created_at:'0000-00-00') }}
                     </div>
                   </div>
 
