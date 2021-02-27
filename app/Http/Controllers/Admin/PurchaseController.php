@@ -681,7 +681,7 @@ class PurchaseController extends Controller
     }
     public function CreatePurchasePayment(Request $request)
     {
-
+      $order_paid_total=PaymentHistory::where('ref_id',$request->id)->where('payment_from',1)->sum('amount');
         $data=[
           'ref_id'          => $request->id,
           'reference_no'    => $request->reference_no,
@@ -694,13 +694,25 @@ class PurchaseController extends Controller
         PaymentHistory::insert($data);
 
         $total_paid_amount=PaymentHistory::where('ref_id',$request->id)->where('payment_from',1)->sum('amount');
+
         $total_payment=Purchase::where('id',$request->id)->value('sgd_total_amount');
-        $balance_amount=$total_payment-$total_paid_amount;
+
+     /*   $balance_amount=$total_paid_amount+$total_payment;
+        $balance_amount=$balance_amount-$total_payment;*/
+
+        $total_amount=$total_payment;
+        $total_paid=$request->amount;
+
+        $balance_amount=$order_paid_total+$total_paid;
+
+        $balance_amount=$balance_amount-$total_amount;
 
         if ($balance_amount==0) 
           $payment_status=1;
         else
-          $payment_status=3; 
+          $payment_status=2; 
+
+        // dd($balance_amount,$payment_status);
 
         Purchase::where('id',$request->id)->update(['payment_status'=>$payment_status]);
         return Redirect::back()->with('success','Payment added successfully...!');
