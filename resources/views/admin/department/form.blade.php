@@ -77,10 +77,14 @@
                     @endif
                   </div>
                   <div class="form-group">
-                    @if (isset($dept->status) && $dept->status==1)
+                    @if ($type=="create")
                       @php $checked='checked'; @endphp
-                    @else  
-                      @php $checked=''; @endphp
+                    @elseif($type=="edit")
+                      @if (isset($dept->status) && $dept->status==1)
+                        @php $checked='checked'; @endphp
+                      @else  
+                        @php $checked=''; @endphp
+                      @endif
                     @endif
                     <div class="icheck-info d-inline">
                       <input type="checkbox" name="status" id="dept_status" {{$checked}}> 

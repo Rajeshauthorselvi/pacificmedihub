@@ -63,7 +63,7 @@
                             $category_name = $cat->parent->name.'  >>  '.$cat->name;
                           }
                         ?>
-                        <option  @if($category->id==$cat->id) selected="selected" @endif  value="{{$cat->id}}" {{ (collect(old('parent_category'))->contains($cat->id)) ? 'selected':'' }}>{{$category_name}}</option>
+                        <option @if($cat->parent_category_id!=NULL)  @if($category->id==$cat->id) selected="selected" @endif @endif  value="{{$cat->id}}" {{ (collect(old('parent_category'))->contains($cat->id)) ? 'selected':'' }}>{{$category_name}}</option>
                       @endforeach
                     </select>
                   </div>

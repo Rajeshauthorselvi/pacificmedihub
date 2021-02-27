@@ -82,29 +82,39 @@
                     </div>
                     <div class="col-sm-8">
                       <div class="address-block">
-                        <div class="col-sm-6 customer address">
-                          <div class="col-sm-2">
-                            <span><i class="fas fa-user"></i></span>
+                        @if(isset($customer_address))
+                          <div class="col-sm-6 customer address">
+                            <div class="col-sm-2">
+                              <span><i class="fas fa-user"></i></span>
+                            </div>
+                            <div class="col-sm-10">
+                              <h4>{{$customer_address->first_name}} {{$customer_address->last_name}}</h4>
+                              <p>
+                                <span>
+                                  {{$customer_address->address->address_line1}},&nbsp;{{isset($customer_address->address->address_line2)?$customer_address->address->address_line2:''}}
+                                </span><br>
+                                <span>
+                                  {{$customer_address->address->country->name}},&nbsp;{{isset($customer_address->address->state->name)?$customer_address->address->state->name:''}}
+                                </span><br>
+                                <span>
+                                  {{isset($customer_address->address->city->name)?$customer_address->address->city->name:''}}&nbsp;-&nbsp;{{isset($customer_address->address->post_code)?$customer_address->address->post_code:''}}.
+                                </span>
+                              </p>
+                              <p>
+                                <span>Tel: {{$customer_address->address->mobile}}</span><br>
+                                <span>Email: {{$customer_address->email}}</span>
+                              </p>
+                            </div>
                           </div>
-                          <div class="col-sm-10">
-                            <h4>{{$customer_address->first_name}} {{$customer_address->last_name}}</h4>
-                            <p>
-                              <span>
-                                {{$customer_address->address->address_line1}},&nbsp;{{$customer_address->address->address_line2}}
-                              </span><br>
-                              <span>
-                                {{$customer_address->address->country->name}},&nbsp;{{$customer_address->address->state->name}}
-                              </span><br>
-                              <span>
-                                {{$customer_address->address->city->name}}&nbsp;-&nbsp;{{$customer_address->address->post_code}}.
-                              </span>
-                            </p>
-                            <p>
-                              <span>Tel: {{$customer_address->address->mobile}}</span><br>
-                              <span>Email: {{$customer_address->email}}</span>
-                            </p>
+                        @else
+                          <div class="col-sm-6 customer address">
+                            <div class="col-sm-2 icon">
+                              <span><i class="fas fa-user"></i></span>
+                            </div>
+                            <div class="col-sm-10">
+                            </div>
                           </div>
-                        </div>
+                        @endif
                         @if(isset($admin_address))
                           <div class="col-sm-6 admin address">
                             <div class="col-sm-2 icon">
@@ -263,7 +273,7 @@
                               <th id="total_amount_sgd">{{$rfqs->sgd_total_amount}}</th>
                             </tr>
                             @if($rfqs->currencyCode->currency_code!='SGD')
-                              @php $currency = 'block'; @endphp 
+                              @php $currency = 'contents'; @endphp 
                             @else
                               @php $currency = 'none'; @endphp
                             @endif

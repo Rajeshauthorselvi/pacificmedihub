@@ -276,7 +276,7 @@
                               <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$rfqs->sgd_total_amount}}">
                             </tr>
                             @if($rfqs->currencyCode->currency_code!='SGD')
-                              @php $currency = 'block'; @endphp 
+                              @php $currency = 'contents'; @endphp 
                             @else
                               @php $currency = 'none'; @endphp
                             @endif
