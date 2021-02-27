@@ -11,7 +11,7 @@ use App\Models\Employee;
 use Redirect;
 use File;
 use App\Models\Countries;
-
+use Auth;
 class VendorController extends Controller
 {
     /**
@@ -21,6 +21,11 @@ class VendorController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('vendor','read')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['vendors'] = Vendor::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/vendor/index',$data);
@@ -33,6 +38,11 @@ class VendorController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','create')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
 
@@ -191,6 +201,11 @@ class VendorController extends Controller
      */
     public function show($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','read')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['vendor'] = Vendor::find($id);
         $data['vendor_poc'] = VendorPoc::where('vendor_id',$id)->get();
@@ -206,6 +221,11 @@ class VendorController extends Controller
      */
     public function edit($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','update')) {
+                abort(404);
+            }
+        }
         $data['vendor'] = Vendor::find($id);
         $data['vendor_poc'] = VendorPoc::where('vendor_id',$id)->get();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();

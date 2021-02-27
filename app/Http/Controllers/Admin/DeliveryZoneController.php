@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Session;
 use Redirect;
 use Arr;
+use Auth;
 class DeliveryZoneController extends Controller
 {
     /**
@@ -17,6 +18,11 @@ class DeliveryZoneController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('delivery_zone','read')) {
+                abort(404);
+            }
+        }
         $data=array();
         $data['delivery_zones']=DeliveryZone::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.delivery_zone.index',$data);
@@ -29,6 +35,11 @@ class DeliveryZoneController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('delivery_zone','create')) {
+                abort(404);
+            }
+        }
         $data['type']='create';
         return view('admin.delivery_zone.form',$data);
     }
@@ -71,6 +82,11 @@ class DeliveryZoneController extends Controller
      */
     public function edit(DeliveryZone $deliveryZone)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('delivery_zone','update')) {
+                abort(404);
+            }
+        }
         $data['zone']=DeliveryZone::find($deliveryZone->id);
         $data['type']="edit";
         return view('admin.delivery_zone.form',$data);

@@ -26,16 +26,20 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12 action-controllers ">
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('delivery_zone','delete'))
           	<div class="col-sm-6 text-left pull-left">
           		<a href="javascript:void(0)" class="btn btn-danger delete-all">
           			<i class="fa fa-trash"></i> Delete (selected)
           		</a>
           	</div>
+            @endif
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('delivery_zone','create'))
           	<div class="col-sm-6 text-right pull-right">
 	            <a class="btn add-new" href="{{route('delivery_zone.create')}}">
 	              <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
 	            </a>
           	</div>
+            @endif
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -69,13 +73,17 @@
 		                            <div class="input-group-prepend">
 		                              <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
 		                              <ul class="dropdown-menu">
+                                    @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('delivery_zone','update'))
 		                                <a href="{{route('delivery_zone.edit',$zone->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                    @endif
+                                    @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('delivery_zone','delete'))
 		                                <a href="#"><li class="dropdown-item">
 		                                  <form method="POST" action="{{ route('delivery_zone.destroy',$zone->id) }}">@csrf 
 		                                    <input name="_method" type="hidden" value="DELETE">
 		                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
 		                                  </form>
 		                                </li></a>
+                                    @endif
 		                              </ul>
 		                            </div>
 		                          </td>

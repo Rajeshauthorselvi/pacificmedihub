@@ -15,6 +15,7 @@ use Redirect;
 use Arr;
 use Session;
 use File;
+use Auth;
 
 class CustomerController extends Controller
 {
@@ -25,6 +26,12 @@ class CustomerController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','read')) {
+                abort(404);
+            }
+        }
+
         $data=array();
         $data['all_customers']=User::with('company')
                                ->where('users.role_id',7)
@@ -41,6 +48,12 @@ class CustomerController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','create')) {
+                abort(404);
+            }
+        }
+
         $data=array();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
 
@@ -161,6 +174,12 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','read')) {
+                abort(404);
+            }
+        }
+
         $data=array();
         $data['customer'] = User::with('alladdress','company','bank')
                             ->where('users.role_id',7)
@@ -178,6 +197,12 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','update')) {
+                abort(404);
+            }
+        }
+
         $data=array();
         $data['customer']=$customer=User::with('alladdress','company','bank')
                                ->where('users.role_id',7)

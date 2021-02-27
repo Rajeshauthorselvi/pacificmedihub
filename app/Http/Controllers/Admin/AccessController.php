@@ -109,6 +109,10 @@ class AccessController extends Controller
         }
         else{
            RoleAccessPermission::where('object','vendor')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','employee')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','salary')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','emp_commission')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','department')->update(['allow_access'=>'no']);
         }
         if ($request->has('commission')) {
             $product_data=$request->get('commission');

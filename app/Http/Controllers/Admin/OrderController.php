@@ -182,6 +182,19 @@ class OrderController extends Controller
                 'payment_id' => $request->paying_by,
                 'created_at' => date('Y-m-d H:i:s')
            ]);
+
+            $total_amount=$request->sgd_total_amount;
+            $total_paid=$request->amount;
+            $balance_amount=$total_amount-$total_paid;
+
+
+            if ($balance_amount==0) 
+              $payment_status=1;
+            else
+              $payment_status=2; 
+
+
+          Orders::where('id',$order_id)->update(['payment_status'=>$payment_status]);
        }
        return Redirect::route('orders.index')->with('success','Order created successfully...!');
     }
@@ -414,6 +427,7 @@ class OrderController extends Controller
 
     public function CreatePurchasePayment(Request $request)
     {
+        $order_paid_total=PaymentHistory::where('ref_id',$request->id)->where('payment_from',2)->sum('amount');
         $data=[
           'ref_id'          => $request->id,
           'reference_no'    => $request->reference_no,
@@ -424,10 +438,11 @@ class OrderController extends Controller
           'payment_id'      => $request->payment_id,
         ];
         PaymentHistory::insert($data);
-
-        $total_amount   = $request->total_payment;
-        $total_paid     = $request->amount;
-        $balance_amount = $total_amount-$total_paid;
+        $total_amount=$request->total_payment;
+        $total_paid=$request->amount;
+        $balance_amount=$order_paid_total+$total_paid;
+        $balance_amount=$balance_amount-$total_amount;
+        
         if ($balance_amount==0) 
           $payment_status=1;
         else

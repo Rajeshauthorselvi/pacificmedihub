@@ -29,6 +29,7 @@ use Redirect;
 use Arr;
 use DB;
 use Hash;
+use Auth;
 class EmployeeController extends Controller
 {
     /**
@@ -38,6 +39,11 @@ class EmployeeController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('employee','read')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['employees'] = Employee::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.employees.index',$data);
@@ -50,6 +56,11 @@ class EmployeeController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('employee','create')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['departments']=[''=>'Please Select']+Department::where('is_deleted',0)->where('status',1)->pluck('dept_name','id')->toArray();
 
@@ -192,6 +203,11 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('employee','read')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['employees'] = Employee::find($id);
         //Commission Id 1 is a Base Commission
@@ -212,6 +228,12 @@ class EmployeeController extends Controller
      */
     public function edit($id)
     {
+
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('employee','update')) {
+                abort(404);
+            }
+        }        
         $data = array();
         $data['employees'] = Employee::find($id);
         $data['departments'] = [''=>'Please Select']+Department::where('is_deleted',0)->where('status',1)->pluck('dept_name','id')->toArray();
@@ -343,6 +365,11 @@ class EmployeeController extends Controller
      */
     public function destroy(Request $request, Employee $employee)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('employee','delete')) {
+                abort(404);
+            }
+        }
         $employees = Employee::find($employee->id);
         $employees->is_deleted=1;
         $employees->deleted_at = date('Y-m-d H:i:s');
