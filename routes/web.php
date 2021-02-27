@@ -154,8 +154,9 @@ Route::get('about-us','front\AboutController@index');
 Route::get('home','front\HomePageController@index');
 Route::get('','front\HomePageController@index');
 
-/*Route::resource('home','HomeController');
-Route::get('/','HomeController@index');*/
+Route::get('{slug}','front\ShopController@category');
+Route::get('{category_slug}/{product_slug}','front\ShopController@product');
+
 
 //Home page Search Box
 Route::post('search',['as'=>'seach.text','uses'=>'front\HomePageController@search']);

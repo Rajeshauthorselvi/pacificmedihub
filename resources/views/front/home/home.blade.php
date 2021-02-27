@@ -65,7 +65,7 @@
 			<div class="slider-title">
 				<h4><strong>New Arrival</strong> Products</h4>
 			</div>
-			<div id="product-scroll" class="owl-carousel owl-theme">
+			<div id="product-scroll" class="owl-carousel product-scroll owl-theme">
 			    <div class="item">
 			    	<div class="product-inner">
 			    		<div class="product-thumb">
@@ -147,6 +147,182 @@
 			</div>
 		</div>
 	</div>
+	<div class="clearfix"></div>
+	<div class="slide-products lgt-bg">
+		<div class="container">
+			<div class="slider-title">
+				<h4><strong>Medical</strong> Consumables</h4>
+			</div>
+			<div id="product-scroll" class="owl-carousel product-scroll owl-theme">
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_2.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_2.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_2.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_2.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_2.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_2.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			</div>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="slide-products">
+		<div class="container">
+			<div class="slider-title">
+				<h4><strong>Dental</strong> Asethetics</h4>
+			</div>
+			<div id="product-scroll" class="owl-carousel product-scroll owl-theme">
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_3.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_3.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_3.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_3.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_3.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="item">
+			    	<div class="product-inner">
+			    		<div class="product-thumb">
+			    			<a href=""><img src="{{ asset('front/img/product_3.jpg') }}" alt="product name" width="269" height="232" /></a>
+			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+			    		</div>
+			    		<div class="product-info">
+			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
+			    		</div>
+			    	</div>
+			    </div>
+			</div>
+		</div>
+	</div>
 </div>
 
 @push('custom-scripts')
@@ -158,21 +334,25 @@ $ (document).ready(function() {
 	    nav:false,
 	    items:1
 	});
-	$('#product-scroll').owlCarousel({
-	    loop:true,
-	    margin:30,
-	    nav:true,
-	    responsive:{
-	        0:{
-	            items:1
-	        },
-	        600:{
-	            items:3
-	        },
-	        1000:{
-	            items:4
-	        }
-	    }
+	$(".product-scroll").each(function(){
+		$(this).owlCarousel({
+		    loop:true,
+		    margin:30,
+		    dots:false,
+		    nav:true,
+		    navText : ['<i class="fas fa-chevron-left"></i>','<i class="fa fa-chevron-right" aria-hidden="true"></i>'],
+		    responsive:{
+		        0:{
+		            items:1
+		        },
+		        600:{
+		            items:3
+		        },
+		        1000:{
+		            items:4
+		        }
+		    }
+		});
 	});
 });
 </script>
