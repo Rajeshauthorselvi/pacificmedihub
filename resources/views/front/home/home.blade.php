@@ -66,20 +66,23 @@
 				<h4><strong>New Arrival</strong> Products</h4>
 			</div>
 			<div id="product-scroll" class="owl-carousel product-scroll owl-theme">
-			    <div class="item">
-			    	<div class="product-inner">
-			    		<div class="product-thumb">
-			    			<a href=""><img src="{{ asset('front/img/product_1.jpg') }}" alt="product name" width="269" height="232" /></a>
-			    			<div class="pro-tag"><span class="new-label">NEW</span></div>
-			    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
-			    		</div>
-			    		<div class="product-info">
-			    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
-			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
-			    		</div>
-			    	</div>
-			    </div>
-			    <div class="item">
+				@foreach($products as $product)
+				    <div class="item">
+				    	<div class="product-inner">
+				    		<div class="product-thumb">
+				    			<a href=""><img src="{{ asset('front/img/product_1.jpg') }}" alt="product name" width="269" height="232" /></a>
+				    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+				    			<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
+				    		</div>
+				    		<div class="product-info">
+				    			<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+				    			<h3><a href="javascript:void(0);">{{ $product->name }}</a></h3>
+				    		</div>
+				    	</div>
+				    </div>
+				@endforeach
+
+			    {{-- <div class="item">
 			    	<div class="product-inner">
 			    		<div class="product-thumb">
 			    			<a href=""><img src="{{ asset('front/img/product_1.jpg') }}" alt="product name" width="269" height="232" /></a>
@@ -145,7 +148,7 @@
 			    	</div>
 			    </div>
 			</div>
-		</div>
+		</div> --}}
 	</div>
 	<div class="clearfix"></div>
 	<div class="slide-products lgt-bg">
