@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Brand;
 use App\Models\Countries;
 use Redirect;
-
+use Auth;
 class BrandController extends Controller
 {
     /**
@@ -17,6 +17,11 @@ class BrandController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('brands','read')) {
+                abort(404);
+            }
+        }
         $data['brands'] = Brand::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/brands/index',$data);
     }
@@ -28,6 +33,11 @@ class BrandController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('brands','create')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
         return view('admin/brands/create',$data);
@@ -88,6 +98,11 @@ class BrandController extends Controller
      */
     public function edit($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('brands','update')) {
+                abort(404);
+            }
+        }
         $data['brand'] = Brand::find($id);
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
         return view('admin/brands/edit',$data);

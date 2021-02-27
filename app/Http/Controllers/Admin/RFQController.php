@@ -33,6 +33,11 @@ class RFQController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('rfq','read')) {
+                abort(404);
+            }
+        }
       $data=array();
       $data['rfqs']=RFQ::with('customer','salesrep','statusName')->orderBy('rfq.id','desc')->get();
 
@@ -46,6 +51,11 @@ class RFQController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('rfq','create')) {
+                abort(404);
+            }
+        }
       $data=array();
       $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)->where('role_id',7)
                                   ->pluck('first_name','id')->toArray();
@@ -161,6 +171,11 @@ class RFQController extends Controller
      */
     public function show($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('rfq','read')) {
+                abort(404);
+            }
+        }
       $data = array();
       $products = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
       $product_data = $product_variant = array();
@@ -201,6 +216,11 @@ class RFQController extends Controller
      */
     public function edit($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('rfq','update')) {
+                abort(404);
+            }
+        }
       $data=array();
       $data['rfqs']           = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
       $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,10,11])

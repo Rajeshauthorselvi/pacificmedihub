@@ -18,6 +18,7 @@ use App\Models\PurchaseProductReturn;
 use Session;
 use Redirect;
 use DB;
+use Auth;
 
 class StockInTransitController extends Controller
 {
@@ -28,6 +29,11 @@ class StockInTransitController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('stock_transist_vendor','read')) {
+                abort(404);
+            }
+        }
         $data=array();
 
         $purchases=Purchase::orderBy('id','DESC')->get();
@@ -100,6 +106,11 @@ class StockInTransitController extends Controller
      */
     public function edit($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('stock_transist_vendor','update')) {
+                abort(404);
+            }
+        }
         $data=array();
         $data['purchase']=Purchase::find($id);
 

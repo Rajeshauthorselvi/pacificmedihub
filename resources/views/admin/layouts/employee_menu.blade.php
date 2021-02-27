@@ -73,7 +73,7 @@ if(Auth::guard('employee')->user()->isAuthorized('delivery_zone','read')){
           <li class="nav-item @if($current_route=='admin.dashboard') active @endif">
             <a href="{{route('admin.dashboard')}}" class="nav-link"><i class="fas fa-home"></i><p>Dashboard</p></a>
           </li>
-          @if ($product!="" && $category!="" && $option!="" && $brands!="")
+          @if ($product!="" || $category!="" || $option!="" || $brands!="")
           <!-- Products -->
           <li class="nav-item @if($current_route=='products.index'||$current_route=='products.create'||$current_route=='products.edit'||$current_route=='products.show'||$current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit'||$current_route=='product.import') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
@@ -88,7 +88,7 @@ if(Auth::guard('employee')->user()->isAuthorized('delivery_zone','read')){
                   </li>
                 @endif
                 <li class="nav-item inner-menu @if($current_route=='brands.index'||$current_route=='brands.create'||$current_route=='brands.edit'||$current_route=='categories.index'||$current_route=='categories.create'||$current_route=='categories.edit'||$current_route=='options.index'||$current_route=='options.create'||$current_route=='options.edit') block menu-is-opening menu-open @endif">
-                   @if ($category!="" && $option!="" && $brands!="")
+                   @if ($category!="" || $option!="" || $brands!="")
                   <a href="javascript:void(0)" class="nav-link">
                     <i class="fas fa-angle-double-right"></i>
                     <p>

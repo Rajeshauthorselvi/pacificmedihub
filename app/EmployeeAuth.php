@@ -19,7 +19,7 @@ class EmployeeAuth extends Authenticatable
   protected $hidden = [ 'password' ];
 
 
-   public function isAuthorized($object, $operation)
+   public function isAuthorized($object, $operation,$type="single")
     {
         if (Auth::guard('employee')->check()) {
             $employee_role=Auth::guard('employee')->user()->role_id;
@@ -28,11 +28,17 @@ class EmployeeAuth extends Authenticatable
 
             $permission=DB::table('role_access_permissions as rap')
                         ->leftjoin('roles as r','r.id','rap.role_id')
-                        ->where('rap.allow_access','yes')
-                        ->where('object', $object)
-                        ->where('operation', $operation)
-                        ->where('rap.role_id', $employee_role)
-                        ->exists();
+                        ->where('rap.allow_access','yes');
+                        if ($type=="multiple") {
+                            $permission=$permission->whereIn('object',$object);
+                        }
+                        else{
+                            $permission=$permission->where('object',$object);
+                        }
+                        $permission=$permission->where('operation', $operation)
+                                    ->where('rap.role_id', $employee_role)
+                                    ->exists();
+
         }
         else{
             $permission=true;

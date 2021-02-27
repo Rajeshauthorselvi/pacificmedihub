@@ -18,6 +18,7 @@ use App\Models\ProductVariantVendor;
 use App\Models\PaymentHistory;
 use Redirect;
 use DB;
+use Auth;
 class PurchaseReturnController extends Controller
 {
     /**
@@ -27,6 +28,11 @@ class PurchaseReturnController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('return','read')) {
+                abort(404);
+            }
+        }
         $data_return=array();
         $returns=PurchaseReturn::orderBy('id','DESC')->get();
         foreach ($returns as $key => $return) {
@@ -67,6 +73,11 @@ class PurchaseReturnController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('return','create')) {
+                abort(404);
+            }
+        }
         $data=array();
         return view('admin.stock.return.create',$data);
     }
@@ -120,7 +131,11 @@ class PurchaseReturnController extends Controller
      */
     public function show(PurchaseReturn $purchaseReturn,$slug)
     {
-
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('return','read')) {
+                abort(404);
+            }
+        }
         $purchase_detail=Purchase::where('purchase_order_number',$slug)->first();
 
         if (!$purchase_detail) {
@@ -321,6 +336,11 @@ class PurchaseReturnController extends Controller
      */
     public function edit(PurchaseReturn $purchaseReturn,$id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('return','update')) {
+                abort(404);
+            }
+        }
         $data=array();
         $data['purchase_detail']=$purchase_detail=PurchaseReturn::where('id',$id)->first();
          $data['status']=[''=>'Please Select']+OrderStatus::whereIn('id',[5,6,7,9])->pluck('status_name','id')->toArray();

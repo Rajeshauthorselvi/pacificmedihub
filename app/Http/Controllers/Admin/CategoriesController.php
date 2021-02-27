@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Categories;
 use Redirect;
-
+use Auth;
 class CategoriesController extends Controller
 {
     /**
@@ -16,6 +16,11 @@ class CategoriesController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('category','read')) {
+                abort(404);
+            }
+        }
         $data['categories'] = Categories::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/categories/index',$data);
     }
@@ -27,6 +32,11 @@ class CategoriesController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('category','create')) {
+                abort(404);
+            }
+        }
         $data['categories'] = Categories::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/categories/create',$data);
     }
@@ -96,6 +106,11 @@ class CategoriesController extends Controller
      */
     public function edit($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('category','update')) {
+                abort(404);
+            }
+        }
         $data['category_list'] = Categories::where('is_deleted',0)->orderBy('id','desc')->get();
         $data['category'] = Categories::find($id);
         return view('admin/categories/edit',$data);

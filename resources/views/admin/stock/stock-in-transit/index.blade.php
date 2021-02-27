@@ -54,9 +54,12 @@
                           <td>{{ $order['quantity'] }}</td>
                           <td>{{ $order['qty_received'] }}</td>
                           <td><span class="badge" style="background:{{ $order['color_code'] }};color: #fff ">{{ $order['status'] }}</span></td>
-                          <td>
-                            
+                          <td class="text-center">
+                                  @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('stock_transist_vendor','update'))
                                     <a href="{{route('stock-in-transit.edit',$order['purchase_id'])}}" class="btn btn-primary">Stock Update</a>
+                                  @else
+                                    -
+                                  @endif
              
                               </td>
                           </tr>

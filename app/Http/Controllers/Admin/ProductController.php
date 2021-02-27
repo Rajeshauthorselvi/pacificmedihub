@@ -24,7 +24,7 @@ use Redirect;
 use DB;
 use Session;
 use Response;
-
+use Auth;
 class ProductController extends Controller
 {
     /**
@@ -32,8 +32,14 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('product','read')) {
+                abort(404);
+            }
+        }
         $get_products = Product::where('is_deleted',0)->orderBy('id','desc')->get();
         $products = array();
         foreach($get_products as $key => $product){
@@ -62,6 +68,11 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('product','create')) {
+                abort(404);
+            }
+        }
         if ($request->has('from') && $request->has('vendor_id')) {
             Session::put('active_vendor','yes');
             Session::put('vendor_id',$request->get('vendor_id'));
@@ -499,6 +510,11 @@ class ProductController extends Controller
      */
     public function edit(Request $request,$id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('product','update')) {
+                abort(404);
+            }
+        }
         if ($request->has('from') && $request->has('vendor_id')) {
             Session::put('active_vendor','yes');
             Session::put('vendor_id',$request->get('vendor_id'));
@@ -1392,7 +1408,11 @@ class ProductController extends Controller
 
     public function ProductImportController()
     {
-
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('import','create')) {
+                abort(404);
+            }
+        }
         $data=array();
         $data['last_product_id']=Product::orderBy('id','DESC')->latest()->value('id');
 

@@ -33,6 +33,11 @@ class PurchaseController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('purchase','read')) {
+                abort(404);
+            }
+        }
       $data = array();
       $orders = array();
       $purchases = Purchase::orderBy('id','DESC')->get();
@@ -82,6 +87,11 @@ class PurchaseController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('purchase','create')) {
+                abort(404);
+            }
+        }
       $data=array();
       $data['vendors']        = [''=>'Please Select']+Vendor::where('is_deleted',0)->where('status',1)
                                     ->pluck('name','id')->toArray();
@@ -222,6 +232,11 @@ class PurchaseController extends Controller
      */
     public function show(Purchase $purchase)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('purchase','read')) {
+                abort(404);
+            }
+        }
       $data=array();
       $purchase               = Purchase::find($purchase->id);
       $data['purchase']       = $purchase;
@@ -261,6 +276,11 @@ class PurchaseController extends Controller
      */
     public function edit(Purchase $purchase)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('purchase','update')) {
+                abort(404);
+            }
+        }
       $data=array();
 
 

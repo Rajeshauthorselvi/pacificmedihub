@@ -26,16 +26,20 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12 action-controllers ">
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('purchase','delete')) 
             <div class="col-sm-6 text-left pull-left">
               <a href="javascript:void(0)" class="btn btn-danger delete-all">
                 <i class="fa fa-trash"></i> Delete (selected)
               </a>
             </div>
-            <div class="col-sm-6 text-right pull-right">
-              <a class="btn add-new" href="{{route('purchase.create')}}">
-              <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
-              </a>
-            </div>
+            @endif
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('purchase','create')) 
+              <div class="col-sm-6 text-right pull-right">
+                <a class="btn add-new" href="{{route('purchase.create')}}">
+                <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
+                </a>
+              </div>
+            @endif
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -113,11 +117,13 @@
                                 @else
                                   @php $status_class="" @endphp
                                 @endif
+                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('purchase','update')) 
                                 <a href="{{route('purchase.edit',$order['purchase_id'])}}" class="{{ $status_class }}">
                                   <li class="dropdown-item">
                                     <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
                                   </li>
                                 </a>
+                                @endif
                                 <a href="javascript:void(0)"><li class="dropdown-item">
                                   <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
                                  </li></a>
@@ -127,12 +133,14 @@
                                 <a href="javascript:void(0)"><li class="dropdown-item">
                                   <i class="fa fa-print"></i>&nbsp;&nbsp;Print
                                 </li></a>
+                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('purchase','delete')) 
                                 <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('purchase.destroy',$order['purchase_id']) }}">  @csrf 
                                     <input name="_method" type="hidden" value="DELETE">
                                     <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
                                   </form>
                                 </li></a>
+                                @endif
                               </ul>
                             </div>
                           </td>
