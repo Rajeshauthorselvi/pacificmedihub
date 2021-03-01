@@ -119,6 +119,10 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('delivery_zone','Admin\DeliveryZoneController');
 
 
+	//Static Page
+	Route::resource('static-page-slider','Admin\SliderController');
+
+
 	/* Settings */
 	//Department
 	Route::resource('departments','Admin\DepartmentController');

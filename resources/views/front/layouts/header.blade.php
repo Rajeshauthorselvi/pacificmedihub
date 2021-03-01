@@ -1,6 +1,7 @@
 <?php 
 	$parent_categories = App\Models\Categories::where('published',1)->where('is_deleted',0)
-											  ->where('parent_category_id',NULL)->where('show_home',1)->limit(6)->get();
+											  ->where('parent_category_id',NULL)->limit(6)
+											  ->orderBy('display_order','asc')->get();
 ?>
 <div class="header">
 	<div class="container">
@@ -42,7 +43,8 @@
 							@foreach($parent_categories as $p_categoy)
 								@php 
 									$child_category = App\Models\Categories::where('published',1)->where('is_deleted',0)
-																	->where('parent_category_id',$p_categoy->id)->get();
+																	->where('parent_category_id',$p_categoy->id)
+																	->orderBy('display_order','asc')->get();
 								@endphp
 								@if(count($child_category)!=0)
 									<li class="menu-list" get-id="{{ $p_categoy->id }}">

@@ -153,8 +153,20 @@
           </li>
           
           <!-- Static Page Menu -->
-          <li class="nav-item">
-            <a href="javascript:void(0)" class="nav-link"><i class="fas fa-laptop"></i><p>Static Page</p></a>
+          <li class="nav-item  @if($current_route=='static-page-slider.index'||$current_route=='static-page-slider.create'||$current_route=='static-page-slider.edit') menu-is-opening menu-open @endif">
+            <a href="javascript:void(0)" class="nav-link">
+              <i class="fas fa-laptop"></i><p>Static Page<i class="fas fa-angle-left right"></i></p>
+            </a>
+            <ul class="nav nav-treeview" style="display:@if($current_route=='static-page-slider.index'||$current_route=='static-page-slider.create'||$current_route=='static-page-slider.edit') block @endif">
+              <li class="nav-item">
+                <a href="javascript:void(0)" class="nav-link"><i class="fas fa-angle-double-right"></i>
+                  <p>List Pages</p>
+                </a>
+              </li>
+              <li class="nav-item @if($current_route=='static-page-slider.index'||$current_route=='static-page-slider.create'||$current_route=='static-page-slider.edit') active @endif">
+                <a href="{{ route('static-page-slider.index') }}" class="nav-link"><i class="fas fa-angle-double-right"></i><p>Sliders</p></a>
+              </li>
+            </ul>
           </li>
 
           <!-- Settings Menu -->

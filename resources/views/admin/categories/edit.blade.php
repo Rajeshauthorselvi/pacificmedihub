@@ -43,7 +43,7 @@
                   <input name="_method" type="hidden" value="PATCH">
                   <div class="form-group">
                     <label for="categoryName">Category Name *</label>
-                    <input type="text" class="form-control" name="category_name" id="categoryName" value="{{old('category_name',$category->name)}}">
+                    <input type="text" class="form-control" name="category_name" id="categoryName" value="{{old('category_name',$category->name)}}" autocomplete="off">
                     @if($errors->has('category_name'))
                       <span class="text-danger">{{ $errors->first('category_name') }}</span>
                     @endif
@@ -54,7 +54,8 @@
                   </div>
                   <div class="form-group">
                     <label>Parent Category</label>
-                    <select class="form-control select2bs4" name="parent_category">
+                    <input type="hidden" name="parent_category" id="selectedParent" value="">
+                    <select class="form-control select2bs4" id="selectParent">
                       <option selected="selected" value="">[None]</option>
                       @foreach($category_list as $cat)
                         <?php
@@ -63,7 +64,7 @@
                             $category_name = $cat->parent->name.'  >>  '.$cat->name;
                           }
                         ?>
-                        <option @if($cat->parent_category_id!=NULL)  @if($category->id==$cat->id) selected="selected" @endif @endif  value="{{$cat->parent_category_id}}" {{ (collect(old('parent_category'))->contains($cat->id)) ? 'selected':'' }}>{{$category_name}}</option>
+                        <option @if($cat->parent_category_id!=NULL)  @if($category->id==$cat->id) selected="selected" @endif @endif  value="{{$cat->id}}" parent-id="{{ $cat->parent_category_id }}" {{ (collect(old('parent_category'))->contains($cat->id)) ? 'selected':'' }}>{{$category_name}}</option>
                       @endforeach
                     </select>
                   </div>
@@ -157,6 +158,20 @@
           return false;
         }
       });
+
+      $(document).ready(function() {
+        var old_parent_id = $('#selectParent option:selected').attr('parent-id');
+        if(old_parent_id!='undefined'){
+          $('#selectedParent').val(old_parent_id);
+        }else{
+          $('#selectedParent').val();
+        }
+      });
+
+      $(document).on('change','#selectParent',function(){
+        var parent_id = $('option:selected',this).val();
+        $('#selectedParent').val(parent_id);
+      })
     </script>
   @endpush
 @endsection
