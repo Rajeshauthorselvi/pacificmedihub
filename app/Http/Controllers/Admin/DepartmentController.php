@@ -45,14 +45,14 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        
+            
         $this->validate(request(), [
-            'dept_id' => 'required',
+            // 'dept_id' => 'required',
             'dept_name' => 'required|unique:departments'
         ],[
-            'dept_id.required' => 'Department ID is required',
+            // 'dept_id.required' => 'Department ID is required',
             'dept_name.required' => 'Department Name is required',
-            'dept_name.unique' => 'Department Name has already been taken'
+            // 'dept_name.unique' => 'Department Name has already been taken'
         ]); 
 
         $input=$request->all();

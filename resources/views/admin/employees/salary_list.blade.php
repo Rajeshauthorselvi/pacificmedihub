@@ -96,9 +96,11 @@
                                     <a href="{{ route('pay.slip',['emp_id'=>base64_encode($emp["id"]),'page'=>'payslip','date'=>$date]) }}"><li class="dropdown-item">
                                       <i class="fas fa-file-invoice"></i>&nbsp;&nbsp;Payslip</li></a>
                                   @else
+                                  @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('salary','create')) 
                                   <a href="javascript:void(0);">
                                     <li class="dropdown-item paynow" employee-id="{{$emp['id']}}" data-toggle="modal" data-target="#payment-form"><i class="fas fa-credit-card"></i>&nbsp;&nbsp;Pay Now</li>
                                   </a>
+                                  @endif
                                   @endif
                                   <a href="{{ route('emp.commission.list',['emp_id'=>base64_encode($emp["id"]),'date'=>$date]) }}"><li class="dropdown-item">
                                     <i class="fas fa-file-invoice-dollar"></i>&nbsp;&nbsp;List Commission</li>

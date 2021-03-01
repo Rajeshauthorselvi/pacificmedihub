@@ -30,6 +30,7 @@ use Arr;
 use DB;
 use Hash;
 use Auth;
+use App\Models\Role;
 class EmployeeController extends Controller
 {
     /**
@@ -63,6 +64,12 @@ class EmployeeController extends Controller
         }
         $data = array();
         $data['departments']=[''=>'Please Select']+Department::where('is_deleted',0)->where('status',1)->pluck('dept_name','id')->toArray();
+
+        $data['roles']=[''=>'Please Select']+Role::whereNotIn('id',[1,7])
+                             ->where('is_delete',0)
+                             ->pluck('name','id')
+                             ->toArray();
+
 
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
 
@@ -108,6 +115,8 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+
+        // dd($request->all());
         $this->validate(request(), [
             'emp_name'       => 'required',
             'dept_id'        => 'required',
@@ -132,10 +141,10 @@ class EmployeeController extends Controller
 
         if($request->emp_status){$status = 1;}else{$status = 0;}
 
-        $role = Department::where('id',$request->dept_id)->first();
+        $role = Role::where('is_delete',0)->where('id',$request->dept_id)->first();
         $add_emp = new Employee;
         $add_emp->emp_id = $request->emp_id;
-        $add_emp->role_id = $role->role_id;
+        $add_emp->role_id = $request->role_id;
         $add_emp->emp_name = $request->emp_name;
         $add_emp->emp_department = $request->dept_id;
         $add_emp->emp_designation = $request->designation;
@@ -236,7 +245,16 @@ class EmployeeController extends Controller
         }        
         $data = array();
         $data['employees'] = Employee::find($id);
-        $data['departments'] = [''=>'Please Select']+Department::where('is_deleted',0)->where('status',1)->pluck('dept_name','id')->toArray();
+        // $data['departments'] = [''=>'Please Select']+Department::where('is_deleted',0)->where('status',1)->pluck('dept_name','id')->toArray();
+        // $data['departments']=Role::whereNotIn('id',[1,7])->where('is_delete',0)->pluck('name','id')->toArray();
+        $data['departments']=[''=>'Please Select']+Department::where('is_deleted',0)->where('status',1)->pluck('dept_name','id')->toArray();
+
+        $data['roles']=[''=>'Please Select']+Role::whereNotIn('id',[1,7])
+                             ->where('is_delete',0)
+                             ->pluck('name','id')
+                             ->toArray();
+
+
         $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
         //Commission Id 1 is a Base Commission
         $data['base_commissions']     = CommissionValue::where('commission_id',1)->where('published',1)
@@ -281,10 +299,13 @@ class EmployeeController extends Controller
             $image_name = $update_emp->emp_image;
         }
 
+        // $role = Role::where('is_delete',0)->where('id',$request->dept_id)->first();
+
         if($request->emp_status){$status = 1;}else{$status = 0;}
 
         $update_emp->emp_id = $request->emp_id;
         $update_emp->emp_name = $request->emp_name;
+        $update_emp->role_id = $request->role_id;
         $update_emp->emp_department = $request->dept_id;
         $update_emp->emp_designation = $request->designation;
         $update_emp->emp_identification_no = $request->identification_no;
@@ -382,6 +403,12 @@ class EmployeeController extends Controller
 
     public function salaryList(Request $request,$date)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('salary','read')) {
+                abort(404);
+            }
+        }
+
         $data     = array();
         $employee = array();
 
@@ -496,6 +523,11 @@ class EmployeeController extends Controller
 
     public function salaryView(Request $request,$emp_id,$from)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('salary','read')) {
+                abort(404);
+            }
+        }
         $id = base64_decode($emp_id);
         $employee = Employee::find($id);
         $data['employee'] = $employee;

@@ -1409,7 +1409,7 @@ class ProductController extends Controller
     public function ProductImportController()
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('import','create')) {
+            if (!Auth::guard('employee')->user()->isAuthorized('import','read')) {
                 abort(404);
             }
         }
@@ -1421,6 +1421,14 @@ class ProductController extends Controller
 
     public function ProductImportPostController(Request $request)
     {
+
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('import','create')) {
+                abort(404);
+            }
+        }
+        dd(Auth::guard('employee')->user()->isAuthorized('import','create'),Auth::guard('employee')->user());
+
         $this->validate(request(),[
             'product_sheet' => 'required'
         ]);

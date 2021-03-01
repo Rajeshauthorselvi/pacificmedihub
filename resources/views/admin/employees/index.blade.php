@@ -78,15 +78,19 @@
                                 <a href="{{route('employees.show',$emp->id)}}"><li class="dropdown-item">
                                   <i class="fas fa-eye"></i>&nbsp;&nbsp;View</li>
                                 </a>
+                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('employee','update')) 
                                 <a href="{{route('employees.edit',$emp->id)}}"><li class="dropdown-item">
                                   <i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li>
                                 </a>
+                                @endif
+                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('employee','delete')) 
                                 <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('employees.destroy',$emp->id) }}">@csrf 
                                     <input name="_method" type="hidden" value="DELETE">
                                     <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
                                   </form></li>
                                 </a>
+                                @endif
                               </ul>
                             </div>
                           </td>

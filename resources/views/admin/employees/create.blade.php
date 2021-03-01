@@ -71,16 +71,24 @@
 
                         <div class="form-group">
                           <div class="col-sm-5">
-                            {!! Form::label('dept', 'Department *') !!}
-                            {!! Form::select('dept_id',$departments,null,['class'=>'form-contol select2bs4', 'id'=>'dept', 'style'=>'width:100%'  ]) !!}
-                            <span class="text-danger dept" style="display:none">Department is required</span>
+                            {!! Form::label('role', 'Roles *') !!}
+                            {!! Form::select('role_id',$roles,null,['class'=>'form-contol select2bs4', 'id'=>'role', 'style'=>'width:100%'  ]) !!}
+                            <span class="text-danger role" style="display:none">Role is required</span>
                           </div>
+                          <div class="col-sm-5">
+                              {!! Form::label('dept', 'Department *') !!}
+                              {!! Form::select('dept_id',$departments,null,['class'=>'form-contol select2bs4', 'id'=>'dept', 'style'=>'width:100%'  ]) !!}
+                              <span class="text-danger dept" style="display:none">Department is required</span>
+                          </div>
+                        </div>
+
+                         <div class="form-group">
                           <div class="col-sm-5">
                             {!! Form::label('designation', 'Designation *') !!}
                             {!! Form::text('designation',null,['class'=>'form-control','id'=>'designation']) !!}
                             <span class="text-danger" style="display:none">Designation is required</span>
                           </div>
-                        </div>
+                         </div>
 
                         <div class="form-group">
                           <div class="col-sm-5">
