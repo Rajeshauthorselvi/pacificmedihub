@@ -45,11 +45,9 @@
                       <label for="roleName">Role Name *</label>
                     </div>
                     <div class="col-sm-9" style="padding:0">
-                      {!! Form::text('role_name',$role->name,['class'=>'form-control','id'=>'roleName','placeholder'=>'Role Name']) !!}
+                      {!! Form::text('role_name',null,['class'=>'form-control','id'=>'roleName','placeholder'=>'Role Name']) !!}
                     </div>
                   </div>
-
-                  <input type="hidden" name="role_id" value="{{ $role_id }}">
                   
                   <h4>Product</h4>
                   <div class="form-group"> 
@@ -364,6 +362,28 @@
                           </td>
                         </tr>
                         
+                        <tr>
+                          <td>2</td>
+                          <td class="name">Purchase Payment</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="purchase[purchase_payment][read]" class="purchase-read" id="purchasePaymentListRead">
+                                <label for="purchasePaymentListRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="purchase[purchase_payment][create]" class="purchase-create" id="purchasePaymentCreate">
+                                <label for="purchasePaymentCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>-</td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -668,6 +688,42 @@
                             </div>
                           </td>
                         </tr>
+                        <tr>
+                          <td>2</td>
+                          <td class="name">Order Payment</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[order_payment][read]" class="orders-read" id="ordersPaymentRead">
+                                <label for="ordersPaymentRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[order_payment][create]" class="orders-create" id="ordersPaymentCreate">
+                                <label for="ordersPaymentCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[order_payment][update]" class="orders-update" id="ordersPaymentUpdate">
+                                <label for="ordersPaymentUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[order_payment][delete]" class="orders-delete" id="ordersPaymentDelete">
+                                <label for="ordersPaymentDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -928,42 +984,6 @@
                         </tr>
                         <tr>
                           <td>3</td>
-                          <td class="name">Commission</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="employee[emp_commission][read]" class="employee-read" id="empCommissionRead">
-                                <label for="empCommissionRead"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="employee[emp_commission][create]" class="employee-create" id="empCommissionCreate">
-                                <label for="empCommissionCreate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="employee[emp_commission][update]" class="employee-update" id="empCommissionUpdate">
-                                <label for="empCommissionUpdate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="employee[emp_commission][delete]" class="employee-delete" id="empCommissionDelete">
-                                <label for="empCommissionDelete"></label>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>4</td>
                           <td class="name">Department</td>
                           <td>
                             <div class="form-group clearfix">

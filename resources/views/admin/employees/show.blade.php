@@ -71,7 +71,7 @@
                       <div class="form-group">
                         <div class="col-sm-5">
                           {!! Form::label('dept', 'Department *') !!}
-                          {!! Form::text('dept_id',$employees->department->dept_name,['readonly','class'=>'form-control', 'id'=>'dept']) !!}
+                          {!! Form::text('dept_id',$employees->role->name,['readonly','class'=>'form-control', 'id'=>'dept']) !!}
                         </div>
                         <div class="col-sm-5">
                           {!! Form::label('designation', 'Designation *') !!}

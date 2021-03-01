@@ -53,13 +53,13 @@
                   {{ Form::model($dept,['method' => 'PATCH', 'route' =>['departments.update',$dept->id]]) }}
                 @endif
                   <div class="form-group">
-                    <label for="dept_id">Department ID</label>
-                    {{ Form::text('dept_id',null,['class'=>'form-control','id'=>'dept_id']) }}
-                    @if($errors->has('dept_id'))
-                      <span class="text-danger">{{ $errors->first('dept_id') }}</span>
+                    <label for="dept_name">Department Name</label>
+                    {{ Form::text('dept_name',null,['class'=>'form-control','id'=>'dept_name']) }}
+                    @if($errors->has('dept_name'))
+                      <span class="text-danger">{{ $errors->first('dept_name') }}</span>
                     @endif
                   </div>
-                  <div class="form-group">
+{{--                   <div class="form-group">
                     <label for="dept_name">Department Name</label>
                     <select class="form-control select2bs4" name="dept_name" id="dept_name">
                       <option value="">--Select--</option>
@@ -75,7 +75,7 @@
                     @if($errors->has('dept_name'))
                       <span class="text-danger">{{ $errors->first('dept_name') }}</span>
                     @endif
-                  </div>
+                  </div> --}}
                   <div class="form-group">
                     @if ($type=="create")
                       @php $checked='checked'; @endphp
@@ -95,7 +95,7 @@
                     <a href="{{route('departments.index')}}" class="btn reset-btn">Cancel</a>
                     <button type="submit" class="btn save-btn">Save</button>
                   </div>
-                </form>
+                {!! Form::close() !!}
               </div>
             </div>
           </div>

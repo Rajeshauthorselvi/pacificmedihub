@@ -11,9 +11,9 @@ class Taxes extends Seeder
      */
     public function run()
     {
-        $data=[
+        /*$data=[
     		['name'=>'No Tax','code'=>'no-tax','tax_type'=>'p','rate'=>0,'published'=>1,'created_at'=>date('Y-m-d H:i:s')]
     	];
-        Tax::insert($data);
+        Tax::insert($data);*/
     }
 }

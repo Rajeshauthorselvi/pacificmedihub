@@ -101,18 +101,20 @@
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
                                 <a href="{{route('purchase.show',$order['purchase_id'])}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-
+                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('purchase_payment','read')) 
                                 <a href="javascript:void(0)" class="view-payment" purchase-id="{{ $order['purchase_id'] }}">
                                   <li class="dropdown-item">
                                     <i class="fa fa-credit-card"></i>&nbsp;&nbsp;View Payments
                                   </li>
                                 </a>
-
+                                @endif
+                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('purchase_payment','create')) 
                                 <a href="javascript:void(0)" class="add-payment" purchase-id="{{$order['purchase_id']}}">
                                   <li class="dropdown-item">
                                     <i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment
                                   </li>
                                 </a>
+                                @endif
                                 @if ($order['status_id']==2 || $order['status_id']==4)
                                   @php $status_class="disabled" @endphp
                                 @else
