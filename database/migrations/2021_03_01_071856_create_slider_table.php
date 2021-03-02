@@ -15,12 +15,7 @@ class CreateSliderTable extends Migration
     {
         Schema::create('slider', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('images',255);
-            $table->string('title',255)->nullable();
-            $table->text('description')->nullable();
-            $table->string('button',255)->nullable();
-            $table->string('link',255)->nullable();
-            $table->bigInteger('display_order')->nullable();
+            $table->string('slider_name',255)->nullable();
             $table->boolean('published')->default(0)->comment('0 - not published, 1 - published');
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));

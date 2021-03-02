@@ -42,7 +42,7 @@
                   @csrf
                   <div class="form-group">
                     <label for="sliderName">Slider Name *</label>
-                    <input type="text" name="slider_name" class="form-control" value="">
+                    <input type="text" name="slider_name" class="form-control" value="{{ old('slider_name') }}">
                   </div>
                   <div class="form-group">
                     <div class="col-sm-12">
@@ -105,7 +105,7 @@
                   
                   <div class="form-group">
                     <div class="icheck-info d-inline">
-                      <input type="checkbox" name="published" id="Published" checked>
+                      <input type="checkbox" name="published" id="Published">
                       <label for="Published">Published</label>
                     </div>
                   </div>
@@ -204,6 +204,10 @@
               </td> 
             </tr>`
           );
+          if(rowIdx==5){
+            $('#addBtn').css('pointer-events','none');
+            $('#addBtn').css('opacity','0.3');
+          }
         }); 
 
         $('#tbody').on('click', '.remove', function () { 
@@ -224,7 +228,16 @@
             $('.remove').css('opacity','0.3');
           }
           $(this).closest('tr').remove(); 
-          rowIdx--; 
+          rowIdx = rowCount; 
+
+          if(rowIdx<5){
+            $('#addBtn').css('pointer-events','visible');
+            $('#addBtn').css('opacity','1');
+          }else if(rowIdx==5){
+            $('#addBtn').css('pointer-events','none');
+            $('#addBtn').css('opacity','0.3'); 
+          }
+
         }); 
       }); 
     </script>

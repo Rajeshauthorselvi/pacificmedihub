@@ -53,11 +53,7 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Banner Image</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Link</th>
-                        <th>Display Order</th>
+                        <th>Slider Name</th>
                         <th>Published</th>
                         <th>Action</th>
                       </tr>
@@ -66,13 +62,7 @@
                       @foreach($sliders as $slider)
                         <tr>
                           <td><input type="checkbox" value="{{ $slider->id }}" name="slider-ids"></td>
-                          <td>
-                            <img src="{{asset('theme/images/sliders/'.$slider->images)}}" style="width:125px;height:90px;object-fit:contain;">
-                          </td>
-                          <td>{{ $slider->title }}</td>
-                          <td>{{ $slider->description }}</td>
-                          <td>{{ $slider->link }}</td>
-                          <td>{{ $slider->display_order }}</td>
+                          <td>{{ $slider->slider_name }}</td>
                           <?php
                             if($slider->published==1){$published = "fa-check";}
                             else{$published = "fa-ban";}
