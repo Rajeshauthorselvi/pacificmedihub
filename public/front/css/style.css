@@ -4,6 +4,11 @@ body{font-family:'Poppins', sans-serif;color:#313131;}
 input:focus{outline:none}
 a,input[type="submit"]{transition:0.8s}
 a:hover{text-decoration:none;}
+.btn.focus, .btn:focus{box-shadow:0 0 0;}
+img {
+    max-width: 100%;
+    height: auto;
+}
 .header a{color:#222;}
 .header ul,.footer ul,.breadcrumbs ul{list-style:none;margin:auto;padding:0}
 .header li,.footer li,.breadcrumbs li{float:left}
@@ -93,6 +98,132 @@ a:hover{text-decoration:none;}
 
 
 
+
+
+
+
+
+
+.shopping__cart {
+    background: #eeeeee none repeat scroll 0 0;
+    box-shadow: 0 0 85px rgba(0, 0, 0, 0.2);
+    display: block;
+    height: 100vh;
+    opacity: 0;
+    overflow-y: scroll;
+    position: fixed;
+    right: -100%;
+    top: 0;
+    transition: all 0.25s ease 0s;
+    width: 100%;
+    z-index: 99999;
+    width: 475px;
+}
+.shopping__cart.shopping__cart__on {
+    opacity: 1;
+    padding-bottom: 50px;
+    right: calc(0px - 16px);
+}
+.shopping__cart__inner {
+    padding: 102px 50px;
+    height: 100%;
+}
+.shopping__cart__inner .offsetmenu__close__btn {
+    padding: 21px 50px 24px;
+}
+.offsetmenu__close__btn {
+    background-color: #eee;
+    padding: 29px 50px 24px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 10;
+}
+.offsetmenu__close__btn i{color:#666;font-size:36px;transition:all 0.3s ease 0s}
+
+.body__overlay {
+    backface-visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.8);
+    cursor: url("../img/close.png") 25 25, pointer;
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    transition: opacity 0.3s ease 0s, visibility 0s ease 0.3s, transform 0.3s ease 0s;
+    visibility: hidden;
+    width: 100%;
+    z-index: 99999;
+}
+.body__overlay.is-visible {
+    opacity: 1;
+    transition: opacity 0.3s ease 0s, visibility 0s ease 0s, transform 0.3s ease 0s;
+    visibility: visible;
+}
+.shp__cart__wrap {
+    margin-top: -30px;
+}
+.shp__single__product {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 21px;
+    padding-top: 21px;
+}
+.shp__cart__wrap .shp__single__product {
+    border-bottom: 1px solid #ddd;
+}
+.shp__pro__thumb {
+    margin-right: 20px;
+}
+.shp__pro__thumb a {
+    display: block;
+}
+.shp__pro__thumb a img {
+    max-width: 60px;
+}
+.shp__pro__details {
+    min-width: 71%;
+}
+.shp__pro__details h2{font-size:16px}
+.shp__pro__details h2 a{
+    color: #000;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    padding: 0;
+    text-transform: none;
+}
+.shp__pro__details span{font-size:14px}
+.remove__btn {
+    text-align: right;
+    width: 20px;
+}
+.remove__btn a i {
+    color: #ccc;
+    font-size: 22px;
+}
+.shopping__cart__inner ul{list-style:none;padding:0;margin:auto}
+.shopping__btn li a {
+    background-color: transparent;
+    border: 1px solid #000;
+    color: #000;
+    font-size: 16px;
+    font-weight:500;
+    height: 57px;
+    line-height: 57px;
+    margin-bottom: 15px;
+    padding: 0 25px;
+    text-align: center;
+    text-transform: none;
+    transition: all 0.5s ease 0s;
+    width: 100%;
+    display: block;
+}
+.shopping__btn .shp__checkout a {
+    background-color:#3e72b1;
+    border-color:#3e72b1;
+    color: #fff;
+}
 
 
 
@@ -265,8 +396,29 @@ a:hover{text-decoration:none;}
 .slide-products .owl-nav i:hover{color:#888;}
 button:focus{outline:none}
 .lgt-bg{background: #f7f9fb}
-
-
+.btn-list-grid button{padding:0;line-height:1;margin:0 15px 0 0px}
+.btn-list-grid .fa{color: #999;font-size:18px;}
+.btn-list-grid button.active .fa,.btn-list-grid button:hover .fa{color:#3e72b1}
+.tot-pro{position:relative;top:5px;color:#666;left:20px;}
+.sort-inner{float:right;margin-left:15px;}
+.sort-wrapper label {
+    margin: 8px auto auto;
+    color: #666;
+}
+.category-page-wrapper {
+    margin: 25px auto auto;
+}
+#product-list .product-inner{margin:1em auto;}
+.product-layout.product-list .product-thumb {
+    float: left;
+    max-width: 25%;
+}
+.product-layout.product-list .product-info {
+    float: left;
+    max-width: 65%;
+    margin-left: 40px;
+}
+.product-layout.product-list .product-info .product-desc{display:block}
 
 
 
@@ -353,6 +505,7 @@ button:focus{outline:none}
     text-align: center;
     overflow: hidden;
 }
+.product-thumb img{width:100%;height:auto;}
 .pro-tag{
     position: absolute;
     top: 10px;
@@ -414,3 +567,4 @@ button:focus{outline:none}
     color: #1d1d1d;
 }
 .product-info h3 a:hover{color:#3e72b1;}
+.product-desc{display:none}

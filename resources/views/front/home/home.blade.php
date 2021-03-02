@@ -150,9 +150,9 @@
 			    			<h3><a href="#">Surgical Equipments Mask Dummy Product</a></h3>
 			    		</div>
 			    	</div>
-			    </div>
+			    </div> --}}
 			</div>
-		</div> --}}
+		</div>
 	</div>
 	<div class="clearfix"></div>
 	<div class="slide-products lgt-bg">
