@@ -42,7 +42,7 @@
                   @csrf 
                   <div class="form-group">
                     <label for="categoryName">Category Name *</label>
-                    <input type="text" class="form-control" name="category_name" id="categoryName" value="{{old('category_name')}}">
+                    <input type="text" class="form-control" name="category_name" id="categoryName" value="{{old('category_name')}}" autocomplete="off">
                     @if($errors->has('category_name'))
                       <span class="text-danger">{{ $errors->first('category_name') }}</span>
                     @endif
@@ -87,7 +87,7 @@
                   </div>
                   <div class="form-group">
                     <label for="displayOrder">Display Order</label>
-                    <input type="number" class="form-control" name="display_order" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" id="displayOrder" value="{{old('display_order')}}">
+                    <input type="number" class="form-control" name="display_order" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" id="displayOrder" value="{{old('display_order',$display_order+1)}}">
                   </div>
                   <div class="form-group">
                     <label for="searchEngine">Search Engine Friendly Page Name *</label>

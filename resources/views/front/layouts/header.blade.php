@@ -1,6 +1,7 @@
 <?php 
 	$parent_categories = App\Models\Categories::where('published',1)->where('is_deleted',0)
-											  ->where('parent_category_id',NULL)->where('show_home',1)->limit(6)->get();
+											  ->where('parent_category_id',NULL)->limit(6)
+											  ->orderBy('display_order','asc')->get();
 ?>
 <div class="header">
 	<div class="container">
@@ -42,7 +43,8 @@
 							@foreach($parent_categories as $p_categoy)
 								@php 
 									$child_category = App\Models\Categories::where('published',1)->where('is_deleted',0)
-																	->where('parent_category_id',$p_categoy->id)->get();
+																	->where('parent_category_id',$p_categoy->id)
+																	->orderBy('display_order','asc')->get();
 								@endphp
 								@if(count($child_category)!=0)
 									<li class="menu-list" get-id="{{ $p_categoy->id }}">
@@ -98,7 +100,7 @@
                			<ul>
                				<li><a class="nav-link" href="">My Wishlist</a></li>
                				<li><a class="nav-link" href="">Sign In</a></li>
-               				<li>
+               				<li class="cart__menu">
 								<a class="nav-link" href="javascript:void(0);" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
 				                  <i class="fas fa-shopping-cart"></i>
 				                  <span class="badge rounded-pill badge-notification">12</span>
@@ -111,6 +113,55 @@
    		</div>
 	</div>
 </div>
+
+
+<div class="body__overlay"></div>
+
+            <!-- Start Cart Panel -->
+            <div class="shopping__cart">
+                <div class="shopping__cart__inner">
+                    <div class="offsetmenu__close__btn">
+                        <a href="#"><i class="fas fa-times"></i></a>
+                    </div>
+                    <div class="shp__cart__wrap">
+                        <div class="shp__single__product">
+                            <div class="shp__pro__thumb">
+                                <a href="#">
+                                    <img src="https://via.placeholder.com/150/cccccc/000000/?text=Product%20image" alt="product images">
+                                </a>
+                            </div>
+                            <div class="shp__pro__details">
+                                <h2><a href="product-details.html">BO&Play Wireless Speaker</a></h2>
+                                <span class="quantity">QTY: 1</span>
+                            </div>
+                            <div class="remove__btn">
+                                <a href="#" title="Remove this item"><i class="far fa-times-circle"></i></a>
+                            </div>
+                        </div>
+                        <div class="shp__single__product">
+                            <div class="shp__pro__thumb">
+                                <a href="#">
+                                    <img src="https://via.placeholder.com/150/cccccc/000000/?text=Product%20image" alt="product images">
+                                </a>
+                            </div>
+                            <div class="shp__pro__details">
+                                <h2><a href="product-details.html">Brone Candle</a></h2>
+                                <span class="quantity">QTY: 1</span>
+                            </div>
+                            <div class="remove__btn">
+                                <a href="#" title="Remove this item"><i class="far fa-times-circle"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="shopping__btn">
+                        <li><a href="cart.html">View Cart</a></li>
+                        <li class="shp__checkout"><a href="checkout.html">RGQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End Cart Panel -->
+
+
 
 @if(Request::url() === url('/')) @else
 	<div class="breadcrumbs">
@@ -173,7 +224,21 @@
 	          $('#search_result').css('display','none');
 	        }
       	});
+	  $('.cart__menu').on('click', function() {
+	    $('.shopping__cart').addClass('shopping__cart__on');
+	    $('.body__overlay').addClass('is-visible');
 
+	  });
+
+	  $('.offsetmenu__close__btn').on('click', function() {
+	      $('.shopping__cart').removeClass('shopping__cart__on');
+	      $('.body__overlay').removeClass('is-visible');
+	  });
+	  $('.body__overlay').on('click', function() {
+	    $(this).removeClass('is-visible');
+	    // $('.offsetmenu').removeClass('offsetmenu__on');
+	    $('.shopping__cart').removeClass('shopping__cart__on');
+	  });
 	});
 </script>
 @endpush

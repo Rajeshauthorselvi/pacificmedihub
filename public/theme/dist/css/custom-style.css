@@ -161,6 +161,7 @@ tr.hide-table-padding>td {padding: 0;}
 .show-page tr.hide-table-padding>td {padding: 0;}
 .show-page .expand-button {position: relative;}
 .show-page .order-no-sec {line-height: 30px;font-size: 16px;}
+.ico-help{cursor: pointer;}
 
 /* Employee */
 #salaryCommission h5.title {margin: 15px 0 0 5px;background: #eaf3f9;width: 100%;padding: 5px 10px;}
@@ -198,3 +199,16 @@ tr.hide-table-padding>td {padding: 0;}
 /* Emp-Commission-List Page */
 .commission.table th, .commission.table td {border: 1px solid #ddd;}
 .commission.table tr.total {background: #eaf3f9;}
+
+
+/* Slider Page */
+#bannerList .text-center.short {width: 225px;}
+#bannerList .text-center.btn_text {width: 150px;}
+#bannerList .text-center.btn_link {width: 150px;}
+#bannerList .text-center.sort {width: 80px;}
+#bannerList .text-center.add_rmv {padding: 5px;width: 10px;}
+#bannerList #addBtn, .table.banner .remove {padding: 2px 10px;}
+#bannerList #addBtn i, .table.banner .remove i{font-size: 12px}
+#bannerList td{vertical-align: middle;}
+#bannerList .banner-img {width: 75px;height: 70px;cursor: pointer;border: 2px dotted #ddd;padding: 5px;}
+#bannerForm .table-responsive{padding:5px;}

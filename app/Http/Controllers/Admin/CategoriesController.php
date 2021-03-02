@@ -37,6 +37,7 @@ class CategoriesController extends Controller
                 abort(404);
             }
         }
+        $data['display_order']=Categories::where('is_deleted',0)->orderBy('id','desc')->take(1)->value('display_order');
         $data['categories'] = Categories::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/categories/create',$data);
     }
@@ -57,6 +58,15 @@ class CategoriesController extends Controller
         if($request->category_published){$published = 1;}else{$published = 0;}
         if($request->category_homepage){$homepage = 1;}else{$homepage = 0;}
 
+        
+        
+        if($request->display_order!=NULL){
+            $display_order = $request->display_order;
+        }else{
+            $display_order = Categories::where('is_deleted',0)->orderBy('id', 'desc')->take(1)->value('display_order');
+            $display_order = $display_order+1;
+        }
+
         $image= $request->hasFile('category_image');
         if($image){
             $photo          = $request->file('category_image');            
@@ -75,7 +85,7 @@ class CategoriesController extends Controller
         $add->description = $request->category_description;
         $add->published = $published;
         $add->show_home = $homepage;
-        $add->display_order = $request->display_order;
+        $add->display_order = $display_order;
         $add->search_engine_name = $request->search_engine;
         $add->meta_title = $request->meta_title;
         $add->meta_keyword = $request->meta_keyword;
@@ -133,6 +143,13 @@ class CategoriesController extends Controller
         if($request->category_published){$published = 1;}else{$published = 0;}
         if($request->category_homepage){$homepage = 1;}else{$homepage = 0;}
 
+        if($request->display_order!=NULL){
+            $display_order = $request->display_order;
+        }else{
+            $display_order = Categories::where('is_deleted',0)->orderBy('id', 'desc')->take(1)->value('display_order');
+            $display_order = $display_order+1;
+        }
+
         $check_category=Categories::find($id);
 
         $image= $request->hasFile('category_image');
@@ -158,7 +175,7 @@ class CategoriesController extends Controller
             $check_category->description = $request->category_description;
             $check_category->published = $published;
             $check_category->show_home = $homepage;
-            $check_category->display_order = $request->display_order;
+            $check_category->display_order = $display_order;
             $check_category->search_engine_name = $request->search_engine;
             $check_category->meta_title = $request->meta_title;
             $check_category->meta_keyword = $request->meta_keyword;

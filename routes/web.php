@@ -119,6 +119,13 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('delivery_zone','Admin\DeliveryZoneController');
 
 
+	//Static Page
+	Route::resource('static-page-slider','Admin\SliderController');
+	Route::post('delete-slider-banner',[
+		'as'=>'delete.slider.banner','uses'=>'Admin\SliderController@deleteSliderBanner'
+	]);
+
+
 	/* Settings */
 	//Department
 	Route::resource('departments','Admin\DepartmentController');

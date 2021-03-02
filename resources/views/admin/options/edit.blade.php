@@ -138,7 +138,6 @@
   <style type="text/css">
     .form-group{display: flex;}
     #addBtn, .remove, .delete {font-size: 12px;padding: 5px 10px;}
-    .ico-help{cursor:pointer;}
   </style>
 
   @push('custom-scripts')
