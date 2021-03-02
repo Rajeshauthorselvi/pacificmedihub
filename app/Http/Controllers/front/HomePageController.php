@@ -17,7 +17,10 @@ class HomePageController extends Controller
     	$data = array();
     	$data['products'] = Product::where('published',1)->where('show_home',1)->where('is_deleted',0)->orderBy('id','desc')->limit(10)->get();
         $slider = Slider::where('published',1)->where('is_deleted',0)->first();
-        $data['banners'] = SliderBanner::where('slider_id',$slider->id)->orderBy('display_order','asc')->get();
+        $data['banners']="";
+        if ($slider) {
+            $data['banners'] = SliderBanner::where('slider_id',$slider->id)->orderBy('display_order','asc')->get();
+        }
         $categories = DB::table('categories as c')->select('c.name as category_name','p.*')
                         ->leftJoin('products as p','c.id','p.category_id')
                         ->where('c.published',1)->where('c.show_home',1)->where('c.is_deleted',0)
