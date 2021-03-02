@@ -102,6 +102,9 @@
                        <?php 
                          $option_count=$product['option_count'];
                          $variation_details=\App\Models\PurchaseProducts::VariationPrice($product['product_id'],$variant['variant_id'],$purchase->id);
+                         $return_total=\App\Models\PurchaseProducts::ReturnTotal($purchase->id,$variation_details->id);
+                         $stock_total=\App\Models\PurchaseProducts::StockTotal($purchase->id,$variation_details->id);
+
                        ?>
                         <input type="hidden" name="variant[row_id][]" value="{{ $variation_details->id }}">
                         <input type="hidden" name="variant[variant_id][]" value="{{ $variant['variant_id'] }}">
@@ -122,7 +125,7 @@
                             @endif
                             </td>
                             <td>
-                              {{ $variation_details['quantity'] }}
+                              {{ $variation_details['quantity']-$return_total }}
                               <?php 
                               $received=isset($received_quantity[$variation_details->id])?$received_quantity[$variation_details->id]:0;
                                $balance_quantity=$variation_details['quantity']- $received;
@@ -131,20 +134,25 @@
                                <br>
                                @if ($received>0)
                                  <small>
-                                   <a href="javascript:void(0)" class="show-history" purchase-variant-id="{{ $variation_details->id }}" purchase-id="{{ $purchase->id }}" product-id="{{ $product['product_id'] }}" product-variant="{{ $variant['variant_id'] }}">({{ $received }} Received)</a>
+                                   <a href="javascript:void(0)" class="show-history" purchase-variant-id="{{ $variation_details->id }}" purchase-id="{{ $purchase->id }}" product-id="{{ $product['product_id'] }}" product-variant="{{ $variant['variant_id'] }}">({{ $stock_total }} Received)</a>
                                  </small>
                                @endif
-
                             </td>
                             <td class="quantity-info">
                               <div class="form-group">
-                               
-                                  <input type="text" name="variant[qty_received][]" value="0" class="form-control received_quantity">
+                                  <input type="text" name="variant[qty_received][]" value="0" class="form-control received_quantity" autocomplete="off">
                               </div>
                             </td>
                             <td class="quantity-info">
                               <div class="form-group">
-                                  <input type="text" name="variant[damaged_qty][]" value="{{ isset($variation_details['damage_quantity'])?$variation_details['damage_quantity']:0 }}" class="form-control damaged_quantity">
+                                  <input type="text" name="variant[damaged_qty][]" value="{{ isset($variation_details['damage_quantity'])?$variation_details['damage_quantity']:0 }}" class="form-control damaged_quantity" autocomplete="off">
+                              </div>
+                              <div class="form-group">
+                                <input type="radio" name="variant[goods_type][{{ $key }}]" value="2" id="goods_replace_{{ $key }}" class="goods_replace">
+                                <label for="goods_replace_{{ $key }}"><small>Goods Replace</small></label>
+                                &nbsp;
+                                <input type="radio" name="variant[goods_type][{{ $key }}]" value="1" id="goods_return_{{ $key }}" class="goods_return">
+                                <label for="goods_return_{{ $key }}"><small>Goods Return</small></label>
                               </div>
                             </td>
                             <td class="quantity-info">
@@ -154,30 +162,12 @@
                             </td>
                             <td class="quantity-info">
                               <div class="form-group">
-                                <?php 
-                                  $qty_received=$variation_details['qty_received'];
-                                  $damage_quantity=$variation_details['damage_quantity'];
-                                  $missed_quantity=$variation_details['missed_quantity'];
-                                if (isset($variation_details['damage_quantity']) && isset($variation_details['missed_quantity'])) {
-                                  $stock_quantity= $qty_received;
-                                }
-                                else{
-                                  $stock_quantity =$variation_details['quantity'];
-                                }
-
-                                ?>
                                   <input type="text" name="variant[stock_quantity][]" value="0" class="form-control stock_quantity" readonly>
                               </div>
                             </td>
                           </tr>
-                          <?php $total_amount +=$variation_details['sub_total']; ?>
-                          <?php $total_quantity +=$variation_details['quantity']; ?>
                         @endforeach
-            {{--             <tr>
-                          <td colspan="{{ count($product['options'])+1 }}" class="text-right">Total:</td>
-                          <td class="total_quantity">{{ $total_quantity }}</td>
-                          <td class="total_amount">{{ $total_amount }}</td>
-                        </tr> --}}
+   
                       </tbody>
                       </table>
 
@@ -229,7 +219,11 @@
     </div>
   </div>
 </div>
-
+<style type="text/css">
+  input[type="radio"] {
+  vertical-align: middle;
+}
+</style>
   @push('custom-scripts')
     <script type="text/javascript">
 
@@ -264,7 +258,7 @@
       });
 
       @if ($purchase->purchase_status==2 || $purchase->purchase_status==4)
-          $('.quantity-info').show();
+        $('.quantity-info').show();
       @else
         $('.quantity-info').hide();
       @endif
@@ -307,103 +301,24 @@
           }
           var received_quantity=$(this).parents('.parent_tr').find('.received_quantity').val(); 
           var stock_quantity=received_quantity-current_field_val;
-         $(this).parents('.parent_tr').find('.stock_quantity').val(stock_quantity); 
+         $(this).parents('.parent_tr').find('.stock_quantity').val(stock_quantity);
+
+        /*Activete Goods Replace*/
+          var check_goods_return =$(this).closest('.quantity-info').find('.goods_return').prop("checked");
+          var check_goods_replace =$(this).closest('.quantity-info').find('.goods_replace').prop("checked");
+          if (check_goods_return==false && check_goods_replace==false && current_field_val>0) {
+            $(this).closest('.quantity-info').find('.goods_replace').prop('checked',true);
+          }
+          else if(current_field_val==0){
+            $(this).closest('.quantity-info').find('.goods_replace').prop('checked',false);
+            $(this).closest('.quantity-info').find('.goods_return').prop('checked',false);
+          }
+        /*Activete Goods Replace*/
+
 
       });
 
-/*      $(document).on('keyup', '.missed_quantity', function(event) {
-          var current_field_val=$(this).val();
-          var total_received=$(this).parents('.parent_tr').find('.received_quantity').val();
-          if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
-             var current_field_val=Math.max(Math.min(current_field_val, parseInt(total_received)), -90);
-                $(this).val(current_field_val);
-          }
-      });
-*//*
-      $(document).on('keyup', '.damaged_quantity', function(event) {
-          var received_quantity=$(this).parents('.parent_tr').find('.total_quantity').val();
-          var current_field_val=$(this).val();
-
-          if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
-                var current_field_val=Math.max(Math.min(current_field_val, parseInt(received_quantity)), -90);
-                $(this).val(current_field_val);
-          }
-
-
-      });
-      $(document).on('keyup', '.missed_quantity', function(event) {
-          var current_field_val=$(this).val();
-          var received_quantity=$(this).parents('.parent_tr').find('.total_quantity').val();
-
-          if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
-                var current_field_val=Math.max(Math.min(current_field_val, parseInt(received_quantity)), -90);
-                $(this).val(current_field_val);
-          }
-
-          var final_val=parseInt(received_quantity)-parseInt(current_field_val);
-          $(this).parents('.parent_tr').find('.received_quantity').val(final_val);
-
-
-      });*/
-
-/*        $(document).on('keyup', '.missed_quantity', function(event) {
-          event.preventDefault();
-          var received_quantity=$(this).parents('.parent_tr').find('.total_quantity').val();
-          var current_field_val=$(this).val();
-
-          var damaged_quantity=$(this).parents('.parent_tr').find('.damaged_quantity').val();
-          if (damaged_quantity!="" && damaged_quantity!=0) {
-            var balance_amount=parseInt(received_quantity)-parseInt(damaged_quantity);
-          }
-          else{
-              var balance_amount=received_quantity;
-          }
-
-          if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
-                var current_field_val=Math.max(Math.min(current_field_val, parseInt(balance_amount)), -90);
-                $(this).val(current_field_val);
-          }
-
-          if (current_field_val!="") {
-              var final_val=parseInt(received_quantity)-parseInt(current_field_val);
-          }
-          else{
-              var final_val=received_quantity;
-          }
-          $(this).parents('.parent_tr').find('.received_quantity').val(final_val);
-          
-          var total_received=$(this).parents('.parent_tr').find('.total_quantity').val();
-          var damaged_quantity=$(this).parents('.parent_tr').find('.damaged_quantity').val();
-          var stock_quantity=parseInt(total_received)-parseInt(damaged_quantity)-parseInt(current_field_val);
-          $(this).parents('.parent_tr').find('.stock_quantity').val(stock_quantity);
-
-        });
-
-        $(document).on('keyup', '.damaged_quantity', function(event) {
-          event.preventDefault();
-          var received_quantity=$(this).parents('.parent_tr').find('.total_quantity').val();
-          var current_field_val=$(this).val();
-          var missed_val=$(this).parents('.parent_tr').find('.missed_quantity').val();
-          if (missed_val!="" && missed_val!=0) {
-            var balance_amount=parseInt(received_quantity)-parseInt(missed_val);
-          }
-          else{
-              var balance_amount=received_quantity;
-          }
-            if ((current_field_val !== '') && (current_field_val.indexOf('.') === -1)) {
-                var current_field_val=Math.max(Math.min(current_field_val, parseInt(balance_amount)), -90);
-                $(this).val(current_field_val);
-            }
-
-          var total_received=$(this).parents('.parent_tr').find('.total_quantity').val();
-          var missed_quantity=$(this).parents('.parent_tr').find('.missed_quantity').val();
-          var stock_quantity=parseInt(total_received)-parseInt(missed_quantity)-parseInt(current_field_val);
-          $(this).parents('.parent_tr').find('.stock_quantity').val(stock_quantity);
-
-
-        });
-*/
-        
+       
     </script>
   @endpush
   <style type="text/css">
