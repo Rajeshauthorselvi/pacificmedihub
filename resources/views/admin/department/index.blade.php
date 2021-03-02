@@ -48,7 +48,6 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                      	<th>ID</th>
                       	<th>Name</th>
                       	<th>Published</th>
                       	<th>Action</th>
@@ -58,7 +57,6 @@
                     	@foreach($departments as $dept)
                         <tr>
                           <td><input type="checkbox" value="{{ $dept->id }}" name="dept-ids"></td>
-                          <td>{{$dept->dept_id}}</td>
                           <td>{{$dept->dept_name}}</td>
                            <?php
                             if($dept->status==1){$status = "fa-check";}

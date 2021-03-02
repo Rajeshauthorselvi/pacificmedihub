@@ -60,8 +60,8 @@ class CustomerController extends Controller
         $data['all_company']=[''=>'Please Select']+UserCompanyDetails::where('parent_company',0)
                              ->pluck('company_name','id')->toArray();
 
-        $data['sales_rep']=[''=>'Please Select']+Employee::where('role_id',4)
-                             ->pluck('emp_name','id')->toArray();
+        $data['sales_rep']= [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                  ->where('emp_department',1)->pluck('emp_name','id')->toArray();
 
         $data['customer_code']='';
 
@@ -212,8 +212,8 @@ class CustomerController extends Controller
         ->where('id','<>',$customer->company_id)
         ->pluck('company_name','id')
         ->toArray();
-        $data['sales_rep']=[''=>'Please Select']+Employee::where('role_id',4)
-                             ->pluck('emp_name','id')->toArray();
+        $data['sales_rep']= [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                  ->where('emp_department',1)->pluck('emp_name','id')->toArray();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
         //dd($data);
         return view('admin.customer.edit',$data);

@@ -31,8 +31,6 @@ class AccessController extends Controller
     public function create(Request $request)
     {
         $data=array();
-        $data['role_id']=$request->role_id;
-        $data['role']=Role::find($request->role_id);
         return view('admin.settings.access.create',$data);
     }
 
@@ -51,7 +49,17 @@ class AccessController extends Controller
 /*        $add_role = new Role;
         $add_role->name = $request->role_name;
         $add_role->created_at = date('Y-m-d H:i:s');*/
-        $role_id=$request->role_id;
+        if ($request->has('role_id')) {
+            $role_id=$request->role_id;    
+        }
+        else{
+            $add_role = new Role;
+            $add_role->name = $request->role_name;
+            $add_role->created_at = date('Y-m-d H:i:s');
+            $add_role->save();
+            $role_id=$add_role->id;
+        }
+
         $total_opration=['read','create','update','delete'];
         if ($request->has('product_sec')) {
             $product_data=$request->get('product_sec');
@@ -67,6 +75,7 @@ class AccessController extends Controller
         }
         else{
            RoleAccessPermission::where('object','purchase')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','purchase_payment')->update(['allow_access'=>'no']);
         }
         /*Purchase*/
         if ($request->has('stock')) {
@@ -92,7 +101,9 @@ class AccessController extends Controller
             $this->EntireOrderSec($role_id,$total_opration,$product_data);
         }
         else{
+
            RoleAccessPermission::where('object','order')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','order_payment')->update(['allow_access'=>'no']);
         }
 
         if ($request->has('customer')) {
@@ -250,6 +261,14 @@ class AccessController extends Controller
                 RoleAccessPermission::where('object','order')->update(['allow_access'=>'no']);
             }
             /*Order*/
+            /*Order Payment*/
+            if (isset($product_data['order_payment'])) {
+                $this->DataLoop(4,$total_opration,'order_payment',$product_data['order_payment'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','order_payment')->update(['allow_access'=>'no']);
+            }
+            /*Order Payment*/
     }
 
     public function EntireRFQSec($role_id,$total_opration,$product_data)
@@ -313,6 +332,14 @@ class AccessController extends Controller
             }
             else{
                 RoleAccessPermission::where('object','purchase')->update(['allow_access'=>'no']);
+            }
+            /*Purchase*/ 
+            /*Purchase Payment*/
+            if (isset($product_data['purchase_payment'])) {
+                $this->DataLoop(2,$total_opration,'purchase_payment',$product_data['purchase_payment'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','purchase_payment')->update(['allow_access'=>'no']);
             }
             /*Purchase*/       
     }

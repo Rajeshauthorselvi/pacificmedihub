@@ -10,6 +10,10 @@ class Employee extends Model
     {
     	return $this->belongsTo('App\Models\Department','emp_department');
     }
+    public function role()
+    {
+        return $this->belongsTo('App\Models\Role','role_id');
+    }
 
     public function country()
     {

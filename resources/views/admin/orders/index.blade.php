@@ -103,18 +103,21 @@
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
                                 <a href="{{route('orders.show',$order->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-
+                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order_payment','read'))
                                 <a href="javascript:void(0)" class="view-payment" order-id="{{$order->id}}">
                                   <li class="dropdown-item">
                                     <i class="fa fa-credit-card"></i>&nbsp;&nbsp;View Payments
                                   </li>
                                 </a>
-
+                                @endif
+                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order_payment','create'))
                                 <a href="javascript:void(0)" class="add-payment" order-id="{{$order->id}}">
                                   <li class="dropdown-item">
                                     <i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment
                                   </li>
                                 </a>
+                                @endif
+                              
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','update'))
                                 <a href="{{route('orders.edit',$order->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                 @endif
