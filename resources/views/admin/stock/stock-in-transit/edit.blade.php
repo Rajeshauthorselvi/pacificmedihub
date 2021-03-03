@@ -147,14 +147,15 @@
                               </div>
                             </td>
                             <td class="quantity-info">
+                              {!! Form::hidden('base_price',$variation_details->base_price,['class'=>'base_price']) !!}
                               <div class="form-group">
                                   <input type="text" name="variant[damaged_qty][]" value="{{ isset($variation_details['damage_quantity'])?$variation_details['damage_quantity']:0 }}" class="form-control damaged_quantity" autocomplete="off">
                               </div>
                               <div class="form-group">
-                                <input type="radio" name="variant[goods_type][{{ $key }}]" value="2" id="goods_replace_{{ $key }}" class="goods_replace">
+                                <input type="radio" name="variant[goods_type][{{ $key }}]" value="2" id="goods_replace_{{ $key }}" class="goods_replace goods_type">
                                 <label for="goods_replace_{{ $key }}"><small>Goods Replace</small></label>
                                 &nbsp;
-                                <input type="radio" name="variant[goods_type][{{ $key }}]" value="1" id="goods_return_{{ $key }}" class="goods_return">
+                                <input type="radio" name="variant[goods_type][{{ $key }}]" value="1" id="goods_return_{{ $key }}" class="goods_return goods_type">
                                 <label for="goods_return_{{ $key }}"><small>Goods Return</small></label>
                               </div>
                             </td>
@@ -191,6 +192,11 @@
                           {!! Form::textarea('stock_notes', null,['class'=>'form-control summernote','rows'=>5]) !!}
                         </div>
                     </div>
+                    <?php $tax_amount=isset($tax_details)?$tax_details->rate:0 ?>
+                    {!! Form::hidden('tax',$tax_amount,['class'=>'tax_amount']) !!}
+                    {!! Form::hidden('tax',0,['id'=>'order-discount']) !!}
+                    
+
                     <div class="col-sm-12 submit-sec">
                       <a href="{{ route('stock-in-transit.index') }}" class="btn  reset-btn">
                         Cancel
@@ -229,6 +235,39 @@
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
+
+      function overallCalculation(all_amount,tax_rate){
+        var allAmount    = all_amount;
+        var taxRate      = tax_rate;
+        var tax          = taxRate/100;
+        var calculatTax  = tax*allAmount;
+        var taxAmount    = calculatTax.toFixed(2);
+        var discount     = $('#order-discount').val();
+        var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount);
+        var totalSGD     = parseFloat(calculateSGD)-parseFloat(discount);
+
+        $('#orderTax').text(taxAmount);
+        $('#total_amount_sgd').text(totalSGD.toFixed(2));
+        $('#total_amount_hidden').val(allAmount);
+        $('#order_tax_amount_hidden').val(taxAmount);
+        $('#sgd_total_amount_hidden').val(totalSGD);
+      }
+
+
+
+      $(document).on('keypress', '.damaged_quantity', function(event) {
+          var quantity = $(this).val();
+          var tax_rate=$('.tax_amount').val();
+          var base_price=$(this).parents('.quantity-info').find('.base_price').val();
+          var base_price=$(this).parents('.quantity-info').attr('class');
+          // alert(base_price);
+          // alert(tax_rate);
+       
+          // overallCalculation(all_amount,tax_rate);
+      });
+
+
+
 
       $(document).on('click', '.show-history', function(event) {
         event.preventDefault();

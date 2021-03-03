@@ -40,6 +40,7 @@
                         <th>Purchase Code</th>
                         <th>Vendor</th>
                         <th>Qty Ordered</th>
+                        <th>Return Quantity</th>
                         <th>Qty Received</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -53,6 +54,7 @@
                           <td>{{ $order['vendor'] }}</td>
                           <td>{{ $order['quantity'] }}</td>
                           <td>{{ $order['qty_received'] }}</td>
+                          <td>{{ $order['return_quantity'] }}</td>
                           <td><span class="badge" style="background:{{ $order['color_code'] }};color: #fff ">{{ $order['status'] }}</span></td>
                           <td class="text-center">
                                   @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('stock_transist_vendor','update'))

@@ -19,6 +19,7 @@ use Session;
 use Redirect;
 use DB;
 use Auth;
+use App\Models\Tax;
 
 class StockInTransitController extends Controller
 {
@@ -49,7 +50,9 @@ class StockInTransitController extends Controller
         $order_status=OrderStatus::where('status',1)
                               ->where('id',$purchase->purchase_status)
                               ->first();
-          $total_return_amount=PurchaseStockHistory::where('purchase_id',$purchase->id)->where('goods_type',1)->sum('damage_quantity');
+          $total_return_amount=PurchaseStockHistory::where('purchase_id',$purchase->id)
+                               ->where('goods_type',1)
+                               ->sum('damage_quantity');
           $balance_quantity=($total_qty_received-$total_return_amount);
             $orders[]=[
                 'purchase_date'=>$purchase->purchase_date,
@@ -57,6 +60,7 @@ class StockInTransitController extends Controller
                 'vendor'   =>$vendor_name,
                 'po_number'=>$purchase->purchase_order_number,
                 'quantity' => $product_details->quantity,
+                'return_quantity' => $total_return_amount,
                 'qty_received' => $balance_quantity,
                 'status' =>$order_status->status_name,
                 'color_code'     => $order_status->color_codes
@@ -114,8 +118,8 @@ class StockInTransitController extends Controller
             }
         }
         $data=array();
-        $data['purchase']=Purchase::find($id);
-
+        $data['purchase']=$purchase=Purchase::find($id);
+        $data['tax_details']=Tax::find($purchase->order_tax);
         $products=PurchaseProducts::where('purchase_id',$id)->groupBy('product_id')->get();
 
             $product_data=$product_variant=array();
