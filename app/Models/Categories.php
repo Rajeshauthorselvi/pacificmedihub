@@ -10,4 +10,8 @@ class Categories extends Model
     {
         return $this->belongsTo('App\Models\Categories','parent_category_id');
     }
+
+    public function children(){
+    	return $this->hasMany(Categories::class, 'parent_category_id');
+    }
 }

@@ -1,14 +1,23 @@
 <?php 
-	$parent_categories = App\Models\Categories::where('published',1)->where('is_deleted',0)
+	$categories = App\Models\Categories::where('published',1)->where('is_deleted',0)
 											  ->where('parent_category_id',NULL)->limit(6)
 											  ->orderBy('display_order','asc')->get();
+	$current_route=Route::current()->uri();
+
+	if(($current_route=="home")||($current_route=="/")){
+		$header_category_status = "active";
+		$header_category_style  = "block";
+	}else{
+		$header_category_status = "";
+		$header_category_style  = "none";
+	}
 ?>
 <div class="header">
 	<div class="container">
 		<div class="header-top">
 			<div class="row">
 				<div class="col-sm-2 col-xs-4 logo">
-					<a href=""><img src="{{ asset('front/img/pacificmedihub_logo.png') }}" alt="pacificmedihub" width="137" height="57" /></a>
+					<a href="{{ route('home.index') }}"><img src="{{ asset('front/img/pacificmedihub_logo.png') }}" alt="pacificmedihub" width="137" height="57" /></a>
 				</div>
 				<div class="col-sm-10 col-xs-8">
 					<ul>
@@ -25,7 +34,7 @@
 							</div>
 						</li>
 						<li>
-							<a href=""><label>New Customer?</label><br />Click Here</a>
+							<a href="javascript:void(0);"><label>New Customer?</label><br />Click Here</a>
 						</li>
 					</ul>
 				</div>
@@ -36,35 +45,31 @@
 			<div class="row">
 				<div class="col-sm-3 col-xs-2">
 					<div class="category-dropdown dropdown">
-						<button id="header-category-dropdown" class="hamburger-menu btn active">
+						<button id="header-category-dropdown" class="hamburger-menu btn {{ $header_category_status }}">
 	                        <i class="fas fa-bars"></i> &nbsp; <span>SHOP BY CATEGORIES</span>
 	                    </button>
-						<ul class="toogle-menu dropdown-menu" style="display:block">
-							@foreach($parent_categories as $p_categoy)
-								@php 
-									$child_category = App\Models\Categories::where('published',1)->where('is_deleted',0)
-																	->where('parent_category_id',$p_categoy->id)
-																	->orderBy('display_order','asc')->get();
-								@endphp
-								@if(count($child_category)!=0)
-									<li class="menu-list" get-id="{{ $p_categoy->id }}">
-										<a id="menu{{ $p_categoy->id }}" class="dropdown-item" href="javascript:void(0);">{{$p_categoy->name}}</a>
-										<div class="toogle-menu{{ $p_categoy->id }} dropdown-menu">
-											<ul class="subchildmenu">
-												
-												@foreach($child_category as $c_category)
-													<li class="ui-menu-item level1 "><a href="javascript:void(0);">{{ $c_category->name }}</a></li>
-												@endforeach
-											</ul>
-										</div>
-									</li>
-								@elseif(count($child_category)==0)
-									<li>
-										<a href="javascript:void(0);">{{$p_categoy->name}}</a>
-									</li>
-								@endif
-							@endforeach
-							@if(count($parent_categories)==6)
+						<ul class="toogle-menu dropdown-menu" style="display:{{ $header_category_style }}">
+							@foreach($categories as $category)
+				          		<?php 
+				          			if(count($category->children)!=0)
+				          				$tree = "menu-list";
+				          		 	else
+				          		 		$tree = "";
+				          		 	$catgory_id = base64_encode($category->id);
+				          		?>
+				            	<li class="{{ $tree }}" get-id="{{ $category->id }}">
+				            		<a id="menu{{ $category->id }}" class="dropdown-item" href="{{ url("$category->search_engine_name/$catgory_id") }}">{{$category->name}}</a>
+				            		<div class="toogle-menu{{ $category->id }} dropdown-menu">
+										<ul class="subchildmenu">
+											@foreach($category->children as $child)
+											<?php $cat_id = base64_encode($child->id); ?>
+												<li class="ui-menu-item level1 "><a href="{{ url("$child->search_engine_name/$cat_id") }}">{{ $child->name }}</a></li>
+											@endforeach
+										</ul>
+									</div>
+				            	</li>
+			         		@endforeach
+					        @if(count($categories)==6)
 								<li>
 									<a href="javascript:void(0);">More...</a>
 								</li>
@@ -80,7 +85,7 @@
 			                    	<span id="search_concept">All Categories </span> <span class="caret"></span>
 			                    </button>
 			                    <ul class="dropdown-menu" role="menu">
-			                    	@foreach($parent_categories as $categoy)
+			                    	@foreach($categories as $categoy)
 										<li><a class="search-category" href="" catgory-id="{{ $categoy->id }}">{{ $categoy->name }}</a></li>
 									@endforeach
 			                    </ul>
@@ -98,8 +103,8 @@
                	<div class="col-sm-4 col-xs-3">
                		<div class="bottom-nav">
                			<ul>
-               				<li><a class="nav-link" href="">My Wishlist</a></li>
-               				<li><a class="nav-link" href="">Sign In</a></li>
+               				<li><a class="nav-link" href="javascript:void(0);">My Wishlist</a></li>
+               				<li><a class="nav-link" href="javascript:void(0);">Sign In</a></li>
                				<li class="cart__menu">
 								<a class="nav-link" href="javascript:void(0);" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
 				                  <i class="fas fa-shopping-cart"></i>
@@ -116,50 +121,49 @@
 
 
 <div class="body__overlay"></div>
-
-            <!-- Start Cart Panel -->
-            <div class="shopping__cart">
-                <div class="shopping__cart__inner">
-                    <div class="offsetmenu__close__btn">
-                        <a href="#"><i class="fas fa-times"></i></a>
-                    </div>
-                    <div class="shp__cart__wrap">
-                        <div class="shp__single__product">
-                            <div class="shp__pro__thumb">
-                                <a href="#">
-                                    <img src="https://via.placeholder.com/150/cccccc/000000/?text=Product%20image" alt="product images">
-                                </a>
-                            </div>
-                            <div class="shp__pro__details">
-                                <h2><a href="product-details.html">BO&Play Wireless Speaker</a></h2>
-                                <span class="quantity">QTY: 1</span>
-                            </div>
-                            <div class="remove__btn">
-                                <a href="#" title="Remove this item"><i class="far fa-times-circle"></i></a>
-                            </div>
-                        </div>
-                        <div class="shp__single__product">
-                            <div class="shp__pro__thumb">
-                                <a href="#">
-                                    <img src="https://via.placeholder.com/150/cccccc/000000/?text=Product%20image" alt="product images">
-                                </a>
-                            </div>
-                            <div class="shp__pro__details">
-                                <h2><a href="product-details.html">Brone Candle</a></h2>
-                                <span class="quantity">QTY: 1</span>
-                            </div>
-                            <div class="remove__btn">
-                                <a href="#" title="Remove this item"><i class="far fa-times-circle"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <ul class="shopping__btn">
-                        <li><a href="cart.html">View Cart</a></li>
-                        <li class="shp__checkout"><a href="checkout.html">RGQ</a></li>
-                    </ul>
+<!-- Start Cart Panel -->
+<div class="shopping__cart">
+    <div class="shopping__cart__inner">
+        <div class="offsetmenu__close__btn">
+            <a href="#"><i class="fas fa-times"></i></a>
+        </div>
+        <div class="shp__cart__wrap">
+            <div class="shp__single__product">
+                <div class="shp__pro__thumb">
+                    <a href="#">
+                        <img src="https://via.placeholder.com/150/cccccc/000000/?text=Product%20image" alt="product images">
+                    </a>
+                </div>
+                <div class="shp__pro__details">
+                    <h2><a href="product-details.html">BO&Play Wireless Speaker</a></h2>
+                    <span class="quantity">QTY: 1</span>
+                </div>
+                <div class="remove__btn">
+                    <a href="#" title="Remove this item"><i class="far fa-times-circle"></i></a>
                 </div>
             </div>
-            <!-- End Cart Panel -->
+            <div class="shp__single__product">
+                <div class="shp__pro__thumb">
+                    <a href="#">
+                        <img src="https://via.placeholder.com/150/cccccc/000000/?text=Product%20image" alt="product images">
+                    </a>
+                </div>
+                <div class="shp__pro__details">
+                    <h2><a href="product-details.html">Brone Candle</a></h2>
+                    <span class="quantity">QTY: 1</span>
+                </div>
+                <div class="remove__btn">
+                    <a href="#" title="Remove this item"><i class="far fa-times-circle"></i></a>
+                </div>
+            </div>
+        </div>
+        <ul class="shopping__btn">
+            <li><a href="cart.html">View Cart</a></li>
+            <li class="shp__checkout"><a href="checkout.html">RGQ</a></li>
+        </ul>
+    </div>
+</div>
+<!-- End Cart Panel -->
 
 
 
@@ -185,7 +189,7 @@
 			$('.toogle-menu').slideToggle('slow');
 			$(this).toggleClass('active');
 		});
-		$('.menu-list').click(function(event){
+		$('.menu-list').hover(function(event){
 			var id = $(this).attr('get-id');
 			$('.toogle-menu'+id).slideToggle('slow');
 			$('#menu'+id).toggleClass('active');
@@ -239,6 +243,12 @@
 	    // $('.offsetmenu').removeClass('offsetmenu__on');
 	    $('.shopping__cart').removeClass('shopping__cart__on');
 	  });
+
+	  	$('body').click(function() {
+   			$('#search_result').hide();
+		});
+
+
 	});
 </script>
 @endpush

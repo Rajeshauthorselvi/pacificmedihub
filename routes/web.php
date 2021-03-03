@@ -159,10 +159,10 @@ Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');
 Route::get('about-us','front\AboutController@index');
 //Home Page
 Route::get('home','front\HomePageController@index');
-Route::get('','front\HomePageController@index');
+Route::get('','front\HomePageController@index')->name('home.index');
 
-Route::get('{slug}','front\ShopController@category');
-Route::get('{category_slug}/{product_slug}','front\ShopController@product');
+Route::get('{slug}/{category_id}','front\ShopController@category');
+Route::get('{category_slug}/{product_slug}/{product_id}','front\ShopController@product');
 
 
 //Home page Search Box
