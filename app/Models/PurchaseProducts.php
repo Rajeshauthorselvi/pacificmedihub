@@ -59,6 +59,14 @@ class PurchaseProducts extends Model
                       ->sum('stock_quantity');
         return $stock_total;
     }
+    static function ReplaceTotal($purchase_id,$purchase_product_id)
+    {
+        $replace_total=PurchaseStockHistory::where('purchase_id',$purchase_id)
+                      ->where('purchase_product_id',$purchase_product_id)
+                      ->where('goods_type',2)
+                      ->sum('damage_quantity');
+        return $replace_total;
+    }
 
     static function StockQuantity($product_id,$option_id1='', $option_id2='', $option_id3='', $option_id4='', $option_value_id1='', $option_value_id2='', $option_value_id3='', $option_value_id4='', $option_value_id5,$option_count,$type='',$purchase_id)
     {

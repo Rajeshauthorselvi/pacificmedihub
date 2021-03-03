@@ -104,6 +104,7 @@
                          $variation_details=\App\Models\PurchaseProducts::VariationPrice($product['product_id'],$variant['variant_id'],$purchase->id);
                          $return_total=\App\Models\PurchaseProducts::ReturnTotal($purchase->id,$variation_details->id);
                          $stock_total=\App\Models\PurchaseProducts::StockTotal($purchase->id,$variation_details->id);
+                         $replace_total=\App\Models\PurchaseProducts::ReplaceTotal($purchase->id,$variation_details->id);
 
                        ?>
                         <input type="hidden" name="variant[row_id][]" value="{{ $variation_details->id }}">
@@ -128,7 +129,9 @@
                               {{ $variation_details['quantity']-$return_total }}
                               <?php 
                               $received=isset($received_quantity[$variation_details->id])?$received_quantity[$variation_details->id]:0;
+                            
                                $balance_quantity=$variation_details['quantity']- $received;
+                               $balance_quantity=$balance_quantity+$replace_total;
                                ?>
                                 <input type="hidden" class="total_quantity" value="{{ $balance_quantity }}">
                                <br>
