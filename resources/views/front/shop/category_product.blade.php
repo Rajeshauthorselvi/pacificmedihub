@@ -45,7 +45,6 @@
 		      </div>
 		    </div> --}}
 		    <div class="col-sm-12">
-		      <h2 class="category-title">Desktops</h2>
 		      <div class="row category-banner">
 		        <div class="col-sm-12 category-image"><img src="https://via.placeholder.com/1300x300/cccccc/000000/?text=Product%20image" alt="product images"></div>
 		      </div>
@@ -85,8 +84,8 @@
 				    		<div class="pro-tag"><span class="new-label">NEW</span></div>
 				    		<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
 				    	</div>
-				    	<div class="product-info">
-				    		<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+				    	<div class="product-info d-flex flex-column">
+				    		<div class="order-3"><a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a></div>
 				    		<h3><a href="javascript:void(0);">New Follihair Tablet</a></h3>
 				    		<p class="product-desc"> Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing</p>
 				    	</div>
@@ -99,8 +98,8 @@
 				    		<div class="pro-tag"><span class="new-label">NEW</span></div>
 				    		<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
 				    	</div>
-				    	<div class="product-info">
-				    		<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+				    	<div class="product-info d-flex flex-column">
+				    		<div class="order-3"><a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a></div>
 				    		<h3><a href="javascript:void(0);">New Follihair Tablet</a></h3>
 				    		<p class="product-desc"> Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing</p>
 				    	</div>
@@ -113,8 +112,8 @@
 				    		<div class="pro-tag"><span class="new-label">NEW</span></div>
 				    		<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
 				    	</div>
-				    	<div class="product-info">
-				    		<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+				    	<div class="product-info d-flex flex-column">
+				    		<div class="order-3"><a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a></div>
 				    		<h3><a href="javascript:void(0);">New Follihair Tablet</a></h3>
 				    		<p class="product-desc"> Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing</p>
 				    	</div>
@@ -127,8 +126,8 @@
 				    		<div class="pro-tag"><span class="new-label">NEW</span></div>
 				    		<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
 				    	</div>
-				    	<div class="product-info">
-				    		<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+				    	<div class="product-info d-flex flex-column">
+				    		<div class="order-3"><a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a></div>
 				    		<h3><a href="javascript:void(0);">New Follihair Tablet</a></h3>
 				    		<p class="product-desc"> Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing</p>
 				    	</div>
@@ -141,8 +140,8 @@
 				    		<div class="pro-tag"><span class="new-label">NEW</span></div>
 				    		<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
 				    	</div>
-				    	<div class="product-info">
-				    		<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+				    	<div class="product-info d-flex flex-column">
+				    		<div class="order-3"><a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a></div>
 				    		<h3><a href="javascript:void(0);">New Follihair Tablet</a></h3>
 				    		<p class="product-desc"> Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing</p>
 				    	</div>
@@ -155,8 +154,8 @@
 				    		<div class="pro-tag"><span class="new-label">NEW</span></div>
 				    		<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
 				    	</div>
-				    	<div class="product-info">
-				    		<a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a>
+				    	<div class="product-info d-flex flex-column">
+				    		<div class="order-3"><a class="btn" href="#">RFQ</a><a class="btn act" href="">VIEW</a></div>
 				    		<h3><a href="javascript:void(0);">New Follihair Tablet</a></h3>
 				    		<p class="product-desc"> Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing</p>
 				    	</div>
@@ -165,7 +164,7 @@
 		       </div>
 		       <div class="clearfix visible-lg"></div>
 		      </div>
-		      <div class="category-page-wrapper">
+		      <div class="category-page-wrapper fotnav">
 		        <div class="result-inner">Showing 1 to 8 of 10 (2 Pages)</div>
 		        <div class="pagination-inner">
 		          <ul class="pagination">
