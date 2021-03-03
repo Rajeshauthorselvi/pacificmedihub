@@ -83,7 +83,7 @@
                           @endforeach
                           {{-- <th>Purchase Price</th> --}}
                           <th>Total Purchase Quantity</th>
-                          <th width="20%">Damage Quantity</th>
+                          <th>Damage Quantity</th>
                           <th>Return Quantity</th>
                           {{-- <th>Total Return Amount</th> --}}
                         </thead>

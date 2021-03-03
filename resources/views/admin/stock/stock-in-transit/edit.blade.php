@@ -91,7 +91,7 @@
                             @endforeach
                             <th>Qty Ordered<br><small>(A)</small></th>
                             <th class="quantity-info">Qty Received<br><small>(B)</small></th>
-                            <th class="quantity-info">Damaged Quantity<br><small>(C)</small></th>
+                            <th class="quantity-info" width="20%">Damaged Quantity<br><small>(C)</small></th>
                             <th class="quantity-info">Missed Quantity<br><small>(A-B=D)</small></th>
                             <th class="quantity-info">Stock Quantity<br><small>(A-C-D)</small></th>
                           </tr>
