@@ -53,8 +53,8 @@
                           <td><a href="{{route('purchase.show',$order['purchase_id'])}}">{{$order['po_number']}}</a></td>
                           <td>{{ $order['vendor'] }}</td>
                           <td>{{ $order['quantity'] }}</td>
-                          <td>{{ $order['qty_received'] }}</td>
                           <td>{{ $order['return_quantity'] }}</td>
+                          <td>{{ $order['qty_received'] }}</td>
                           <td><span class="badge" style="background:{{ $order['color_code'] }};color: #fff ">{{ $order['status'] }}</span></td>
                           <td class="text-center">
                                   @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('stock_transist_vendor','update'))
