@@ -178,11 +178,11 @@ class StockInTransitController extends Controller
     }
     public function update(Request $request, $id)
     {
-
+      // dd($request->all());
         $this->validate(request(),[
             'purchase_status'   => 'required'
         ]);
-        $quantity_received=$request->qty_received;
+       $quantity_received=$request->qty_received;
 
        $variant=$request->variant;
        $row_ids=$variant['row_id'];
@@ -192,6 +192,10 @@ class StockInTransitController extends Controller
        $missed_quantity=$variant['missed_qty'];
        $stock_quantity=$variant['stock_quantity'];
        $product_id=$variant['product_id'];
+       $product_id=$variant['product_id'];
+       if(isset($variant['goods_type'])){
+         $goods_type=$variant['goods_type'];
+       }
        
        $status=1;
        if ($request->purchase_status!=1) {
@@ -207,12 +211,13 @@ class StockInTransitController extends Controller
                 $data=[
                   'purchase_id'           => $id,
                   // 'product_id'            => $product_id[$key],
-                  'purchase_product_id'  => $row_id,
+                  'purchase_product_id'   => $row_id,
                   'qty_received'          => $qty_received[$key],
                   'damage_quantity'       => $damaged_qty[$key],
                   'missed_quantity'       => $missed_quantity[$key],
                   'stock_quantity'        => $stock_quantity[$key],
-                  'created_at'            => date('Y-m-d H:i:s')
+                  'created_at'            => date('Y-m-d H:i:s'),
+                  'goods_type'            => isset($goods_type[$key])?$goods_type[$key]:''
                 ];
                 $history_id=PurchaseStockHistory::insertGetId($data);
               }
@@ -487,9 +492,6 @@ class StockInTransitController extends Controller
       $all_variants=PurchaseProducts::where('id',$purchase_variant_id)->pluck('product_variation_id')->toArray();
       $data['product_variants']=$this->Variants($product_id,$all_variants);
 
-
-      // dd($data);
-
       $data['product_name']    = $product_name;
       foreach ($purchase_details as $key => $purchase_detail) {
           $history[]=[
@@ -497,10 +499,15 @@ class StockInTransitController extends Controller
               'damage_quantity' => $purchase_detail->damage_quantity,
               'missed_quantity' => $purchase_detail->missed_quantity,
               'stock_quantity'  => $purchase_detail->stock_quantity,
-              'created_at'      => date('d-m-Y H:i',strtotime($purchase_detail->created_at))
+              'created_at'      => date('d-m-Y H:i A',strtotime($purchase_detail->created_at)),
+              'goods_type'      => $purchase_detail->goods_type
           ];
       }
       $data['histories']=$history;
+
+      $data['purchase_product_details']=PurchaseProducts::where('id',$purchase_variant_id)->first();
+      $data['purchase_datas']=Purchase::where('id',$purchase_id)->value('created_at');
+
       return view('admin.stock.stock-in-transit.stock_history',$data);
     }
     /**

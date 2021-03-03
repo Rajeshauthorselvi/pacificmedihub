@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\OptionValue;
+use App\Models\PurchaseStockHistory;
 use DB;
 class PurchaseProducts extends Model
 {
@@ -43,6 +44,21 @@ class PurchaseProducts extends Model
         return $total_datas;
     }
 
+    static function ReturnTotal($purchase_id,$purchase_product_id)
+    {
+        $return_total=PurchaseStockHistory::where('purchase_id',$purchase_id)
+                      ->where('purchase_product_id',$purchase_product_id)
+                      ->where('goods_type',1)
+                      ->sum('damage_quantity');
+        return $return_total;
+    }
+    static function StockTotal($purchase_id,$purchase_product_id)
+    {
+        $stock_total=PurchaseStockHistory::where('purchase_id',$purchase_id)
+                      ->where('purchase_product_id',$purchase_product_id)
+                      ->sum('stock_quantity');
+        return $stock_total;
+    }
 
     static function StockQuantity($product_id,$option_id1='', $option_id2='', $option_id3='', $option_id4='', $option_value_id1='', $option_value_id2='', $option_value_id3='', $option_value_id4='', $option_value_id5,$option_count,$type='',$purchase_id)
     {
