@@ -49,19 +49,18 @@ class StockInTransitController extends Controller
         $order_status=OrderStatus::where('status',1)
                               ->where('id',$purchase->purchase_status)
                               ->first();
-
+          $total_return_amount=PurchaseStockHistory::where('purchase_id',$purchase->id)->where('goods_type',1)->sum('damage_quantity');
             $orders[]=[
                 'purchase_date'=>$purchase->purchase_date,
                 'purchase_id'=>$purchase->id,
                 'vendor'   =>$vendor_name,
                 'po_number'=>$purchase->purchase_order_number,
                 'quantity' => $product_details->quantity,
-                'qty_received' => $total_qty_received,
+                'qty_received' => $total_qty_received-$total_return_amount,
                 'status' =>$order_status->status_name,
                 'color_code'     => $order_status->color_codes
             ];
         }
-
         $data['orders']=$orders;
         return view('admin.stock.stock-in-transit.index',$data);
     }
