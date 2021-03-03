@@ -46,14 +46,14 @@ class StockInTransitController extends Controller
                 ->where('purchase_id',$purchase->id)
                 ->first();
 
-            $total_qty_received=PurchaseStockHistory::where('purchase_id',$purchase->id)->sum('qty_received');
+        $total_qty_received=PurchaseStockHistory::where('purchase_id',$purchase->id)
+                            ->sum('stock_quantity');
         $order_status=OrderStatus::where('status',1)
                               ->where('id',$purchase->purchase_status)
                               ->first();
           $total_return_amount=PurchaseStockHistory::where('purchase_id',$purchase->id)
                                ->where('goods_type',1)
                                ->sum('damage_quantity');
-          $balance_quantity=($total_qty_received-$total_return_amount);
             $orders[]=[
                 'purchase_date'=>$purchase->purchase_date,
                 'purchase_id'=>$purchase->id,
@@ -61,7 +61,7 @@ class StockInTransitController extends Controller
                 'po_number'=>$purchase->purchase_order_number,
                 'quantity' => $product_details->quantity,
                 'return_quantity' => $total_return_amount,
-                'qty_received' => $balance_quantity,
+                'qty_received' => $total_qty_received,
                 'status' =>$order_status->status_name,
                 'color_code'     => $order_status->color_codes
             ];
