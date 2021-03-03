@@ -20,4 +20,9 @@ class Product extends Model
     public function commissionType(){
         return $this->belongsTo('App\Models\CommissionValue','commission_type');
     }
+
+    /*public function categorySlug()
+    {
+        return $this->belongsTo('App\Models\Categories','category_id');
+    }*/
 }
