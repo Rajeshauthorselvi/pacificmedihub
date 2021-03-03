@@ -49,6 +49,8 @@ class AccessController extends Controller
 /*        $add_role = new Role;
         $add_role->name = $request->role_name;
         $add_role->created_at = date('Y-m-d H:i:s');*/
+
+        // dd($request->all());
         if ($request->has('role_id')) {
             $role_id=$request->role_id;    
         }
@@ -78,6 +80,7 @@ class AccessController extends Controller
            RoleAccessPermission::where('object','purchase_payment')->update(['allow_access'=>'no']);
         }
         /*Purchase*/
+        /*Stock*/
         if ($request->has('stock')) {
             $product_data=$request->get('stock');
             $this->EntireStockSec($role_id,$total_opration,$product_data);
@@ -87,7 +90,8 @@ class AccessController extends Controller
            RoleAccessPermission::where('object','return')->update(['allow_access'=>'no']);
            RoleAccessPermission::where('object','wastage')->update(['allow_access'=>'no']);
         }
-
+        /*Stock*/
+        /*RFQ*/
         if ($request->has('rfq')) {
             $product_data=$request->get('rfq');
             $this->EntireRFQSec($role_id,$total_opration,$product_data);
@@ -95,17 +99,18 @@ class AccessController extends Controller
         else{
            RoleAccessPermission::where('object','rfq')->update(['allow_access'=>'no']);
         }
-
+        /*RFQ*/
+        /*Order*/
         if ($request->has('order')) {
             $product_data=$request->get('order');
             $this->EntireOrderSec($role_id,$total_opration,$product_data);
         }
         else{
-
            RoleAccessPermission::where('object','order')->update(['allow_access'=>'no']);
            RoleAccessPermission::where('object','order_payment')->update(['allow_access'=>'no']);
         }
-
+        /*Order*/
+        /*Customer*/
         if ($request->has('customer')) {
             $product_data=$request->get('customer');
             $this->EntireCustomerSec($role_id,$total_opration,$product_data);
@@ -113,7 +118,8 @@ class AccessController extends Controller
         else{
            RoleAccessPermission::where('object','customer')->update(['allow_access'=>'no']);
         }
-
+        /*Customer*/
+        /*Vendor*/
         if ($request->has('vendor')) {
             $product_data=$request->get('vendor');
             $this->EntireVendorSec($role_id,$total_opration,$product_data);
@@ -125,6 +131,8 @@ class AccessController extends Controller
            RoleAccessPermission::where('object','emp_commission')->update(['allow_access'=>'no']);
            RoleAccessPermission::where('object','department')->update(['allow_access'=>'no']);
         }
+        /*Vendor*/
+        /*Commission*/
         if ($request->has('commission')) {
             $product_data=$request->get('commission');
             $this->EntireCommissionSec($role_id,$total_opration,$product_data);
@@ -132,6 +140,8 @@ class AccessController extends Controller
         else{
            RoleAccessPermission::where('object','commission')->update(['allow_access'=>'no']);
         }
+        /*Commission*/
+        /*Employee*/
         if ($request->has('employee')) {
             $product_data=$request->get('employee');
             $this->EntireEmployeSec($role_id,$total_opration,$product_data);
@@ -139,7 +149,8 @@ class AccessController extends Controller
         else{
             RoleAccessPermission::where('object','employee')->update(['allow_access'=>'no']);
         }
-
+        /*Employee*/
+        /*Zone*/
         if ($request->has('zone')) {
             $product_data=$request->get('zone');
             $this->EntireDeliveryZoneSec($role_id,$total_opration,$product_data);
@@ -147,6 +158,27 @@ class AccessController extends Controller
         else{
             RoleAccessPermission::where('object','delivery_zone')->update(['allow_access'=>'no']);
         }
+        /*Zone*/
+
+        /*Settings*/
+        if ($request->has('settings')) {
+            $product_data=$request->get('settings');
+            $this->EntireSettingSec($role_id,$total_opration,$product_data);
+        }
+        else{
+            // RoleAccessPermission::where('object','delivery_zone')->update(['allow_access'=>'no']);
+        }
+        /*Settings*/
+
+        /*Settings*/
+        if ($request->has('static_page')) {
+            $product_data=$request->get('static_page');
+            $this->EntireStaticSec($role_id,$total_opration,$product_data);
+        }
+        else{
+            // RoleAccessPermission::where('object','delivery_zone')->update(['allow_access'=>'no']);
+        }
+        /*Settings*/
 
 
         return Redirect::route('access-control.index')->with('success','Role permissions added successfully...!');
@@ -166,6 +198,118 @@ class AccessController extends Controller
         RoleAccessPermission::updateOrCreate(['object'=>$slug,'operation'=>$opration[$i]],$produt_sec);
         }
 
+    }
+    public function EntireStaticSec($role_id,$total_opration,$product_data)
+    {
+            /*Pages*/
+            if (isset($product_data['pages'])) {
+                $this->DataLoop(4,$total_opration,'pages',$product_data['pages'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','pages')->update(['allow_access'=>'no']);
+            }
+            /*Pages*/
+
+            /*Slider*/
+            if (isset($product_data['static'])) {
+                $this->DataLoop(4,$total_opration,'static',$product_data['static'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','static')->update(['allow_access'=>'no']);
+            }
+            /*Slider*/
+    }
+    public function EntireSettingSec($role_id,$total_opration,$product_data)
+    {
+            /*General Settings*/
+            if (isset($product_data['general_settings'])) {
+                $this->DataLoop(4,$total_opration,'general_settings',$product_data['general_settings'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','general_settings')->update(['allow_access'=>'no']);
+            }
+            /*General Settings*/
+
+            /*Access Control*/
+            if (isset($product_data['access_control'])) {
+                $this->DataLoop(4,$total_opration,'access_control',$product_data['access_control'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','access_control')->update(['allow_access'=>'no']);
+            }
+            /*Access Control*/
+
+            /*Department Settings*/
+            if (isset($product_data['department_setting'])) {
+                $this->DataLoop(4,$total_opration,'department_setting',$product_data['department_setting'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','department_setting')->update(['allow_access'=>'no']);
+            }
+            /*Department Settings*/
+
+            /*Commission Settings*/
+            if (isset($product_data['commission_setting'])) {
+                $this->DataLoop(4,$total_opration,'commission_setting',$product_data['commission_setting'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','commission_setting')->update(['allow_access'=>'no']);
+            }
+            /*Commission Settings*/
+
+            /*Prefix Settings*/
+            if (isset($product_data['prefix_setting'])) {
+                $this->DataLoop(4,$total_opration,'prefix_setting',$product_data['prefix_setting'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','prefix_setting')->update(['allow_access'=>'no']);
+            }
+            /*Prefix Settings*/
+
+            /*Order Settings*/
+            if (isset($product_data['order_setting'])) {
+                $this->DataLoop(4,$total_opration,'order_setting',$product_data['order_setting'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','order_setting')->update(['allow_access'=>'no']);
+            }
+            /*Order Settings*/
+
+            /*Customer Settings*/
+            if (isset($product_data['customer_setting'])) {
+                $this->DataLoop(4,$total_opration,'customer_setting',$product_data['customer_setting'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','customer_setting')->update(['allow_access'=>'no']);
+            }
+            /*Customer Settings*/
+
+            /*Tax Settings*/
+            if (isset($product_data['tax_setting'])) {
+                $this->DataLoop(4,$total_opration,'tax_setting',$product_data['tax_setting'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','tax_setting')->update(['allow_access'=>'no']);
+            }
+            /*Tax Settings*/
+
+            /*Currency Settings*/
+            if (isset($product_data['currency_setting'])) {
+                $this->DataLoop(4,$total_opration,'currency_setting',$product_data['currency_setting'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','currency_setting')->update(['allow_access'=>'no']);
+            }
+            /*Currency Settings*/
+
+            /*Payment Settings*/
+            if (isset($product_data['payment_setting'])) {
+                $this->DataLoop(4,$total_opration,'payment_setting',$product_data['payment_setting'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','payment_setting')->update(['allow_access'=>'no']);
+            }
+            /*Payment Settings*/
     }
     public function EntireDeliveryZoneSec($role_id,$total_opration,$product_data)
     {

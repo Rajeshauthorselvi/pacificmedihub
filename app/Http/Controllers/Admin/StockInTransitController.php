@@ -49,17 +49,19 @@ class StockInTransitController extends Controller
         $order_status=OrderStatus::where('status',1)
                               ->where('id',$purchase->purchase_status)
                               ->first();
-
+          $total_return_amount=PurchaseStockHistory::where('purchase_id',$purchase->id)->where('goods_type',1)->sum('damage_quantity');
+          $balance_quantity=($total_qty_received-$total_return_amount);
             $orders[]=[
                 'purchase_date'=>$purchase->purchase_date,
                 'purchase_id'=>$purchase->id,
                 'vendor'   =>$vendor_name,
                 'po_number'=>$purchase->purchase_order_number,
                 'quantity' => $product_details->quantity,
-                'qty_received' => $total_qty_received,
+                'qty_received' => $balance_quantity,
                 'status' =>$order_status->status_name,
                 'color_code'     => $order_status->color_codes
             ];
+
         }
 
         $data['orders']=$orders;
@@ -234,8 +236,12 @@ class StockInTransitController extends Controller
 
           }
           $total_quantity=PurchaseProducts::where('purchase_id',$id)->sum('quantity');
-          $paid_quantity=PurchaseStockHistory::where('purchase_id',$id)->sum('qty_received');
-          if ($total_quantity==$paid_quantity) {
+          $return_quantity=PurchaseStockHistory::where('purchase_id',$id)
+                           ->where('goods_type',1)
+                           ->sum('damage_quantity');
+          $paid_quantity=PurchaseStockHistory::where('purchase_id',$id)->sum('stock_quantity');
+
+          if (($total_quantity-$return_quantity)==$paid_quantity) {
               $status=2;
           }
           elseif ($total_quantity!=$paid_quantity) {
@@ -265,7 +271,7 @@ class StockInTransitController extends Controller
           $variant_ids=$variant['variant_id'];
           foreach ($variant_ids as $key => $row_id) {
             // var_dump($damaged_qty[$key]);
-            if ($damaged_qty[$key]>0) {
+            if (($damaged_qty[$key]>0) && ($goods_type[$key]==1)) {
 
               $existing_damage=PurchaseProductReturn::where(['product_id'=> $product_id[$key],'purchase_variation_id'=>$row_id,'purchase_return_id'=>$return_id->id])
               ->sum('damage_quantity');

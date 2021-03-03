@@ -982,117 +982,7 @@
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td>3</td>
-                          <td class="name">Department</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="employee[department][read]" class="employee-read" id="empDepartmentRead">
-                                <label for="empDepartmentRead"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="employee[department][create]" class="employee-create" id="empDepartmentCreate">
-                                <label for="empDepartmentCreate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="employee[department][update]" class="employee-update" id="empDepartmentUpdate">
-                                <label for="empDepartmentUpdate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="employee[department][delete]" class="employee-delete" id="empDepartmentDelete">
-                                <label for="empDepartmentDelete"></label>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
                         
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <h4>Commission</h4>
-                  <div class="form-group"> 
-                    <table id="commissionTable" class="role-table">
-                      <thead>
-                        <tr>
-                          <th>SI No</th>
-                          <th>Menu Name</th>
-                          <th>
-                            Read ( <div class="icheck-info d-inline">
-                                <input type="checkbox" class="commission-read-all" id="commissionReadAll">
-                                <label for="commissionReadAll"></label>
-                              </div>all)
-                          </th>
-                          <th>
-                            Create ( <div class="icheck-info d-inline">
-                                <input type="checkbox" class="commission-create-all" id="commissionCreateAll">
-                                <label for="commissionCreateAll"></label>
-                              </div>all)
-                          </th>
-                          <th>
-                            Update ( <div class="icheck-info d-inline">
-                                <input type="checkbox" class="commission-update-all" id="commissionUpdateAll">
-                                <label for="commissionUpdateAll"></label>
-                              </div>all)
-                          </th>
-                          <th>
-                            Delete ( <div class="icheck-info d-inline">
-                                <input type="checkbox" class="commission-delete-all" id="commissionDeleteAll">
-                                <label for="commissionDeleteAll"></label>
-                              </div>all)
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td class="name">Commission</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="commission[commission][read]" class="commission-read" id="commissionRead">
-                                <label for="commissionRead"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="commission[commission][create]" class="commission-create" id="commissionCreate">
-                                <label for="commissionCreate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="commission[commission][update]" class="commission-update" id="commissionUpdate">
-                                <label for="commissionUpdate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="commission[commission][delete]" class="commission-delete" id="commissionDelete">
-                                <label for="commissionDelete"></label>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -1163,6 +1053,514 @@
                               <div class="icheck-info d-inline">
                                 <input type="checkbox" name="zone[delivery_zone][delete]" class="zone-delete" id="zoneDelete">
                                 <label for="zoneDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <h4>Static Pages</h4>
+                  <div class="form-group"> 
+                    <table id="vendorTable" class="role-table">
+                      <thead>
+                        <tr>
+                          <th>SI No</th>
+                          <th>Menu Name</th>
+                          <th>
+                            Read ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="static-read-all" id="staticPageReadAll">
+                                <label for="staticPageReadAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Create ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="static-create-all" id="staticPageCreateAll">
+                                <label for="staticPageCreateAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Update ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="static-update-all" id="staticPageUpdateAll">
+                                <label for="staticPageUpdateAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Delete ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="static-delete-all" id="staticPageDeleteAll">
+                                <label for="staticPageDeleteAll"></label>
+                              </div>all)
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td class="name">Pages</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[pages][read]" class="static-read" id="PageRead">
+                                <label for="PageRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[pages][create]" class="static-create" id="PageCreate">
+                                <label for="PageCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[pages][update]" class="static-update" id="PageUpdate">
+                                <label for="PageUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[pages][delete]" class="static-delete" id="PageDelete">
+                                <label for="PageDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td class="name">Sliders</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[static][read]" class="static-read" id="PageRead">
+                                <label for="PageRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[static][create]" class="static-create" id="PageCreate">
+                                <label for="PageCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[static][update]" class="static-update" id="PageUpdate">
+                                <label for="PageUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[static][delete]" class="static-delete" id="PageDelete">
+                                <label for="PageDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <h4>Settings</h4>
+                  <div class="form-group"> 
+                    <table id="commissionTable" class="role-table">
+                      <thead>
+                        <tr>
+                          <th>SI No</th>
+                          <th>Menu Name</th>
+                          <th>
+                            Read ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="setting-read-all" id="settingReadAll">
+                                <label for="settingReadAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Create ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="setting-create-all" id="settingCreateAll">
+                                <label for="settingCreateAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Update ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="setting-update-all" id="settingUpdateAll">
+                                <label for="settingUpdateAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Delete ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="setting-delete-all" id="settingDeleteAll">
+                                <label for="settingDeleteAll"></label>
+                              </div>all)
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td class="name">General Settings</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[general_settings][read]" class="setting-read" id="settingRead">
+                                <label for="settingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[general_settings][create]" class="setting-create" id="settingCreate">
+                                <label for="settingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[general_settings][update]" class="setting-update" id="settingUpdate">
+                                <label for="settingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[general_settings][delete]" class="setting-delete" id="settingDelete">
+                                <label for="settingDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td class="name">Access Control</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[access_control][read]" class="setting-read" id="accessRead">
+                                <label for="accessRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[access_control][create]" class="setting-create" id="accessCreate">
+                                <label for="accessCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[access_control][update]" class="setting-update" id="accessUpdate">
+                                <label for="accessUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[access_control][delete]" class="setting-delete" id="accessDelete">
+                                <label for="accessDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td class="name">Department</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[department_setting][read]" class="setting-read" id="empDepartmentRead">
+                                <label for="empDepartmentRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[department_setting][create]" class="setting-create" id="empDepartmentCreate">
+                                <label for="empDepartmentCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[department_setting][update]" class="setting-update" id="empDepartmentUpdate">
+                                <label for="empDepartmentUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[department_setting][delete]" class="setting-delete" id="empDepartmentDelete">
+                                <label for="empDepartmentDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>4</td>
+                          <td class="name">Commission</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[commission_setting][read]" class="setting-read" id="commissionRead">
+                                <label for="commissionRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[commission_setting][create]" class="setting-create" id="commissionCreate">
+                                <label for="commissionCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[commission_setting][update]" class="setting-update" id="commissionUpdate">
+                                <label for="commissionUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[commission_setting][delete]" class="setting-delete" id="commissionDelete">
+                                <label for="commissionDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>5</td>
+                          <td class="name">Prefix</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[prefix_setting][read]" class="setting-read" id="prefixRead">
+                                <label for="prefixRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[prefix_setting][create]" class="setting-create" id="prefixCreate">
+                                <label for="prefixCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[prefix_setting][update]" class="setting-update" id="prefixUpdate">
+                                <label for="prefixUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[prefix_setting][delete]" class="setting-delete" id="prefixDelete">
+                                <label for="prefixDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>6</td>
+                          <td class="name">Order Settings</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[order_setting][read]" class="setting-read" id="orderSettingRead">
+                                <label for="orderSettingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[order_setting][create]" class="setting-create" id="orderSettingCreate">
+                                <label for="orderSettingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[order_setting][update]" class="setting-update" id="orderSettingUpdate">
+                                <label for="orderSettingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[order_setting][delete]" class="setting-delete" id="orderSettingDelete">
+                                <label for="orderSettingDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>7</td>
+                          <td class="name">Customer Settings</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[customer_setting][read]" class="setting-read" id="customerSettingRead">
+                                <label for="customerSettingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[customer_setting][create]" class="setting-create" id="orderSettingCreate">
+                                <label for="orderSettingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[customer_setting][update]" class="setting-update" id="customerSettingUpdate">
+                                <label for="customerSettingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[customer_setting][delete]" class="setting-delete" id="customerSettingDelete">
+                                <label for="customerSettingDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>8</td>
+                          <td class="name">Tax</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[tax_setting][read]" class="setting-read" id="customerSettingRead">
+                                <label for="customerSettingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[tax_setting][create]" class="setting-create" id="orderSettingCreate">
+                                <label for="orderSettingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[tax_setting][update]" class="setting-update" id="customerSettingUpdate">
+                                <label for="customerSettingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[tax_setting][delete]" class="setting-delete" id="customerSettingDelete">
+                                <label for="customerSettingDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>9</td>
+                          <td class="name">Currencies</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[currency_setting][read]" class="setting-read" id="currencySettingRead">
+                                <label for="currencySettingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[currency_setting][create]" class="setting-create" id="currencySettingCreate">
+                                <label for="currencySettingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[currency_setting][update]" class="setting-update" id="currencySettingUpdate">
+                                <label for="currencySettingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[currency_setting][delete]" class="setting-delete" id="currencySettingDelete">
+                                <label for="currencySettingDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>10</td>
+                          <td class="name">Payment Methods</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[payment_setting][read]" class="setting-read" id="paymentSettingRead">
+                                <label for="paymentSettingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[payment_setting][create]" class="setting-create" id="paymentSettingCreate">
+                                <label for="paymentSettingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[payment_setting][update]" class="setting-update" id="paymentSettingUpdate">
+                                <label for="paymentSettingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="settings[payment_setting][delete]" class="setting-delete" id="paymentSettingDelete">
+                                <label for="paymentSettingDelete"></label>
                               </div>
                             </div>
                           </td>
