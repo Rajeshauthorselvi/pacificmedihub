@@ -54,9 +54,9 @@
                         <th>Order Type</th>
                         <th>Vendor</th>
                         <th>Return Quantity</th>
-                        <th>Return Amount</th>
-                        <th>Paid Amount</th>
-                        <th>Balance Amount</th>
+                        {{-- <th>Return Amount</th> --}}
+                        {{-- <th>Paid Amount</th> --}}
+                        {{-- <th>Balance Amount</th> --}}
                         <th>Payment Status</th>
                         <th>Return Status</th>
                         <th>Action</th>
@@ -73,12 +73,12 @@
                             <td>{{ ($return['order_type']==1)?'Purchase':'Order' }}</td>
                             <td>{{ $return['vendor'] }}</td>
                             <td>{{ $return['total_quantity'] }}</td>
-                            <td class="total_amount">{{ $return['sub_total'] }}</td>
+                            {{-- <td class="total_amount">{{ $return['sub_total'] }}</td> --}}
                              <?php 
                               $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($return['id'],$return['sub_total'],4);
                             ?>
-                            <td>{{ $balance_amount['paid_amount'] }}</td>
-                            <td class="balance">{{ $balance_amount['balance_amount'] }}</td>
+                            {{-- <td>{{ $balance_amount['paid_amount'] }}</td> --}}
+                            {{-- <td class="balance">{{ $balance_amount['balance_amount'] }}</td> --}}
                             
                             <?php $payment_status=[1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
                             <?php $color_code=[1=>'#00a65a',2=>'#5bc0de','3'=>'#f0ad4e']?>

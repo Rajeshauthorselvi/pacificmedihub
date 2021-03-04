@@ -10,7 +10,9 @@
 						<div class="banner_txt">
 							<h3>{{ $banner->title }}</h3>
 							<p>{{ $banner->description }}</p>
-							<p><a href="{{ $banner->link }}" class="btn">{{ $banner->button }}</a></p>
+							@if(isset($banner->button))
+								<p><a href="{{ $banner->link }}" class="btn">{{ $banner->button }}</a></p>
+							@endif
 						</div>
 					</div>
 			    </div>
@@ -52,17 +54,20 @@
 						<?php 
 	                        if(!empty($product->main_image)){$image = "theme/images/products/main/".$product->main_image;}
 	                        else {$image = "theme/images/products/placeholder.jpg";}
-	                      ?>
+
+	                        $category_slug = $product->category->search_engine_name;
+	                        $product_id = base64_encode($product->id);
+	                    ?>
 					    <div class="item">
 					    	<div class="product-inner">
 					    		<div class="product-thumb">
-					    			<a href=""><img src="{{asset($image)}}" alt="{{ $product->name }}" width="269" height="232" /></a>
+					    			<a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}"><img src="{{asset($image)}}" alt="{{ $product->name }}" width="269" height="232" /></a>
 					    			<div class="pro-tag"><span class="new-label">NEW</span></div>
 					    			<div class="pro-fav"><a class="wishlist-action" href="javascript:void(0);"></a></div>
 					    		</div>
 					    		<div class="product-info">
-					    			<a class="btn" href="javascript:void(0);">RFQ</a><a class="btn act" href="javascript:void(0)">VIEW</a>
-					    			<h3><a href="javascript:void(0);">{{ $product->name }}</a></h3>
+					    			<a class="btn" href="javascript:void(0);">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a>
+					    			<h3><a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">{{ Str::limit($product->name, 30) }}</a></h3>
 					    		</div>
 					    	</div>
 					    </div>
@@ -71,13 +76,10 @@
 					<div class="item">
 				    	<div class="product-inner">
 				    		<div class="product-thumb">
-				    			<a href=""><img src="{{asset('theme/images/products/placeholder.jpg')}}" alt="Product Name" width="269" height="232" /></a>
-				    			<div class="pro-tag"><span class="new-label">NEW</span></div>
-				    			<div class="pro-fav"><a class="wishlist-action" href="javascript:void(0);"></a></div>
+				    			
 				    		</div>
 				    		<div class="product-info">
-				    			<a class="btn" href="javascript:void(0);">RFQ</a><a class="btn act" href="javascript:void(0)">VIEW</a>
-				    			<h3><a href="javascript:void(0);">New Product</a></h3>
+				    			No Data.
 				    		</div>
 				    	</div>
 				    </div>
@@ -98,17 +100,20 @@
 								<?php 
 		                        	if(!empty($product->main_image)){$image="theme/images/products/main/".$product->main_image;}
 		                        	else {$image = "theme/images/products/placeholder.jpg";}
+
+		                        	$category_slug = $product->category_search_engine_name;
+	                        		$product_id = base64_encode($product->id);
 		                      	?>
 						    	<div class="item">
 						    		<div class="product-inner">
 						    			<div class="product-thumb">
-						    				<a href=""><img src="{{asset($image)}}" alt="{{ $product->name }}" width="269" height="232" /></a>
+						    				<a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}"><img src="{{asset($image)}}" alt="{{ $product->name }}" width="269" height="232" /></a>
 						    				<div class="pro-tag"><span class="new-label">NEW</span></div>
 						    				<div class="pro-fav"><a class="wishlist-action" href="javascript:void(0);"></a></div>
 						    			</div>
 						    			<div class="product-info">
-						    				<a class="btn" href="javascript:void(0)">RFQ</a><a class="btn act" href="javascript:void(0)">VIEW</a>
-						    				<h3><a href="javascript:void(0)">{{ $product->name }}</a></h3>
+						    				<a class="btn" href="javascript:void(0)">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a>
+						    				<h3><a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">{{ Str::limit($product->name, 30) }}</a></h3>
 						    			</div>
 						    		</div>
 						    	</div>

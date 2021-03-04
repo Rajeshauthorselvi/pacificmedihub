@@ -358,6 +358,7 @@ $(document).ready(function() {
       });
 
 /*Commission*/
+
 /*Zone*/
   Check_SelectAllButton('.zone-read-all','.zone-read');
       $('.zone-read-all').change(function() {
@@ -402,6 +403,89 @@ $(document).ready(function() {
 
 /*Zone*/
 
+/*Static Pages*/
+  Check_SelectAllButton('.static-read-all','.static-read');
+      $('.static-read-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.static-read').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.static-read').prop('checked',false);
+        }
+      });
+     Check_SelectAllButton('.static-create-all','.static-create');
+      $('.static-create-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.static-create').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.static-create').prop('checked',false);
+        }
+      });
+
+      Check_SelectAllButton('.static-update-all','.static-update');
+      $('.static-update-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.static-update').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.static-update').prop('checked',false);
+        }
+      });
+
+      Check_SelectAllButton('.static-delete-all','.static-delete');
+
+      $('.static-delete-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.static-delete').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.static-delete').prop('checked',false);
+        }
+      });
+/*Static Pages*/
+
+/*Settings Pages*/
+  Check_SelectAllButton('.setting-read-all','.setting-read');
+      $('.setting-read-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.setting-read').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.setting-read').prop('checked',false);
+        }
+      });
+     Check_SelectAllButton('.setting-create-all','.setting-create');
+      $('.setting-create-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.setting-create').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.setting-create').prop('checked',false);
+        }
+      });
+
+      Check_SelectAllButton('.setting-update-all','.setting-update');
+      $('.setting-update-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.setting-update').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.setting-update').prop('checked',false);
+        }
+      });
+
+      Check_SelectAllButton('.setting-delete-all','.setting-delete');
+
+      $('.setting-delete-all').change(function() {
+        if ($(this). prop("checked") == true) {
+          $('.setting-delete').prop('checked',true);
+        }
+        if ($(this). prop("checked") == false) {
+          $('.setting-delete').prop('checked',false);
+        }
+      });
+/*Static Pages*/
 });
 
 function Check_SelectAllButton(class1,class2) {

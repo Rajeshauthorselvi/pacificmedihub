@@ -81,11 +81,11 @@
                           @foreach ($product['options'] as $option)
                             <th>{{ $option }}</th>
                           @endforeach
-                          <th>Purchase Price</th>
+                          {{-- <th>Purchase Price</th> --}}
                           <th>Total Purchase Quantity</th>
                           <th>Damage Quantity</th>
                           <th>Return Quantity</th>
-                          <th>Total Return Amount</th>
+                          {{-- <th>Total Return Amount</th> --}}
                         </thead>
                         <tbody>
                         <?php $total_amount=$total_quantity=$final_price=0 ?>
@@ -112,10 +112,10 @@
                             @if($option_count==5)
                               <td> {{$variant['option_value5']}} </td>
                             @endif
-                            <td>
+    {{--                         <td>
                               <input type="hidden" class="purchase_price" value="{{ $product_price }}">
                               {{ $product_price }}
-                            </td>
+                            </td> --}}
                             <td>
                               {{ $variation_details['quantity'] }}
                               <input type="hidden" class="total_quantity" value="{{ $variation_details['quantity'] }}">
@@ -135,13 +135,13 @@
                              <td>
                                 <input type="text" name="return_quantity[{{ $variation_details['id'] }}]" class="form-control return_quantity" value="{{ $return_data }}" readonly>
                               </td>
-                              <td>
+{{--                               <td>
                                 <span class="sub_total_text">
                                   <?php $total_return_amount=($damage_data)*$product_price ?>
                                   {{ $total_return_amount }}
                                 </span>
                                   <input type="hidden" name="sub_total[{{ $variation_details['id'] }}]" value="{{ $total_return_amount }}" class="sub_total">
-                              </td>
+                              </td> --}}
                           </tr>
                         
                         @endforeach

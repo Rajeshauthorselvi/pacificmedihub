@@ -19,6 +19,7 @@ use Session;
 use Redirect;
 use DB;
 use Auth;
+use App\Models\Tax;
 
 class StockInTransitController extends Controller
 {
@@ -45,21 +46,26 @@ class StockInTransitController extends Controller
                 ->where('purchase_id',$purchase->id)
                 ->first();
 
-            $total_qty_received=PurchaseStockHistory::where('purchase_id',$purchase->id)->sum('qty_received');
+        $total_qty_received=PurchaseStockHistory::where('purchase_id',$purchase->id)
+                            ->sum('stock_quantity');
         $order_status=OrderStatus::where('status',1)
                               ->where('id',$purchase->purchase_status)
                               ->first();
-
+          $total_return_amount=PurchaseStockHistory::where('purchase_id',$purchase->id)
+                               ->where('goods_type',1)
+                               ->sum('damage_quantity');
             $orders[]=[
                 'purchase_date'=>$purchase->purchase_date,
                 'purchase_id'=>$purchase->id,
                 'vendor'   =>$vendor_name,
                 'po_number'=>$purchase->purchase_order_number,
                 'quantity' => $product_details->quantity,
+                'return_quantity' => $total_return_amount,
                 'qty_received' => $total_qty_received,
                 'status' =>$order_status->status_name,
                 'color_code'     => $order_status->color_codes
             ];
+
         }
 
         $data['orders']=$orders;
@@ -112,8 +118,8 @@ class StockInTransitController extends Controller
             }
         }
         $data=array();
-        $data['purchase']=Purchase::find($id);
-
+        $data['purchase']=$purchase=Purchase::find($id);
+        $data['tax_details']=Tax::find($purchase->order_tax);
         $products=PurchaseProducts::where('purchase_id',$id)->groupBy('product_id')->get();
 
             $product_data=$product_variant=array();
@@ -234,8 +240,12 @@ class StockInTransitController extends Controller
 
           }
           $total_quantity=PurchaseProducts::where('purchase_id',$id)->sum('quantity');
-          $paid_quantity=PurchaseStockHistory::where('purchase_id',$id)->sum('qty_received');
-          if ($total_quantity==$paid_quantity) {
+          $return_quantity=PurchaseStockHistory::where('purchase_id',$id)
+                           ->where('goods_type',1)
+                           ->sum('damage_quantity');
+          $paid_quantity=PurchaseStockHistory::where('purchase_id',$id)->sum('stock_quantity');
+
+          if (($total_quantity-$return_quantity)==$paid_quantity) {
               $status=2;
           }
           elseif ($total_quantity!=$paid_quantity) {
@@ -265,7 +275,7 @@ class StockInTransitController extends Controller
           $variant_ids=$variant['variant_id'];
           foreach ($variant_ids as $key => $row_id) {
             // var_dump($damaged_qty[$key]);
-            if ($damaged_qty[$key]>0) {
+            if (($damaged_qty[$key]>0) && ($goods_type[$key]==1)) {
 
               $existing_damage=PurchaseProductReturn::where(['product_id'=> $product_id[$key],'purchase_variation_id'=>$row_id,'purchase_return_id'=>$return_id->id])
               ->sum('damage_quantity');

@@ -16,6 +16,7 @@ use App\Models\OptionValue;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
 use App\Models\PaymentHistory;
+use App\Models\PurchaseStockHistory;
 use Redirect;
 use DB;
 use Auth;
@@ -357,8 +358,12 @@ class PurchaseReturnController extends Controller
 
         // dd($data);
         $purchase_id=$purchase_detail->purchase_or_order_id;
-
+        $stock_product_ids=PurchaseStockHistory::where('goods_type',1)
+                            ->where('purchase_id',$purchase_id)
+                            ->pluck('purchase_product_id')
+                            ->toArray();
         $products=PurchaseProducts::where('purchase_id',$purchase_id)
+                  ->whereIn('id',$stock_product_ids)
                   ->groupBy('product_id')
                   ->get();
 
@@ -372,6 +377,7 @@ class PurchaseReturnController extends Controller
 
                 $all_variants=PurchaseProducts::where('purchase_id',$purchase_id)
                               ->where('product_id',$product->product_id)
+                              ->whereIn('id',$stock_product_ids)
                               ->pluck('product_variation_id')
                               ->toArray();
 

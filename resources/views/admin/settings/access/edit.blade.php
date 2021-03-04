@@ -1049,125 +1049,6 @@
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td>3</td>
-                          <td class="name">Department</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $read=(isset($permissions['department']) && $permissions['department']['read']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="employee[department][read]" class="employee-read" id="empDepartmentRead" {{ $read }}>
-                                <label for="empDepartmentRead"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $create=(isset($permissions['department']) && $permissions['department']['create']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="employee[department][create]" class="employee-create" id="empDepartmentCreate" {{ $create }}>
-                                <label for="empDepartmentCreate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $update=(isset($permissions['department']) && $permissions['department']['update']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="employee[department][update]" class="employee-update" id="empDepartmentUpdate" {{ $update }}>
-                                <label for="empDepartmentUpdate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $delete=(isset($permissions['department']) && $permissions['department']['delete']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="employee[department][delete]" class="employee-delete" id="empDepartmentDelete" {{ $delete }}>
-                                <label for="empDepartmentDelete"></label>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <h4>Commission</h4>
-                  <div class="form-group"> 
-                    <table id="commissionTable" class="role-table">
-                      <thead>
-                        <tr>
-                          <th>SI No</th>
-                          <th>Menu Name</th>
-                          <th>
-                            Read ( <div class="icheck-info d-inline">
-                                <input type="checkbox" class="commission-read-all" id="commissionReadAll">
-                                <label for="commissionReadAll"></label>
-                              </div>all)
-                          </th>
-                          <th>
-                            Create ( <div class="icheck-info d-inline">
-                                <input type="checkbox" class="commission-create-all" id="commissionCreateAll">
-                                <label for="commissionCreateAll"></label>
-                              </div>all)
-                          </th>
-                          <th>
-                            Update ( <div class="icheck-info d-inline">
-                                <input type="checkbox" class="commission-update-all" id="commissionUpdateAll">
-                                <label for="commissionUpdateAll"></label>
-                              </div>all)
-                          </th>
-                          <th>
-                            Delete ( <div class="icheck-info d-inline">
-                                <input type="checkbox" class="commission-delete-all" id="commissionDeleteAll">
-                                <label for="commissionDeleteAll"></label>
-                              </div>all)
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td class="name">Commission</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $read=(isset($permissions['commission']) && $permissions['commission']['read']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="commission[commission][read]" class="commission-read" id="commissionRead" {{ $read }}>
-                                <label for="commissionRead"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $create=(isset($permissions['commission']) && $permissions['commission']['create']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="commission[commission][create]" class="commission-create" id="commissionCreate" {{ $create }}>
-                                <label for="commissionCreate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $update=(isset($permissions['commission']) && $permissions['commission']['update']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="commission[commission][update]" class="commission-update" id="commissionUpdate" {{ $update }}>
-                                <label for="commissionUpdate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $delete=(isset($permissions['commission']) && $permissions['commission']['delete']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="commission[commission][delete]" class="commission-delete" id="commissionDelete" {{ $delete }}>
-                                <label for="commissionDelete"></label>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -1242,6 +1123,562 @@
 <?php $delete=(isset($permissions['delivery_zone']) && $permissions['delivery_zone']['delete']=='yes')?'checked':'' ?>
                                 <input type="checkbox" name="zone[delivery_zone][delete]" class="zone-delete" id="zoneDelete" {{ $delete }}>
                                 <label for="zoneDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <h4>Static Pages</h4>
+                  <div class="form-group"> 
+                    <table id="vendorTable" class="role-table">
+                      <thead>
+                        <tr>
+                          <th>SI No</th>
+                          <th>Menu Name</th>
+                          <th>
+                            Read ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="static-read-all" id="staticPageReadAll">
+                                <label for="staticPageReadAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Create ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="static-create-all" id="staticPageCreateAll">
+                                <label for="staticPageCreateAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Update ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="static-update-all" id="staticPageUpdateAll">
+                                <label for="staticPageUpdateAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Delete ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="static-delete-all" id="staticPageDeleteAll">
+                                <label for="staticPageDeleteAll"></label>
+                              </div>all)
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td class="name">Pages</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['pages']) && $permissions['pages']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="static_page[pages][read]" class="static-read" id="PageRead" {{ $read }}>
+                                <label for="PageRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['pages']) && $permissions['pages']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="static_page[pages][create]" class="static-create" id="PageCreate" {{ $create }}>
+                                <label for="PageCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['pages']) && $permissions['pages']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="static_page[pages][update]" class="static-update" id="PageUpdate" {{ $update }}>
+                                <label for="PageUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['pages']) && $permissions['pages']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="static_page[pages][delete]" class="static-delete" id="PageDelete" {{ $delete }}>
+                                <label for="PageDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td class="name">Sliders</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['static']) && $permissions['static']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="static_page[static][read]" class="static-read" id="PageRead" {{ $read }}>
+                                <label for="PageRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['static']) && $permissions['static']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="static_page[static][create]" class="static-create" id="PageCreate" {{ $create }}>
+                                <label for="PageCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['static']) && $permissions['static']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="static_page[static][update]" class="static-update" id="PageUpdate" {{ $update }}>
+                                <label for="PageUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['static']) && $permissions['static']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="static_page[static][delete]" class="static-delete" id="PageDelete" {{ $delete }}>
+                                <label for="PageDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <h4>Settings</h4>
+                  <div class="form-group"> 
+                    <table id="commissionTable" class="role-table">
+                      <thead>
+                        <tr>
+                          <th>SI No</th>
+                          <th>Menu Name</th>
+                          <th>
+                            Read ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="setting-read-all" id="settingReadAll">
+                                <label for="settingReadAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Create ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="setting-create-all" id="settingCreateAll">
+                                <label for="settingCreateAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Update ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="setting-update-all" id="settingUpdateAll">
+                                <label for="settingUpdateAll"></label>
+                              </div>all)
+                          </th>
+                          <th>
+                            Delete ( <div class="icheck-info d-inline">
+                                <input type="checkbox" class="setting-delete-all" id="settingDeleteAll">
+                                <label for="settingDeleteAll"></label>
+                              </div>all)
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td class="name">General Settings</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['general_settings']) && $permissions['general_settings']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[general_settings][read]" class="setting-read" id="settingRead" {{ $read }}>
+                                <label for="settingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['general_settings']) && $permissions['general_settings']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[general_settings][create]" class="setting-create" id="settingCreate" {{ $create }}>
+                                <label for="settingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['general_settings']) && $permissions['general_settings']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[general_settings][update]" class="setting-update" id="settingUpdate" {{ $update }}>
+                                <label for="settingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['general_settings']) && $permissions['general_settings']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[general_settings][delete]" class="setting-delete" id="settingDelete" {{ $delete }}>
+                                <label for="settingDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td class="name">Access Control</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['access_control']) && $permissions['access_control']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[access_control][read]" class="setting-read" id="accessRead" {{ $read }}>
+                                <label for="accessRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['access_control']) && $permissions['access_control']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[access_control][create]" class="setting-create" id="accessCreate" {{ $create }}>
+                                <label for="accessCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['access_control']) && $permissions['access_control']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[access_control][update]" class="setting-update" id="accessUpdate" {{ $update }}>
+                                <label for="accessUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['access_control']) && $permissions['access_control']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[access_control][delete]" class="setting-delete" id="accessDelete" {{ $delete }}>
+                                <label for="accessDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td class="name">Department</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['department_setting']) && $permissions['department_setting']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[department_setting][read]" class="setting-read" id="empDepartmentRead" {{ $read }}>
+                                <label for="empDepartmentRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['department_setting']) && $permissions['department_setting']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[department_setting][create]" class="setting-create" id="empDepartmentCreate" {{ $create }}>
+                                <label for="empDepartmentCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['department_setting']) && $permissions['department_setting']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[department_setting][update]" class="setting-update" id="empDepartmentUpdate" {{ $update }}>
+                                <label for="empDepartmentUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['department_setting']) && $permissions['department_setting']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[department_setting][delete]" class="setting-delete" id="empDepartmentDelete" {{ $delete }}>
+                                <label for="empDepartmentDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>4</td>
+                          <td class="name">Commission</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['commission_setting']) && $permissions['commission_setting']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[commission_setting][read]" class="setting-read" id="commissionRead" {{ $read }}>
+                                <label for="commissionRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['commission_setting']) && $permissions['commission_setting']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[commission_setting][create]" class="setting-create" id="commissionCreate" {{ $create }}>
+                                <label for="commissionCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['commission_setting']) && $permissions['commission_setting']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[commission_setting][update]" class="setting-update" id="commissionUpdate" {{ $update }}>
+                                <label for="commissionUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['commission_setting']) && $permissions['commission_setting']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[commission_setting][delete]" class="setting-delete" id="commissionDelete" {{ $delete }}>
+                                <label for="commissionDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>5</td>
+                          <td class="name">Prefix</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['prefix_setting']) && $permissions['prefix_setting']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[prefix_setting][read]" class="setting-read" id="prefixRead" {{ $read }}>
+                                <label for="prefixRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['prefix_setting']) && $permissions['prefix_setting']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[prefix_setting][create]" class="setting-create" id="prefixCreate" {{ $create }}>
+                                <label for="prefixCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['prefix_setting']) && $permissions['prefix_setting']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[prefix_setting][update]" class="setting-update" id="prefixUpdate" {{ $update }}>
+                                <label for="prefixUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['prefix_setting']) && $permissions['prefix_setting']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[prefix_setting][delete]" class="setting-delete" id="prefixDelete" {{ $delete }}>
+                                <label for="prefixDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>6</td>
+                          <td class="name">Order Settings</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['order_setting']) && $permissions['order_setting']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[order_setting][read]" class="setting-read" id="orderSettingRead" {{ $read }}>
+                                <label for="orderSettingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['order_setting']) && $permissions['order_setting']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[order_setting][create]" class="setting-create" id="orderSettingCreate" {{ $create }}>
+                                <label for="orderSettingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['order_setting']) && $permissions['order_setting']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[order_setting][update]" class="setting-update" id="orderSettingUpdate" {{ $update }}>
+                                <label for="orderSettingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['order_setting']) && $permissions['order_setting']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[order_setting][delete]" class="setting-delete" id="orderSettingDelete" {{ $delete }}>
+                                <label for="orderSettingDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>7</td>
+                          <td class="name">Customer Settings</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['customer_setting']) && $permissions['customer_setting']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[customer_setting][read]" class="setting-read" id="customerSettingRead" {{ $read }}>
+                                <label for="customerSettingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['customer_setting']) && $permissions['customer_setting']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[customer_setting][create]" class="setting-create" id="orderSettingCreate" {{ $create }}>
+                                <label for="orderSettingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['customer_setting']) && $permissions['customer_setting']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[customer_setting][update]" class="setting-update" id="customerSettingUpdate" {{ $update }}>
+                                <label for="customerSettingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['customer_setting']) && $permissions['customer_setting']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[customer_setting][delete]" class="setting-delete" id="customerSettingDelete" {{ $delete }}>
+                                <label for="customerSettingDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>8</td>
+                          <td class="name">Tax</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['tax_setting']) && $permissions['tax_setting']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[tax_setting][read]" class="setting-read" id="customerSettingRead" {{ $read }}>
+                                <label for="customerSettingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['tax_setting']) && $permissions['tax_setting']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[tax_setting][create]" class="setting-create" id="orderSettingCreate" {{ $create }}>
+                                <label for="orderSettingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['tax_setting']) && $permissions['tax_setting']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[tax_setting][update]" class="setting-update" id="taxSettingUpdate" {{ $update }}>
+                                <label for="taxSettingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['tax_setting']) && $permissions['tax_setting']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[tax_setting][delete]" class="setting-delete" id="customerSettingDelete" {{ $delete }}>
+                                <label for="customerSettingDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>9</td>
+                          <td class="name">Currencies</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['currency_setting']) && $permissions['currency_setting']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[currency_setting][read]" class="setting-read" id="currencySettingRead" {{ $read }}>
+                                <label for="currencySettingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['currency_setting']) && $permissions['currency_setting']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[currency_setting][create]" class="setting-create" id="currencySettingCreate" {{ $create }}>
+                                <label for="currencySettingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['currency_setting']) && $permissions['currency_setting']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[currency_setting][update]" class="setting-update" id="currencySettingUpdate" {{ $update }}>
+                                <label for="currencySettingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['currency_setting']) && $permissions['currency_setting']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[currency_setting][delete]" class="setting-delete" id="currencySettingDelete" {{ $delete }}>
+                                <label for="currencySettingDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>10</td>
+                          <td class="name">Payment Methods</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['payment_setting']) && $permissions['payment_setting']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[payment_setting][read]" class="setting-read" id="paymentSettingRead" {{ $read }}>
+                                <label for="paymentSettingRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['payment_setting']) && $permissions['payment_setting']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[payment_setting][create]" class="setting-create" id="paymentSettingCreate" {{ $create }}>
+                                <label for="paymentSettingCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['payment_setting']) && $permissions['payment_setting']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[payment_setting][update]" class="setting-update" id="paymentSettingUpdate" {{ $update }}>
+                                <label for="paymentSettingUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['payment_setting']) && $permissions['payment_setting']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="settings[payment_setting][delete]" class="setting-delete" id="paymentSettingDelete" {{ $delete }}>
+                                <label for="paymentSettingDelete"></label>
                               </div>
                             </div>
                           </td>

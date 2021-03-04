@@ -21,7 +21,8 @@ class HomePageController extends Controller
         if ($slider) {
             $data['banners'] = SliderBanner::where('slider_id',$slider->id)->orderBy('display_order','asc')->get();
         }
-        $categories = DB::table('categories as c')->select('c.name as category_name','p.*')
+        $categories = DB::table('categories as c')
+                        ->select('c.name as category_name','c.search_engine_name as category_search_engine_name','p.*')
                         ->leftJoin('products as p','c.id','p.category_id')
                         ->where('c.published',1)->where('c.show_home',1)->where('c.is_deleted',0)
                         ->where('p.published',1)->where('p.show_home',1)->where('p.is_deleted',0)
@@ -48,7 +49,10 @@ class HomePageController extends Controller
         $output=array();
         if(count($get_product)!=0){
 	        foreach ($get_product as $key => $product) {
-	            $output[$key] = "<li><a href='javascript:void(0);'>".$product->name."</a></li>";
+                $category_slug = isset($product->category->search_engine_name)?$product->category->search_engine_name:'categories';
+                $product_id = base64_encode($product->id);
+                $url = url($category_slug.'/'.$product->search_engine_name.'/'.$product_id);
+	            $output[$key] = '<li><a href='.$url.'>'.$product->name.'</a></li>';
 	        }
 	    }else{
 	    	$output = "<li><a href='javascript:void(0);'>No Result</a></li>";
