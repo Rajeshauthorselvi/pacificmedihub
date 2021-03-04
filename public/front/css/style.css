@@ -468,9 +468,58 @@ button:focus{outline:none}
         border-left-color: rgb(221, 221, 221);
     margin-left: -1px;
 }
-
-
-
+.single-product #big img{border:1px solid #eee}
+.single-product #big button {
+    position: absolute;
+    top: 50%;
+    font-size: 25px;
+    left: 25px;
+    border: 1px solid rgba(0,0,0,0.4);
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    color: #ddd;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.4);
+}
+.single-product #big button.owl-next {
+    right: 25px;
+    left: inherit;
+}
+#thumbs .owl-stage {margin:1em auto}
+#thumbs .item {
+    border: 3px solid #eee;
+    padding: 5px;
+    opacity: 0.7;
+    transition:0.8s
+}
+#thumbs .current .item,#thumbs .item:hover{opacity:1;border-color:#3e72b1}
+.number span {cursor:pointer; }
+        .number{
+            margin:100px;
+        }
+        .minus, .plus{
+            width:20px;
+            height:20px;
+            background:#f2f2f2;
+            border-radius:4px;
+            padding:8px 5px 8px 5px;
+            border:1px solid #ddd;
+      display: inline-block;
+      vertical-align: middle;
+      text-align: center;
+        }
+.number input{
+            height:34px;
+      width: 100px;
+      text-align: center;
+      font-size: 26px;
+            border:1px solid #ddd;
+            border-radius:4px;
+      display: inline-block;
+      vertical-align: middle;
+}
+            
 
 
 

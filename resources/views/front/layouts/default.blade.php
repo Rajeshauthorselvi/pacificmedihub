@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/fontawesome-free/css/all.min.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ asset('custom_data/css/owl.carousel.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ asset('front/css/owl.carousel.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ asset('front/css/style.css') }}">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed sidebar-collapse">
@@ -29,7 +29,8 @@
 <!-- Bootstrap 4 -->
 <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- Owl Carousel - 2.3.4 -->
-<script src="{{ asset('custom_data/js/owl.carousel.min.js') }}"></script>
+<script src="{{ asset('front/js/owl.carousel.min.js') }}"></script>
+
 @stack('custom-scripts')
 </body>
 </html>
