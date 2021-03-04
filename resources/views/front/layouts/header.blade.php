@@ -57,9 +57,9 @@
 				          		 		$tree = "";
 				          		 	$catgory_id = base64_encode($category->id);
 				          		?>
-				            	<li class="{{ $tree }}" get-id="{{ $category->id }}">
-				            		<a id="menu{{ $category->id }}" class="dropdown-item" href="{{ url("$category->search_engine_name/$catgory_id") }}">{{$category->name}}</a>
-				            		<div class="toogle-menu{{ $category->id }} dropdown-menu">
+				            	<li class="{{ $tree }}">
+				            		<a id="menu" class="dropdown-item" href="{{ url("$category->search_engine_name/$catgory_id") }}">{{$category->name}}</a>
+				            		<div class="toogle-menu dropdown-menu">
 										<ul class="subchildmenu">
 											@foreach($category->children as $child)
 											<?php $cat_id = base64_encode($child->id); ?>
@@ -188,11 +188,6 @@
 		$('#header-category-dropdown').click(function(event){
 			$('.toogle-menu').slideToggle('slow');
 			$(this).toggleClass('active');
-		});
-		$('.menu-list').hover(function(event){
-			var id = $(this).attr('get-id');
-			$('.toogle-menu'+id).slideToggle('slow');
-			$('#menu'+id).toggleClass('active');
 		});
 	    $('.search-panel .dropdown-menu').find('a').click(function(e) {
 			e.preventDefault();

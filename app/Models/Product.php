@@ -21,8 +21,19 @@ class Product extends Model
         return $this->belongsTo('App\Models\CommissionValue','commission_type');
     }
 
-    /*public function categorySlug()
-    {
-        return $this->belongsTo('App\Models\Categories','category_id');
-    }*/
+    public function product_images(){
+        return $this->hasMany(ProductImage::class, 'product_id')->where('is_deleted',0)->orderBy('display_order','desc');
+    }
+
+    public function sorted_product_image(){
+        return $this->product_images()->where('display_order',1);
+    }
+
+    public function product_variant(){
+        return $this->hasMany(ProductVariant::class,'product_id');
+    }
+
+    public function order_product_variant(){
+        return $this->hasOne(ProductVariant::class,'product_id');
+    }
 }
