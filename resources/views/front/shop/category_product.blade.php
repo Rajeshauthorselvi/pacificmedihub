@@ -16,9 +16,9 @@
 		          		 		$tree = "";
 		          		 	$catgory_id = base64_encode($category->id);
 		          		?>
-			            <li class="{{ $tree }}" get-id="{{ $category->id }}">
-			            	<a href="{{ url("$category->search_engine_name/$catgory_id") }}" class="link" id="list{{ $category->id }}">{{ $category->name }}</a>
-			              <ul style="display: none;" class="collapsable{{ $category->id }} expandable-hitarea">
+			            <li class="{{ $tree }}">
+			            	<a href="{{ url("$category->search_engine_name/$catgory_id") }}" class="link" id="list">{{ $category->name }}</a>
+			              <ul class="collapsable expandable-hitarea">
 			              	@foreach($category->children as $child)
 			              	<?php $cat_id = base64_encode($child->id); ?>
 			                	<li><a href="{{ url("$child->search_engine_name/$cat_id") }}">{{ $child->name }}</a></li>
@@ -111,12 +111,6 @@
 @push('custom-scripts')
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('.expandable').hover(function(event){
-			var id = $(this).attr('get-id');
-			$('.collapsable'+id).slideToggle('slow');
-			$('#list'+id).toggleClass('active');
-		});
-
 		/* JS for Active Grid List */
 		function gridlistactive(){
 			$('.btn-list-grid button').on('click', function() {
