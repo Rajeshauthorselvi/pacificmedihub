@@ -57,7 +57,7 @@
                         {{-- <th>Return Amount</th> --}}
                         {{-- <th>Paid Amount</th> --}}
                         {{-- <th>Balance Amount</th> --}}
-                        <th>Payment Status</th>
+                        {{-- <th>Payment Status</th> --}}
                         <th>Return Status</th>
                         <th>Action</th>
                       </tr>
@@ -82,13 +82,13 @@
                             
                             <?php $payment_status=[1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
                             <?php $color_code=[1=>'#00a65a',2=>'#5bc0de','3'=>'#f0ad4e']?>
-                            <td>
+                       {{--      <td>
 
 
                             <span class="badge" style="background:{{ $color_code[$return['payment_status']] }};color: #fff ">
 
                             {{ $payment_status[$return['payment_status']] }}</span></td>
-
+ --}}
                             <td><span class="badge" style="background:{{ $return['color_code'] }};color: #fff ">{{ $return['order_status'] }}</span></td>
                             <td>
                                 <div class="input-group-prepend">
@@ -97,7 +97,7 @@
 
                                     <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                     <a href="{{route('return.edit',$return['id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-                                    <a href="javascript:void(0)" class="view-payment" return-id="{{ $return['id'] }}">
+          {{--                           <a href="javascript:void(0)" class="view-payment" return-id="{{ $return['id'] }}">
                                       <li class="dropdown-item">
                                         <i class="fa fa-credit-card"></i>&nbsp;&nbsp;View Payments
                                       </li>
@@ -107,7 +107,7 @@
                                       <li class="dropdown-item">
                                         <i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment
                                       </li>
-                                    </a>
+                                    </a> --}}
                                     <a href="javascript:void(0)"><li class="dropdown-item">
                                       <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
                                     </li></a>

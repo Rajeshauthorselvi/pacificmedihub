@@ -16,6 +16,7 @@ use App\Models\PaymentHistory;
 use App\Models\Tax;
 use App\Models\PaymentTerm;
 use App\Models\UserCompanyDetails;
+use App\Models\PurchaseStockHistory;
 use Illuminate\Http\Request;
 use App\User;
 use Session;
@@ -196,7 +197,18 @@ class PurchaseController extends Controller
             'product_tax'           => 0,
             'sub_total'             => $sub_total[$key],
           ];
-          DB::table('purchase_products')->insert($data);
+          $purchase_product_id=DB::table('purchase_products')->insertGetId($data);
+            PurchaseStockHistory::insert([
+              'purchase_id'             => $purchase_id,
+              'purchase_product_id'     => $purchase_product_id,
+              'qty_received'            => $stock_qty[$key],
+              'damage_quantity'         => 0,
+              'missed_quantity'         => 0,
+              'stock_quantity'          => 0,
+              'is_primary'              => 1,
+              'created_at'              => date('Y-m-d H:i:s'),
+            ]);
+
         }
       }
 
@@ -221,6 +233,8 @@ class PurchaseController extends Controller
 
         Purchase::where('id',$request->id)->update(['payment_status'=>$payment_status]);
       }
+
+
       return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');
     }
 

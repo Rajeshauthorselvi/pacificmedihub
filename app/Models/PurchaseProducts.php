@@ -49,6 +49,7 @@ class PurchaseProducts extends Model
         $return_total=PurchaseStockHistory::where('purchase_id',$purchase_id)
                       ->where('purchase_product_id',$purchase_product_id)
                       ->where('goods_type',1)
+                      ->where('is_primary',2)
                       ->sum('damage_quantity');
         return $return_total;
     }
@@ -56,6 +57,7 @@ class PurchaseProducts extends Model
     {
         $stock_total=PurchaseStockHistory::where('purchase_id',$purchase_id)
                       ->where('purchase_product_id',$purchase_product_id)
+                      ->where('is_primary',2)
                       ->sum('stock_quantity');
         return $stock_total;
     }
@@ -64,6 +66,7 @@ class PurchaseProducts extends Model
         $replace_total=PurchaseStockHistory::where('purchase_id',$purchase_id)
                       ->where('purchase_product_id',$purchase_product_id)
                       ->where('goods_type',2)
+                      ->where('is_primary',2)
                       ->sum('damage_quantity');
         return $replace_total;
     }

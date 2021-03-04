@@ -72,9 +72,6 @@
                            @foreach ($purchase_products as $product)
                            <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
                             <td class="expand-button"></td>
-                             <?php
-                                  $total_based_products=\App\Models\PurchaseProducts::TotalDatas($purchase->id,$product['product_id']);
-                               ?>
                               <td>{{ $product['product_name'] }}</th>
                         
                           </tr>
@@ -126,12 +123,12 @@
                             @endif
                             </td>
                             <td>
-                              {{ $variation_details['quantity']-$return_total }}
+                              {{ $variation_details['quantity'] }}
                               <?php 
                               $received=isset($received_quantity[$variation_details->id])?$received_quantity[$variation_details->id]:0;
-                            
-                               $balance_quantity=$variation_details['quantity']- $received;
-                               $balance_quantity=$balance_quantity+$replace_total;
+                               $balance_quantity=$variation_details['quantity'];
+                               $balance_quantity=$balance_quantity-$stock_total;
+
                                ?>
                                 <input type="hidden" class="total_quantity" value="{{ $balance_quantity }}">
                                <br>
@@ -147,8 +144,8 @@
                               </div>
                             </td>
                             <td class="quantity-info">
-                              {!! Form::hidden('base_price',$variation_details->base_price,['class'=>'base_price']) !!}
                               <div class="form-group">
+                              {!! Form::hidden('base_price',$variation_details->base_price,['class'=>'base_price']) !!}
                                   <input type="text" name="variant[damaged_qty][]" value="{{ isset($variation_details['damage_quantity'])?$variation_details['damage_quantity']:0 }}" class="form-control damaged_quantity" autocomplete="off">
                               </div>
                               <div class="form-group">
@@ -158,6 +155,9 @@
                                 <input type="radio" name="variant[goods_type][{{ $key }}]" value="1" id="goods_return_{{ $key }}" class="goods_return goods_type">
                                 <label for="goods_return_{{ $key }}"><small>Goods Return</small></label>
                               </div>
+
+                              <input type="hidden" class="total_amount_hidden" value="">
+                              
                             </td>
                             <td class="quantity-info">
                               <div class="form-group">
@@ -193,9 +193,14 @@
                         </div>
                     </div>
                     <?php $tax_amount=isset($tax_details)?$tax_details->rate:0 ?>
-                    {!! Form::hidden('tax',$tax_amount,['class'=>'tax_amount']) !!}
-                    {!! Form::hidden('tax',0,['id'=>'order-discount']) !!}
-                    
+                    {!! Form::hidden('tax_amount',$tax_amount,['id'=>'tax_amount']) !!}
+                    {!! Form::hidden('order_discount',$purchase->order_discount,['id'=>'order-discount']) !!}
+
+
+                    <input type="hidden" name="total_amount" id="total_amount">
+                    <input type="hidden" name="order_tax_amount" id="order_tax">
+                    <input type="hidden" name="sgd_total_amount" id="sgd_total">
+
 
                     <div class="col-sm-12 submit-sec">
                       <a href="{{ route('stock-in-transit.index') }}" class="btn  reset-btn">
@@ -235,37 +240,6 @@
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
-
-      function overallCalculation(all_amount,tax_rate){
-        var allAmount    = all_amount;
-        var taxRate      = tax_rate;
-        var tax          = taxRate/100;
-        var calculatTax  = tax*allAmount;
-        var taxAmount    = calculatTax.toFixed(2);
-        var discount     = $('#order-discount').val();
-        var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount);
-        var totalSGD     = parseFloat(calculateSGD)-parseFloat(discount);
-
-        $('#orderTax').text(taxAmount);
-        $('#total_amount_sgd').text(totalSGD.toFixed(2));
-        $('#total_amount_hidden').val(allAmount);
-        $('#order_tax_amount_hidden').val(taxAmount);
-        $('#sgd_total_amount_hidden').val(totalSGD);
-      }
-
-
-
-      $(document).on('keypress', '.damaged_quantity', function(event) {
-          var quantity = $(this).val();
-          var tax_rate=$('.tax_amount').val();
-          var base_price=$(this).parents('.quantity-info').find('.base_price').val();
-          var base_price=$(this).parents('.quantity-info').attr('class');
-          // alert(base_price);
-          // alert(tax_rate);
-       
-          // overallCalculation(all_amount,tax_rate);
-      });
-
 
 
 
@@ -354,13 +328,62 @@
           else if(current_field_val==0){
             $(this).closest('.quantity-info').find('.goods_replace').prop('checked',false);
             $(this).closest('.quantity-info').find('.goods_return').prop('checked',false);
+            $(this).closest('.quantity-info').find('.total_amount_hidden').val(0);
           }
         /*Activete Goods Replace*/
+        
+        var goods_val=$(this).closest('.quantity-info').find('.goods_type:checked').val();
+        if (goods_val==1) {
+          var quantity = current_field_val;
+          var base_price=$(this).prev('.base_price').val();
+          var all_amount=parseInt(quantity)*parseInt(base_price);
+          $(this).closest('.quantity-info').find('.total_amount_hidden').val(all_amount);
+          
+          SumAllValue();
+        }
+      });
+      function SumAllValue() {
+        var total_amount=0;
+        $('.total_amount_hidden').each(function(i, obj) {
+          if(!isNaN(this.value) && this.value.length!=0) 
+            {
+              total_amount += parseInt(this.value);            
+            }      
+        });
+        var tax_rate=$('#tax_amount').val();
+        overallCalculation(total_amount,tax_rate);
+      }
 
-
+      $(document).on('change', '.goods_type', function(event) {
+        if ($(this).val()==1) {
+          var tax_rate=$('#tax_amount').val();
+          var base_price=$(this).parents().find('.base_price').val();
+          var quantity=$(this).parents().find('.damaged_quantity').val();
+          var all_amount=parseInt(quantity)*parseInt(base_price);
+          $(this).closest('.quantity-info').find('.total_amount_hidden').val(all_amount);
+          SumAllValue();
+        }
+        else{
+            $(this).closest('.quantity-info').find('.total_amount_hidden').val(0);
+             SumAllValue();
+        }
       });
 
-       
+      function overallCalculation(all_amount,tax_rate){
+        var allAmount    = all_amount;
+        var taxRate      = tax_rate;
+        var tax          = taxRate/100;
+        var calculatTax  = tax*allAmount;
+        var taxAmount    = calculatTax.toFixed(2);
+        var discount     = $('#order-discount').val();
+        var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount);
+        var totalSGD     = parseFloat(calculateSGD)-parseFloat(discount);
+        $('#orderTax').val(taxAmount);
+        $('#total_amount').val(allAmount);
+        $('#order_tax').val(taxAmount);
+        $('#sgd_total').val(totalSGD);
+      }
+
     </script>
   @endpush
   <style type="text/css">

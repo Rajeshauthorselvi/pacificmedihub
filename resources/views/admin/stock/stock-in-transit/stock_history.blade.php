@@ -13,32 +13,7 @@
 	</thead>
 	<tbody>
 		<?php $return_total=0; ?>
-		@foreach ($histories as $key=>$history)
-		@if ($key==0)
-		<tr>
-				<td>{{ date('d-m-Y H:i A',strtotime($purchase_datas)) }}</td>
-				@foreach($product_variants as $key=>$variant)
-                 	<td>{{$variant['option_value1']}}</td>
-                 @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
-                 	<td>{{$variant['option_value2']}}</td>
-                 @endif
-                 @if($option_count==3||$option_count==4||$option_count==5)
-                 	<td>{{$variant['option_value3']}}</td>
-                 @endif
-                 @if($option_count==4||$option_count==5)
-                 	<td>{{$variant['option_value4']}}</td>
-                 @endif
-                 @if($option_count==5)
-                 	<td> {{$variant['option_value5']}} </td>
-                 @endif
-                 @endforeach
-                 <td>{{ $purchase_product_details->quantity }}</td>
-                 <td>0</td>
-                 <td>0</td>
-                 <td>0</td>
-                 <td>0</td>
-		</tr>
-		@endif
+		@foreach ($histories as $parent_key=>$history)
 
 			<tr>
 				<td>{{ $history['created_at'] }}</td>
@@ -57,8 +32,20 @@
                  	<td> {{$variant['option_value5']}} </td>
                  @endif
                  @endforeach
-				<td>{{ ($purchase_product_details->quantity)-($return_total) }}</td>
-				<td>{{ $history['qty_received'] }}</td>
+				<td>
+					@if ($parent_key==0)
+						{{ $history['qty_received'] }}
+					@else
+						{{ ($histories[0]['qty_received'])-($return_total) }}
+					@endif
+				</td>
+				<td>
+					@if ($parent_key==0)
+					0
+					@else
+					{{ ($history['qty_received']) }}
+					@endif
+				</td>
 				<td>
 					{{ $history['damage_quantity'] }}
 					<small>
@@ -73,7 +60,7 @@
 				<td>{{ $history['stock_quantity'] }}</td>
 			</tr>
 			<?php
-				if ($history['goods_type']==1){
+				if ($history['goods_type']==1 && $parent_key!=0){
 					$return_total +=$history['damage_quantity'];
 				}
 			?>

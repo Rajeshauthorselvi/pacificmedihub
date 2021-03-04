@@ -42,9 +42,9 @@ class StockInTransitController extends Controller
         $orders=array();
         foreach ($purchases as $key => $purchase) {
             $vendor_name=Vendor::find($purchase->vendor_id)->name;
-            $product_details=PurchaseProducts::select(DB::raw('sum(quantity) as quantity'))
-                ->where('purchase_id',$purchase->id)
-                ->first();
+            $total_ordered_quantity=PurchaseStockHistory::where('is_primary',1)
+                                    ->where('purchase_id',$purchase->id)
+                                    ->sum('qty_received');
 
         $total_qty_received=PurchaseStockHistory::where('purchase_id',$purchase->id)
                             ->sum('stock_quantity');
@@ -59,7 +59,7 @@ class StockInTransitController extends Controller
                 'purchase_id'=>$purchase->id,
                 'vendor'   =>$vendor_name,
                 'po_number'=>$purchase->purchase_order_number,
-                'quantity' => $product_details->quantity,
+                'quantity' => $total_ordered_quantity,
                 'return_quantity' => $total_return_amount,
                 'qty_received' => $total_qty_received,
                 'status' =>$order_status->status_name,
@@ -173,6 +173,7 @@ class StockInTransitController extends Controller
     {
           $total_received_history=PurchaseStockHistory::where('purchase_id',$purchase_id)
                                          ->select(DB::raw('sum(qty_received) as total_quantity'),'purchase_id','purchase_product_id')
+                                         ->where('is_primary',2)
                                          ->groupBy('purchase_product_id')
                                          ->get();
           $data=array();
@@ -205,6 +206,7 @@ class StockInTransitController extends Controller
        
        $status=1;
        if ($request->purchase_status!=1) {
+
          foreach ($row_ids as $key => $row_id) {
 
             $purchase_data=DB::table('purchase_products')->where('id',$row_id)->first();
@@ -214,6 +216,12 @@ class StockInTransitController extends Controller
 
               /*Add Stock History*/
               if ($qty_received[$key]!=0) {
+
+                if($damaged_qty[$key]!=0 && $damaged_qty[$key]) 
+                  $goods=$goods_type[$key];
+                else
+                  $goods="";
+
                 $data=[
                   'purchase_id'           => $id,
                   // 'product_id'            => $product_id[$key],
@@ -223,35 +231,85 @@ class StockInTransitController extends Controller
                   'missed_quantity'       => $missed_quantity[$key],
                   'stock_quantity'        => $stock_quantity[$key],
                   'created_at'            => date('Y-m-d H:i:s'),
-                  'goods_type'            => isset($goods_type[$key])?$goods_type[$key]:''
+                  'goods_type'            => $goods
                 ];
                 $history_id=PurchaseStockHistory::insertGetId($data);
               }
               /*Add Stock History*/
 
-              /*Update Stock Quantity*/
+          /*Update Stock Quantity*/
               if ($request->purchase_status==2 || $request->purchase_status==4) {
                 $total_quantity=$variant_data->stock_quantity+$stock_quantity[$key];
                   DB::table('product_variant_vendors')
                   ->where('product_variant_id',$purchase_data->product_variation_id)
                   ->update(['stock_quantity'=>$total_quantity]);
+
+                  /*Update Return quantity to purchase products table*/
+                    if (isset($goods_type[$key]) && $goods_type[$key]==1 && $damaged_qty[$key]!=0) {
+                       $existing_quantity= DB::table('purchase_products')
+                            ->where('purchase_id',$id)
+                            ->where('product_variation_id',$purchase_data->product_variation_id)
+                            ->first();
+
+                        $balance_quantity=$existing_quantity->quantity-$damaged_qty[$key];
+
+
+                        DB::table('purchase_products')
+                          ->where('id',$existing_quantity->id)
+                          ->update(['quantity'=>$balance_quantity]);
+
+
+
+                        $existing_price=DB::table('purchase_products')
+                                        ->where('id',$existing_quantity->id)
+                                        ->first();
+
+
+                        $total_amount=$existing_price->base_price*$balance_quantity;
+
+                        DB::table('purchase_products')
+                        ->where('id',$existing_quantity->id)
+                        ->update(['sub_total'=>$total_amount]);
+                    }
+                  /*Update Return quantity to purchase products table*/
               }
-              /*Update Stock Quantity*/
+
+          /*Update Stock Quantity*/
 
           }
+
+       }
           $total_quantity=PurchaseProducts::where('purchase_id',$id)->sum('quantity');
           $return_quantity=PurchaseStockHistory::where('purchase_id',$id)
                            ->where('goods_type',1)
+                           ->where('is_primary','<>',1)
                            ->sum('damage_quantity');
-          $paid_quantity=PurchaseStockHistory::where('purchase_id',$id)->sum('stock_quantity');
-
-          if (($total_quantity-$return_quantity)==$paid_quantity) {
+          $paid_quantity=PurchaseStockHistory::where('purchase_id',$id)
+                         ->where('is_primary','<>',1)
+                         ->sum('stock_quantity');
+// dd($total_quantity,$return_quantity,$paid_quantity);
+          if ($total_quantity==$paid_quantity) {
               $status=2;
           }
           elseif ($total_quantity!=$paid_quantity) {
             $status=4;
           }
+
+
+       if ($request->total_amount > 0) {
+         $purchase_details=DB::table('purchase')->where('id',$id)->first();
+         $total_amount=$purchase_details->total_amount;
+         $sgd_total_amount=$purchase_details->sgd_total_amount;
+         $order_tax_amount=$purchase_details->order_tax_amount;
+
+         DB::table('purchase')->where('id',$id)
+         ->update([
+          'order_tax_amount'    => ($order_tax_amount)-($request->order_tax_amount),
+          'total_amount'        => ($total_amount)-($request->total_amount),
+          'sgd_total_amount'    => ($sgd_total_amount)-($request->sgd_total_amount)
+         ]);
        }
+
         Purchase::where('id',$id)->update(['stock_notes'=>$request->stock_notes,'purchase_status'=>$status]);
 
         /*Add record to return table*/
@@ -310,7 +368,7 @@ class StockInTransitController extends Controller
 
     public function StockHistoryDetails($purchase_id)
     {
-        $purchase_history=PurchaseStockHistory::where('purchase_id',$purchase_id)->get();
+        $purchase_history=PurchaseStockHistory::where('purchase_id',$purchase_id)->where('is_primary',2)->get();
         $data=array();
         foreach ($purchase_history as $key => $history) {
             $data[$history->product_variation_id]=[
@@ -483,9 +541,7 @@ class StockInTransitController extends Controller
       $product_id=$request->get('product_id');
       $product_variant_id=$request->get('product_variant');
 
-      $purchase_details=PurchaseStockHistory::where('purchase_id',$purchase_id)
-                        ->where('purchase_product_id',$purchase_variant_id)
-                        ->get();
+
 
       $product_name=DB::table('purchase_stock_history as psh')
                         ->leftjoin('purchase_products as pp','pp.id','psh.purchase_product_id')
@@ -497,6 +553,12 @@ class StockInTransitController extends Controller
 
       $options=$this->Options($product_id);
 
+      $purchase_details=PurchaseStockHistory::where('purchase_id',$purchase_id)
+                        ->where('purchase_product_id',$purchase_variant_id)
+                        ->get();
+
+                        // dd($purchase_details);
+
       $data['option_count']=$options['option_count'];
       $data['options']=$options['options'];
       $all_variants=PurchaseProducts::where('id',$purchase_variant_id)->pluck('product_variation_id')->toArray();
@@ -504,16 +566,31 @@ class StockInTransitController extends Controller
 
       $data['product_name']    = $product_name;
       foreach ($purchase_details as $key => $purchase_detail) {
-          $history[]=[
+          if ($purchase_detail->is_primary==1) {
+                $history=[
+                  'qty_received'    => $purchase_detail->qty_received,
+                  'damage_quantity' => 0,
+                  'missed_quantity' => 0,
+                  'stock_quantity'  => 0,
+                  'created_at'      => date('d-m-Y H:i A',strtotime($purchase_detail->created_at)),
+                  'goods_type'      => 0
+                ];
+          }
+          else{
+            $history=[
               'qty_received'    => $purchase_detail->qty_received,
               'damage_quantity' => $purchase_detail->damage_quantity,
               'missed_quantity' => $purchase_detail->missed_quantity,
               'stock_quantity'  => $purchase_detail->stock_quantity,
               'created_at'      => date('d-m-Y H:i A',strtotime($purchase_detail->created_at)),
               'goods_type'      => $purchase_detail->goods_type
-          ];
+            ];
+          }
+
+          $total_history[]=$history;
+         
       }
-      $data['histories']=$history;
+      $data['histories']=$total_history;
 
       $data['purchase_product_details']=PurchaseProducts::where('id',$purchase_variant_id)->first();
       $data['purchase_datas']=Purchase::where('id',$purchase_id)->value('created_at');
