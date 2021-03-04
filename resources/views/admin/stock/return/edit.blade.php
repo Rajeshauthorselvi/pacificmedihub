@@ -82,7 +82,6 @@
                             <th>{{ $option }}</th>
                           @endforeach
                           {{-- <th>Purchase Price</th> --}}
-                          <th>Total Purchase Quantity</th>
                           <th>Damage Quantity</th>
                           <th>Return Quantity</th>
                           {{-- <th>Total Return Amount</th> --}}
@@ -116,11 +115,7 @@
                               <input type="hidden" class="purchase_price" value="{{ $product_price }}">
                               {{ $product_price }}
                             </td> --}}
-                            <td>
-                              {{ $variation_details['quantity'] }}
-                              <input type="hidden" class="total_quantity" value="{{ $variation_details['quantity'] }}">
-                            </td>
-                            
+                          
                             <td>
                               <?php 
                               $damage_data=isset($damage_quantity[$variant['variant_id']])?$damage_quantity[$variant['variant_id']]:0;
