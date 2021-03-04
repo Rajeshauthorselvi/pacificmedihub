@@ -124,14 +124,7 @@
                         <tr>
                           <td>3</td>
                           <td class="name">Import Products</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="product_sec[import][read]" class="product-read" id="productImportRead">
-                                <label for="productImportRead"></label>
-                              </div>
-                            </div>
-                          </td>
+                          <td>-</td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
@@ -217,42 +210,6 @@
                         </tr>
                         <tr>
                           <td>6</td>
-                          <td class="name">Option Value</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="product_sec[option_value][read]" class="product-read" id="productOptionValueRead">
-                                <label for="productOptionValueRead"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="product_sec[option_value][create]" class="product-create" id="productOptionValueReadWrite">
-                                <label for="productOptionValueReadWrite"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="product_sec[option_value][update]" class="product-update" id="productOptionValueUpdate">
-                                <label for="productOptionValueUpdate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="product_sec[option_value][delete]" class="product-delete" id="productOptionValueDelete">
-                                <label for="productOptionValueDelete"></label>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>7</td>
                           <td class="name">Brands</td>
                           <td>
                             <div class="form-group clearfix">
@@ -872,6 +829,42 @@
                             </div>
                           </td>
                         </tr>
+                        <tr>
+                          <td>1</td>
+                          <td class="name">Vendor Products</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="vendor[vendor_products][read]" class="vendor-read" id="vendorProductRead">
+                                <label for="vendorProductRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="vendor[vendor_products][create]" class="vendor-create" id="vendorProductCreate">
+                                <label for="vendorProductCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="vendor[vendor_products][update]" class="vendor-update" id="vendorProductUpdate">
+                                <label for="vendorProductUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="vendor[vendor_products][delete]" class="vendor-delete" id="vendorProductDelete">
+                                <label for="vendorProductDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -1352,14 +1345,7 @@
                         <tr>
                           <td>5</td>
                           <td class="name">Prefix</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="settings[prefix_setting][read]" class="setting-read" id="prefixRead">
-                                <label for="prefixRead"></label>
-                              </div>
-                            </div>
-                          </td>
+                          <td>-</td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
@@ -1368,22 +1354,8 @@
                               </div>
                             </div>
                           </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="settings[prefix_setting][update]" class="setting-update" id="prefixUpdate">
-                                <label for="prefixUpdate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="settings[prefix_setting][delete]" class="setting-delete" id="prefixDelete">
-                                <label for="prefixDelete"></label>
-                              </div>
-                            </div>
-                          </td>
+                          <td>-</td>
+                          <td>-</td>
                         </tr>
                         <tr>
                           <td>6</td>

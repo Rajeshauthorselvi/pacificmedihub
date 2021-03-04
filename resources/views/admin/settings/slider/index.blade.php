@@ -27,14 +27,14 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12 action-controllers ">
-            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('slider','delete')) 
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('static','delete')) 
             <div class="col-sm-6 text-left pull-left">
               <a href="javascript:void(0)" class="btn btn-danger delete-all">
                 <i class="fa fa-trash"></i> Delete (selected)
               </a>
             </div>
             @endif
-            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('slider','create')) 
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('static','create')) 
             <div class="col-sm-6 text-right pull-right">
               <a class="btn add-new" href="{{route('static-page-slider.create')}}">
                 <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
@@ -73,7 +73,7 @@
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
                                 @if (Auth::check()||Auth::guard('employee')->check()) 
-                                  @if (Auth::check()||Auth::guard('employee')->user()->isAuthorized('slider','update')) 
+                                  @if (Auth::check()||Auth::guard('employee')->user()->isAuthorized('static','update')) 
                                     <a href="{{route('static-page-slider.edit',$slider->id)}}">
                                       <li class="dropdown-item">
                                         <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
@@ -82,7 +82,7 @@
                                   @endif
                                 @endif
                                 @if (Auth::check()||Auth::guard('employee')->check()) 
-                                  @if (Auth::check()||Auth::guard('employee')->user()->isAuthorized('slider','delete')) 
+                                  @if (Auth::check()||Auth::guard('employee')->user()->isAuthorized('static','delete')) 
                                     <a href="javascript:void(0);">
                                       <li class="dropdown-item">
                                         <form method="POST" action="{{ route('static-page-slider.destroy',$slider->id) }}">

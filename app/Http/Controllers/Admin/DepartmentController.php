@@ -9,6 +9,7 @@ use App\Models\Role;
 use Session;
 use Redirect;
 use Arr;
+use Auth;
 
 class DepartmentController extends Controller
 {
@@ -19,6 +20,11 @@ class DepartmentController extends Controller
      */
     public function index()
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('department_setting','read')) {
+                abort(404);
+            }
+        }  
         $data=array();
         $data['departments'] = Department::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.department.index',$data);
@@ -31,6 +37,11 @@ class DepartmentController extends Controller
      */
     public function create()
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('department_setting','create')) {
+                abort(404);
+            }
+        }  
         $data['type']='create';
         $data['roles'] = Role::where('is_delete',0)->whereNotIn('name',['Super Admin','Admin','Customer'])->get();
         //dd($data);
@@ -82,6 +93,11 @@ class DepartmentController extends Controller
      */
     public function edit(Department $department)
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('department_setting','update')) {
+                abort(404);
+            }
+        } 
         $data['dept']=Department::find($department->id);
         $data['roles'] = Role::where('is_delete',0)->whereNotIn('name',['Super Admin','Admin','Customer'])->get();
         $data['type']="edit";
@@ -125,6 +141,11 @@ class DepartmentController extends Controller
      */
     public function destroy(Request $request, Department $department)
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('department_setting','delete')) {
+                abort(404);
+            }
+        } 
         $dept=Department::find($department->id);
         $dept->is_deleted=1;
         $dept->deleted_at = date('Y-m-d H:i:s');

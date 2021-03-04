@@ -32,12 +32,13 @@
                 <i class="fa fa-trash"></i> Delete (selected)
               </a>
             </div> --}}
-
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('access_control','create'))
             <div class="col-sm-6 text-right pull-right">
               <a class="btn add-new" href="{{route('access-control.create')}}">
                 <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
               </a>
             </div>
+            @endif
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -61,10 +62,14 @@
                           <td>{{ $s_no }}</td>
                           <td>{{ $role->name }}</td>
                           <td class="text-center">
-          <?php $check_role_exists=\App\Models\RoleAccessPermission::CheckRecordExists($role->id); ?>
+                        @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('access_control','update'))
+                                <?php $check_role_exists=\App\Models\RoleAccessPermission::CheckRecordExists($role->id); ?>
                                   <a href="{{route('access-control.edit',$role->id)}}" class="btn btn-primary">
                                       <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
                                   </a>
+                        @else
+                          -
+                        @endif
                               
                           </td>
                         </tr>

@@ -20,6 +20,11 @@ class SettingsController extends Controller
      */
     public function index()
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('prefix_setting','create')) {
+                abort(404);
+            }
+        } 
         $data=array();
         $data['status']=[''=>'Please Select',1=>'Yes',2=>'No'];
         $data['reset']=[''=>'Please Select',1=>'Yearly',2=>'No'];

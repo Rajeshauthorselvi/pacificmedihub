@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Session;
 use Redirect;
 use Arr;
+use Auth;
 class ComissionValueController extends Controller
 {
     /**
@@ -19,6 +20,11 @@ class ComissionValueController extends Controller
      */
     public function index()
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('commission_setting','read')) {
+                abort(404);
+            }
+        } 
         $data['comission_values']=CommissionValue::with('comission')->where('commission_values.is_deleted',0)->orderBy('commission_values.id','desc')->get();
         return view('admin.commission_values.index',$data);
     }
@@ -30,6 +36,11 @@ class ComissionValueController extends Controller
      */
     public function create()
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('commission_setting','create')) {
+                abort(404);
+            }
+        } 
         $data['type']='create';
         $data['commissions']=[''=>'Please Select']+Commissions::where('published',1)->pluck('commission_name','id')->toArray();
         $data['commission_type']=[''=>'Please Select','p'=>'Percentage (%)','f'=>'Fixed (amount)'];
@@ -79,6 +90,11 @@ class ComissionValueController extends Controller
      */
     public function edit(CommissionValue $comissionValue)
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('commission_setting','update')) {
+                abort(404);
+            }
+        } 
         $data['commission_value']=CommissionValue::with('comission')->where('commission_values.id',$comissionValue->id)->first();
         $data['type']='edit';
         $data['commissions']=[''=>'Please Select']+Commissions::where('published',1)->pluck('commission_name','id')->toArray();
@@ -120,6 +136,11 @@ class ComissionValueController extends Controller
      */
     public function destroy(Request $request,CommissionValue $comissionValue)
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('commission_setting','delete')) {
+                abort(404);
+            }
+        } 
         $comission = CommissionValue::find($comissionValue->id);
         $comission->is_deleted=1;
         $comission->deleted_at=date('Y-m-d H:i:s');

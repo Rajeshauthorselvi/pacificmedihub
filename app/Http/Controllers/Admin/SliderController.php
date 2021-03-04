@@ -8,6 +8,7 @@ use App\Models\Slider;
 use App\Models\SliderBanner;
 use Redirect;
 use DB;
+use Auth;
 
 class SliderController extends Controller
 {
@@ -18,6 +19,11 @@ class SliderController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('static','read')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['sliders'] = Slider::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/settings/slider/index',$data);
@@ -30,6 +36,11 @@ class SliderController extends Controller
      */
     public function create()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('static','create')) {
+                abort(404);
+            }
+        }
         return view('admin/settings/slider/create');
     }
 
@@ -137,6 +148,11 @@ class SliderController extends Controller
      */
     public function edit($id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('static','update')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['slider'] = Slider::find($id);
         $data['slider_banners'] = SliderBanner::where('slider_id',$id)->get();
@@ -233,6 +249,11 @@ class SliderController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('static','delete')) {
+                abort(404);
+            }
+        }
         $slider=Slider::find($id);
         $slider->is_deleted=1;
         $slider->deleted_at = date('Y-m-d H:i:s');

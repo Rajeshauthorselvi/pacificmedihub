@@ -26,16 +26,20 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12 action-controllers ">
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('employee','delete'))
             <div class="col-sm-6 text-left pull-left">
               <a href="javascript:void(0)" class="btn btn-danger delete-all">
                 <i class="fa fa-trash"></i> Delete (selected)
               </a>
             </div>
+            @endif
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('employee','create'))
             <div class="col-sm-6 text-right pull-right">
               <a class="btn add-new" href="{{route('employees.create')}}">
                 <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
               </a>
             </div>
+            @endif
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">

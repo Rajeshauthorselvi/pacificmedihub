@@ -39,7 +39,7 @@ class VendorController extends Controller
     public function create()
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('customer','create')) {
+            if (!Auth::guard('employee')->user()->isAuthorized('vendor','create')) {
                 abort(404);
             }
         }
@@ -202,7 +202,7 @@ class VendorController extends Controller
     public function show($id)
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('customer','read')) {
+            if (!Auth::guard('employee')->user()->isAuthorized('vendor','read')) {
                 abort(404);
             }
         }
@@ -222,7 +222,7 @@ class VendorController extends Controller
     public function edit($id)
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('customer','update')) {
+            if (!Auth::guard('employee')->user()->isAuthorized('vendor','update')) {
                 abort(404);
             }
         }

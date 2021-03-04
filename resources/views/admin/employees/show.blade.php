@@ -198,11 +198,16 @@
                           </div>
                           <div class="col-sm-4">
                              <?php 
+                              if(isset($employees->baseCommission)){
                                 if($employees->baseCommission->commission_type=='f'){
                                   $basic_commission_type = 'Percentage (%)';
                                 }else{
                                   $basic_commission_type = 'Fixed (amount)';
                                 }
+                              }
+                              else{
+                                  $basic_commission_type="";
+                              }
                               ?>
                             <label for="commissionType">Basic Commission Type</label>
                             <input type="text" class="form-control" id="commissionType" readonly value="{{$basic_commission_type}}">
@@ -215,6 +220,7 @@
                           <div class="form-group">
                           <div class="col-sm-4">
                             <?php 
+
                             if($employees->target_commission_type!=NULL){
                              if($employees->targetCommission->commission_type=='f'){
                                 $target_commision_type = 'Fixed (amount)';

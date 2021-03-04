@@ -48,7 +48,7 @@
                 @endif
 
                 @if (Auth::check() || Auth::guard('employee')->check()) 
-                    @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('import','read')) 
+                    @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('import','create')) 
                     <a href="{{ url('admin/product-import') }}" class="btn btn-success">
                       <i class="fa fa-upload"></i> Import Products
                     </a>
