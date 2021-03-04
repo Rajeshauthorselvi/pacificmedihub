@@ -15,7 +15,6 @@
 		<?php $return_total=0; ?>
 		@foreach ($histories as $parent_key=>$history)
 
-		{{ $parent_key }}
 			<tr>
 				<td>{{ $history['created_at'] }}</td>
 				@foreach($product_variants as $key=>$variant)
@@ -62,7 +61,6 @@
 			</tr>
 			<?php
 				if ($history['goods_type']==1 && $parent_key!=0){
-					var_dump($history['damage_quantity']);
 					$return_total +=$history['damage_quantity'];
 				}
 			?>

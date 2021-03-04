@@ -216,6 +216,12 @@ class StockInTransitController extends Controller
 
               /*Add Stock History*/
               if ($qty_received[$key]!=0) {
+
+                if($damaged_qty[$key]!=0 && $damaged_qty[$key]) 
+                  $goods=$goods_type[$key];
+                else
+                  $goods="";
+
                 $data=[
                   'purchase_id'           => $id,
                   // 'product_id'            => $product_id[$key],
@@ -225,7 +231,7 @@ class StockInTransitController extends Controller
                   'missed_quantity'       => $missed_quantity[$key],
                   'stock_quantity'        => $stock_quantity[$key],
                   'created_at'            => date('Y-m-d H:i:s'),
-                  'goods_type'            => isset($goods_type[$key])?$goods_type[$key]:''
+                  'goods_type'            => $goods
                 ];
                 $history_id=PurchaseStockHistory::insertGetId($data);
               }
@@ -239,19 +245,31 @@ class StockInTransitController extends Controller
                   ->update(['stock_quantity'=>$total_quantity]);
 
                   /*Update Return quantity to purchase products table*/
-                    if (isset($goods_type[$key]) && $goods_type[$key]==1) {
+                    if (isset($goods_type[$key]) && $goods_type[$key]==1 && $damaged_qty[$key]!=0) {
                        $existing_quantity= DB::table('purchase_products')
                             ->where('purchase_id',$id)
                             ->where('product_variation_id',$purchase_data->product_variation_id)
                             ->first();
 
                         $balance_quantity=$existing_quantity->quantity-$damaged_qty[$key];
+
+
                         DB::table('purchase_products')
                           ->where('id',$existing_quantity->id)
                           ->update(['quantity'=>$balance_quantity]);
 
-                        
 
+
+                        $existing_price=DB::table('purchase_products')
+                                        ->where('id',$existing_quantity->id)
+                                        ->first();
+
+
+                        $total_amount=$existing_price->base_price*$balance_quantity;
+
+                        DB::table('purchase_products')
+                        ->where('id',$existing_quantity->id)
+                        ->update(['sub_total'=>$total_amount]);
                     }
                   /*Update Return quantity to purchase products table*/
               }
