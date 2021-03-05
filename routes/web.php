@@ -48,7 +48,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('product-sample-sheet','Admin\ProductController@DownloadSampleImportSheet');
 	
 	//Purchase
-	Route::resource('purchase','Admin\PurchaseController');
+	
 	Route::get('product-search',['uses'=>'product.search','uses'=>'Admin\PurchaseController@ProductSearch']);
 	Route::get('view_purchase_payment/{purchase_id}',[
 		'as'=>'view.purchase.payment','uses'=>'Admin\PurchaseController@ViewPurchasePayment'
@@ -63,7 +63,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('puruchase_print/{purchase_id}','Admin\PurchaseController@PurchasePrint');
 	Route::post('search-vendor','Admin\PurchaseController@FindVendors');
 	Route::get('purchase-history',['as'=>'purchase.history','uses'=>'Admin\PurchaseController@PurchaseHistory']);
-	
+	Route::resource('purchase','Admin\PurchaseController');
 	//Stock In Transit
 	Route::post('purchase-stock-history', 'Admin\StockInTransitController@ListPurchaseStockHistory');
 	Route::resource('stock-in-transit','Admin\StockInTransitController');
