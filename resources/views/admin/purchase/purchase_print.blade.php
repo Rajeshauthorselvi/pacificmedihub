@@ -215,7 +215,7 @@
                         <div class="order_by" style="float:right;">
                           Ordered by: 
                          @if(isset($purchase->createdBy))
-                            {{$purchase->createdBy->first_name}} {{$purchase->createdBy->last_name}}
+                            {{$creater_name}}
                           @endif
                         </div>
                         <div style="clear: both;"></div>
