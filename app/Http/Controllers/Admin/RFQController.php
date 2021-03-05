@@ -23,7 +23,9 @@ use App\Models\Currency;
 use Auth;
 use Redirect;
 use Session;
-
+use PDF;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\View;
 class RFQController extends Controller
 {
     /**
@@ -585,5 +587,56 @@ class RFQController extends Controller
         }
 
         return ['options'=>$options,'option_count'=>$option_count];
+    }
+   public function RFQPDF($id)
+    {
+
+      $data = array();
+      $products = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
+      $product_data = $product_variant = array();
+      foreach ($products as $key => $product) {
+        $product_name    = Product::where('id',$product->product_id)->value('name');
+        $all_variants    = RFQProducts::where('rfq_id',$id)->where('product_id',$product->product_id)
+                            ->pluck('product_variant_id')->toArray();
+        $options         = $this->Options($product->product_id);
+        $product_variant = $this->Variants($product->product_id,$all_variants);
+
+        $product_data[$product->product_id]=[
+          'rfq_id'          => $id,
+          'product_id'      => $product->product_id,
+          'product_name'    => $product_name,
+          'options'         => $options['options'],
+          'option_count'    => $options['option_count'],
+          'product_variant' => $product_variant
+        ];
+      }
+      $rfq = RFQ::where('id',$id)->first();
+
+      if ($rfq->created_user_type==2) {
+        $creater_name=Employee::where('id',$rfq->user_id)->first();
+        $creater_name=$creater_name->emp_name;
+      }
+      else{
+        $creater_name=User::where('id',$rfq->user_id)->first();
+        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+      }
+      $data['creater_name']=$creater_name;
+
+
+      $data['rfqs']             = $rfq;
+      $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+      $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
+      $data['product_datas']    = $product_data;
+      $data['rfq_id']           = $id;
+      $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
+      $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                    ->pluck('name','id')->toArray();  
+      $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
+
+      $layout = View::make('admin.rfq.rfq_pdf',$data);
+      $pdf = App::make('dompdf.wrapper');
+      $pdf->loadHTML($layout->render());
+      return $pdf->download('RFQ-'.$rfq->order_no.'.pdf');
+
     }
 }

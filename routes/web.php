@@ -81,10 +81,11 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	]);
 
 	//RFQ
-	Route::resource('rfq','Admin\RFQController');
+	Route::get('rfq_pdf/{rfq_id}','Admin\RFQController@RFQPDF');
 	Route::get('rfq-delete/{id}',['as'=>'rfq.delete','uses'=>'Admin\RFQController@destroy']);
 	Route::get('rfq-product',['as'=>'rfq.product','uses'=>'Admin\RFQController@ProductSearch']);
 	Route::get('rfq-to-order/{id}','Admin\OrderController@rfqToOrder')->name('rfq.toOrder');
+	Route::resource('rfq','Admin\RFQController');
 
 	//Orders
 	Route::resource('orders','Admin\OrderController');

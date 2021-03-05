@@ -91,7 +91,7 @@
 
                                 <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
 
-                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF</li></a>
+                                <a href="{{ url('admin/rfq_pdf/'.$rfq->id) }}"><li class="dropdown-item"><i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF</li></a>
 
                                 <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</li></a>
 
