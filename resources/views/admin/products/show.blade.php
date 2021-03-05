@@ -36,7 +36,12 @@
               <div class="card-header">
                 <h3 class="card-title">Product Details</h3>
               </div>
-              <a href="{{route('products.edit',$product->id)}}" class="btn emp-edit"><i class="far fa-edit"></i>&nbsp;Edit</a>
+              @if (Auth::check() || Auth::guard('employee')->check()) 
+                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('product','update')) 
+                  <a href="{{route('products.edit',$product->id)}}" class="btn emp-edit"><i class="far fa-edit"></i>&nbsp;Edit</a>
+                @endif
+              @endif
+
               <div class="card-body">
                 <div class="product-col-dividers">
                   <div class="col-one col-sm-6">

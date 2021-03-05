@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li> 
-              <li class="breadcrumb-item"><a href="{{route('return.index')}}">Products</a></li>
+              <li class="breadcrumb-item"><a href="{{route('return.index')}}">Return</a></li>
               <li class="breadcrumb-item active">Add Return</li>
             </ol>
           </div><!-- /.col -->
@@ -56,7 +56,7 @@
   <div class="col-sm-4">
     <div class="form-group">
       <label>Return Status</label>
-      {!! Form::select('return_status',$status,null,['class'=>'form-control']) !!}
+      {!! Form::select('return_status',$status,null,['class'=>'form-control no-search select2bs4']) !!}
     </div>
   </div>
 </div>
@@ -228,7 +228,11 @@
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
-
+      $(function ($) {
+        $('.no-search.select2bs4').select2({
+          minimumResultsForSearch: -1
+        });
+      });
 
         $(document).on('keyup', '.missed_quantity', function(event) {
           event.preventDefault();

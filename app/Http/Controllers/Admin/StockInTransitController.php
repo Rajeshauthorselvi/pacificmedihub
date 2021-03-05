@@ -326,7 +326,7 @@ class StockInTransitController extends Controller
               'order_type'              => 1,
               'payment_status'          => 3,
               'return_status'           => 5,
-              'staff_notes'             => "",
+              'staff_notes'             => NULL,
               'created_at'              => date('Y-m-d H:i:s')
           ];
           $return_id=PurchaseReturn::updateOrCreate(['purchase_or_order_id'=> $id],$data_return);

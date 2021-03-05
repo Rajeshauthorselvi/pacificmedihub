@@ -130,14 +130,14 @@ class PurchaseReturnController extends Controller
      * @param  \App\Models\PurchaseReturn  $purchaseReturn
      * @return \Illuminate\Http\Response
      */
-    public function show(PurchaseReturn $purchaseReturn,$slug)
+    public function show(PurchaseReturn $purchaseReturn,$id)
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
             if (!Auth::guard('employee')->user()->isAuthorized('return','read')) {
                 abort(404);
             }
         }
-        $purchase_detail=Purchase::where('purchase_order_number',$slug)->first();
+       /* $purchase_detail=Purchase::where('purchase_order_number',$slug)->first();
 
         if (!$purchase_detail) {
             return ['status'=>false,'message'=>'No order found'];
@@ -176,7 +176,67 @@ class PurchaseReturnController extends Controller
          $data['status']=[''=>'Please Select']+OrderStatus::whereIn('id',[5,6,7,9])->pluck('status_name','id')->toArray();
         $view=view('admin.stock.return.products',$data)->render();
 
-        return ['status'=>true,'view'=>$view];
+        return ['status'=>true,'view'=>$view];*/
+
+         $data=array();
+        $data['purchase_detail']=$purchase_detail=PurchaseReturn::where('id',$id)->first();
+         $data['status']=[''=>'Please Select']+OrderStatus::whereIn('id',[5,6,7,9])->pluck('status_name','id')->toArray();
+
+        $data['damage_quantity']=PurchaseProductReturn::where('purchase_return_id',$id)
+                         ->pluck('damage_quantity','purchase_variation_id')
+                         ->toArray();
+        $data['return_subtotal']=PurchaseProductReturn::where('purchase_return_id',$id)
+                    ->pluck('return_sub_total','purchase_variation_id')
+                    ->toArray();
+        $data['return_quantity']=PurchaseProductReturn::where('purchase_return_id',$id)
+                    ->pluck('return_quantity','purchase_variation_id')
+                    ->toArray();
+
+        // dd($data);
+        $purchase_id=$purchase_detail->purchase_or_order_id;
+        $stock_product_ids=PurchaseStockHistory::where('goods_type',1)
+                            ->where('purchase_id',$purchase_id)
+                            ->pluck('purchase_product_id')
+                            ->toArray();
+        $products=PurchaseProducts::where('purchase_id',$purchase_id)
+                  ->whereIn('id',$stock_product_ids)
+                  ->groupBy('product_id')
+                  ->get();
+
+
+            $product_data=$product_variant=array();
+            foreach ($products as $key => $product) {
+               $product_name=Product::where('id',$product->product_id)->value('name');
+
+                              
+                $options=$this->Options($product->product_id);
+
+                $all_variants=PurchaseProducts::where('purchase_id',$purchase_id)
+                              ->where('product_id',$product->product_id)
+                              ->whereIn('id',$stock_product_ids)
+                              ->pluck('product_variation_id')
+                              ->toArray();
+
+                $product_variant=$this->Variants($product->product_id,$all_variants);
+                $product_data[$product->product_id]=[
+                    'row_id'         => $product->id,
+                    'purchase_id'    => $purchase_id,
+                    'product_id'=> $product->product_id,
+                    'product_name'  => $product_name,
+                    'options'       => $options['options'],
+                    'option_count'  => $options['option_count'],
+                    'product_variant'  => $product_variant
+                ];
+            }
+            $data['purchase_products']=$product_data;
+            $data['vendor_name']=Vendor::where('id',$purchase_detail->customer_or_vendor_id)->value('name');
+                                 
+
+            $data['purchase']=$purchase_detail;
+            $data['purchase_id']=$purchase_id;
+            $data['purchase_return_id']=$purchase_detail->id;
+
+        return view('admin.stock.return.show',$data);
 
     }
 
