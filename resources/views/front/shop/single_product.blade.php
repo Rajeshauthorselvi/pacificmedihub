@@ -7,13 +7,29 @@
 				<div class="col-md-6">
 					<div class="outer">
 						<div id="big" class="owl-carousel owl-theme">
-						  	@foreach($product->product_images as $images)
+							@if(isset($product->main_image))
 								<div class="item">
-								    <img src="{{asset('theme/images/products/'.$images->name)}}" alt="Product Name" width="590" height="600" class="img-responsive" />
+									<img src="{{asset('theme/images/products/main/'.$product->main_image)}}" alt="Product Name" width="590" height="600" class="img-responsive" />
 								</div>
-							@endforeach
+							@else
+								<div class="item">
+									<img src="{{asset('theme/images/products/placeholder.jpg')}}" alt="Product Name" width="590" height="600" class="img-responsive" />
+								</div>
+							@endif
+							@if(isset($product->product_images))
+							  	@foreach($product->product_images as $images)
+									<div class="item">
+									    <img src="{{asset('theme/images/products/'.$images->name)}}" alt="Product Name" width="590" height="600" class="img-responsive" />
+									</div>
+								@endforeach
+							@endif
 						</div>
 						<div id="thumbs" class="owl-carousel owl-theme">
+							@if(isset($product->main_image))
+								<div class="item">
+									<img src="{{asset('theme/images/products/main/'.$product->main_image)}}" alt="Product Name" width="90" height="100"/>
+								</div>
+							@endif
 							@foreach($product->product_images as $images)
 								<div class="item">
 								    <img src="{{asset('theme/images/products/'.$images->name)}}" alt="Product Name" width="90" height="100" />
@@ -122,7 +138,11 @@
                   		</ul>
                   		<div id="myTabContent" class="tab-content">
                     		<div class="tab-pane fade active in show" id="Description">
-                      			<p>Lorem ipsum dolor ut sit ame dolore  adipiscing elit, sed sit nonumy nibh sed euismod laoreet dolore magna aliquarm erat sit volutpat Nostrud duis molestie at dolore. Lorem ipsum dolor ut sit ame dolore  adipiscing elit, sed sit nonumy nibh sed euismod laoreet dolore magna aliquarm erat sit volutpat Nostrud duis molestie at dolore. Lorem ipsum dolor ut sit ame dolore  adipiscing elit, sed sit nonumy nibh sed euismod laoreet dolore magna aliquarm erat sit volutpat Nostrud duis molestie at dolore. </p>
+                    			@if(isset($product->long_description))
+                      				<p>{!! $product->long_description !!}</p>
+                      			@else
+                      				<p>{!! $product->name !!}</p>
+                      			@endif
                     		</div>
                     		<div class="tab-pane fade" id="Information">
                       			Test 2
