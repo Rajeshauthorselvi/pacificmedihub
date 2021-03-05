@@ -123,6 +123,15 @@ class OrderController extends Controller
             $order_completed_at = NULL;
         }
 
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+          $created_user_type=2;
+          $auth_id=Auth::guard('employee')->user()->id;
+       }
+       else{
+          $created_user_type=2;
+          $auth_id=Auth::id();
+       }
+
         $order_data=[
             'rfq_id'                => $request->rfq_id,
             'sales_rep_id'          => $request->sales_rep_id,
@@ -138,7 +147,8 @@ class OrderController extends Controller
             'total_amount'          => $request->total_amount,
             'sgd_total_amount'      => $request->sgd_total_amount,
             'exchange_total_amount' => $request->exchange_rate,
-            'user_id'               => Auth::id(),
+            'user_id'               => $auth_id,
+            'created_user_type'     => $created_user_type,
             'notes'                 => $request->note,
             'order_completed_at'    => $order_completed_at,
             'created_at'            => date('Y-m-d H:i:s')
@@ -218,6 +228,16 @@ class OrderController extends Controller
         $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
         $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
         $data['customer_address'] = User::with('address')->where('id',$orders->customer_id)->first();
+        
+      if ($orders->created_user_type==2) {
+        $creater_name=Employee::where('id',$orders->user_id)->first();
+        $creater_name=$creater_name->emp_name;
+      }
+      else{
+        $creater_name=User::where('id',$orders->user_id)->first();
+        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+      }
+      $data['creater_name']=$creater_name;
 
         $products = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
         $product_data = $product_variant = array();

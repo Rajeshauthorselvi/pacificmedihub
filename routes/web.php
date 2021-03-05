@@ -59,6 +59,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::post('create_purchase_payment',[
 		'as'=>'create.purchase.payment','uses'=>'Admin\PurchaseController@CreatePurchasePayment'
 	]);
+	Route::get('puruchase_pdf/{purchase_id}','Admin\PurchaseController@PurchasePDF');
+	Route::get('puruchase_print/{purchase_id}','Admin\PurchaseController@PurchasePrint');
 	Route::post('search-vendor','Admin\PurchaseController@FindVendors');
 	Route::get('purchase-history',['as'=>'purchase.history','uses'=>'Admin\PurchaseController@PurchaseHistory']);
 	

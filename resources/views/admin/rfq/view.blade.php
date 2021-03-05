@@ -296,7 +296,7 @@
                           {!! $rfqs->notes !!}
                         </div>
                         <div class="created-sec col-sm-3 pull-right">
-                          Created by : {{$rfqs->createdBy->first_name}} {{$rfqs->createdBy->last_name}}<br>
+                          Created by : {{ $creater_name }}<br>
                           Date: {{ date('d/m/Y H:i a',strtotime($rfqs->created_at)) }}
                         </div>
                       </div>

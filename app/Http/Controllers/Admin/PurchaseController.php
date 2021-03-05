@@ -24,7 +24,10 @@ use Redirect;
 use Response;
 use Auth;
 use DB;
-
+use PDF;
+use Str;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\View;
 class PurchaseController extends Controller
 {
     /**
@@ -773,5 +776,77 @@ class PurchaseController extends Controller
       $view=view('admin.purchase.show_products',$data)->render();
 
       return $view;
+    }
+    public function PurchasePDF($purchase_id)
+    {
+      $data=array();
+      $purchase               = Purchase::find($purchase_id);
+      $purchase       = $purchase;
+      $admin_address  = UserCompanyDetails::where('customer_id',1)->first();
+      $vendor_address = Vendor::where('id',$purchase->vendor_id)->first();
+      $customer_address = User::with('address')->where('id',$purchase->user_id)->first();
+      $products = PurchaseProducts::where('purchase_id',$purchase_id)->groupBy('product_id')->get();
+
+      $product_data = $product_variant = array();
+      foreach ($products as $key => $product) {
+        $product_name    = Product::where('id',$product->product_id)->value('name');
+        $options         = $this->Options($product->product_id);
+        $all_variants    = PurchaseProducts::where('purchase_id',$purchase_id)->where('product_id',$product->product_id)
+                            ->pluck('product_variation_id')->toArray();
+        $product_variant = $this->Variants($product->product_id,$all_variants);
+
+        $product_data[$product->product_id] = [
+          'row_id'          => $product->id,
+          'purchase_id'     => $purchase_id,
+          'product_id'      => $product->product_id,
+          'product_name'    => $product_name,
+          'options'         => $options['options'],
+          'option_count'    => $options['option_count'],
+          'product_variant' => $product_variant
+        ];
+      }
+      $purchase_products = $product_data;
+      $product_name      = $product_name;
+      //return view('admin.purchase.purchase_pdf',compact('purchase','purchase_products','admin_address','vendor_address'));
+
+      $layout = View::make('admin.purchase.purchase_pdf',compact('purchase','purchase_products','admin_address','vendor_address'));
+      $pdf = App::make('dompdf.wrapper');
+      $pdf->loadHTML($layout->render());
+      return $pdf->download('Purchase-'.$purchase->purchase_order_number.'.pdf');
+     
+    }
+    public function PurchasePrint($purchase_id)
+    {
+      $data=array();
+      $purchase               = Purchase::find($purchase_id);
+      $purchase       = $purchase;
+      $admin_address  = UserCompanyDetails::where('customer_id',1)->first();
+      $vendor_address = Vendor::where('id',$purchase->vendor_id)->first();
+      $customer_address = User::with('address')->where('id',$purchase->user_id)->first();
+      $products = PurchaseProducts::where('purchase_id',$purchase_id)->groupBy('product_id')->get();
+
+      $product_data = $product_variant = array();
+      foreach ($products as $key => $product) {
+        $product_name    = Product::where('id',$product->product_id)->value('name');
+        $options         = $this->Options($product->product_id);
+        $all_variants    = PurchaseProducts::where('purchase_id',$purchase_id)->where('product_id',$product->product_id)
+                            ->pluck('product_variation_id')->toArray();
+        $product_variant = $this->Variants($product->product_id,$all_variants);
+
+        $product_data[$product->product_id] = [
+          'row_id'          => $product->id,
+          'purchase_id'     => $purchase_id,
+          'product_id'      => $product->product_id,
+          'product_name'    => $product_name,
+          'options'         => $options['options'],
+          'option_count'    => $options['option_count'],
+          'product_variant' => $product_variant
+        ];
+      }
+      $purchase_products = $product_data;
+      $product_name      = $product_name;
+      return view('admin.purchase.purchase_print',compact('purchase','purchase_products','admin_address','vendor_address'));
+
+     
     }
 }

@@ -127,13 +127,13 @@
                                   </li>
                                 </a>
                                 @endif
-                                <a href="javascript:void(0)"><li class="dropdown-item">
+                                <a href="{{ url('admin/puruchase_pdf/'.$order['purchase_id']) }}"><li class="dropdown-item">
                                   <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
                                  </li></a>
                                 <a href="{{route('purchase.edit',$order['purchase_id'])}}"><li class="dropdown-item">
                                   <i class="fa fa-envelope"></i>&nbsp;&nbsp;Email
                                 </li></a>
-                                <a href="javascript:void(0)"><li class="dropdown-item">
+                                <a href="{{ url('admin/puruchase_print/'.$order['purchase_id']) }}" target="_blank"><li class="dropdown-item" >
                                   <i class="fa fa-print"></i>&nbsp;&nbsp;Print
                                 </li></a>
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('purchase','delete')) 
