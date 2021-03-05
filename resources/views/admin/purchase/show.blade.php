@@ -279,7 +279,7 @@
                     <div class="created-sec col-sm-3 pull-right">
                       Created by : 
                       @if(isset($purchase->createdBy))
-                        {{$purchase->createdBy->first_name}} {{$purchase->createdBy->last_name}}
+                        {{$creater_name}}
                       @endif
                       <br>
                       Date: {{ date('d/m/Y H:i a',strtotime($purchase->purchase_date)) }}

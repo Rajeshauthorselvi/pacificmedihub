@@ -26,6 +26,7 @@ use Auth;
 use DB;
 use PDF;
 use Str;
+use App\Models\Employee;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
 class PurchaseController extends Controller
@@ -152,7 +153,14 @@ class PurchaseController extends Controller
       [
         'vendor_id.required'    => 'The vendor field is required.'
       ]);
-
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+          $created_user_type=2;
+          $auth_id=Auth::guard('employee')->user()->id;
+       }
+       else{
+          $created_user_type=2;
+          $auth_id=Auth::id();
+       }
       $purchase_data=[
         'purchase_date'         => date('Y-m-d H:i:s'),
         'purchase_order_number' => $request->purchase_order_number,
@@ -170,7 +178,8 @@ class PurchaseController extends Controller
         'order_tax_amount'      => $request->order_tax_amount,
         'total_amount'          => $request->total_amount,
         'sgd_total_amount'      => $request->sgd_total_amount,
-        'user_id'               => Auth::id(),
+        'user_id'               => $auth_id,
+        'created_user_type'     => $created_user_type,
         'created_at'            => date('Y-m-d H:i:s')
        ];
 
@@ -262,6 +271,16 @@ class PurchaseController extends Controller
       $data['customer_address'] = User::with('address')->where('id',$purchase->user_id)->first();
       $products = PurchaseProducts::where('purchase_id',$purchase->id)->groupBy('product_id')->get();
 
+      if ($purchase->created_user_type==2) {
+        $creater_name=Employee::where('id',$purchase->user_id)->first();
+        $creater_name=$creater_name->emp_name;
+      }
+      else{
+        $creater_name=User::where('id',$purchase->user_id)->first();
+        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+      }
+
+      $data['creater_name']=$creater_name;
       $product_data = $product_variant = array();
       foreach ($products as $key => $product) {
         $product_name    = Product::where('id',$product->product_id)->value('name');
