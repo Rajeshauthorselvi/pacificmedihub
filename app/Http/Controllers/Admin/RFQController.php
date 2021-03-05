@@ -44,7 +44,7 @@ class RFQController extends Controller
     $rfqs=RFQ::with('customer','salesrep','statusName');
 
     if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
-        $rfqs->where('created_user_type',2)->where('sales_rep_id',Auth::guard('employee')->user()->id);
+        $rfqs->where('sales_rep_id',Auth::guard('employee')->user()->id);
     }
      $rfqs=$rfqs->orderBy('rfq.id','desc')->get();
 

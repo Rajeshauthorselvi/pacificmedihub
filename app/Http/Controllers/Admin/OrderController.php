@@ -44,7 +44,7 @@ class OrderController extends Controller
         
         $orders=Orders::with('customer','salesrep','statusName');
     if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
-        $orders->where('created_user_type',2)->where('sales_rep_id',Auth::guard('employee')->user()->id);
+        $orders->where('sales_rep_id',Auth::guard('employee')->user()->id);
     }
         $orders=$orders->orderBy('orders.id','desc')->get();
 
