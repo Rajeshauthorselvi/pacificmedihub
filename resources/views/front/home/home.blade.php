@@ -22,9 +22,7 @@
 				<div class="banner_item">
 					<div class="banner_bg"><img class="lazyOwl lazy" alt="pacificmedihub" src="{{ asset('theme/images/background_image/background.png') }}"></div>
 					<div class="banner_txt">
-						<h3>High Protein Medical Consumables</h3>
-						<p>Lorem Ipsum is simply dummy text of the printing</p>
-						<p><a href="javascript(0);" class="btn">Shop Now</a></p>
+						
 					</div>
 				</div>
 		    </div>
@@ -43,13 +41,13 @@
 		</ul>
 	</div>
 	<div class="clearfix"></div>
-	<div class="slide-products">
-		<div class="container">
-			<div class="slider-title">
-				<h4><strong>New Arrival</strong> Products</h4>
-			</div>
-			<div id="product-scroll" class="owl-carousel product-scroll owl-theme">
-				@if(isset($products))
+	@if(count($products)!=0)
+		<div class="slide-products">
+			<div class="container">
+				<div class="slider-title">
+					<h4><strong>New Arrival</strong> Products</h4>
+				</div>
+				<div id="product-scroll" class="owl-carousel product-scroll owl-theme">
 					@foreach($products as $product)
 						<?php 
 	                        if(!empty($product->main_image)){$image = "theme/images/products/main/".$product->main_image;}
@@ -72,22 +70,12 @@
 					    	</div>
 					    </div>
 					@endforeach
-				@else
-					<div class="item">
-				    	<div class="product-inner">
-				    		<div class="product-thumb">
-				    			
-				    		</div>
-				    		<div class="product-info">
-				    			No Data.
-				    		</div>
-				    	</div>
-				    </div>
-				@endif
+				</div>
 			</div>
 		</div>
-	</div>
+	@endif
 	@if(isset($category_products))
+		<?php $date = \Carbon\Carbon::today()->subDays(7); ?>
 		@foreach($category_products as $key => $products)
 			<div class="slide-products ">
 				<div class="container">
@@ -108,7 +96,9 @@
 						    		<div class="product-inner">
 						    			<div class="product-thumb">
 						    				<a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}"><img src="{{asset($image)}}" alt="{{ $product->name }}" width="269" height="232" /></a>
-						    				<div class="pro-tag"><span class="new-label">NEW</span></div>
+						    				@if(($product->created_at)>=($date))
+						    					<div class="pro-tag"><span class="new-label">NEW</span></div>
+						    				@endif
 						    				<div class="pro-fav"><a class="wishlist-action" href="javascript:void(0);"></a></div>
 						    			</div>
 						    			<div class="product-info">
@@ -134,11 +124,14 @@ $ (document).ready(function() {
 	    loop:true,
 	    lazyLoad:true,
 	    nav:false,
-	    items:1
+	    items:1,
+	    autoplay:true,
+    	autoplayTimeout:5000,
+    	autoplayHoverPause:true
 	});
 	$(".product-scroll").each(function(){
 		$(this).owlCarousel({
-		    loop:true,
+		    loop:false,
 		    margin:30,
 		    dots:false,
 		    nav:true,

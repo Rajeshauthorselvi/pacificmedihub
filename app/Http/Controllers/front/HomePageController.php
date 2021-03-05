@@ -8,6 +8,7 @@ use App\Models\Categories;
 use App\Models\Product;
 use App\Models\Slider;
 use App\Models\SliderBanner;
+use Carbon\Carbon;
 use DB;
 
 class HomePageController extends Controller
@@ -15,7 +16,8 @@ class HomePageController extends Controller
     public function index($value='')
     {
     	$data = array();
-    	$data['products'] = Product::where('published',1)->where('show_home',1)->where('is_deleted',0)->orderBy('id','desc')->limit(10)->get();
+    	$data['products'] = Product::where('published',1)->where('show_home',1)->where('is_deleted',0)
+                                    ->orderBy('id','desc')->limit(10)->get();
         $slider = Slider::where('published',1)->where('is_deleted',0)->first();
         $data['banners']=array();
         if ($slider) {
@@ -32,7 +34,7 @@ class HomePageController extends Controller
             $category_products[$value->category_name][] = $value;
         }
         $data['category_products'] = $category_products;
-        //dd($data);
+
     	return view('front.home.home',$data);
     }
 

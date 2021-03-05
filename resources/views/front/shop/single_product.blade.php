@@ -1,5 +1,15 @@
 @extends('front.layouts.default')
 @section('front_end_container')
+<div class="breadcrumbs">
+	<div class="container">
+		<ul class="items">
+			<li><a href='/' title="Go to Home Page">Home</a></li>
+			<?php $all_cat_id = base64_encode('all'); ?>
+			<li><a href="{{ url("shop-by-category/$all_cat_id") }}" title="Categories Page">Categories</a></li>
+			<li><a title="Single Product Page">Products</a></li>
+		</ul>
+	</div>
+</div>
 <div class="main">
 	<div class="container">
 		<div class="single-product">

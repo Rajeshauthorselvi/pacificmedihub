@@ -1,5 +1,13 @@
 @extends('front.layouts.default')
 @section('front_end_container')
+<div class="breadcrumbs">
+	<div class="container">
+		<ul class="items">
+			<li><a href='/' title="Go to Home Page">Home</a></li>
+			<li><a title="Categories Page">Categories</a></li>
+		</ul>
+	</div>
+</div>
 <div class="main">
 	<div class="container">
 		<div id="product-list" class="row">
@@ -7,7 +15,7 @@
 		      <div class="column-block">
 		        <div class="columnblock-title">Categories</div>
 		        <div class="category_block">
-		          <ul class="box-category treeview-list treeview collapsable">
+		          <ul class="box-category treeview-list treeview collapsable" >
 		          	@foreach($categories as $category)
 		          		<?php 
 		          			if(count($category->children)!=0)
@@ -16,12 +24,12 @@
 		          		 		$tree = "";
 		          		 	$catgory_id = base64_encode($category->id);
 		          		?>
-			            <li class="{{ $tree }}">
-			            	<a href="{{ url("$category->search_engine_name/$catgory_id") }}" class="link" id="list">{{ $category->name }}</a>
+			            <li class="{{ $tree }} @if($category->id==$parent_id) active @endif">
+			            	<a href="{{ url("$category->search_engine_name/$catgory_id") }}" class="link @if($category->id==$selected_id)active @endif" id="list">{{ $category->name }}</a>
 			              <ul class="collapsable expandable-hitarea">
 			              	@foreach($category->children as $child)
 			              	<?php $cat_id = base64_encode($child->id); ?>
-			                	<li><a href="{{ url("$child->search_engine_name/$cat_id") }}">{{ $child->name }}</a></li>
+			                	<li><a  class="@if($child->id==$selected_id)active @endif" href="{{ url("$child->search_engine_name/$cat_id") }}">{{ $child->name }}</a></li>
 			                @endforeach
 			              </ul>
 			            </li>
@@ -47,7 +55,7 @@
 			            <button type="button" id="grid-view" class="btn btn-default grid active" data-toggle="tooltip" title="" data-original-title="Grid"><i class="fa fa-th"></i></button>
 			            <button type="button" id="list-view" class="btn btn-default list" data-toggle="tooltip" title="" data-original-title="List"><i class="fa fa-th-list"></i></button>
 			          </div>
-			          <span class="tot-pro">13 Items</span> </div>
+			          <span class="tot-pro">{{ $products->total() }} Items</span> </div>
 			        <div class="col-md-6 text-right sort-wrapper">
 			          <label class="control-label" for="input-sort">View by :</label>
 			          <div class="sort-inner">
@@ -64,6 +72,7 @@
 		      <div class="grid-list-wrapper">
 		      	<div class="row">
 		      	@if(!empty($products) && $products->count())
+		      		<?php $date = \Carbon\Carbon::today()->subDays(7); ?>
 			      	@foreach($products as $product)
 			      		<?php 
 	                        if(!empty($product->main_image)){$image = "theme/images/products/main/".$product->main_image;}
@@ -74,13 +83,15 @@
 				        <div class="product-layout">
 							<div class="product-inner">
 						    	<div class="product-thumb">
-						    		<a href=""><img src="{{asset($image)}}" alt="{{ $product->name }}" width="269" height="232"></a>
-						    		<div class="pro-tag"><span class="new-label">NEW</span></div>
+						    		<a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}"><img src="{{asset($image)}}" alt="{{ $product->name }}" width="269" height="232"></a>
+						    		@if(($product->created_at)>=($date))
+						    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+						    		@endif
 						    		<div class="pro-fav"><a class="wishlist-action" href="#"></a></div>
 						    	</div>
 						    	<div class="product-info d-flex flex-column">
 						    		<div class="order-3"><a class="btn" href="#">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a></div>
-						    		<h3><a href="javascript:void(0);">{{ Str::limit($product->name, 30) }} </a></h3>
+						    		<h3><a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">{{ Str::limit($product->name, 30) }} </a></h3>
 						    		@if(isset($product->short_description))
 						    			<p class="product-desc"> {{ $product->short_description }}</p>
 						    		@endif
@@ -123,6 +134,16 @@
 		  			$('.btn-list-grid button.grid').removeClass('active');
 		  		}
 			});
+
+			var displayType = localStorage.getItem("display");
+			if(displayType=='grid'){
+				$('.btn-list-grid button').addClass('active');
+		  		$('.btn-list-grid button.list').removeClass('active');
+			}else if(displayType=='list'){
+				$('.btn-list-grid button').addClass('active');
+		  		$('.btn-list-grid button.grid').removeClass('active');
+			}
+			
 		}
 		$(document).ready(function(){gridlistactive();});
 		$(window).resize(function(){gridlistactive();});
