@@ -7,13 +7,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Add Return</h1>
+            <h1 class="m-0">Edit Return</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li> 
-              <li class="breadcrumb-item"><a href="{{route('products.index')}}">Products</a></li>
-              <li class="breadcrumb-item active">Add Return</li>
+              <li class="breadcrumb-item"><a href="{{route('return.index')}}">Return</a></li>
+              <li class="breadcrumb-item active">Edit Return</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -34,7 +34,7 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                  <h3 class="card-title">Add Return</h3>
+                  <h3 class="card-title">Edit Return</h3>
               </div>
               <div class="card-body">
                   {{ Form::model($purchase_detail,['method' => 'PATCH', 'route' =>['return.update',$purchase_detail->id]]) }}
@@ -54,7 +54,7 @@
   <div class="col-sm-4">
     <div class="form-group">
       <label>Return Status</label>
-      {!! Form::select('return_status',$status,$purchase_detail->return_status,['class'=>'form-control']) !!}
+      {!! Form::select('return_status',$status,$purchase_detail->return_status,['class'=>'form-control no-search select2bs4']) !!}
     </div>
   </div>
 </div>
@@ -185,6 +185,11 @@
 
   @push('custom-scripts')
     <script type="text/javascript">
+      $(function ($) {
+        $('.no-search.select2bs4').select2({
+          minimumResultsForSearch: -1
+        });
+      });
 $(document).on("keyup", ".return_quantity", function() {
     var sum = 0;
     $(".sub_total").each(function(){

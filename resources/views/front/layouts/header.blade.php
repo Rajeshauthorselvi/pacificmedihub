@@ -69,9 +69,10 @@
 									</div>
 				            	</li>
 			         		@endforeach
-					        @if(count($categories)==6)
+							<?php $all_cat_id = base64_encode('all'); ?>
+					        @if(count($categories)>2)
 								<li>
-									<a href="javascript:void(0);">More...</a>
+									<a href="{{ url("shop-by-category/$all_cat_id") }}">More...</a>
 								</li>
 							@endif
 						</ul>
@@ -164,23 +165,6 @@
     </div>
 </div>
 <!-- End Cart Panel -->
-
-
-
-@if(Request::url() === url('/')) @else
-	<div class="breadcrumbs">
-		<div class="container">
-			<ul class="items">
-				<li>
-					<a href="/" title="Go to Home Page">Home </a>
-				</li>
-				<li>
-					<span>About Us</span>
-				</li>
-			</ul>
-		</div>
-	</div>
-@endif
 
 @push('custom-scripts')
 <script type="text/javascript">

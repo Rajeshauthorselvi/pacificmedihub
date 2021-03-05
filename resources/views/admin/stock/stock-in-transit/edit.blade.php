@@ -53,14 +53,14 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Status *</label>
-                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control select2bs4 order_status']) !!}
+                          {!! Form::select('purchase_status',$order_status, null,['class'=>'form-control no-search select2bs4 order_status']) !!}
                         </div>
                     </div>
                   </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Vendor *</label>
-                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control','style'=>'pointer-events:none','readonly'=>true,'style'=>'pointer-events:none']) !!}
+                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control select2bs4','style'=>'pointer-events:none','readonly'=>true,'style'=>'pointer-events:none']) !!}
                         </div>
                     </div>
                   <div class="product-sec col-sm-12">
@@ -241,6 +241,11 @@
   @push('custom-scripts')
     <script type="text/javascript">
 
+      $(function ($) {
+        $('.no-search.select2bs4').select2({
+          minimumResultsForSearch: -1
+        });
+      });
 
 
       $(document).on('click', '.show-history', function(event) {

@@ -15,11 +15,20 @@ class ShopController extends Controller
     {
     	$id = base64_decode($category_id);
     	$category = Categories::where('id',$id)->first();
-    	$data['categories'] = Categories::where('published',1)->where('is_deleted',0)
+
+        $data['parent_id']      = isset($category->parent_category_id)?$category->parent_category_id:NULL;
+        $data['selected_id']    = $id;
+        if($id=='all'){
+            $data['products']   = Product::where('published',1)->where('show_home',1)->where('is_deleted',0)
+                                         ->paginate(10);
+        }else{
+            $data['products']   = Product::where('category_id',$id)->where('published',1)->where('show_home',1)
+                                         ->where('is_deleted',0)->paginate(10);    
+        }
+    	$data['categories']     = Categories::where('published',1)->where('is_deleted',0)
     						 		    ->where('parent_category_id',NULL)->orderBy('display_order','asc')->get();
-    	$data['image']      = isset($category->image)?$category->image:NULL;
-    	$data['products']	= Product::where('category_id',$id)->where('published',1)->where('is_deleted',0)
-    								 ->paginate(10);
+    	$data['image']          = isset($category->image)?$category->image:NULL;
+
     	return view('front.shop.category_product',$data);
     }
     public function product($category_slug='',$product_slug='',$product_id)
@@ -83,6 +92,7 @@ class ShopController extends Controller
       
         $data['product'] = $product;
 
+        session()->push('breadcrumbs','Products');
         //ddd($data);
     	return view('front.shop.single_product',$data);
     }
