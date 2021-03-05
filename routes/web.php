@@ -147,7 +147,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	//Get Sate and City
 	Route::get('get-state-list','Admin\DashboardController@getStateList');
 	Route::get('get-city-list','Admin\DashboardController@getCityList');
-
+	Route::get('view_payment_history/{slip_date}','Admin\EmployeeController@ViewPaymentHistory');
 	//Get Commission Value
 	Route::get('get-commission-value','Admin\DashboardController@commissionValue');
 

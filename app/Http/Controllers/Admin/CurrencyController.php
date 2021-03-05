@@ -9,6 +9,7 @@ use Session;
 use Redirect;
 use Arr;
 use DB;
+use Auth;
 class CurrencyController extends Controller
 {
     /**
@@ -18,6 +19,11 @@ class CurrencyController extends Controller
      */
     public function index()
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('currency_setting','read')) {
+                abort(404);
+            }
+        }
         $data=array();
         $data['currency']=Currency::where('is_deleted',0)->get();
         return view('admin.currency.index',$data);
@@ -30,6 +36,11 @@ class CurrencyController extends Controller
      */
     public function create()
     {   
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('currency_setting','create')) {
+                abort(404);
+            }
+        }
         $data=array();
 
         return view('admin.currency.create',$data);
@@ -80,6 +91,11 @@ class CurrencyController extends Controller
      */
     public function edit(Currency $currency)
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('currency_setting','update')) {
+                abort(404);
+            }
+        }
        $data['currency']=Currency::find($currency->id);
 
        return view('admin.currency.edit',$data);
@@ -123,6 +139,11 @@ class CurrencyController extends Controller
      */
     public function destroy(Request $request,Currency $currency)
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('currency_setting','delete')) {
+                abort(404);
+            }
+        }
         Currency::where('id',$currency->id)->update(['status'=>3]);
 
         if ($request->ajax())  return ['status'=>true];

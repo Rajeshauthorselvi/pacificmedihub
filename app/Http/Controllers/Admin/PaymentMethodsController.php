@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Session;
+use Auth;
 use Redirect;
 class PaymentMethodsController extends Controller
 {
@@ -16,6 +17,12 @@ class PaymentMethodsController extends Controller
      */
     public function index()
     {
+        
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('payment_setting','read')) {
+                abort(404);
+            }
+        }
         $data=array();
         $data['all_payments']=PaymentMethod::where('status','<>',3)->orderBy('id','DESC')->get();
         return view('admin.payment_methods.index',$data);
@@ -28,6 +35,11 @@ class PaymentMethodsController extends Controller
      */
     public function create()
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('payment_setting','create')) {
+                abort(404);
+            }
+        }
         $data=array();
         $data['type']='create';
         return view('admin.payment_methods.form',$data);
@@ -73,6 +85,11 @@ class PaymentMethodsController extends Controller
      */
     public function edit(PaymentMethod $paymentMethod)
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('payment_setting','update')) {
+                abort(404);
+            }
+        }
         $data=array();
         $data['payment_method']=PaymentMethod::find($paymentMethod->id);
         $data['type']='edit';
@@ -106,6 +123,11 @@ class PaymentMethodsController extends Controller
      */
     public function destroy(Request $request, PaymentMethod $paymentMethod)
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('payment_setting','delete')) {
+                abort(404);
+            }
+        }
        $payment_method=PaymentMethod::find($paymentMethod->id);
        $payment_method->status=3;
        $payment_method->save();

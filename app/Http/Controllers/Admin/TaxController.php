@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Tax;
 use Arr;
 use Redirect;
-
+use Auth;
 class TaxController extends Controller
 {
     /**
@@ -17,6 +17,11 @@ class TaxController extends Controller
      */
     public function index()
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('tax_setting','read')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['taxes'] = Tax::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/settings/tax/index',$data);
@@ -29,6 +34,11 @@ class TaxController extends Controller
      */
     public function create()
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('tax_setting','create')) {
+                abort(404);
+            }
+        }
         $data['type']='create';
         return view('admin/settings/tax/form',$data);
     }
@@ -73,6 +83,11 @@ class TaxController extends Controller
      */
     public function edit($id)
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('tax_setting','update')) {
+                abort(404);
+            }
+        }
         $data = array();
         $data['type']='edit';
         $data['tax']=tax::where('id',$id)->first();
@@ -113,6 +128,11 @@ class TaxController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('tax_setting','delete')) {
+                abort(404);
+            }
+        }
         $check_tax = Tax::find($id);
         $check_tax->is_deleted = 1;
         $check_tax->deleted_at=date('Y-m-d H:i:s');
