@@ -459,7 +459,7 @@ class EmployeeController extends Controller
                 $product_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
             }
 
-            if($emp->baseCommission->commission_type=='f'){
+            if(isset($emp->baseCommission)&& $emp->baseCommission->commission_type=='f'){
                 $commission = $product_commission*$emp->basic_commission_value;
             }else{
                 $get_base_commission_value = $emp->basic_commission_value/100;
@@ -566,7 +566,7 @@ class EmployeeController extends Controller
             $product_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
         }
 
-        if($employee->baseCommission->commission_type=='f'){
+        if(isset($employee->baseCommission) && $employee->baseCommission->commission_type=='f'){
             $commission = $product_commission*$employee->basic_commission_value;
         }else{
             $get_base_commission_value = $employee->basic_commission_value/100;
@@ -721,10 +721,28 @@ class EmployeeController extends Controller
         $payment->payment_from  = 3;
         $payment->amount        = $request->pay_amount;
         $payment->payment_id    = $request->payby;
+        $payment->payment_notes = $request->payment_notes;
         $payment->payment_month = date_format($date,"Y-m-d");
         $payment->created_at    = date('Y-m-d H:i:s');
         $payment->save();
         return Redirect::route('salary.list',$request->date)->with('success','Paid Successfully.!');
     }
+    public function ViewPaymentHistory(Request $request,$slipdate='')
+    {
+        $emp_id=$request->emp_id;
 
+        $split_date = explode('-',$slipdate);
+        $month      = $split_date[0];
+        $year       = $split_date[1];
+        $all_payment_history=PaymentHistory::with('PaymentMethod')
+                             ->where('ref_id',$emp_id)
+                             ->where('payment_from',3)
+                             ->whereMonth('payment_month',$month)
+                             ->whereYear('payment_month',$year)
+                             ->get()
+                             ->toArray();
+
+
+        return $all_payment_history;
+    }
 }

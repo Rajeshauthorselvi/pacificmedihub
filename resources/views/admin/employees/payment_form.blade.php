@@ -1,17 +1,20 @@
 <form method="post" action="{{route('confirm.salary')}}">
 	@csrf
-	<div class="form-group">
-		{!! Form::label('employeeName', 'Employee Name') !!}
-		{!! Form::text('emp_name',$name,['class'=>'form-control','id'=>'employeeName','readonly']) !!}
-		{!! Form::hidden('emp_id',$id,['class'=>'form-control']) !!}
-		{!! Form::hidden('date',$date,['class'=>'form-control']) !!}
+	<div class="col-sm-12 form-field">
+		<div class="form-group col-sm-6">
+			{!! Form::label('employeeName', 'Employee Name') !!}
+			{!! Form::text('emp_name',$name,['class'=>'form-control','id'=>'employeeName','readonly']) !!}
+			{!! Form::hidden('emp_id',$id,['class'=>'form-control']) !!}
+			{!! Form::hidden('date',$date,['class'=>'form-control']) !!}
+		</div>
+		<div class="form-group col-sm-6">
+			{!! Form::label('employeeDept', 'Department') !!}
+			{!! Form::text('emp_dept',$department,['class'=>'form-control','id'=>'employeeDept','readonly']) !!}
+		</div>
 	</div>
-	<div class="form-group">
-		{!! Form::label('employeeDept', 'Department') !!}
-		{!! Form::text('emp_dept',$department,['class'=>'form-control','id'=>'employeeDept','readonly']) !!}
-	</div>
-	<div class="form-group" style="display:flex;">
-		<div class="col-sm-10">
+	<div class="col-sm-12 form-field">
+	<div class="form-group" style="display:flex;float: left;">
+		<div class="col-sm-12">
 			{!! Form::label('payAmount', 'Pay Amount') !!}
 			{!! Form::text('pay_amount',$pay_amount,['class'=>'form-control','id'=>'payAmount','readonly','onkeyup'=>'validateNum(event,this);']) !!}
 		</div>
@@ -19,17 +22,27 @@
 			<button type="button" class="btn btn-info form-contro change-salary">Edit</button>
 		</div>
 	</div>
-	<div class="form-group">
+	<div class="clearfix"></div>
+	</div>
+	<div class="col-sm-12 form-field">
+	<div class="form-group col-sm-6">
 		{!! Form::label('salaryMonth', 'Salary Month') !!}
 		{!! Form::text('salary_month',$salary_month,['class'=>'form-control','id'=>'salaryMonth','readonly']) !!}
 	</div>
-	<div class="form-group">
+	<div class="form-group col-sm-6">
 		{!! Form::label('payBy', 'Payment Method') !!}
-		{!! Form::select('payby',$payment_method,['class'=>'form-control select2bs4','id'=>'payBy']) !!}
+		{!! Form::select('payby',$payment_method,null,['class'=>'form-control','id'=>'payBy']) !!}
+	</div>
 	</div>
 	<div class="form-group">
-		<button type="button" class="btn reset-btn" data-dismiss="modal">Cancel</button>
-        <button type="submit" id="submit-btn" class="btn save-btn" onclick="return confirm('Are you sure want to Pay Now?');">Confirm</button>
+		{!! Form::label('payBy', 'Remarks') !!}
+		<textarea name="payment_notes" class="form-control summernote"></textarea>
+	</div>
+	<div class="col-sm-12">
+		<div class="form-group">
+			<button type="button" class="btn reset-btn" data-dismiss="modal">Cancel</button>
+	        <button type="submit" id="submit-btn" class="btn save-btn" onclick="return confirm('Are you sure want to Pay Now?');">Confirm</button>
+		</div>
 	</div>
 </form>
 
@@ -60,3 +73,9 @@
   	});
 
 </script>
+
+<style type="text/css">
+	.form-field .col-sm-6{
+		float: left;
+	}
+</style>

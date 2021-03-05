@@ -92,6 +92,11 @@
                                   <a href="{{ route('salary.view',['emp_id'=>base64_encode($emp["id"]),'page'=>'view','date'=>$date]) }}"><li class="dropdown-item">
                                     <i class="fas fa-eye"></i>&nbsp;&nbsp;View</li>
                                   </a>
+
+                                  <a href="javascript:void(0)" slip-date="{{ $date }}" emp_id="{{ $emp['id'] }}" class="view-payment"><li class="dropdown-item">
+                                    <i class="fas fa-credit-card"></i>&nbsp;&nbsp;Payment History</li>
+                                  </a>
+                                  
                                   @if($emp['action']=='Payslip')
                                     <a href="{{ route('pay.slip',['emp_id'=>base64_encode($emp["id"]),'page'=>'payslip','date'=>$date]) }}"><li class="dropdown-item">
                                       <i class="fas fa-file-invoice"></i>&nbsp;&nbsp;Payslip</li></a>
@@ -123,7 +128,7 @@
   </div>
 
   <div class="modal fade" id="payment-form">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Payment Form</h4>
@@ -141,6 +146,32 @@
         <!-- /.modal-dialog -->
       </div>
       <!-- /.modal -->
+
+  <div class="modal fade" id="edit_payment_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Payment History</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @csrf
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <thead>
+              <th>Date</th>
+              <th>Payment Month</th>
+              <th>Amount</th>
+              <th>Paid By</th>
+              <th>Remarks</th>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
   <style type="text/css">
@@ -191,11 +222,45 @@
           success: function (response) { 
             //console.log(data);
             $('#form-block').html(response);
+            $('.summernote').summernote({
+              height: 150
+            });
           }
         });
       });
 
-      
+      $(document).on('click', '.view-payment', function(event) {
+          event.preventDefault();
+          var slip_date=$(this).attr('slip-date');
+          var emp_id=$(this).attr('emp_id');
+
+          $.ajax({
+            url: '{{ url('admin/view_payment_history') }}'+'/'+slip_date+'?emp_id='+emp_id,
+          })
+          .done(function(response) {
+              $('.modal-body tbody tr').remove();
+              if (response.length>0) {
+                $.each(response, function(index, val) {
+                    var html ="<tr>";
+                        html +="<td>"+moment(val.created_at).format('DD-MM-yyyy HH:mm')+"</td>";
+                        html +="<td>"+ moment(val.payment_month).format('DD-MM-yyyy')+"</td>";
+                        html +="<td>"+val.amount+"</td>";
+                        html +="<td>"+val.payment_method.payment_method+"</td>";
+                        html +="<td>"+val.payment_notes+"</td>";
+                        html +="<tr>";
+
+                        $('.modal-body tbody').append(html);
+                });
+              }
+              else{
+                var html ="<tr>";
+                    html +="<td colspan='5' class='text-center'>No record found</td>";
+                    html +="<tr>";
+                    $('.modal-body tbody').append(html);
+              }
+          });
+            $('#edit_payment_model').modal('show');
+      });
 
     </script>
   @endpush
