@@ -5,6 +5,9 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Mail;
+use Config;
+use Auth;
 class Handler extends ExceptionHandler
 {
     /**
@@ -41,6 +44,39 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $e)
     {
+
+     if ($e instanceof \Exception) {
+
+       $debugSetting = Config::get('app.debug');
+
+       Config::set('app.debug', true);
+       if (ExceptionHandler::isHttpException($e)) {
+           $content = ExceptionHandler::toIlluminateResponse(ExceptionHandler::renderHttpException($e), $e);
+       } else {
+           $content = ExceptionHandler::toIlluminateResponse(ExceptionHandler::convertExceptionToResponse($e), $e);
+       }
+
+       Config::set('app.debug', $debugSetting);
+
+       $data['content'] = (!isset($content->original)) ? $e->getMessage() : $content->original;
+
+    if (!$e instanceof NotFoundHttpException)
+    {
+       Mail::send('errors.exception', $data, function ($m) {
+         $m->from('dhinesh@authorselvi.com');
+         // $m->cc(['rnaveen@authorselvi.com','preethi@authorselvi.com']);
+           $m->to('dhinesh@authorselvi.com', 'Error')->subject('PMH- Error'.' -- '.$_SERVER['REMOTE_ADDR'].'--'.date('Y-m-d'));
+       });
+    }
+      if (ExceptionHandler::isHttpException($e)) {
+          if ($e->getStatusCode() == 404) {
+              return response()->view('errors.' . '404', [], 404);
+          }
+      }
+
+
+   }
+
 /*         if (ExceptionHandler::isHttpException($e)) {
 
             return redirect()->route('error.page');

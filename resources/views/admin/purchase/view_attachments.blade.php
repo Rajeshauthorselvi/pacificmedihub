@@ -15,7 +15,7 @@
 				<td class="text-center">
 					@if(File::extension($attachment->attachment)!="pdf")
 					<a href="{{ asset('theme/images/purchase_attachment/'.$attachment->attachment) }}?text={{ $key }}" data-toggle="lightbox" data-title="Attachments" data-gallery="gallery">
-                      <img src="{{ asset('theme/images/purchase_attachment/'.$attachment->attachment) }}?text={{ $key }}" class="img-fluid mb-2" alt="Attachment"/>
+                      <img src="{{ asset('theme/images/purchase_attachment/'.$attachment->attachment) }}?text={{ $key }}" class="img-fluid mb-2" alt="Attachment" width="50%" />
                     </a>
 					@else
 						<a href="{{ url('admin/downlad-purchase-attachments/'.$attachment->id) }}">
