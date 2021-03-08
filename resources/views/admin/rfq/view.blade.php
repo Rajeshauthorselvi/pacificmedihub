@@ -47,13 +47,13 @@
                         </a>
                       </li>
                       <li>
-                        <a href="" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
+                        <a href="{{ url('admin/rfq_pdf/'.$rfq_id) }}" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
                       </li>
                       <li>
                         <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
                       </li>
                       <li>
-                        <a href="" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
+                        <a href="{{ url('admin/rfq-comments/'.$rfq_id) }}" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
                       </li>
                       <li>
                         <a href="{{ route('rfq.edit',$rfq_id) }}" class="edit">

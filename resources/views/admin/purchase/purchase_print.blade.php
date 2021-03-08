@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style type="text/css">
+    @media print {
+        table {
+            border-collapse: unset;
+        }
+    }
+  </style>
+</head>
+<body>
   <div style="width: 700px;margin: auto;">
                     <div class="address-sec">
                       <div style="width:30%;float: left;">
@@ -229,3 +241,5 @@
   <script type="text/javascript">
       window.onload = function() { window.print(); }
   </script>
+</body>
+</html>

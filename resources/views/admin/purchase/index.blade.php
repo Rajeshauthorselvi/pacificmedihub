@@ -127,6 +127,12 @@
                                   </li>
                                 </a>
                                 @endif
+                                <a href="javascript:void(0)" target="_blank" class="view-attachment" purchase-id="{{$order['purchase_id']}}"><li class="dropdown-item" >
+                                  <i class="fa fa-eye"></i>&nbsp;&nbsp;View Attachments
+                                </li></a>
+                                <a href="javascript:void(0)" target="_blank" class="add-attachment" purchase-id="{{$order['purchase_id']}}"><li class="dropdown-item" >
+                                  <i class="fa fa-paperclip"></i>&nbsp;&nbsp;Add Attachments
+                                </li></a>
                                 <a href="{{ url('admin/puruchase_pdf/'.$order['purchase_id']) }}"><li class="dropdown-item">
                                   <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
                                  </li></a>
@@ -136,12 +142,7 @@
                                 <a href="{{ url('admin/puruchase_print/'.$order['purchase_id']) }}" target="_blank"><li class="dropdown-item" >
                                   <i class="fa fa-print"></i>&nbsp;&nbsp;Print
                                 </li></a>
-                                <a href="javascript:void(0)" target="_blank" class="view-attachment" purchase-id="{{$order['purchase_id']}}"><li class="dropdown-item" >
-                                  <i class="fa fa-eye"></i>&nbsp;&nbsp;View Attachments
-                                </li></a>
-                                <a href="javascript:void(0)" target="_blank" class="add-attachment" purchase-id="{{$order['purchase_id']}}"><li class="dropdown-item" >
-                                  <i class="fa fa-paperclip"></i>&nbsp;&nbsp;Add Attachments
-                                </li></a>
+
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('purchase','delete')) 
                                 <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('purchase.destroy',$order['purchase_id']) }}">  @csrf 

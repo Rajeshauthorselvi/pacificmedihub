@@ -20,6 +20,7 @@ use App\Models\ProductVariantVendor;
 use App\Models\PaymentTerm;
 use App\Models\Tax;
 use App\Models\Currency;
+use App\Models\RFQComments;
 use Auth;
 use Redirect;
 use Session;
@@ -638,5 +639,40 @@ class RFQController extends Controller
       $pdf->loadHTML($layout->render());
       return $pdf->download('RFQ-'.$rfq->order_no.'.pdf');
 
+    }
+    public function RFQComments(Request $request,$rfq_id)
+    {
+        $data=array();
+        $data['rfq_details']=RFQ::find($rfq_id);
+        $data['rfq_id']=$rfq_id;
+        $data['comments']=RFQComments::where('rfq_id',$rfq_id)->get();
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+          return view('admin.rfq.employee_comments',$data);  
+        }
+        else{
+          return view('admin.rfq.admin_comments',$data);  
+        }
+        
+    }
+    public function RFQCommentsPost(Request $request)
+    {
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+          $created_user_type=2;
+          $auth_id=Auth::guard('employee')->user()->id;
+       }
+       else{
+          $created_user_type=1;
+          $auth_id=Auth::id();
+       }
+
+        RFQComments::insertGetId([
+          'rfq_id'                  => $request->rfq_id,
+          'comment'                 => $request->comment,
+          'commented_by'            => $auth_id,
+          'commented_by_user_type'  => $created_user_type
+        ]);
+
+
+        return Redirect::back();
     }
 }

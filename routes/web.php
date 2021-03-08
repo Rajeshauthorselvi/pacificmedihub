@@ -83,6 +83,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	]);
 
 	//RFQ
+	Route::get('rfq-comments/{rfq_id}','Admin\RFQController@RFQComments');
+	Route::post('rfq-comments-post','Admin\RFQController@RFQCommentsPost');
 	Route::get('rfq_pdf/{rfq_id}','Admin\RFQController@RFQPDF');
 	Route::get('rfq-delete/{id}',['as'=>'rfq.delete','uses'=>'Admin\RFQController@destroy']);
 	Route::get('rfq-product',['as'=>'rfq.product','uses'=>'Admin\RFQController@ProductSearch']);
