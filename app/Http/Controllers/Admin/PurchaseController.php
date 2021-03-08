@@ -17,6 +17,7 @@ use App\Models\Tax;
 use App\Models\PaymentTerm;
 use App\Models\UserCompanyDetails;
 use App\Models\PurchaseStockHistory;
+use App\Models\PurchseAttachments;
 use Illuminate\Http\Request;
 use App\User;
 use Session;
@@ -882,5 +883,42 @@ class PurchaseController extends Controller
       return view('admin.purchase.purchase_print',compact('purchase','purchase_products','admin_address','vendor_address','creater_name'));
 
      
+    }
+
+    public function ViewPurchaseAttachments($purchase_id)
+    {
+        $data=array();
+        $data['purchase_attachments']=PurchseAttachments::where('purchase_id',$purchase_id)->get();
+        return view('admin.purchase.view_attachments',$data);
+
+    }
+    public function AddAttachments(Request $request)
+    {
+      $purchase_id=$request->id;
+      $comments=$request->purchase_comments;
+      if ($request->hasFile('attachments')) {
+        $image = $request->file('attachments');
+        $image_name = time().'.'.$image->getClientOriginalExtension();
+        $destinationPath = public_path('/theme/images/purchase_attachment');
+        $image->move($destinationPath, $image_name);
+      }
+
+      $attachments=new PurchseAttachments();
+      $attachments->attachment=$image_name;
+      $attachments->purchase_id=$purchase_id;
+      $attachments->comments=$comments;
+      $attachments->created_at=date('Y-m-d H:i:s');
+      $attachments->save();
+
+      $purchase_no=Purchase::where('id',$purchase_id)->value('purchase_order_number');
+      return Redirect::back()->with('success','Attachment successfully adedd to '.$purchase_no.'...!');
+
+    }
+    public function DownloadPurchaseAttachment($attachment_id)
+    {
+      $attachment=PurchseAttachments::where('id',$attachment_id)->value('attachment');
+      $path=public_path('/theme/images/purchase_attachment/').$attachment;
+      
+      return Response::download($path, $attachment);
     }
 }

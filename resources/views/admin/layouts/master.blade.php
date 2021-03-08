@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- iCheck -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{asset('theme/plugins/image_viewer/jquery.magnify.css')}}">
   <!-- Tempusdominus Bootstrap 4 -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
   <!-- Select2 -->
@@ -42,8 +43,9 @@
   <link rel="stylesheet" href="{{ asset('theme/plugins/codemirror/theme/monokai.css') }}">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('custom_data/css/custom.css') }}">
   
+  <link rel="stylesheet" href="{{ asset('custom_data/css/custom.css') }}">
+  <link rel="stylesheet" href="{{ asset('theme/plugins/ekko-lightbox/ekko-lightbox.css') }}">
   
 </head>
 <body class="hold-transition sidebar-mini layout-fixed sidebar-collapse">
@@ -111,6 +113,8 @@
 <!-- overlayScrollbars -->
 <script src="{{ asset('theme/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <script src="{{ asset('theme/dist/js/adminlte.min.js') }}"></script>
+
+<script src="{{ asset('theme/plugins/ekko-lightbox/ekko-lightbox.min.js') }}"></script>
 <!-- Page specific script -->
 <script>
   $(function () {

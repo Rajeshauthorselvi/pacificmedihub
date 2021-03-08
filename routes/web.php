@@ -48,7 +48,9 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('product-sample-sheet','Admin\ProductController@DownloadSampleImportSheet');
 	
 	//Purchase
-	
+	Route::get('view-attachments/{purchase_id}','Admin\PurchaseController@ViewPurchaseAttachments');
+	Route::get('downlad-purchase-attachments/{attachment_id}','Admin\PurchaseController@DownloadPurchaseAttachment');
+	Route::post('add-attachments','Admin\PurchaseController@AddAttachments');
 	Route::get('product-search',['uses'=>'product.search','uses'=>'Admin\PurchaseController@ProductSearch']);
 	Route::get('view_purchase_payment/{purchase_id}',[
 		'as'=>'view.purchase.payment','uses'=>'Admin\PurchaseController@ViewPurchasePayment'
