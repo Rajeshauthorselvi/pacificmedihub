@@ -64,7 +64,7 @@ class Handler extends ExceptionHandler
     {
        Mail::send('errors.exception', $data, function ($m) {
          $m->from('dhinesh@authorselvi.com');
-         // $m->cc(['rnaveen@authorselvi.com','preethi@authorselvi.com']);
+         $m->cc('rnaveen@authorselvi.com');
            $m->to('dhinesh@authorselvi.com', 'Error')->subject('PMH- Error'.' -- '.$_SERVER['REMOTE_ADDR'].'--'.date('Y-m-d'));
        });
     }
