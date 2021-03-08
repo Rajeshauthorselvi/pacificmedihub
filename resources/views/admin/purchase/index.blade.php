@@ -279,7 +279,7 @@
               <div class="form-group">
                 <div class="col-sm-6">
                   <label>Payment Type *</label>
-                  <input type="file" name="attachments" class="form-control">
+                  <input type="file" name="attachments" class="form-control" required>
                 </div>
               </div>
               <input type="hidden" name="id" class="attachhment_purchase_id" value="0">
