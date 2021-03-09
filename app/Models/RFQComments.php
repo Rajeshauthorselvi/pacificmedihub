@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\User;
 use App\Models\Employee;
+use App\Models\RFQCommentsAttachments;
 class RFQComments extends Model
 {
     protected $table='rfq_comments';
@@ -18,5 +19,10 @@ class RFQComments extends Model
     	}
 
     	return $user_details;
+    }
+
+    public function attachments()
+    {
+    	return $this->hasMany(RFQCommentsAttachments::class,'rfq_comment_id');
     }
 }

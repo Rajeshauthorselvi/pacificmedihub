@@ -7,13 +7,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">View RFQ</h1>
+            <h1 class="m-0">RFQ Comments</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
               <li class="breadcrumb-item"><a href="{{route('rfq.index')}}">RFQ</a></li>
-              <li class="breadcrumb-item active">View RFQ</li>
+              <li class="breadcrumb-item active">RFQ Comments</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -33,7 +33,7 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">View RFQ</h3>
+                <h3 class="card-title">RFQ Comments</h3>
               </div>
               <div class="card">
                 <div class="card-body">
@@ -74,7 +74,8 @@
                   @foreach ($comments as $comment)
                     <?php
                     $user_name=\App\Models\RFQComments::GetUserNames($comment->commented_by,$comment->commented_by_user_type);
-                   
+
+                    $check_attachment_exists=\App\Models\RFQCommentsAttachments::where('rfq_comment_id',$comment->id)->count();                          
                      ?>
                   	@if(Auth::guard('employee')->user()->id==$comment->commented_by && $comment->commented_by_user_type==2)
 
@@ -89,6 +90,12 @@
                         <!-- /.direct-chat-img -->
                         <div class="direct-chat-text">
                           {{ $comment->comment }}
+                          @if ($check_attachment_exists>0)
+                            &nbsp;&nbsp;
+                           <a href="javascript:void(0)" comment-id="{{ $comment->id }}" class="btn btn-link view-attchment">
+                            <i class="fa fa-paperclip"></i>
+                           </a>
+                          @endif
                         </div>
                         <!-- /.direct-chat-text -->
                       </div>
@@ -104,6 +111,12 @@
                         <!-- /.direct-chat-img -->
                         <div class="direct-chat-text">
                           {{ $comment->comment }}
+                          @if ($check_attachment_exists>0)
+                            &nbsp;&nbsp;
+                           <a href="javascript:void(0)" comment-id="{{ $comment->id }}" class="btn btn-link view-attchment">
+                            <i class="fa fa-paperclip"></i>
+                           </a>
+                          @endif
                         </div>
                         <!-- /.direct-chat-text -->
                       </div>
@@ -136,4 +149,70 @@
       </div>
     </section>
     </div>
+        <div class="modal fade" id="view-attchment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">Attachments</div>
+              <div class="modal-body view-attchment-modal"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div> 
+    <style type="text/css">
+.direct-chat-messages {
+  scrollbar-width: thin;
+}
+    </style>
+    @push('custom-scripts')
+      <script type="text/javascript">
+        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+          event.preventDefault();
+          $(this).ekkoLightbox({
+            alwaysShowClose: true
+          });
+        });
+
+        $(document).on('click', '#attachment', function(event) {
+          event.preventDefault();
+          $('#attachment-modal').modal('show');
+        });
+      $('.direct-chat-messages').animate({
+        scrollTop: $('.direct-chat-messages').get(0).scrollHeight
+      }, 2000);
+      $('.add-more').click(function(event) {
+        $('.append-sec').append('<div class="form-group"> <input type="file" name="attachment[]" class="form-control" style="width: 80%;float:left;"> <div style="width: 20%;float: right;" class="text-right"> <a href="javascript:void(0)" class="btn btn-danger remove=item"><i class="fa fa-minus"></i></a></div> </div><div class="clearfix"></div><br>');
+      });
+
+      $(document).on('click', '.view-attchment', function(event) {
+        event.preventDefault();
+        var comment_id=$(this).attr('comment-id');
+        $.ajax({
+          url: '{{ url('admin/view-rfq-comments-attachment/') }}/'+comment_id,
+        })
+        .done(function(response) {
+          $('.view-attchment-modal').html(response);
+          $('#data-table').DataTable({"ordering": false,});
+          $('#view-attchment').modal('show');
+        })
+        .fail(function() {
+          console.log("error");
+        })
+        .always(function() {
+          console.log("complete");
+        });
+        
+      });
+      </script>
+    @endpush
+    <style type="text/css">
+
+      /*.direct-chat-text{
+        width: 20%;
+      }
+      .right .direct-chat-text {
+      float: right;
+    }*/
+    </style>
 @endsection

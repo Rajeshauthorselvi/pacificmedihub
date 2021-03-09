@@ -21,10 +21,13 @@ use App\Models\PaymentTerm;
 use App\Models\Tax;
 use App\Models\Currency;
 use App\Models\RFQComments;
+use App\Models\RFQCommentsAttachments;
 use Auth;
 use Redirect;
 use Session;
 use PDF;
+use Str;
+use Response;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
 class RFQController extends Controller
@@ -646,6 +649,7 @@ class RFQController extends Controller
         $data['rfq_details']=RFQ::find($rfq_id);
         $data['rfq_id']=$rfq_id;
         $data['comments']=RFQComments::where('rfq_id',$rfq_id)->get();
+
         if (!Auth::check() && Auth::guard('employee')->check()) {
           return view('admin.rfq.employee_comments',$data);  
         }
@@ -656,6 +660,7 @@ class RFQController extends Controller
     }
     public function RFQCommentsPost(Request $request)
     {
+
        if (!Auth::check() && Auth::guard('employee')->check()) {
           $created_user_type=2;
           $auth_id=Auth::guard('employee')->user()->id;
@@ -664,15 +669,42 @@ class RFQController extends Controller
           $created_user_type=1;
           $auth_id=Auth::id();
        }
-
-        RFQComments::insertGetId([
+      $data=[
           'rfq_id'                  => $request->rfq_id,
           'comment'                 => $request->comment,
           'commented_by'            => $auth_id,
           'commented_by_user_type'  => $created_user_type
-        ]);
+      ];
+      $rfq_commene_id=RFQComments::insertGetId($data);
 
+      $attachments=$request->file('attachment');
+      if ($request->hasFile('attachment')) {
+        $attachments=$request->file('attachment');
+        foreach ($attachments as $key => $attachment) {
+            $image = $attachment;
+            $image_name = Str::random(8).'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/theme/images/rfq_comment_attachment');
+            $image->move($destinationPath, $image_name);
+            RFQCommentsAttachments::insert([
+              'rfq_comment_id'  => $rfq_commene_id,
+              'attachment'      => $image_name
+            ]);
+        }
+      } 
 
-        return Redirect::back();
+      return Redirect::back();
+    }
+    public function ViewRFQCommentAttachments($comment_id)
+    {
+        $all_attachments=RFQCommentsAttachments::where('rfq_comment_id',$comment_id)->pluck('attachment','id');
+
+        return view('admin.rfq.view_attachments',['attachments'=>$all_attachments]);
+    }
+    public function DownloadRFQCommentAttachments($attachment_id)
+    {
+      $attachment=RFQCommentsAttachments::where('id',$attachment_id)->value('attachment');
+      $path=public_path('/theme/images/rfq_comment_attachment/').$attachment;
+      
+      return Response::download($path, $attachment);
     }
 }

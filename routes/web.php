@@ -84,6 +84,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 
 	//RFQ
 	Route::get('rfq-comments/{rfq_id}','Admin\RFQController@RFQComments');
+	Route::get('view-rfq-comments-attachment/{rfq_cmt_id}','Admin\RFQController@ViewRFQCommentAttachments');
+	Route::get('download-rfq-comments-attachment/{attach_id}','Admin\RFQController@DownloadRFQCommentAttachments');
 	Route::post('rfq-comments-post','Admin\RFQController@RFQCommentsPost');
 	Route::get('rfq_pdf/{rfq_id}','Admin\RFQController@RFQPDF');
 	Route::get('rfq-delete/{id}',['as'=>'rfq.delete','uses'=>'Admin\RFQController@destroy']);
