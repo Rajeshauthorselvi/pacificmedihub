@@ -66,6 +66,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::post('search-vendor','Admin\PurchaseController@FindVendors');
 	Route::get('purchase-history',['as'=>'purchase.history','uses'=>'Admin\PurchaseController@PurchaseHistory']);
 	Route::resource('purchase','Admin\PurchaseController');
+
 	//Stock In Transit
 	Route::post('purchase-stock-history', 'Admin\StockInTransitController@ListPurchaseStockHistory');
 	Route::resource('stock-in-transit','Admin\StockInTransitController');
@@ -152,6 +153,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('payment_method','Admin\PaymentMethodsController');
 	//Access Control	
 	Route::resource('access-control','Admin\AccessController');	
+	
+	Route::resource('general-settings','Admin\GeneralSettingsController');	
 
 
 	//Get Sate and City

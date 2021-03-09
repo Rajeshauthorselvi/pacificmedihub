@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\User;
+use App\Models\Settings;
 use App\Models\UserCompanyDetails;
-use Redirect;
-class AdminProfileController extends Controller
+class GeneralSettingsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +16,8 @@ class AdminProfileController extends Controller
     public function index()
     {
         $data=array();
-        $data['admin'] = User::where('role_id',1)->first();
-        $data['company'] = UserCompanyDetails::where('customer_id',1)->first();
-        return view('admin.profile.form',$data);
+        
+        return view('admin.general_settings.index',$data);
     }
 
     /**
@@ -29,7 +27,7 @@ class AdminProfileController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -60,9 +58,18 @@ class AdminProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($slug)
     {
-        //
+        if ($slug=="ware_house") {
+            $data['admin_address'] = UserCompanyDetails::where('customer_id',1)->first();
+            $view='admin.general_settings.warehouse_address';
+        }
+        elseif ($slug=="invoice_logo") {
+            $data['invoice_logo']=Settings::where('key','settings')->where('code','invoice_logo')->first();
+            $view='admin.general_settings.invoice_logo';
+        }
+        
+        return view($view,$data);
     }
 
     /**
@@ -74,14 +81,7 @@ class AdminProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-       $address_details=UserCompanyDetails::find($id);
-       $address_details->latitude=$request->latitude;
-       $address_details->longitude=$request->longitude;
-       $address_details->address_1=$request->address_1;
-       $address_details->address_2=$request->address2;
-       $address_details->save();
-
-       return Redirect::back()->with('success','Profile details updated successfully...!');
+        //
     }
 
     /**

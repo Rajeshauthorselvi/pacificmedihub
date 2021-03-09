@@ -43,21 +43,9 @@
           </div>
           <div class="col-sm-9">
             <div class="card">
-              <!-- <div class="card-header p-2">
-                <ul class="nav nav-pills">
-                  <li class="nav-item">
-                    <a class="nav-link active" href="#persnol_details" data-toggle="tab">Profile</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#change_password" data-toggle="tab">Change Password</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#settings" data-toggle="tab">Avatar</a>
-                  </li>
-                </ul>
-              </div> --><!-- /.card-header -->
               <div class="card-body">
                 <div class="tab-content">
+                  {!! Form::model($company,['method' => 'PATCH','class'=>'rfq-form','route' =>['admin-profile.update',$company->id]]) !!}
                   <div class="active tab-pane" id="persnol_details">
                     <div class="form-group">
                       <div class="col-sm-6">
@@ -83,12 +71,11 @@
                       <div class="col-sm-6">
                         <label for="gender">Gender *</label>
                         <?php 
+                          $gender=null;
                           if($admin->gender=='Male') $gender='Male';
                           else if($admin->gender=='Female') $gender='Female'
                         ?>
                         {!! Form::text('gender', $gender,['class'=>'form-control','readonly']) !!}
-                        {{-- <?php $gender=[''=>'Please select']+['Male'=>'Male','Female'=>'Female']; ?>
-                        {!! Form::select('gender',$gender,null,['class'=>'form-control']) !!} --}}
                       </div>
                       <div class="col-sm-6">
                         <label for="gst">GST No *</label>
@@ -98,11 +85,11 @@
                     <div class="form-group">
                       <div class="col-sm-6">
                         <label for="address1">Address Line 1 *</label>
-                        {!! Form::text('address1', $company->address_1,['class'=>'form-control','readonly']) !!}
+                        {!! Form::textarea('address1', $company->address_1,['class'=>'form-control','readonly','id'=>'address','rows'=>3]) !!}
                       </div>
                       <div class="col-sm-6">
                         <label for="address2">Address Line 2</label>
-                        {!! Form::text('address2', $company->address_2,['class'=>'form-control','readonly']) !!}
+                        {!! Form::textarea('address2', $company->address_2,['class'=>'form-control','rows'=>3]) !!}
                       </div>
                     </div>
                     <div class="form-group">
@@ -125,72 +112,217 @@
                         {!! Form::text('postcode', $company->post_code,['class'=>'form-control','readonly']) !!}
                       </div>
                     </div>
-                    <!-- <div class="col-sm-4">
+                    <div class="form-group">
+                      <div class="col-sm-6">
+                        <label for="city">Latitude</label>
+                        {!! Form::text('latitude', $company->latitude,['class'=>'form-control','id'=>'latitude']) !!}
+                      </div>
+                      <div class="col-sm-6">
+
+                        <label for="postCode">Longitude</label>
+                        {!! Form::text('longitude', $company->longitude,['class'=>'form-control','id'=>'longitude']) !!}
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div id="myMap"></div>
+                      <div class="pac-card" id="pac-card">
+                        <div>
+                          <div id="title">Search Place</div>
+                          <br />
+                        </div>
+                        <div id="pac-container">
+                          <input id="pac-input" type="text" placeholder="Enter a location" class="form-control" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <br>
+                    <div class="col-sm-4">
                         <div class="form-group">
                             <a href="{{ url('admin/admin-dashboard') }}" class="btn reset-btn">Cancel</a>
                             <button class="btn save-btn" type="submit">Save</button>
                         </div>
-                    </div> -->
-                  </div>
-                  <div class="tab-pane" id="change_password">
-                    <div class="form-group">
-                      <div class="col-sm-6">
-                        <label for="oldPassword">Old Password *</label>
-                        {!! Form::text('old_password', null,['class'=>'form-control required','id'=>'oldPassword']) !!}
-                        <span class="text-danger"></span>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-sm-6">
-                        <label for="newPassword">New Password *</label>
-                        {!! Form::text('new_password', null,['class'=>'form-control required','id'=>'newPassword']) !!}
-                        <span class="text-danger"></span>
-                        <span>At least 1 capital, 1 lowercase, 1 number and more then 8 characters long</span>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-sm-6">
-                        <label for="confirmPassword">Confirm Password *</label>
-                        {!! Form::text('confirm_password', null,['class'=>'form-control required','id'=>'confirmPassword']) !!}
-                        <span class="text-danger"></span>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <button type="button" class="btn save-btn change-password">Change Password</button>
                     </div>
                   </div>
+                  {!! Form::close() !!}
                 </div>
               </div>
           </div>
         </div>
       </div>
+
     </section>
   </div>
   <style type="text/css">
     .form-group{ display:flex;}
   </style>
 
-  @push('custom-scripts')
-    <script type="text/javascript">
-      $(document).on('click', '.change-password',function(){
-        alert('hi');
-        var error_count=0;
-        $('#change_password' '.required').each(function(index, el) {
+<style>
+#myMap {
+   height: 350px;
+   width: 100%;
+}
+</style>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDNi6888yh6v93KRXKYeHfMv59kQHw-XPQ&libraries=places&v=weekly">
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+</script>
+<script type="text/javascript"> 
+var lat='{{ $company->latitude }}';
+var lng='{{ $company->longitude }}';
+var map;
+var marker;
+var myLatlng = new google.maps.LatLng(lat,lng);
+var geocoder = new google.maps.Geocoder();
+var infowindow = new google.maps.InfoWindow();
+function initialize(){
+  var mapOptions = {
+    zoom: 15,
+    center: myLatlng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
 
-          var type=$(this).attr('type');
-          var current_val=$(this).val();
-          if (current_val=="" && type=="text") {
-            $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
-            error_count += 1;
+  map = new google.maps.Map(document.getElementById("myMap"), mapOptions);
+
+  marker = new google.maps.Marker({
+    map: map,
+    position: myLatlng,
+    draggable: true 
+  }); 
+
+  geocoder.geocode({'latLng': myLatlng }, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      if (results[0]) {
+        $('#latitude,#longitude').show();
+        $('#address').val(results[0].formatted_address);
+        $('#latitude').val(marker.getPosition().lat());
+        $('#longitude').val(marker.getPosition().lng());
+        infowindow.setContent(results[0].formatted_address);
+        infowindow.open(map, marker);
+      }
+    }
+  });
+
+  google.maps.event.addListener(marker, 'dragend', function() {
+
+    geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+          $('#address').val(results[0].formatted_address);
+          $('#latitude').val(marker.getPosition().lat());
+          $('#longitude').val(marker.getPosition().lng());
+          infowindow.setContent(results[0].formatted_address);
+          infowindow.open(map, marker);
+        }
+      }
+    });
+
+  });
+        const card = document.getElementById("pac-card");
+        const input = document.getElementById("pac-input");
+        const options = {
+          fields: ["formatted_address", "geometry", "name"],
+          origin: map.getCenter(),
+          strictBounds: false,
+          types: ["establishment"],
+        };
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
+        const autocomplete = new google.maps.places.Autocomplete(
+          input,
+          options
+        );
+        autocomplete.bindTo("bounds", map);
+  
+        autocomplete.addListener("place_changed", () => {
+          marker.setVisible(false);
+          const place = autocomplete.getPlace();
+          if (!place.geometry || !place.geometry.location) {
+            window.alert(
+              "No details available for input: '" + place.name + "'"
+            );
+            return;
           }
-          if (error_count==0) {
-            alert('done');
+          
+          if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+          } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
           }
-          alert('error');
+          marker.setPosition(place.geometry.location);
+          marker.setVisible(true);
+          infowindowContent.children["place-name"].textContent = place.name;
+          infowindowContent.children["place-address"].textContent =
+            place.formatted_address;
+          infowindow.open(map, marker);
+        });
+}
+google.maps.event.addDomListener(window, 'load', initialize);
 
-      });  
-    </script>
-    
-  @endpush
 
+</script>
+<style type="text/css">    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+
+      .pac-card {
+        margin: 10px 10px 0 0;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        font-family: Roboto;
+      }
+
+      #pac-container {
+        padding-bottom: 12px;
+        margin-right: 12px;
+      }
+
+      .pac-controls {
+        display: inline-block;
+        padding: 5px 11px;
+      }
+
+      .pac-controls label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+      #title {
+        color: #fff;
+        background-color: #4d90fe;
+        font-size: 22px;
+        font-weight: 500;
+        padding: 5px;
+      }
+    </style>
   @endsection
