@@ -41,9 +41,18 @@ class OrderController extends Controller
             }
         }
         $data=array();
-        $data['orders']=Orders::with('customer','salesrep','statusName')->orderBy('orders.id','desc')->get();
-        $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
-                                    ->toArray();
+        
+        $orders=Orders::with('customer','salesrep','statusName');
+    if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
+        $orders->where('sales_rep_id',Auth::guard('employee')->user()->id);
+    }
+        $orders=$orders->orderBy('orders.id','desc')->get();
+
+
+        $data['orders']=$orders;
+        $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
+                                  ->pluck('payment_method','id')
+                                  ->toArray();
         return view('admin.orders.index',$data);
     }
 
@@ -128,7 +137,7 @@ class OrderController extends Controller
           $auth_id=Auth::guard('employee')->user()->id;
        }
        else{
-          $created_user_type=2;
+          $created_user_type=1;
           $auth_id=Auth::id();
        }
 
@@ -228,7 +237,7 @@ class OrderController extends Controller
         $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
         $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
         $data['customer_address'] = User::with('address')->where('id',$orders->customer_id)->first();
-        
+
       if ($orders->created_user_type==2) {
         $creater_name=Employee::where('id',$orders->user_id)->first();
         $creater_name=$creater_name->emp_name;

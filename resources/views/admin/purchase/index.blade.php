@@ -127,6 +127,12 @@
                                   </li>
                                 </a>
                                 @endif
+                                <a href="javascript:void(0)" target="_blank" class="view-attachment" purchase-id="{{$order['purchase_id']}}"><li class="dropdown-item" >
+                                  <i class="fa fa-eye"></i>&nbsp;&nbsp;View Attachments
+                                </li></a>
+                                <a href="javascript:void(0)" target="_blank" class="add-attachment" purchase-id="{{$order['purchase_id']}}"><li class="dropdown-item" >
+                                  <i class="fa fa-paperclip"></i>&nbsp;&nbsp;Add Attachments
+                                </li></a>
                                 <a href="{{ url('admin/puruchase_pdf/'.$order['purchase_id']) }}"><li class="dropdown-item">
                                   <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
                                  </li></a>
@@ -136,6 +142,7 @@
                                 <a href="{{ url('admin/puruchase_print/'.$order['purchase_id']) }}" target="_blank"><li class="dropdown-item" >
                                   <i class="fa fa-print"></i>&nbsp;&nbsp;Print
                                 </li></a>
+
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('purchase','delete')) 
                                 <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('purchase.destroy',$order['purchase_id']) }}">  @csrf 
@@ -159,7 +166,7 @@
       </div>
     </section>
   </div>
-
+  {{-- Quantity List --}}
     <div class="modal fade" id="show_products" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -173,8 +180,9 @@
       </div>
     </div>
   </div>
+  {{-- Quantity List --}}
 
-
+{{-- Add Payment --}}
   <div class="modal fade" id="payment_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -227,7 +235,9 @@
       </div>
     </div>
   </div>
+  {{-- Add Payment --}}
 
+{{-- Payment History --}}
   <div class="modal fade" id="edit_payment_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -252,7 +262,59 @@
       </div>
     </div>
   </div>
+{{-- Payment History --}}
 
+{{-- Add Attachments --}}
+    <div class="modal fade" id="add-attachments" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Attachments</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{{url('admin/add-attachments')}}" method="post" enctype="multipart/form-data" id="payment_form" files="true" enctype="multipart/form-data">
+        @csrf
+          <div class="modal-body">
+              <div class="form-group">
+                <div class="col-sm-6">
+                  <label>Payment Type *</label>
+                  <input type="file" name="attachments" class="form-control" required>
+                </div>
+              </div>
+              <input type="hidden" name="id" class="attachhment_purchase_id" value="0">
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <label>Notes</label>
+                  {!! Form::textarea('purchase_comments',null,['class'=>'form-control summernote']) !!}
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Add Attachment</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{{-- Add Attachments --}}
+  {{-- View Attachments --}}
+    <div class="modal fade" id="show_attachments" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">View Attachments</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body attachment_body"></div>
+      </div>
+    </div>
+  </div>
+  {{-- View Attachments --}}
   <style type="text/css">
     .form-group{display:flex;}
     .disabled{pointer-events: none;opacity: 0.5;}
@@ -260,6 +322,38 @@
 
   @push('custom-scripts')
     <script type="text/javascript">
+      
+        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+          event.preventDefault();
+          $(this).ekkoLightbox({
+            alwaysShowClose: true
+          });
+        });
+
+
+      $(document).on('click', '.add-attachment', function(event) {
+        event.preventDefault();
+        var purchase_id=$(this).attr('purchase-id');
+        $('.attachhment_purchase_id').val(purchase_id);
+
+        $('#add-attachments').modal('show');
+      });
+
+      $(document).on('click', '.view-attachment', function(event) {
+          event.preventDefault();
+          var purchase_id=$(this).attr('purchase-id');
+          $('.attachhment_purchase_id').val(purchase_id);
+          $.ajax({
+            url: '{{ url('admin/view-attachments') }}'+'/'+purchase_id,
+          })
+          .done(function(response) {
+            $('.attachment_body').html(response);
+
+            $('#data-table').DataTable({"ordering": false,});
+          });
+          $('#show_attachments').modal('show');
+      });
+      
 
       $(document).on('click', '.show_products', function(event) {
         event.preventDefault();
@@ -279,12 +373,8 @@
         .always(function() {
           console.log("complete");
         });
-        
-
-          
+         
       });
-
-
 
       $(function ($) {
         $('.no-search.select2bs4').select2({
@@ -371,9 +461,6 @@
           });
             $('#edit_payment_model').modal('show');
       });
-
-    
-
 
       $('.select-all').change(function() {
           if ($(this). prop("checked") == true) {

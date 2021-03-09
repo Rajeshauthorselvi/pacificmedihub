@@ -17,6 +17,7 @@ use App\Models\Tax;
 use App\Models\PaymentTerm;
 use App\Models\UserCompanyDetails;
 use App\Models\PurchaseStockHistory;
+use App\Models\PurchseAttachments;
 use Illuminate\Http\Request;
 use App\User;
 use Session;
@@ -26,6 +27,7 @@ use Auth;
 use DB;
 use PDF;
 use Str;
+use App\Models\Employee;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
 class PurchaseController extends Controller
@@ -152,7 +154,14 @@ class PurchaseController extends Controller
       [
         'vendor_id.required'    => 'The vendor field is required.'
       ]);
-
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+          $created_user_type=2;
+          $auth_id=Auth::guard('employee')->user()->id;
+       }
+       else{
+          $created_user_type=2;
+          $auth_id=Auth::id();
+       }
       $purchase_data=[
         'purchase_date'         => date('Y-m-d H:i:s'),
         'purchase_order_number' => $request->purchase_order_number,
@@ -170,7 +179,8 @@ class PurchaseController extends Controller
         'order_tax_amount'      => $request->order_tax_amount,
         'total_amount'          => $request->total_amount,
         'sgd_total_amount'      => $request->sgd_total_amount,
-        'user_id'               => Auth::id(),
+        'user_id'               => $auth_id,
+        'created_user_type'     => $created_user_type,
         'created_at'            => date('Y-m-d H:i:s')
        ];
 
@@ -262,6 +272,16 @@ class PurchaseController extends Controller
       $data['customer_address'] = User::with('address')->where('id',$purchase->user_id)->first();
       $products = PurchaseProducts::where('purchase_id',$purchase->id)->groupBy('product_id')->get();
 
+      if ($purchase->created_user_type==2) {
+        $creater_name=Employee::where('id',$purchase->user_id)->first();
+        $creater_name=$creater_name->emp_name;
+      }
+      else{
+        $creater_name=User::where('id',$purchase->user_id)->first();
+        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+      }
+
+      $data['creater_name']=$creater_name;
       $product_data = $product_variant = array();
       foreach ($products as $key => $product) {
         $product_name    = Product::where('id',$product->product_id)->value('name');
@@ -786,7 +806,14 @@ class PurchaseController extends Controller
       $vendor_address = Vendor::where('id',$purchase->vendor_id)->first();
       $customer_address = User::with('address')->where('id',$purchase->user_id)->first();
       $products = PurchaseProducts::where('purchase_id',$purchase_id)->groupBy('product_id')->get();
-
+      if ($purchase->created_user_type==2) {
+        $creater_name=Employee::where('id',$purchase->user_id)->first();
+        $creater_name=$creater_name->emp_name;
+      }
+      else{
+        $creater_name=User::where('id',$purchase->user_id)->first();
+        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+      }
       $product_data = $product_variant = array();
       foreach ($products as $key => $product) {
         $product_name    = Product::where('id',$product->product_id)->value('name');
@@ -809,7 +836,7 @@ class PurchaseController extends Controller
       $product_name      = $product_name;
       //return view('admin.purchase.purchase_pdf',compact('purchase','purchase_products','admin_address','vendor_address'));
 
-      $layout = View::make('admin.purchase.purchase_pdf',compact('purchase','purchase_products','admin_address','vendor_address'));
+      $layout = View::make('admin.purchase.purchase_pdf',compact('purchase','purchase_products','admin_address','vendor_address','creater_name'));
       $pdf = App::make('dompdf.wrapper');
       $pdf->loadHTML($layout->render());
       return $pdf->download('Purchase-'.$purchase->purchase_order_number.'.pdf');
@@ -824,6 +851,14 @@ class PurchaseController extends Controller
       $vendor_address = Vendor::where('id',$purchase->vendor_id)->first();
       $customer_address = User::with('address')->where('id',$purchase->user_id)->first();
       $products = PurchaseProducts::where('purchase_id',$purchase_id)->groupBy('product_id')->get();
+      if ($purchase->created_user_type==2) {
+        $creater_name=Employee::where('id',$purchase->user_id)->first();
+        $creater_name=$creater_name->emp_name;
+      }
+      else{
+        $creater_name=User::where('id',$purchase->user_id)->first();
+        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+      }
 
       $product_data = $product_variant = array();
       foreach ($products as $key => $product) {
@@ -845,8 +880,45 @@ class PurchaseController extends Controller
       }
       $purchase_products = $product_data;
       $product_name      = $product_name;
-      return view('admin.purchase.purchase_print',compact('purchase','purchase_products','admin_address','vendor_address'));
+      return view('admin.purchase.purchase_print',compact('purchase','purchase_products','admin_address','vendor_address','creater_name'));
 
      
+    }
+
+    public function ViewPurchaseAttachments($purchase_id)
+    {
+        $data=array();
+        $data['purchase_attachments']=PurchseAttachments::where('purchase_id',$purchase_id)->get();
+        return view('admin.purchase.view_attachments',$data);
+
+    }
+    public function AddAttachments(Request $request)
+    {
+      $purchase_id=$request->id;
+      $comments=$request->purchase_comments;
+      if ($request->hasFile('attachments')) {
+        $image = $request->file('attachments');
+        $image_name = time().'.'.$image->getClientOriginalExtension();
+        $destinationPath = public_path('/theme/images/purchase_attachment');
+        $image->move($destinationPath, $image_name);
+      }
+
+      $attachments=new PurchseAttachments();
+      $attachments->attachment=$image_name;
+      $attachments->purchase_id=$purchase_id;
+      $attachments->comments=$comments;
+      $attachments->created_at=date('Y-m-d H:i:s');
+      $attachments->save();
+
+      $purchase_no=Purchase::where('id',$purchase_id)->value('purchase_order_number');
+      return Redirect::back()->with('success','Attachment successfully adedd to '.$purchase_no.'...!');
+
+    }
+    public function DownloadPurchaseAttachment($attachment_id)
+    {
+      $attachment=PurchseAttachments::where('id',$attachment_id)->value('attachment');
+      $path=public_path('/theme/images/purchase_attachment/').$attachment;
+      
+      return Response::download($path, $attachment);
     }
 }

@@ -2,34 +2,35 @@
                     <div class="address-sec">
                       <div style="width:30%;float: left;">
                         <ul class="list-unstyled order-no-sec"  style="font-size: 14px;padding-left: 0;list-style: none;">
-                          <li><strong>Purchase Code : </strong>{{ $purchase->purchase_order_number }}</li>
-                          <li><strong>Date : </strong>{{date('d F, Y - h:i a',strtotime($purchase->purchase_date))}}</li>
-                          <li><strong>Status : </strong>{{$purchase->statusName->status_name}}</li>
-                          @if(isset($purchase->payTerm->name))
-                            <li><strong>Payment Term : </strong>{{$purchase->payTerm->name}}</li>
-                          @endif
-                        </ul>
+                        <li><h5>RFQ Code: <small>{{ $rfqs->order_no }}</small></h5></li>
+                        <li><strong>Date: </strong>{{date('d F, Y',strtotime($rfqs->created_at))}}</li>
+                        <li><strong>Status: </strong>{{$rfqs->statusName->status_name}}</li>
+                        <li><strong>Sales Rep: </strong>{{$rfqs->salesrep->emp_name}}</li>
+                        @if(isset($rfqs->payTerm->name))
+                          <li><strong>Payment Term: </strong>{{$rfqs->payTerm->name}}</li>
+                        @endif
+                      </ul>
                       </div> 
                       <div style="width: 70%;float: left; font-size: 14px">
                         @if(isset($admin_address))
                           <div class="customer address" style="width: 43%;float:left;padding-right: 7%;">
-                              <h4>{{$admin_address->company_name}}</h4>
+                              <h4>{{$customer_address->first_name}} {{$customer_address->last_name}}</h4>
                               <p>
                                 <span>
-                                  {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}
+                                  {{$customer_address->address->address_line1}},&nbsp;{{isset($customer_address->address->address_line2)?$customer_address->address->address_line2:''}}
                                 </span><br>
                                 <span>
-                                  {{$admin_address->getCountry->name}},&nbsp;{{$admin_address->getState->name}}
+                                  {{$customer_address->address->country->name}},&nbsp;{{isset($customer_address->address->state->name)?$customer_address->address->state->name:''}}
                                 </span><br>
                                 <span>
-                                  {{$admin_address->getCity->name}}&nbsp;-&nbsp;{{$admin_address->post_code}}.
+                                  {{isset($customer_address->address->city->name)?$customer_address->address->city->name:''}}&nbsp;-&nbsp;{{isset($customer_address->address->post_code)?$customer_address->address->post_code:''}}.
                                 </span>
                               </p>
                               <p>
-                                <span>Tel: {{$admin_address->post_code}}</span><br>
-                                <span>Email: {{$admin_address->company_email}}</span>
+                                <span>Tel: {{$customer_address->address->mobile}}</span><br>
+                                <span>Email: {{$customer_address->email}}</span>
                               </p>
-                          </div>
+                            </div>
                         @else
                           <div class="col-sm-6 customer address">
                             <div class="col-sm-2 icon">
@@ -46,21 +47,21 @@
                               <span><i class="fas fa-people-carry"></i></span>
                             </div>
                             <div class="col-sm-10">
-                              <h4>{{$vendor_address->name}}</h4>
+                              <h4>{{$admin_address->company_name}}</h4>
                               <p>
                                 <span>
-                                  {{$vendor_address->address_line1}},&nbsp;{{isset($vendor_address->address_line2)?$vendor_address->address_line2:''}}
+                                  {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}
                                 </span><br>
                                 <span>
-                                  {{$vendor_address->getCountry->name}},&nbsp;{{isset($vendor_address->getState->name)?$vendor_address->getState->name:''}}
+                                  {{$admin_address->getCountry->name}},&nbsp;{{$admin_address->getState->name}}
                                 </span><br>
                                 <span>
-                                  {{isset($vendor_address->getCity->name)?$vendor_address->getCity->name:''}}&nbsp;-&nbsp;{{isset($vendor_address->post_code)?$vendor_address->post_code:''}}.
+                                  {{$admin_address->getCity->name}}&nbsp;-&nbsp;{{$admin_address->post_code}}.
                                 </span>
                               </p>
                               <p>
-                                <span>Tel: {{$vendor_address->contact_number}}</span><br>
-                                <span>Email: {{$vendor_address->email}}</span>
+                                <span>Tel: {{$admin_address->post_code}}</span><br>
+                                <span>Email: {{$admin_address->company_email}}</span>
                               </p>
                             </div>
                           </div>
@@ -80,7 +81,7 @@
                         <table class="table" width="100%">
                             <tbody>
                               <?php $count=1; ?>
-                            @foreach ($purchase_products as $key=>$product)
+                            @foreach ($product_datas as $key=>$product)
                               <?php 
                                 if ($count!=1) {
                                   $class_name="tr_top_padding";
@@ -133,7 +134,7 @@
                                         @foreach($product['product_variant'] as $key=>$variant)
                                           <?php 
                                             $option_count=$product['option_count'];
-                                            $variation_details=\App\Models\PurchaseProducts::VariationPrice($product['product_id'],$variant['variant_id'],$purchase->id);
+                                            $variation_details=\App\Models\PurchaseProducts::VariationPrice($product['product_id'],$variant['variant_id'],$rfqs->id);
                                           ?>
                                          
                                           <tr class="parent_tr">
@@ -191,23 +192,23 @@
                         <table style="width: 50%;float: right;padding: 4px;">
                             <tr class="total-calculation first_calculation">
                               <td style="text-align: right;">Total :</td>
-                              <td style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{ $purchase->total_amount }}</td>
+                              <td style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{ $rfqs->total_amount }}</td>
                             </tr>
                             <tr class="total-calculation">
                               <td  style="font-size: 14px;text-align: right;" class="title">
                                 Order Discount : 
                               </td>
                               <td style="font-size: 14px;padding-left: 20px;">
-                                &nbsp;&nbsp;{{$purchase->order_discount}}
+                                &nbsp;&nbsp;{{$rfqs->order_discount}}
                               </td>
                             </tr>
                             <tr class="total-calculation">
                               <td style="font-size: 14px;text-align: right;">Order Tax : </td>
-                              <td  style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{$purchase->order_tax_amount}}</td>
+                              <td  style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{$rfqs->order_tax_amount}}</td>
                             </tr>
                             <tr class="total-calculation" style="font-weight: bold;">
                               <td style="font-size: 14px;text-align: right;">Total Amount(SGD) : </td>
-                              <td  style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{$purchase->sgd_total_amount}}</td>
+                              <td  style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{$rfqs->sgd_total_amount}}</td>
                             </tr>
                         </table>
                         <div style="clear: both;"></div>

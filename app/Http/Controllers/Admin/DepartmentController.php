@@ -114,12 +114,12 @@ class DepartmentController extends Controller
     public function update(Request $request, Department $department)
     {
         $this->validate(request(), [
-            'dept_id' => 'required',
+            // 'dept_id' => 'required',
             'dept_name' => 'required'
         ],[
-            'dept_id.required' => 'Department ID is required',
+            // 'dept_id.required' => 'Department ID is required',
             'dept_name.required' => 'Department Name is required',
-            'dept_name.unique' => 'Department Name has already been taken'
+            // 'dept_name.unique' => 'Department Name has already been taken'
         ]); 
 
        $status=($request->status=='on')?1:0;
