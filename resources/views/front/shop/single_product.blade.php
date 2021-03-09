@@ -40,15 +40,18 @@
 									<img src="{{asset('theme/images/products/main/'.$product->main_image)}}" alt="Product Name" width="90" height="100"/>
 								</div>
 							@endif
-							@foreach($product->product_images as $images)
-								<div class="item">
-								    <img src="{{asset('theme/images/products/'.$images->name)}}" alt="Product Name" width="90" height="100" />
-								</div>
-							@endforeach
+							@if(isset($product->product_images))
+								@foreach($product->product_images as $images)
+									<div class="item">
+									    <img src="{{asset('theme/images/products/'.$images->name)}}" alt="Product Name" width="90" height="100" />
+									</div>
+								@endforeach
+							@endif
 						</div>
 					</div>
 				</div>
 
+				@if(isset($product))
 				<div class="col-md-6">
 					<h2>{{ $product->name }}</h2>
 					<div class="product-details">
@@ -59,7 +62,7 @@
 						@endif
 						@if(isset($default_sku))
 							<div class="data">
-								<span class="title">SKU</span><p id="sku">: {{$default_sku}}</p> 
+								<span class="title">SKU</span><p id="printSku">: {{$default_sku}}</p> 
 							</div>
 						@endif
 						@if(isset($product->code))
@@ -71,48 +74,27 @@
 
 					<div class="variants-config">
 		                @foreach($product->product_variant as $key=> $variant)
-		                <div class="variant-config" data-optionID1="{{$variant->option_id}}" data-optionVID1="{{$variant->option_value_id}}"data-optionID2="{{$variant->option_id2}}" data-optionVID2="{{$variant->option_value_id2}}" data-optionID3="{{$variant->option_id3}}" data-optionVID3="{{$variant->option_value_id3}}" data-optionID4="{{$variant->option_id4}}" data-optionVID4="{{$variant->option_value_id4}}" data-optionID5="{{$variant->option_id5}}" data-optionVID5="{{$variant->option_value_id5}}" data-variantID="{{$variant->id}}" data-sku="{{$variant->sku}}"></div>
+		                <div class="variant-config" data-optionID1="{{$variant->option_id}}" data-optionVID1="{{$variant->option_value_id}}" data-optionID2="{{$variant->option_id2}}" data-optionVID2="{{$variant->option_value_id2}}" data-optionID3="{{$variant->option_id3}}" data-optionVID3="{{$variant->option_value_id3}}" data-optionID4="{{$variant->option_id4}}" data-optionVID4="{{$variant->option_value_id4}}" data-optionID5="{{$variant->option_id5}}" data-optionVID5="{{$variant->option_value_id5}}" data-variantID="{{$variant->id}}" data-sku="{{$variant->sku}}"></div>
 		                @endforeach
               		</div>
-             		
-
-              		{{-- @if($product->product_variant->count() > 0)
-	              		<div class="variant-option">
-             				<div class="variant-title">Select Variant</div>
-	                		<?php $optCount=1;?>
-	                		@foreach($options as $key => $option)
-	                			<div class="option-box" data-optionID={{$option->id}}>
-	                    			<label>{{$option->option_name}}</label>
-	                    			<select name="option{{$optCount}}" class="options-selectbox selecty">
-	                      				@foreach($option->getoptionvalues as $value)
-	                        				@if(in_array($value->id, $allowed_options[$option->id]))
-	                        					<option  data-optionID="{{$option->id}}" value="{{$value->id}}">{{$value->option_value}}</option>
-	                        				@endif
-	                      				@endforeach
-	                    			</select>
-	                			</div>
-	                			<?php $optCount++;?>
-	                		@endforeach
-	              		</div>
-              		@endif --}}
 
 					@if($product->product_variant->count() > 0)
 						<div id="product-variants" class="product-options">
 							<div class="variant-title">Select Variant</div>
 							<?php $optCount=1;?>
 				    		@foreach($options as $key => $option)
-				  				<div class="swatch clearfix" data-option-index="{{$optCount}}">
+				  				<div class="swatch clearfix" data-optionID={{$option->id}}>
 				  					<div class="header">{{$option->option_name}}</div>
 			  						<div class="variant-items">
-			  			  				@foreach($option->getoptionvalues as $value)
-			            					@if(in_array($value->id, $allowed_options[$option->id]))
-			  			       					<div data-value="{{$value->option_value}}" class="swatch-element square">
-			  										<input id="swatch-{{$value->id}}" class="swatch-variant" type="radio" optionID="{{$option->id}}" data-optionValueID="{{$value->id}}" name="option-{{$optCount}}" value="{{$value->id}}">
-			  										<label for="swatch-{{$value->id}}">{{$value->option_value}}
-			  											<img class="crossed-out" src="{{ asset('theme/images/soldout.png') }}">
-			  										</label>
-			  									</div>
-			  								@endif
+			  			  				@foreach($option->getoptionvalues as $k => $value)
+			  			  					<?php 
+			  			  						$default_variant = $allowed_options[$option->id][$k]['id']; 
+			  			  					?>
+		  			       					<div class="swatch-element square">
+		  										<input id="swatch-{{$value->id}}" @if($default_variant==$default_variant_id) checked @endif class="swatch-variant" type="radio" data-optionID="{{$option->id}}" name="option-{{$optCount}}" value="{{$value->id}}" option-count="{{$optCount}}">
+		  										<label for="swatch-{{$value->id}}">{{$value->option_value}}
+		  										</label>
+		  									</div>
 			          					@endforeach
 			  						</div>
 			  					</div>
@@ -122,12 +104,12 @@
 					@endif
 
 					<div class="number">
-						<span class="minus">-</span><input type="text" value="1"/><span class="plus">+</span>
+						<span class="minus">-</span><input type="text" class="qty-count" value="1"/><span class="plus">+</span>
 					</div>
 
 					<div class="buttons">
-						<a class="rfq-btn" href="javascript:void(0);">RFQ</a>
-                      	<a class="cart-btn" href="javascript:void(0);">Add to Cart</a>
+						<a class="rfq-btn" href="javascript:void(0);" variant-id={{ $default_variant_id }}>RFQ</a>
+                      	<a class="cart-btn" href="javascript:void(0);" variant-id={{ $default_variant_id }}>Add to Cart</a>
 					</div>
 
 					<div class="social-links">
@@ -136,6 +118,7 @@
 						<a class="share" href="javascript:void(0);"><i class="fas fa-share-alt"></i></a>
 					</div>
 				</div>
+				@endif
 			</div>
 
 			<div class="sec2 row">
@@ -151,7 +134,7 @@
                     			@if(isset($product->long_description))
                       				<p>{!! $product->long_description !!}</p>
                       			@else
-                      				<p>{!! $product->name !!}</p>
+                      				<p>{!! isset($product->name)?$product->name:'' !!}</p>
                       			@endif
                     		</div>
                     		<div class="tab-pane fade" id="Information">
@@ -169,46 +152,26 @@
 @push('custom-scripts')
 <script type="text/javascript">
 	$(document).ready(function(){
-
-		$(".swatch-variant").on('change',function(){
-			if( $(this).is(":checked") ){ 
-				onselectChange();
-			}
-        });
-
-		function onselectChange(){
-			var selector='';
-          	$('.swatch-variant').each(function(index,elem){
-            	optionId = $('.swatch-element').find("input[type='radio']:checked").attr('optionID');
-            	optionValueId = $('.swatch-element').find("input[type='radio']:checked").val();
-            	selector += "[data-optionid"+(index+1)+"='"+optionId+"']";
-            	selector += "[data-optionvid"+(index+1)+"='"+optionValueId+"']";
-            	console.log(optionId,optionValueId,selector);
-
-            	if($('.variant-config'+selector).length > 0 ){
-		            var selectedVariant = $('.variant-config'+selector).data();
-		            $('.product_variant_id').val(selectedVariant.variantid);
-		            $('#sku').text(selectedVariant.sku);
+      	$(".swatch-variant").change(onSelectChange);
+       	function onSelectChange(){
+          	var selector='';
+          	var selectedVariant ='';
+          	$(".swatch-variant").each(function(index,elem){
+	            if ($(this).prop("checked")) {
+	            	var attributes = $(this).data();
+	            	var option_count=$(this).attr('option-count');
+	            	var optionId=parseInt(attributes.optionid);
+		            selector += "[data-optionid"+(option_count)+"='"+optionId+"']";
+		            selector += "[data-optionvid"+(option_count)+"='"+$(this).val()+"']";
+	            }
+	            if($('.variant-config'+selector).length > 0 ){
+		            selectedVariant = $('.variant-config'+selector).data();
+		            $('#printSku').text(selectedVariant.sku);
+		            $('.rfq-btn').attr('variant-id',selectedVariant.variantid);
+		            $('.cart-btn').attr('variant-id',selectedVariant.variantid);
 		        }
-          	});
-		}
-
-      /*$(".options-selectbox").change(onSelectChange);
-       function onSelectChange(){
-          var selector='';
-          $(".options-selectbox").each(function(index,elem){
-            attributes = $(this).find('option:selected').data();
-            selector += "[data-optionid"+(index+1)+"='"+attributes.optionid+"']";
-            selector += "[data-optionvid"+(index+1)+"='"+$(this).val()+"']";
-            console.log(attributes,selector);
-          });
-          
-          if($('.variant-config'+selector).length > 0 ){
-            var selectedVariant = $('.variant-config'+selector).data();
-            $('.product_variant_id').val(selectedVariant.variantid);
-            $('#sku').text(selectedVariant.sku);
-          }
-        }*/
+        	});
+        }
     })
 </script>
 <script type="text/javascript">
@@ -317,6 +280,18 @@
 			$input.change();
 			return false;
 		});
+
+		
+  		$(".qty-count").on('keyup',function(e) {
+  			if (/\D/g.test(this.value))
+		  	{
+		    	this.value = this.value.replace(/\D/g, '');
+		  	}
+		  	if(this.value==''){
+		  		$(this).val(1);	
+		  	}
+		});
+
 	});
 </script>
 

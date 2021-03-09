@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Session;
 use Redirect;
 use Arr;
+
 class SettingsController extends Controller
 {
     /**

@@ -7,13 +7,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">List Slider</h1>
+            <h1 class="m-0">List Features</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a  href="javascript:void(0);">Stating Page</a></li>
-              <li class="breadcrumb-item active">List Slider</li>
+              <li class="breadcrumb-item"><a  href="javascript:void(0);">Static Pages</a></li>
+              <li class="breadcrumb-item active">List Features</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -27,16 +27,16 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12 action-controllers ">
-            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('static','delete')) 
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('features','delete')) 
             <div class="col-sm-6 text-left pull-left">
               <a href="javascript:void(0)" class="btn btn-danger delete-all">
                 <i class="fa fa-trash"></i> Delete (selected)
               </a>
             </div>
             @endif
-            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('static','create')) 
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('features','create')) 
             <div class="col-sm-6 text-right pull-right">
-              <a class="btn add-new" href="{{route('static-page-slider.create')}}">
+              <a class="btn add-new" href="{{route('static-page-features.create')}}">
                 <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
               </a>
             </div>
@@ -53,18 +53,18 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Slider Name</th>
+                        <th>Feature Name</th>
                         <th>Published</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach($sliders as $slider)
+                      @foreach($features as $feature)
                         <tr>
-                          <td><input type="checkbox" value="{{ $slider->id }}" name="slider-ids"></td>
-                          <td>{{ $slider->slider_name }}</td>
+                          <td><input type="checkbox" value="{{ $feature->id }}" name="features-ids"></td>
+                          <td>{{ $feature->feature_name }}</td>
                           <?php
-                            if($slider->published==1){$published = "fa-check";}
+                            if($feature->published==1){$published = "fa-check";}
                             else{$published = "fa-ban";}
                           ?>
                           <td><i class="fas {{$published}}"></i></td>
@@ -73,8 +73,8 @@
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
                                 @if (Auth::check()||Auth::guard('employee')->check()) 
-                                  @if (Auth::check()||Auth::guard('employee')->user()->isAuthorized('static','update')) 
-                                    <a href="{{route('static-page-slider.edit',$slider->id)}}">
+                                  @if (Auth::check()||Auth::guard('employee')->user()->isAuthorized('features','update')) 
+                                    <a href="{{route('static-page-features.edit',$feature->id)}}">
                                       <li class="dropdown-item">
                                         <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
                                       </li>
@@ -82,10 +82,10 @@
                                   @endif
                                 @endif
                                 @if (Auth::check()||Auth::guard('employee')->check()) 
-                                  @if (Auth::check()||Auth::guard('employee')->user()->isAuthorized('static','delete')) 
+                                  @if (Auth::check()||Auth::guard('employee')->user()->isAuthorized('features','delete')) 
                                     <a href="javascript:void(0);">
                                       <li class="dropdown-item">
-                                        <form method="POST" action="{{ route('static-page-slider.destroy',$slider->id) }}">
+                                        <form method="POST" action="{{ route('static-page-features.destroy',$feature->id) }}">
                                           @csrf 
                                           <input name="_method" type="hidden" value="DELETE">
                                           <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
@@ -125,16 +125,16 @@
 
 
       $('.delete-all').click(function(event) {
-        var checkedNum = $('input[name="slider-ids"]:checked').length;
+        var checkedNum = $('input[name="features-ids"]:checked').length;
         if (checkedNum==0) {
-          alert('Please select slider');
+          alert('Please select features');
         }
         else{
           if (confirm('Are you sure want to delete?')) {
-            $('input[name="slider-ids"]:checked').each(function () {
+            $('input[name="features-ids"]:checked').each(function () {
               var current_val=$(this).val();
               $.ajax({
-                url: "{{ url('admin/static-page-slider/') }}/"+current_val,
+                url: "{{ url('admin/static-page-features/') }}/"+current_val,
                 type: 'DELETE',
                 data:{
                  "_token": $("meta[name='csrf-token']").attr("content")

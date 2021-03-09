@@ -122,11 +122,12 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 
 
 	//Static Page
+	Route::resource('static-page','Admin\StaticPageController');
 	Route::resource('static-page-slider','Admin\SliderController');
 	Route::post('delete-slider-banner',[
 		'as'=>'delete.slider.banner','uses'=>'Admin\SliderController@deleteSliderBanner'
 	]);
-
+	Route::resource('static-page-features','Admin\FeatureBlockController');
 
 	/* Settings */
 	//Department
