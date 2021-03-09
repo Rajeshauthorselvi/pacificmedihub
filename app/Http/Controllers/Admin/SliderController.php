@@ -20,13 +20,13 @@ class SliderController extends Controller
     public function index()
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('static','read')) {
+            if (!Auth::guard('employee')->user()->isAuthorized('slider','read')) {
                 abort(404);
             }
         }
         $data = array();
         $data['sliders'] = Slider::where('is_deleted',0)->orderBy('id','desc')->get();
-        return view('admin/settings/slider/index',$data);
+        return view('admin/static_page/slider/index',$data);
     }
 
     /**
@@ -37,11 +37,11 @@ class SliderController extends Controller
     public function create()
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('static','create')) {
+            if (!Auth::guard('employee')->user()->isAuthorized('slider','create')) {
                 abort(404);
             }
         }
-        return view('admin/settings/slider/create');
+        return view('admin/static_page/slider/create');
     }
 
     /**
@@ -149,14 +149,14 @@ class SliderController extends Controller
     public function edit($id)
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('static','update')) {
+            if (!Auth::guard('employee')->user()->isAuthorized('slider','update')) {
                 abort(404);
             }
         }
         $data = array();
         $data['slider'] = Slider::find($id);
         $data['slider_banners'] = SliderBanner::where('slider_id',$id)->get();
-        return view('admin/settings/slider/edit',$data);
+        return view('admin/static_page/slider/edit',$data);
     }
 
     /**
@@ -235,7 +235,7 @@ class SliderController extends Controller
                     $slider_banners->update();
                 }
             }
-            return Redirect::route('static-page-slider.index')->with('success','New Slider added successfully...!');
+            return Redirect::route('static-page-slider.index')->with('success','Slider updated successfully...!');
         }else{
             return Redirect::back()->with('error','Somthing wrong please try again...!');
         }
@@ -250,7 +250,7 @@ class SliderController extends Controller
     public function destroy(Request $request, $id)
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('static','delete')) {
+            if (!Auth::guard('employee')->user()->isAuthorized('slider','delete')) {
                 abort(404);
             }
         }

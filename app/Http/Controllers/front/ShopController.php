@@ -44,15 +44,48 @@ class ShopController extends Controller
        $data['default_variant_id'] = 0;
        $data['options'] = null;
        $data['allowed_options'] = [];
-       
-        if($product->product_variant->count() > 0 ){
+    
+       //dd($product->product_variant);
+        if(isset($product->product_variant) && ($product->product_variant->count()!=0 )){
+
             foreach($product->product_variant as $key=> $variant){
+                
                 if($key=="0") {
                     $default_variant_id = $variant->id;
                     $default_sku = $variant->sku;
                 }
-                if(isset($allowed_options[$variant->option_id])){
-                    array_push($allowed_options[$variant->option_id],$variant->option_value_id);
+
+                if($variant->option_id){
+                    $allowed_options[$variant->option_id][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id];
+                }
+                if($variant->option_id2){
+                    $allowed_options[$variant->option_id2][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id2];
+                }
+                if($variant->option_id3){
+                    $allowed_options[$variant->option_id3][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id3];
+                }
+                if($variant->option_id4){
+                    $allowed_options[$variant->option_id4][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id4];
+                }
+                if($variant->option_id5){
+                    $allowed_options[$variant->option_id5][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id5];
+                }
+
+
+
+               /* if($allowed_options[$variant->option_id]){
+                    array_push($allowed_options[$variant->option_id],['var_id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id]);
+                }
+                
+                else $allowed_options[$variant->option_id] = [$variant->option_value_id];
+
+                if(isset($allowed_options[$variant->option_id2])){
+                    array_push($allowed_options[$variant->option_id2],['var_id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id2]);
+                }
+                else $allowed_options[$variant->option_id2] = [$variant->option_value_id2];*/
+
+                /*if(isset($allowed_options[$variant->option_id])){
+                    array_push($allowed_options[$variant->option_id],[$variant->option_value_id,]);
                 }
                 else $allowed_options[$variant->option_id] = [$variant->option_value_id];
 
@@ -74,26 +107,26 @@ class ShopController extends Controller
                 if(isset($allowed_options[$variant->option_id5])){
                     array_push($allowed_options[$variant->option_id5],$variant->option_value_id5);
                 }
-                else $allowed_options[$variant->option_id5] = [$variant->option_value_id5];
+                else $allowed_options[$variant->option_id5] = [$variant->option_value_id5];*/
             }
             
             $required_options = array_filter(array_keys($allowed_options));
+            
             $data['options']  = [];
             if($required_options){
-                $data['options'] = 
-                Option::with(
-                    ['getoptionvalues'=>function($q){$q->orderby('display_order');}]
+                $data['options'] = Option::with([
+                    'getoptionvalues'=>function($q){
+                        $q->orderby('display_order');
+                    }
+                ]
                 )->whereIn('id',$required_options)->orderBy(DB::raw('FIELD(id, '.implode(", " , $required_options).')'))->get();
             }
             $data['allowed_options'] = $allowed_options;  
             $data['default_variant_id'] = $default_variant_id;
             $data['default_sku'] = $default_sku;
         }
-      
+        //dd($data);
         $data['product'] = $product;
-
-        session()->push('breadcrumbs','Products');
-        //ddd($data);
     	return view('front.shop.single_product',$data);
     }
 }
