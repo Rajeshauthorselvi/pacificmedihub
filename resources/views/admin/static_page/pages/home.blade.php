@@ -46,10 +46,10 @@
                   </div>
                   <div class="col-sm-2">
                     <label>Enable</label>
-                    {!! Form::select('slider_status',$status,null,['class'=>'form-control no-search select2bs4'])!!}
+                    {!! Form::select('slider_status',$status,$slider_status,['class'=>'form-control no-search select2bs4'])!!}
                   </div>
                   <div class="col-sm-2">
-                    <a href="{{ route('static-page-slider.index') }}" class="btn btn-primary" style="margin-top:30px">Custom Sliders</a>
+                    <a href="{{ route('static-page-slider.edit',$selected_slider) }}" target="blank" class="btn btn-primary" style="margin-top:30px">Custom Sliders</a>
                   </div>
                 </div>
               </div>
@@ -67,10 +67,10 @@
                   </div>
                   <div class="col-sm-2">
                     <label>Enable</label>
-                    {!! Form::select('features_status',$status,null,['class'=>'form-control no-search select2bs4'])!!}
+                    {!! Form::select('features_status',$status,$features_status,['class'=>'form-control no-search select2bs4'])!!}
                   </div>
                   <div class="col-sm-2">
-                    <a href="{{ route('static-page-features.index') }}" class="btn btn-primary" style="margin-top:30px">Custom Features</a>
+                    <a href="{{ route('static-page-features.edit',$selected_feature) }}" target="blank" class="btn btn-primary" style="margin-top:30px">Custom Features</a>
                   </div>
                 </div>
               </div>
@@ -83,7 +83,7 @@
                     <h3 class="card-title">New Arrival Block</h3>
                   </div>
                   <div class="card-body">
-                    {!! Form::select('new_arrival_status',$status,null,['class'=>'form-control no-search select2bs4'])!!}
+                    {!! Form::select('new_arrival_status',$status,$new_arrival_status,['class'=>'form-control no-search select2bs4'])!!}
                   </div>
                 </div>
               </div>
@@ -93,7 +93,7 @@
                     <h3 class="card-title">Category Block</h3>
                   </div>
                   <div class="card-body">
-                    {!!Form::select('category_block_status',$status,null,['class'=>'form-control no-search select2bs4'])!!}
+                    {!!Form::select('category_block_status',$status,$category_block_status,['class'=>'form-control no-search select2bs4'])!!}
                   </div>
                 </div>
               </div>

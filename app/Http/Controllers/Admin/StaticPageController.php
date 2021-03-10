@@ -37,6 +37,16 @@ class StaticPageController extends Controller
                                          ->toArray();
         $data['selected_feature'] = FeatureBlock::where('is_deleted',0)->where('published',1)->first();
 
+        $setting = Settings::where('key','front-end')->pluck('content','code')->toArray();
+        if(isset($setting['home'])){
+            $statuses = unserialize($setting['home']);
+        }
+
+        $data['slider_status']         = isset($statuses['slider_status'])?$statuses['slider_status']:0;
+        $data['features_status']       = isset($statuses['features_status'])?$statuses['features_status']:0;
+        $data['new_arrival_status']    = isset($statuses['new_arrival_status'])?$statuses['new_arrival_status']:0;
+        $data['category_block_status'] = isset($statuses['category_block_status'])?$statuses['category_block_status']:0;
+
         return view('admin/static_page/pages/home',$data);
     }
 

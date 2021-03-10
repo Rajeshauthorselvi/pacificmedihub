@@ -70,7 +70,7 @@
 				            	</li>
 			         		@endforeach
 							<?php $all_cat_id = base64_encode('all'); ?>
-					        @if(count($categories)>2)
+					        @if(count($categories)>6)
 								<li>
 									<a href="{{ url("shop-by-category/$all_cat_id") }}">More...</a>
 								</li>

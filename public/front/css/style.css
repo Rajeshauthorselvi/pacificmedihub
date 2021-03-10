@@ -321,7 +321,8 @@ img {
     list-style: none;
     font-size: 14px;
     display:inline-block;
-    line-height:1.6
+    line-height:1.6;
+    width: 100%;
 }
 .ser-sec li {
     float: left;
@@ -335,7 +336,15 @@ img {
     margin: auto auto 5px;
     color: #333;
 }
-.ser-sec li::before {
+
+.ser-sec .features img {
+    position: absolute;
+    width: 50px;
+    left: 0;
+    top: 0;
+}
+
+/*.ser-sec li::before {
 
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
@@ -344,6 +353,19 @@ img {
     position: absolute;
     left: 0;
 }
+.ser-sec li.free-ship::before {
+    content: "\f0d1";
+}
+.ser-sec li.supp::before {
+    content: "\f1cd";
+}
+.ser-sec li.retn::before {
+    content: "\f01e";
+}
+.ser-sec li.paysh::before {
+    content: "\f023";
+}
+*/
 .slide-products {
     padding:60px 0;
 }
@@ -357,18 +379,7 @@ img {
     height: 1px;
     background: #e1e1e1;
 }
-.ser-sec li.free-ship::before {
-        content: "\f0d1";
-    }
-.ser-sec li.supp::before {
-        content: "\f1cd";
-    }
-    .ser-sec li.retn::before {
-        content: "\f01e";
-    }
-    .ser-sec li.paysh::before {
-        content: "\f023";
-    }
+
 .slider-title h4 {
     font-weight: normal;
     font-size: 1.2rem;
