@@ -42,14 +42,14 @@
                 <div class="form-group">
                   <div class="col-sm-8">
                     <label>Slider</label>
-                    {!!Form::select('slider',$sliders,$selected_slider,['class'=>'form-control no-search select2bs4'])!!}
+                    {!!Form::select('slider',$sliders,$selected_slider,['class'=>'form-control no-search select2bs4 slider-id'])!!}
                   </div>
                   <div class="col-sm-2">
                     <label>Enable</label>
                     {!! Form::select('slider_status',$status,$slider_status,['class'=>'form-control no-search select2bs4'])!!}
                   </div>
                   <div class="col-sm-2">
-                    <a href="{{ route('static-page-slider.edit',$selected_slider) }}" target="blank" class="btn btn-primary" style="margin-top:30px">Custom Sliders</a>
+                    <a href="{{ route('static-page-slider.edit',$selected_slider) }}" target="blank" class="btn btn-primary slider-url" style="margin-top:30px">Custom Sliders</a>
                   </div>
                 </div>
               </div>
@@ -63,14 +63,14 @@
                 <div class="form-group">
                   <div class="col-sm-8">
                     <label>Features</label>
-                    {!!Form::select('features',$features,$selected_feature,['class'=>'form-control no-search select2bs4'])!!}
+                    {!!Form::select('features',$features,$selected_feature,['class'=>'form-control no-search select2bs4 feature-id'])!!}
                   </div>
                   <div class="col-sm-2">
                     <label>Enable</label>
                     {!! Form::select('features_status',$status,$features_status,['class'=>'form-control no-search select2bs4'])!!}
                   </div>
                   <div class="col-sm-2">
-                    <a href="{{ route('static-page-features.edit',$selected_feature) }}" target="blank" class="btn btn-primary" style="margin-top:30px">Custom Features</a>
+                    <a href="{{ route('static-page-features.edit',$selected_feature) }}" target="blank" class="btn btn-primary feature-url" style="margin-top:30px">Custom Features</a>
                   </div>
                 </div>
               </div>
@@ -117,6 +117,20 @@
 
   @push('custom-scripts')
     <script type='text/javascript'>
+      $(document).on('change', '.slider-id', function(event) {
+        event.preventDefault();
+        var current_val=$(this).val();
+        var new_href="{{ url('admin/static-page-slider') }}"+'/'+current_val+'/edit';
+        $('.slider-url').attr('href',new_href);
+      })
+
+      $(document).on('change', '.feature-id', function(event) {
+        event.preventDefault();
+        var current_val=$(this).val();
+        var new_href="{{ url('admin/static-page-features') }}"+'/'+current_val+'/edit';
+        $('.feature-url').attr('href',new_href);
+      });
+
       $(function ($) {
         $('.read-only.select2bs4').select2({
           disabled: true
