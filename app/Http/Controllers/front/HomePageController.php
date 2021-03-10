@@ -8,6 +8,9 @@ use App\Models\Categories;
 use App\Models\Product;
 use App\Models\Slider;
 use App\Models\SliderBanner;
+use App\Models\FeatureBlock;
+use App\Models\FeatureBlockData;
+use App\Models\Settings;
 use Carbon\Carbon;
 use DB;
 
@@ -16,6 +19,17 @@ class HomePageController extends Controller
     public function index($value='')
     {
     	$data = array();
+
+        $setting = Settings::where('key','front-end')->pluck('content','code')->toArray();
+        if(isset($setting['home'])){
+            $statuses = unserialize($setting['home']);
+        }
+
+        $data['slider_status']         = isset($statuses['slider_status'])?$statuses['slider_status']:0;
+        $data['features_status']       = isset($statuses['features_status'])?$statuses['features_status']:0;
+        $data['new_arrival_status']    = isset($statuses['new_arrival_status'])?$statuses['new_arrival_status']:0;
+        $data['category_block_status'] = isset($statuses['category_block_status'])?$statuses['category_block_status']:0;
+
     	$data['products'] = Product::where('published',1)->where('show_home',1)->where('is_deleted',0)
                                     ->orderBy('id','desc')->limit(10)->get();
         $slider = Slider::where('published',1)->where('is_deleted',0)->first();
@@ -23,6 +37,15 @@ class HomePageController extends Controller
         if ($slider) {
             $data['banners'] = SliderBanner::where('slider_id',$slider->id)->orderBy('display_order','asc')->get();
         }
+
+        $feature = FeatureBlock::where('published',1)->where('is_deleted',0)->first();
+        $data['features']=array();
+        if ($feature) {
+            $data['features'] = FeatureBlockData::where('feature_id',$feature->id)->get();
+        }
+
+        //dd($data['features']);
+
         $categories = DB::table('categories as c')
                         ->select('c.name as category_name','c.search_engine_name as category_search_engine_name','p.*')
                         ->leftJoin('products as p','c.id','p.category_id')

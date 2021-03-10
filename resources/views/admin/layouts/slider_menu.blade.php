@@ -153,12 +153,12 @@
           </li>
           
           <!-- Static Page Menu -->
-          <li class="nav-item  @if($current_route=='static-page.index'||$current_route=='static-page.edit'||$current_route=='static-page-slider.index'||$current_route=='static-page-slider.create'||$current_route=='static-page-slider.edit'||$current_route=='static-page-features.index'||$current_route=='static-page-features.create'||$current_route=='static-page-features.edit') menu-is-opening menu-open @endif">
+          <li class="nav-item  @if($current_route=='static-page.index'||$current_route=='static-page.create'||$current_route=='static-page.edit'||$current_route=='static-page-slider.index'||$current_route=='static-page-slider.create'||$current_route=='static-page-slider.edit'||$current_route=='static-page-features.index'||$current_route=='static-page-features.create'||$current_route=='static-page-features.edit') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-laptop"></i><p>Static Page<i class="fas fa-angle-left right"></i></p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='static-page.index'||$current_route=='static-page.edit'||$current_route=='static-page-slider.index'||$current_route=='static-page-slider.create'||$current_route=='static-page-slider.edit'||$current_route=='static-page-features.index'||$current_route=='static-page-features.create'||$current_route=='static-page-features.edit') block @endif">
-              <li class="nav-item @if($current_route=='static-page.index'||$current_route=='static-page.show'||$current_route=='static-page.edit') active @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='static-page.index'||$current_route=='static-page.create'||$current_route=='static-page.edit'||$current_route=='static-page-slider.index'||$current_route=='static-page-slider.create'||$current_route=='static-page-slider.edit'||$current_route=='static-page-features.index'||$current_route=='static-page-features.create'||$current_route=='static-page-features.edit') block @endif">
+              <li class="nav-item @if($current_route=='static-page.index'||$current_route=='static-page.create'||$current_route=='static-page.edit') active @endif">
                 <a href="{{ route('static-page.index') }}" class="nav-link"><i class="fas fa-angle-double-right"></i>
                   <p>Pages</p>
                 </a>

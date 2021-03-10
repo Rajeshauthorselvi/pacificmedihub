@@ -12,10 +12,17 @@ class AuthController extends Controller
 {
     public function index()
     {
+        /*if (Auth::check() || Auth::guard('employee')->check()) {
+            return Redirect::route('admin.dashboard');
+        }
+    	return view('admin/auth/login');*/
+
+        $data=array();
         if (Auth::check() || Auth::guard('employee')->check()) {
             return Redirect::route('admin.dashboard');
         }
-    	return view('admin/auth/login');
+        return view('who_you_are.login',$data);
+        
     }
     public function store(Request $request)
     {
