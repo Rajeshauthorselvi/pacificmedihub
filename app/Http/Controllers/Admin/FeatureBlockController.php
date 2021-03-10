@@ -102,7 +102,7 @@ class FeatureBlockController extends Controller
                     $feature_block->save();
                 }
             }
-            return Redirect::route('static-page-featuers.index')->with('success','New Features added successfully...!');
+            return Redirect::route('static-page-features.index')->with('success','New Features added successfully...!');
         }else{
             return Redirect::back()->with('error','Somthing wrong please try again...!');
         }
