@@ -62,11 +62,11 @@ class Handler extends ExceptionHandler
 
     if (!$e instanceof NotFoundHttpException)
     {
-       /*Mail::send('errors.exception', $data, function ($m) {
+       Mail::send('errors.exception', $data, function ($m) {
          $m->from('dhinesh@authorselvi.com');
          $m->cc('rnaveen@authorselvi.com');
            $m->to('dhinesh@authorselvi.com', 'Error')->subject('PMH- Error'.' -- '.$_SERVER['REMOTE_ADDR'].'--'.date('Y-m-d'));
-       });*/
+       });
     }
       if (ExceptionHandler::isHttpException($e)) {
           if ($e->getStatusCode() == 404) {
