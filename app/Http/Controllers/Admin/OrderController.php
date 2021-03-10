@@ -453,6 +453,8 @@ class OrderController extends Controller
                 'final_price'           => $products->rfq_price
             ]);
        }
+
+       RFQ::where('id',$rfq->id)->update(['status'=>10]);
        return Redirect::route('orders.index')->with('success','Order created successfully...!');
     }
 

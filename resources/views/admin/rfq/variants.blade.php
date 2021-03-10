@@ -23,6 +23,7 @@
             <th>Base Price</th>
             <th>Retail Price</th>
             <th>Minimum Selling Price</th>
+            <th style="display: none;" class="last-rfq">Last RFQ Price</th>
             <th>RFQ Price</th>
             <th>Quantity</th>
             <th>Subtotal</th>
@@ -38,7 +39,7 @@
             @endif --}}
             <tr class="parent_tr">
               <input type="hidden" name="variant[product_id][]" value="{{ $product_id }}" class="product_id">
-              <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
+              <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}" class="variant_id">
               <td>
                 <div class="form-group">
                   <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">
@@ -92,7 +93,9 @@
                   <input type="hidden" name="variant[minimum_selling_price][]" value="{{$variant['minimum_selling_price']}}">
                   {{$variant['minimum_selling_price']}}
                 </td>
+                <td style="display: none;" class="last-rfq"></td>
                 <td>
+                  <input type="hidden" name="variant[last_rfq_price][]" class="last_rfq_price_val">
                   <?php 
                     $high_value=max($variant['minimum_selling_price'],$variant['base_price'],$variant['retail_price']) 
                   ?>

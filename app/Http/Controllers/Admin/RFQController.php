@@ -22,12 +22,14 @@ use App\Models\Tax;
 use App\Models\Currency;
 use App\Models\RFQComments;
 use App\Models\RFQCommentsAttachments;
+use App\Models\Orders;
 use Auth;
 use Redirect;
 use Session;
 use PDF;
 use Str;
 use Response;
+use DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
 class RFQController extends Controller
@@ -168,6 +170,7 @@ class RFQController extends Controller
       $stock_qty             = $variant['stock_qty'];
       $rfq_price             = $variant['rfq_price'];
       $sub_total             = $variant['sub_total'];
+      $last_rfq_price        = $variant['last_rfq_price'];
 
       foreach ($product_ids as $key => $product_id) {
         if ($stock_qty[$key]!=0 && $stock_qty[$key]!="") {
@@ -180,7 +183,8 @@ class RFQController extends Controller
             'minimum_selling_price'     => $minimum_selling_price[$key],
             'quantity'                  => $stock_qty[$key],
             'rfq_price'                 => $rfq_price[$key],
-            'sub_total'                 => $sub_total[$key]
+            'sub_total'                 => $sub_total[$key],
+            'last_rfq_price'            => $last_rfq_price[$key]
           ];
           RFQProducts::insert($data);
         }
@@ -260,7 +264,7 @@ class RFQController extends Controller
             }
         }
       $data=array();
-      $data['rfqs']           = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
+      $data['rfqs']=$rfq_details= RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
       $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,10,11])
                                     ->pluck('status_name','id')->toArray();
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
@@ -284,13 +288,19 @@ class RFQController extends Controller
         $options         = $this->Options($product->product_id);
         $product_variant = $this->Variants($product->product_id,$all_variants);
 
+        $check_rfq_price_exists=RFQProducts::where('rfq_id',$id)
+                                ->where('product_id',$product->product_id)
+                                ->whereNotNull('last_rfq_price')
+                                ->exists();
+
         $product_data[$product->product_id] = [
           'rfq_id'          => $id,
           'product_id'      => $product->product_id,
           'product_name'    => $product_name,
           'options'         => $options['options'],
           'option_count'    => $options['option_count'],
-          'product_variant' => $product_variant
+          'product_variant' => $product_variant,
+          'check_rfq_price_exists' => $check_rfq_price_exists
         ];
       }
       $data['product_datas']=$product_data;
@@ -706,5 +716,28 @@ class RFQController extends Controller
       $path=public_path('/theme/images/rfq_comment_attachment/').$attachment;
       
       return Response::download($path, $attachment);
+    }
+
+    public function CheckRfqExistingPrice(Request $request)
+    {
+      $customer_id=$request->customer_id;
+      $product_id=$request->product_id;
+      $variant_id=$request->variant_id;
+      $product_price=$this->LastRFQPrice($customer_id,$product_id,$variant_id);
+      return ['price'=>$product_price];
+    }
+
+    public function LastRFQPrice($customer_id,$product_id,$variant_id)
+    {
+      $product_price=DB::table('orders as o')
+                     ->leftjoin('order_products as op','o.id','op.order_id')
+                     ->where('o.order_status',13)
+                     ->where('o.customer_id',$customer_id)
+                      ->where('op.product_id',$product_id)
+                      ->where('op.product_variation_id',$variant_id)
+                      ->orderBy('op.id','DESC')
+                      ->value('final_price');
+
+      return $product_price;
     }
 }

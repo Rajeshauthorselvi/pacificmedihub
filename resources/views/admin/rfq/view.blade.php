@@ -41,8 +41,14 @@
                   <div class="action_sec">
                     <div class="clearfix"></div>
                     <ul class="list-unstyled">
+                      <?php 
+                      $disabled="";
+                      if ($rfqs->status==10) {
+                          $disabled="pointer-events:none;opacity:0.5";
+                      }
+                      ?>
                       <li>
-                        <a href="{{ route('rfq.toOrder',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
+                        <a href="{{ route('rfq.toOrder',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')" style="{{ $disabled }}">
                           <i class="fa fa-plus-circle"></i>&nbsp; Place Order
                         </a>
                       </li>
@@ -56,7 +62,7 @@
                         <a href="{{ url('admin/rfq-comments/'.$rfq_id) }}" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
                       </li>
                       <li>
-                        <a href="{{ route('rfq.edit',$rfq_id) }}" class="edit">
+                        <a href="{{ route('rfq.edit',$rfq_id) }}" class="edit" style="{{ $disabled }}">
                           <i class="fa fa-edit"></i>&nbsp; Edit
                         </a>
                       </li>

@@ -53,7 +53,7 @@
                   <li role="presentation" class="nav-item">
                     <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Company Details </a>
                   </li>
-{{--                   <li role="presentation" class="nav-item">
+                  <li role="presentation" class="nav-item">
                     <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
@@ -61,8 +61,8 @@
                   </li>
                   <li role="presentation" class="nav-item">
                     <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
-                  </li> --}}
-                  <li role="presentation" class="nav-item">
+                  </li>
+{{--                   <li role="presentation" class="nav-item">
                     <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
@@ -70,7 +70,7 @@
                   </li>
                   <li role="presentation" class="nav-item">
                     <a href="#step4" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
-                  </li>
+                  </li> --}}
                 </ul>
                 <div class="tab-content py-2">
                   <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">

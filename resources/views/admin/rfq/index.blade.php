@@ -63,6 +63,13 @@
                     </thead>
                     <tbody>
                       @foreach ($rfqs as $rfq)
+                      <?php 
+                      $disabled="";
+                      if ($rfq->status==10) {
+                          $disabled="pointer-events:none;opacity:0.5";
+                      }
+
+                      ?>
                         <tr>
                           <td><input type="checkbox" name="rfq_ids" value="{{$rfq->id}}"></td>
                           <td>{{ date('m/d/Y',strtotime($rfq->created_at)) }}</td>
@@ -85,9 +92,9 @@
                                 
                                 <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','update'))
-                                  <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                  <a href="{{route('rfq.edit',$rfq->id)}}" style="{{ $disabled }}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                 @endif
-                                <a href="{{ route('rfq.toOrder',$rfq->id) }}" onclick="return confirm('Are you sure want to Place Order?')"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
+                                <a href="{{ route('rfq.toOrder',$rfq->id) }}" onclick="return confirm('Are you sure want to Place Order?')" style="{{ $disabled }}"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
 
                                 <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
 

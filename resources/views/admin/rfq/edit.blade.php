@@ -155,6 +155,9 @@
                                           <th>Base Price</th>
                                           <th>Retail Price</th>
                                           <th>Minimum Selling Price</th>
+                                          @if ($product['check_rfq_price_exists'])
+                                            <th>Last RFQ Price</th>
+                                          @endif
                                           <th>RFQ Price</th>
                                           <th>Quantity</th>
                                           <th>Subtotal</th>
@@ -171,7 +174,7 @@
                                             <td>
                                               <input type="hidden" name="variant[row_id][]" value="{{$variation_details->id}}">
                                               <input type="hidden" name="variant[product_id][]" value="{{ $product['product_id'] }}" class="product_id">
-                                              <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
+                                              <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}" class="variant_id">
                                               <div class="form-group">
                                                 <input type="hidden" name="variant[option_id1][]" value="{{$variant['option_id1']}}">
                                                 <input type="hidden" name="variant[option_value_id1][]" value="{{$variant['option_value_id1']}}">
@@ -214,6 +217,7 @@
                                                 </div>
                                               </td>
                                             @endif
+
                                             <td class="base_price">{{$variant['base_price']}}</td>
                                             <td>
                                               <input type="hidden" name="variant[base_price][]" value="{{$variant['base_price']}}">
@@ -224,6 +228,11 @@
                                               <input type="hidden" name="variant[minimum_selling_price][]" value="{{$variant['minimum_selling_price']}}">
                                               {{$variant['minimum_selling_price']}}
                                             </td>
+                                            @if ($product['check_rfq_price_exists'])
+                                            <td>
+                                                {{ $variation_details->last_rfq_price }}
+                                            </td>
+                                            @endif
                                             <td>
                                               <?php $high_value=$variation_details['rfq_price']; ?>
                                               <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{ $high_value }}" autocomplete="off">
@@ -348,6 +357,50 @@
   @push('custom-scripts')
     <script type="text/javascript">
 
+      $(document).on('change', '#customer', function(event) {
+        if ($('.vatiant_table').length!=0) {
+          ExistingRFQPrice();
+        }
+      });
+
+      function ExistingRFQPrice() {
+            var value_array = [];
+            $('.parent_tr').each(function(index, el) {
+                var customer_id=$('#customer').val();
+                var product_id=$(this).find('.product_id').val();
+                var variant_id=$(this).find('.variant_id').val();
+                var current_node=$(this);
+                $.ajax({
+                  url: '{{ url('admin/check-rfq-existing') }}',
+                  data: {
+                    product_id: product_id,
+                    variant_id:variant_id,
+                    customer_id:customer_id,
+                  }
+                })
+                .done(function(response) {
+                  if (response.price!=null) {
+                    current_node.find('.last-rfq').text(response.price);
+                    value_array.push(response.price);
+                  }
+                  else{
+                    current_node.find('.last-rfq').text('-');
+                  }
+                  if (value_array.length>0) {
+                    current_node.find('.last-rfq').show();
+                    $('#collapse'+product_id+' th.last-rfq').show();
+                  }
+                  else{
+                    current_node.find('.last-rfq').hide();
+                    $('#collapse'+product_id+' th.last-rfq').hide();
+                  }
+                })
+                .fail(function() {
+                  
+                });
+
+            });
+      }
       $('#prodct-add-sec').autocomplete({
         source: function( request, response) {
           $.ajax({

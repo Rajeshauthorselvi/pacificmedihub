@@ -84,6 +84,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	]);
 
 	//RFQ
+	Route::get('check-rfq-existing','Admin\RFQController@CheckRfqExistingPrice');
 	Route::get('rfq-comments/{rfq_id}','Admin\RFQController@RFQComments');
 	Route::get('view-rfq-comments-attachment/{rfq_cmt_id}','Admin\RFQController@ViewRFQCommentAttachments');
 	Route::get('download-rfq-comments-attachment/{attach_id}','Admin\RFQController@DownloadRFQCommentAttachments');

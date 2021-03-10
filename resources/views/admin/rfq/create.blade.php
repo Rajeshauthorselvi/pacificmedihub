@@ -158,7 +158,11 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
-
+      $(document).on('change', '#customer', function(event) {
+        if ($('.vatiant_table').length!=0) {
+          ExistingRFQPrice();
+        }
+      });
      $(document).on('click', '.remove-product-row', function(event) {
         event.preventDefault();
         
@@ -239,6 +243,8 @@
             $('.total_'+ui.item.value).text(SumTotal('#collapse'+ui.item.value+' .subtotal_hidden'));
             $('.rfq_'+ui.item.value).text(SumTotal('#collapse'+ui.item.value+' .rfq_price'));
 
+            ExistingRFQPrice();
+
           });
            $(this).val('');
           return false;
@@ -250,7 +256,46 @@
           $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
         }
       });
+      function ExistingRFQPrice() {
+            var value_array = [];
+            $('.parent_tr').each(function(index, el) {
+                var customer_id=$('#customer').val();
+                var product_id=$(this).find('.product_id').val();
+                var variant_id=$(this).find('.variant_id').val();
+                var current_node=$(this);
+                $.ajax({
+                  url: '{{ url('admin/check-rfq-existing') }}',
+                  data: {
+                    product_id: product_id,
+                    variant_id:variant_id,
+                    customer_id:customer_id,
+                  }
+                })
+                .done(function(response) {
+                  if (response.price!=null) {
+                    current_node.find('.last-rfq').text(response.price);
+                    current_node.find('.rfq_price').val(response.price);
+                    current_node.find('.last_rfq_price_val').val(response.price);
+                    value_array.push(response.price);
+                  }
+                  else{
+                    current_node.find('.last-rfq').text('-');
+                  }
+                  if (value_array.length>0) {
+                    current_node.find('.last-rfq').show();
+                    $('#collapse'+product_id+' th.last-rfq').show();
+                  }
+                  else{
+                    current_node.find('.last-rfq').hide();
+                    $('#collapse'+product_id+' th.last-rfq').hide();
+                  }
+                })
+                .fail(function() {
+                  
+                });
 
+            });
+      }
       $(document).on('keyup', '.stock_qty', function(event) {
         if (/\D/g.test(this.value))
         {
