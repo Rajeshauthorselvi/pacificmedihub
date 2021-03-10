@@ -313,6 +313,8 @@ class CustomerController extends Controller
         $data['country_id'] = $address->country_id;
         $data['state_id'] = $address->state_id;
         $data['city_id'] = $address->city_id;
+        $data['latitude'] = $address->latitude;
+        $data['longitude'] = $address->longitude;
         $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
         return view('admin.customer.edit_address',$data);
     }
@@ -328,6 +330,9 @@ class CustomerController extends Controller
         $address->country_id = $request->country_id;
         $address->state_id = $request->state_id;
         $address->city_id = $request->city_id;
+        $address->latitude = $request->latitude;
+        $address->longitude = $request->longitude;
+
         $address->update();
         Session::flash('from', 'address');
         return redirect()->route('customers.edit',$request->cus_id)->with('info','Address Modified successfully.!');

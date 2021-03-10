@@ -165,8 +165,7 @@
 </style>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDNi6888yh6v93KRXKYeHfMv59kQHw-XPQ&libraries=places&v=weekly">
 </script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
-</script>
+
 <script type="text/javascript"> 
 var lat='{{ $company->latitude }}';
 var lng='{{ $company->longitude }}';
@@ -261,13 +260,12 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 
 </script>
-<style type="text/css">    /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
+<style type="text/css">  
       #map {
         height: 100%;
       }
 
-      /* Optional: Makes the sample page fill the window. */
+      
       html,
       body {
         height: 100%;

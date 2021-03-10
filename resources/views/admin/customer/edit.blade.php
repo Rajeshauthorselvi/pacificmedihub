@@ -1,5 +1,7 @@
 @extends('admin.layouts.master')
 @section('main_container')
+
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -51,7 +53,7 @@
                   <li role="presentation" class="nav-item">
                     <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Company Details </a>
                   </li>
-                  <li role="presentation" class="nav-item">
+{{--                   <li role="presentation" class="nav-item">
                     <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
@@ -59,6 +61,15 @@
                   </li>
                   <li role="presentation" class="nav-item">
                     <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
+                  </li> --}}
+                  <li role="presentation" class="nav-item">
+                    <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
+                  </li>
+                  <li role="presentation" class="nav-item">
+                    <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Delivery Address</a>
+                  </li>
+                  <li role="presentation" class="nav-item">
+                    <a href="#step4" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
                   </li>
                 </ul>
                 <div class="tab-content py-2">
@@ -364,6 +375,16 @@
                 {!! Form::text('address[post_code]', '',['class'=>'form-control add_post_code']) !!}
               </div>
             </div>
+            <div class="form-group" style="display:flex;">
+                <div class="col-sm-6" style="padding-left:0;">
+                    <label for="city">Latitude</label>
+                    {!! Form::text('address[latitude]', null,['class'=>'form-control','id'=>'latitude']) !!}
+                </div>
+                <div class="col-sm-6"  style="padding:0">
+                    <label for="postCode">Longitude</label>
+                    {!! Form::text('address[longitude]', null,['class'=>'form-control','id'=>'longitude']) !!}
+                </div>
+            </div>
             <div class="form-group">
               <button type="button" class="btn reset-btn" data-dismiss="modal">Cancel</button>
               <button type="submit" id="submit-btn" class="btn save-btn submit-address">Save</button>
@@ -396,7 +417,9 @@
   }
 
 </style>
+
 @push('custom-scripts')
+
   <script type="text/javascript">
 
     $('.edit').click(function(){
@@ -461,7 +484,7 @@
                   if(state_id == key) { var select_state = "selected" }
                   $(append_id).append('<option value="'+key+'" '+select_state+'>'+value+'</option>');
                 });
-                $(append_id).selectpicker('refresh');           
+                // $(append_id).selectpicker('refresh');           
               }else{
                 $(append_id).empty();
               }
@@ -487,7 +510,7 @@
                   if(city_id == key) { var select_city = "selected" }
                   $(append_id).append('<option value="'+key+'" '+select_city+'>'+value+'</option>');
                 });
-                $(append_id).selectpicker('refresh');           
+                // $(append_id).selectpicker('refresh');           
               }else{
                 $(append_id).empty();
               }
@@ -572,7 +595,7 @@
                   if(get_state_id == key) { var select_state = "selected" }
                   $("#addresss_state").append('<option value="'+key+'" '+select_state+'>'+value+'</option>');
                 });
-                $('#addresss_state').selectpicker('refresh');           
+                // $('#addresss_state').selectpicker('refresh');           
               }else{
                 $("#addresss_state").empty();
               }
@@ -605,7 +628,7 @@
                   if(get_city_id == key) { var select_city = "selected" }
                   $("#addresss_city").append('<option value="'+key+'" '+select_city+'>'+value+'</option>');
                 });
-                $('#addresss_city').selectpicker('refresh');           
+                // $('#addresss_city').selectpicker('refresh');           
               }else{
                 $("#addresss_city").empty();
               }
