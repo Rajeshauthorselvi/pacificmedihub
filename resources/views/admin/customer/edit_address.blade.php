@@ -1,4 +1,3 @@
-
 <form method="post" action="{{route('save.address')}}" class="edit-address">
 	@csrf
 	<div class="form-group" style="display:flex;">
@@ -50,195 +49,27 @@
         </div>
 	</div>
     <div class="form-group" style="display:flex;">
-        <div class="col-sm-6" style="padding-left:0;">
+        <div class="col-sm-6">
             <label for="city">Latitude</label>
-            {!! Form::text('latitude', $latitude,['class'=>'form-control','id'=>'latitude']) !!}
+            {!! Form::text('latitude', $latitude,['class'=>'form-control','id'=>'latitude','readonly']) !!}
         </div>
-        <div class="col-sm-6"  style="padding:0">
+        <div class="col-sm-6">
             <label for="postCode">Longitude</label>
-            {!! Form::text('longitude', $longitude,['class'=>'form-control','id'=>'longitude']) !!}
+            {!! Form::text('longitude', $longitude,['class'=>'form-control','id'=>'longitude','readonly']) !!}
         </div>
     </div>
-{{--                     <div class="col-sm-12">
-                      <div id="myMap"></div>
-                      <div class="pac-card" id="pac-card">
-                        <div>
-                          <div id="title">Search Place</div>
-                          <br />
-                        </div>
-                        <div id="pac-container">
-                          <input id="pac-input" type="text" placeholder="Enter a location" class="form-control" />
-                        </div>
-                      </div>
-                    </div> --}}
 	<div class="form-group">
 		<button type="button" class="btn reset-btn" data-dismiss="modal">Cancel</button>
         <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
 	</div>
 </form>
-
-<style>
-      #myMap {
-         height: 350px;
-         width: 100%;
-      }  
-      #map {
-        height: 100%;
-      }
-
-      .pac-card {
-        margin: 10px 10px 0 0;
-        border-radius: 2px 0 0 2px;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        outline: none;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        background-color: #fff;
-        font-family: Roboto;
-      }
-
-      #pac-container {
-        padding-bottom: 12px;
-        margin-right: 12px;
-      }
-
-      .pac-controls {
-        display: inline-block;
-        padding: 5px 11px;
-      }
-
-      .pac-controls label {
-        font-family: Roboto;
-        font-size: 13px;
-        font-weight: 300;
-      }
-
-      #pac-input {
-        background-color: #fff;
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        margin-left: 12px;
-        padding: 0 11px 0 13px;
-        text-overflow: ellipsis;
-        width: 400px;
-      }
-
-      #pac-input:focus {
-        border-color: #4d90fe;
-      }
-      #title {
-        color: #fff;
-        background-color: #4d90fe;
-        font-size: 22px;
-        font-weight: 500;
-        padding: 5px;
-      }
-
-</style>
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDNi6888yh6v93KRXKYeHfMv59kQHw-XPQ&libraries=places&v=weekly">
-</script>
-<script type="text/javascript"> 
-var lat=12.967728230061345;
-var lng=79.18363143444613;
-var map;
-var marker;
-var myLatlng = new google.maps.LatLng(lat,lng);
-var geocoder = new google.maps.Geocoder();
-var infowindow = new google.maps.InfoWindow();
-function initialize(){
-  var mapOptions = {
-    zoom: 15,
-    center: myLatlng,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-
-  map = new google.maps.Map(document.getElementById("myMap"), mapOptions);
-
-  marker = new google.maps.Marker({
-    map: map,
-    position: myLatlng,
-    draggable: true 
-  }); 
-
-  geocoder.geocode({'latLng': myLatlng }, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK) {
-      if (results[0]) {
-        $('#latitude,#longitude').show();
-        $('.del_add_1').val(results[0].formatted_address);
-        $('#latitude').val(marker.getPosition().lat());
-        $('#longitude').val(marker.getPosition().lng());
-        infowindow.setContent(results[0].formatted_address);
-        infowindow.open(map, marker);
-      }
-    }
-  });
-
-  google.maps.event.addListener(marker, 'dragend', function() {
-
-    geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        if (results[0]) {
-          $('.del_add_1').val(results[0].formatted_address);
-          $('#latitude').val(marker.getPosition().lat());
-          $('#longitude').val(marker.getPosition().lng());
-          infowindow.setContent(results[0].formatted_address);
-          infowindow.open(map, marker);
-        }
-      }
-    });
-
-  });
-        const card = document.getElementById("pac-card");
-        const input = document.getElementById("pac-input");
-        const options = {
-          fields: ["formatted_address", "geometry", "name"],
-          origin: map.getCenter(),
-          strictBounds: false,
-          types: ["establishment"],
-        };
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
-        const autocomplete = new google.maps.places.Autocomplete(
-          input,
-          options
-        );
-        autocomplete.bindTo("bounds", map);
-  
-        autocomplete.addListener("place_changed", () => {
-          marker.setVisible(false);
-          const place = autocomplete.getPlace();
-          if (!place.geometry || !place.geometry.location) {
-            window.alert(
-              "No details available for input: '" + place.name + "'"
-            );
-            return;
-          }
-          
-          if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-          } else {
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);
-          }
-          marker.setPosition(place.geometry.location);
-          marker.setVisible(true);
-          infowindowContent.children["place-name"].textContent = place.name;
-          infowindowContent.children["place-address"].textContent = place.formatted_address;
-          infowindow.open(map, marker);
-        });
-}
-google.maps.event.addDomListener(window, 'load', initialize);
-
-
-</script>
-
 <script type="text/javascript">
-
-    $(function () {
-        $('body').find('.select2bs4').select2({
-            theme: 'bootstrap4'
-        })
-    });
+    
+ 	$(function () {
+    	$('body').find('.select2bs4').select2({
+      		theme: 'bootstrap4'
+    	})
+  	});
 	//Get State
     $(document).ready(function(){
         var country_id = "<?php echo json_decode($country_id); ?>";
@@ -263,6 +94,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                   if(state_id == key) { var select_state = "selected" }
                   $("#state").append('<option value="'+key+'" '+select_state+'>'+value+'</option>');
                 });
+                $('#state').selectpicker('refresh');           
               }else{
                 $("#state").empty();
               }
@@ -298,6 +130,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                   if(city_id == key) { var select_city = "selected" }
                   $("#city").append('<option value="'+key+'" '+select_city+'>'+value+'</option>');
                 });
+                $('#city').selectpicker('refresh');           
               }else{
                 $("#city").empty();
               }

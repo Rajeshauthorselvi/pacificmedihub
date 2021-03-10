@@ -354,6 +354,7 @@
         height: 100%;
       }
 
+
       .pac-card {
         margin: 10px 10px 0 0;
         border-radius: 2px 0 0 2px;
