@@ -53,7 +53,7 @@
                   <li role="presentation" class="nav-item">
                     <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Company Details </a>
                   </li>
-{{--                   <li role="presentation" class="nav-item">
+                  <li role="presentation" class="nav-item">
                     <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
@@ -61,8 +61,8 @@
                   </li>
                   <li role="presentation" class="nav-item">
                     <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
-                  </li> --}}
-                  <li role="presentation" class="nav-item">
+                  </li>
+{{--                   <li role="presentation" class="nav-item">
                     <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
@@ -70,7 +70,7 @@
                   </li>
                   <li role="presentation" class="nav-item">
                     <a href="#step4" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
-                  </li>
+                  </li> --}}
                 </ul>
                 <div class="tab-content py-2">
                   <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
@@ -148,8 +148,10 @@
                             <input type="file" class="custom-file-input" name="company[logo]" id="companyLogo" accept="image/*">
                             <label class="custom-file-label" for="companyLogo">Choose file</label>
                           </div>
+                          @if (isset($customer->company->logo))
                           <br><br>
                           <img src="{{asset('theme/images/customer/company/'.$customer->company->id.'/' .$customer->company->logo)}}" width="100px" height="100px">
+                          @endif
                         </div>
                         <div class="col-sm-6">
                           <label for="companyGst">Company GST Certificate Copy(JPEG,PNG,PDF)</label>
@@ -157,8 +159,10 @@
                             <input type="file" class="custom-file-input" name="company[company_gst_certificate]" id="companyGst" accept="image/*">
                             <label class="custom-file-label" for="companyGst">Choose file</label>
                           </div>
+                          @if (isset($customer->company->company_gst_certificate))
                           <br><br>
                           <img src="{{asset('theme/images/customer/company/'.$customer->company->id.'/' .$customer->company->company_gst_certificate)}}" width="100px" height="100px">
+                          @endif
                         </div>
                       </div>
                       <div class="form-group">

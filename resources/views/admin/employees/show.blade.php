@@ -67,7 +67,17 @@
                           {!! Form::text('emp_name',$employees->emp_name,['readonly','class'=>'form-control','id'=>'employeeName']) !!}
                         </div>
                       </div>
+                        <div class="form-group">
+                          <div class="col-sm-5">
+                              {!! Form::label('dept', 'Department *') !!}
+                              {!! Form::text('dept_id',$departments[$employees->emp_department],['readonly','class'=>'form-control', 'id'=>'dept']) !!}
+                          </div>
+                          <div class="col-sm-5">
+                            {!! Form::label('role', 'Roles *') !!}
+                            {!! Form::text('role_id',$roles[$employees->role_id],['readonly','class'=>'form-control', 'id'=>'dept']) !!}
+                          </div>
 
+                        </div>
                       <div class="form-group">
                         <div class="col-sm-5">
                           {!! Form::label('dept', 'Department *') !!}

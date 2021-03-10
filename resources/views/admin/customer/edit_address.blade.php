@@ -1,5 +1,4 @@
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDNi6888yh6v93KRXKYeHfMv59kQHw-XPQ&libraries=places&v=weekly">
-</script>
+
 <form method="post" action="{{route('save.address')}}" class="edit-address">
 	@csrf
 	<div class="form-group" style="display:flex;">
@@ -137,6 +136,8 @@
       }
 
 </style>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDNi6888yh6v93KRXKYeHfMv59kQHw-XPQ&libraries=places&v=weekly">
+</script>
 <script type="text/javascript"> 
 var lat=12.967728230061345;
 var lng=79.18363143444613;
@@ -222,8 +223,7 @@ function initialize(){
           marker.setPosition(place.geometry.location);
           marker.setVisible(true);
           infowindowContent.children["place-name"].textContent = place.name;
-          infowindowContent.children["place-address"].textContent =
-            place.formatted_address;
+          infowindowContent.children["place-address"].textContent = place.formatted_address;
           infowindow.open(map, marker);
         });
 }

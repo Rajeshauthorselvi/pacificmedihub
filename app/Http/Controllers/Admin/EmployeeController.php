@@ -225,7 +225,12 @@ class EmployeeController extends Controller
         //Commission Id 3 is a Target Commission
         $data['target_commissions']   = CommissionValue::where('commission_id',3)->where('published',1)
                                             ->where('is_deleted',0)->get();
+        $data['departments']=[''=>'Please Select']+Department::where('is_deleted',0)->where('status',1)->pluck('dept_name','id')->toArray();
 
+        $data['roles']=[''=>'Please Select']+Role::whereNotIn('id',[1,7])
+                             ->where('is_delete',0)
+                             ->pluck('name','id')
+                             ->toArray();
         return view('admin.employees.show',$data);
     }
 
