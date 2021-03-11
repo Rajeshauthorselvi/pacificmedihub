@@ -15,7 +15,7 @@
                       <div style="width:30%;float: left;">
                         <ul class="list-unstyled order-no-sec"  style="font-size: 14px;padding-left: 0;list-style: none;">
                           <li><strong>Order Code : </strong>{{ $order->order_no }}</li>
-                          <li><strong>Date : </strong>{{date('d F, Y - h:i a',strtotime($order->created_at))}}</li>
+                          <li><strong>Date : </strong>{{date('d F, Y - g:i A',strtotime($order->created_at))}}</li>
                           <li><strong>Order Status : </strong>{{$order->statusName->status_name}}</li>
                           <li><strong>Delivery Status : </strong>{{ isset($order->deliveryStatus->status_name)?$order->deliveryStatus->status_name:'-' }}</li>
                           @if(isset($purchase->payTerm->name))

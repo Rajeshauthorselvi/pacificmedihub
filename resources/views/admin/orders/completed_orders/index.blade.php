@@ -50,7 +50,7 @@
                         <tr>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
-                            {{ isset($order->delivered_at)?date('d-m-Y H:i:s',strtotime($order->delivered_at)):'-' }}
+                            {{ isset($order->delivered_at)?date('d M Y g:i A',strtotime($order->delivered_at)):'-' }}
                           </td>
                           <td><a href="{{route('completed-orders.show',$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->first_name }}</td>

@@ -188,6 +188,9 @@ class CompletedOrders extends Controller
         $order->approximate_delivery_date=date('Y-m-d',strtotime($request->delivery_date));
         $order->logistic_instruction=$request->notes;
         $order->delivery_status=$request->delivery_status;
+        if ($request->delivery_status==16) {
+            $order->delivered_at=date('Y-m-d H:i:s');
+        }
         $order->save();
 
         return Redirect::route('completed-orders.index');
