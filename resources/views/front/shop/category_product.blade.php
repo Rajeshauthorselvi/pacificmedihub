@@ -3,7 +3,7 @@
 <div class="breadcrumbs">
 	<div class="container">
 		<ul class="items">
-			<li><a href='/' title="Go to Home Page">Home</a></li>
+			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
 			<li><a title="Categories Page">Categories</a></li>
 		</ul>
 	</div>
@@ -15,7 +15,7 @@
 		      <div class="column-block">
 		        <div class="columnblock-title">Categories</div>
 		        <div class="category_block">
-		          <ul class="box-category treeview-list treeview collapsable" >
+		          <ul class="box-menu treeview-list treeview collapsable" >
 		          	@foreach($categories as $category)
 		          		<?php 
 		          			if(count($category->children)!=0)

@@ -86,6 +86,7 @@
 			                    	<span id="search_concept">All Categories </span> <span class="caret"></span>
 			                    </button>
 			                    <ul class="dropdown-menu" role="menu">
+			                    	<li><a class="search-category" href="" catgory-id="0">All Categories </a></li>
 			                    	@foreach($categories as $categoy)
 										<li><a class="search-category" href="" catgory-id="{{ $categoy->id }}">{{ $categoy->name }}</a></li>
 									@endforeach
@@ -104,8 +105,39 @@
                	<div class="col-sm-4 col-xs-3">
                		<div class="bottom-nav">
                			<ul>
-               				<li><a class="nav-link" href="javascript:void(0);">My Wishlist</a></li>
-               				<li><a class="nav-link" href="javascript:void(0);">Sign In</a></li>
+               				@if(!Auth::check())
+               					<li><a class="nav-link" href="{{ route('customer.login') }}">Sign In</a></li>
+               				@else
+               					<?php 
+               						$name = Auth::user()->first_name.' '.Auth::user()->last_name;
+               						$id = Auth::id();
+               					?>
+               					<li class="customer-dropdown">
+               						<a class="nav-link" href="javascript:void(0);">
+               							{{ $name }}<i class="fas fa-sort-down"></i>
+               						</a>
+               						<div class="customer-menu">
+				                    	<a class="menu-list" href="{{ route('profile.index',$id) }}">
+				                    		<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
+				                    	</a>
+				                    	<a class="menu-list" href="javascript:void(0);">
+				                    		<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
+				                    	</a>
+				                    	<a class="menu-list" href="javascript:void(0);">
+				                    		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
+				                    	</a>
+				                    	<a class="menu-list" href="javascript:void(0);">
+				                    		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
+				                    	</a>
+				                    	<a class="menu-list" href="javascript:void(0);">
+				                    		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
+				                    	</a>
+				                    		<a class="menu-list" href="{{route('customer.logout')}}">
+				                    		<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout
+				                    	</a>
+			                    	</div>
+               					</li>
+               				@endif
                				<li class="cart__menu">
 								<a class="nav-link" href="javascript:void(0);" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
 				                  <i class="fas fa-shopping-cart"></i>

@@ -112,7 +112,6 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('vendor-products','Admin\VendorProdcutsController');
 	Route::post('add-new-address','Admin\CustomerController@AddNewAddressController');
 
-
 	//Vendor
 	Route::resource('vendor','Admin\VendorController');
 	
@@ -125,10 +124,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('pay-slip/{emp_id}/{page}','Admin\EmployeeController@salaryView')->name('pay.slip');
 	Route::get('employee-commission-list/{emp_id}','Admin\EmployeeController@commissionList')->name('emp.commission.list');
 
-
 	//Delivery Zone
 	Route::resource('delivery_zone','Admin\DeliveryZoneController');
-
 
 	//Static Page
 	Route::resource('static-page','Admin\StaticPageController');
@@ -169,15 +166,30 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 
 //Error Page
 Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');	
-//About Us
-Route::get('about-us','front\AboutController@index');
+
+	
+//Customer Auth
+Route::get('customer-login','front\AuthController@index')->name('customer.login');
+Route::post('customer-login','front\AuthController@store')->name('customer.store');
+Route::get('customer-logout','front\AuthController@logout')->name('customer.logout');
+
+//Customer Profile Page
+Route::get('my-profile/{id}','front\ProfileController@index')->name('profile.index');
+
+//Cart
+Route::resource('cart','front\CartController');
+
 //Home Page
 Route::get('home','front\HomePageController@index');
 Route::get('','front\HomePageController@index')->name('home.index');
-
-Route::get('{slug}/{category_id}','front\ShopController@category');
-Route::get('{category_slug}/{product_slug}/{product_id}','front\ShopController@product');
-
-
 //Home page Search Box
 Route::post('search',['as'=>'seach.text','uses'=>'front\HomePageController@search']);
+//Category
+Route::get('{slug}/{category_id}','front\ShopController@category');
+//Product
+Route::get('{category_slug}/{product_slug}/{product_id}','front\ShopController@product');
+//About Us
+Route::get('about-us','front\AboutController@index');
+
+
+

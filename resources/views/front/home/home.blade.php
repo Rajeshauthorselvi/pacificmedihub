@@ -32,12 +32,6 @@
 						{{ $feature->message }}
 					</li>
 				@endforeach
-				{{-- <li class="supp"><h3>SUPPORT 24x7</h3>
-				Lorem Ipsum is simply dummy text of the printing</li>
-				<li class="retn"><h3>30 DAYS RETURN</h3>
-				Lorem Ipsum is simply dummy text of the printing</li>
-				<li class="paysh"><h3>100% PAYMENT SECURE</h3>
-				Lorem Ipsum is simply dummy text of the printing</li> --}}
 			</ul>
 		</div>
 	@endif
