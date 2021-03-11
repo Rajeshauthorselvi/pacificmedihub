@@ -77,8 +77,9 @@ class CompletedOrders extends Controller
                 abort(404);
             }
         }
-        $data['order']          = Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
+        $data['order']          = Orders::with('customer','salesrep','statusName','deliveryStatus')->where('orders.id',$order_id)
                                         ->first();
+
         $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
                                         ->where('role_id',7)->pluck('first_name','id')->toArray();
         $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
