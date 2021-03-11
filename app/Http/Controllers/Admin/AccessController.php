@@ -188,7 +188,7 @@ class AccessController extends Controller
         }
         /*Settings*/
 
-        /*Settings*/
+        /*Static*/
         if ($request->has('static_page')) {
             $product_data=$request->get('static_page');
             $this->EntireStaticSec($role_id,$total_opration,$product_data);
@@ -197,7 +197,7 @@ class AccessController extends Controller
             RoleAccessPermission::where('object','pages')->update(['allow_access'=>'no']);
             RoleAccessPermission::where('object','static')->update(['allow_access'=>'no']);
         }
-        /*Settings*/
+        /*Static*/
 
 
         return Redirect::route('access-control.index')->with('success','Role permissions added successfully...!');
@@ -441,6 +441,15 @@ class AccessController extends Controller
                 RoleAccessPermission::where('object','order_payment')->update(['allow_access'=>'no']);
             }
             /*Order Payment*/
+
+            /*Completed Orders*/
+            if (isset($product_data['completed_orders'])) {
+                $this->DataLoop(3,$total_opration,'completed_orders',$product_data['completed_orders'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','completed_orders')->update(['allow_access'=>'no']);
+            }
+            /*Completed Orders*/
     }
 
     public function EntireRFQSec($role_id,$total_opration,$product_data)

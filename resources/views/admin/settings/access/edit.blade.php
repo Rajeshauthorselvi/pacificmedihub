@@ -727,6 +727,40 @@
                           </td>
                         
                         </tr>
+                        <tr>
+
+                          <td>3</td>
+                          <td class="name">Completed Orders</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['completed_orders']) && $permissions['completed_orders']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[completed_orders][read]" class="orders-read" id="completedOrdersRead" {{ $read }}>
+                                <label for="completedOrdersRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $create=(isset($permissions['completed_orders']) && $permissions['completed_orders']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[completed_orders][create]" class="orders-create" id="completedOrdersCreate" {{ $create }}>
+                                <label for="completedOrdersCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['completed_orders']) && $permissions['completed_orders']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[completed_orders][update]" class="orders-update" id="completedOrdersUpdate" {{ $update }}>
+                                <label for="completedOrdersUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                        
+                        </tr>
                       </tbody>
                     </table>
                   </div>

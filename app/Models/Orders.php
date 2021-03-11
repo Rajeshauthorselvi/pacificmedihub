@@ -46,4 +46,12 @@ class Orders extends Model
     {
         return $this->belongsTo(PaymentMethod::class,'paying_by');
     }
+    public function deliveryPerson()
+    {
+        return $this->belongsTo(Employee::class,'delivery_person_id');
+    }
+    public function deliveryStatus()
+    {
+        return $this->belongsTo(OrderStatus::class,'delivery_status');
+    }
 }

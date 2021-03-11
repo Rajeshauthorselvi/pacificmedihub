@@ -681,6 +681,35 @@
                             </div>
                           </td>
                         </tr>
+                        <tr>
+                          <td>3</td>
+                          <td class="name">Completed Orders</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[completed_orders][read]" class="orders-read" id="completedOrdersRead">
+                                <label for="completedOrdersRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[completed_orders][create]" class="orders-create" id="completedOrdersCreate">
+                                <label for="completedOrdersCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[completed_orders][update]" class="orders-update" id="completedOrdersUpdate">
+                                <label for="completedOrdersUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
