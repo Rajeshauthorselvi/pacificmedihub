@@ -140,7 +140,7 @@ class OrderController extends Controller
           $created_user_type=1;
           $auth_id=Auth::id();
        }
-
+       $customer_address=User::where('id',$request->customer_id)->value('address_id');
         $order_data=[
             'rfq_id'                => $request->rfq_id,
             'sales_rep_id'          => $request->sales_rep_id,
@@ -160,6 +160,7 @@ class OrderController extends Controller
             'created_user_type'     => $created_user_type,
             'notes'                 => $request->note,
             'order_completed_at'    => $order_completed_at,
+            'address_id'            => $customer_address,
             'created_at'            => date('Y-m-d H:i:s')
        ];
        

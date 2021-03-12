@@ -215,14 +215,18 @@ class RFQController extends Controller
                             ->pluck('product_variant_id')->toArray();
         $options         = $this->Options($product->product_id);
         $product_variant = $this->Variants($product->product_id,$all_variants);
-
+        $check_rfq_price_exists=RFQProducts::where('rfq_id',$id)
+                                ->where('product_id',$product->product_id)
+                                ->whereNotNull('last_rfq_price')
+                                ->exists();
         $product_data[$product->product_id]=[
           'rfq_id'          => $id,
           'product_id'      => $product->product_id,
           'product_name'    => $product_name,
           'options'         => $options['options'],
           'option_count'    => $options['option_count'],
-          'product_variant' => $product_variant
+          'product_variant' => $product_variant,
+          'check_rfq_price_exists' => $check_rfq_price_exists
         ];
       }
       $rfq = RFQ::where('id',$id)->first();

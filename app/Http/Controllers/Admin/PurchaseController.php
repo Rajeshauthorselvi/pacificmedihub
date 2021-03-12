@@ -247,8 +247,10 @@ class PurchaseController extends Controller
         Purchase::where('id',$request->id)->update(['payment_status'=>$payment_status]);
       }
 
-
-      return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');
+      if ($request->has('from')) {
+        return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');  
+      }
+      return Redirect::route('low-stock.index')->with('success','Purchase order created successfully...!');
     }
 
     /**

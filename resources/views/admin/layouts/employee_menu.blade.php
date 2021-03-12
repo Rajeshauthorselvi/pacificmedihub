@@ -34,6 +34,9 @@ if(Auth::guard('employee')->user()->isAuthorized('rfq','read')){
 if(Auth::guard('employee')->user()->isAuthorized('order','read')){
   $order="yes";
 }
+if(Auth::guard('employee')->user()->isAuthorized('completed_orders','read')){
+  $completed_order="yes";
+}
 if(Auth::guard('employee')->user()->isAuthorized('customer','read')){
   $customer="yes";
 }
@@ -101,8 +104,6 @@ if(Auth::guard('employee')->user()->isAuthorized('currency_setting','read')){
 if(Auth::guard('employee')->user()->isAuthorized('payment_setting','read')){
   $payment_setting="yes";
 }
-
-
 ?>
   <span style="display: none;">{{$current_route=request()->route()->getName()}}</span>
   <!-- Main Sidebar Container -->
@@ -229,12 +230,33 @@ if(Auth::guard('employee')->user()->isAuthorized('payment_setting','read')){
               <a href="{{route('rfq.index')}}" class="nav-link"><i class="fas fa-clipboard-list"></i> <p>RFQ</p></a>
             </li>
           @endif
-          @if ($order!="")
-          <!-- Orders Menu -->
-          <li class="nav-item @if($current_route=='orders.index'||$current_route=='orders.create'||$current_route=='orders.edit'||$current_route=='orders.show') active @endif">
-            <a href="{{route('orders.index')}}" class="nav-link"><i class="fas fa-dolly-flatbed"></i> <p>Orders</p></a>
+          {{-- Ordesr Menu --}}
+          @if ($order!="" || isset($completed_order))
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <i class="fas fa-dolly-flatbed"></i> <p>Orders <i class="fas fa-angle-left right"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+
+              @if ($order!="")
+                <li class="nav-item">
+                  <a href="{{ route('orders.index') }}" class="nav-link">
+                    <i class="fas fa-angle-double-right"></i> <p>List Orders</p>
+                  </a>
+                </li>
+              @endif
+              @if (isset($completed_order))
+                <li class="nav-item">
+                  <a href="{{ route('completed-orders.index') }}" class="nav-link">
+                    <i class="fas fa-angle-double-right"></i> <p>Completed Orders</p>
+                  </a>
+                </li>
+              @endif
+            </ul>
           </li>
           @endif
+          
+
           @if ($customer!="")
           <!-- Customer Menu -->
           <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit'||$current_route=='customers.show') active @endif">

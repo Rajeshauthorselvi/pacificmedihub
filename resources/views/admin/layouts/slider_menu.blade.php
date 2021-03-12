@@ -98,6 +98,11 @@
                   <i class="fas fa-angle-double-right"></i> <p>Wastage/Write Off</p>
                 </a>
               </li>
+              <li class="nav-item @if($current_route=='low.index') active @endif">
+                <a href="{{ route('low-stocks.index') }}" class="nav-link">
+                  <i class="fas fa-angle-double-right"></i> <p>Low Stock Alert</p>
+                </a>
+              </li>
             </ul>
           </li>
 
@@ -106,9 +111,22 @@
             <a href="{{route('rfq.index')}}" class="nav-link"><i class="fas fa-clipboard-list"></i> <p>RFQ</p></a>
           </li>
 
-          <!-- Orders Menu -->
-          <li class="nav-item @if($current_route=='orders.index'||$current_route=='orders.create'||$current_route=='orders.edit'||$current_route=='orders.show') active @endif">
-            <a href="{{route('orders.index')}}" class="nav-link"><i class="fas fa-dolly-flatbed"></i> <p>Orders</p></a>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <i class="fas fa-dolly-flatbed"></i> <p>Orders <i class="fas fa-angle-left right"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('orders.index') }}" class="nav-link">
+                  <i class="fas fa-angle-double-right"></i> <p>List Orders</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('completed-orders.index') }}" class="nav-link">
+                  <i class="fas fa-angle-double-right"></i> <p>Completed Orders</p>
+                </a>
+              </li>
+            </ul>
           </li>
           
           <!-- Customer Menu -->

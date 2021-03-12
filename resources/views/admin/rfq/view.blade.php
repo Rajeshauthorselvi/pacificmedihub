@@ -208,6 +208,9 @@
                                           <th>Base Price</th>
                                           <th>Retail Price</th>
                                           <th>Minimum Selling Price</th>
+                                          @if ($product['check_rfq_price_exists'])
+                                            <th>Last RFQ Price</th>
+                                          @endif
                                           <th>Quantity</th>
                                           <th>RFQ Price</th>
                                           <th>Subtotal</th>
@@ -240,6 +243,11 @@
                                             <td>
                                               <div class="form-group">{{ $variation_details['quantity'] }}</div>
                                             </td>
+                                            @if ($product['check_rfq_price_exists'])
+                                            <td>
+                                                {{ $variation_details->last_rfq_price }}
+                                            </td>
+                                            @endif
                                             <td>
                                               <?php $high_value=$variation_details['rfq_price']; ?>
                                               {{ $high_value }}
