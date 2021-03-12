@@ -98,6 +98,11 @@
                   <i class="fas fa-angle-double-right"></i> <p>Wastage/Write Off</p>
                 </a>
               </li>
+              <li class="nav-item @if($current_route=='low.index') active @endif">
+                <a href="{{ route('low-stocks.index') }}" class="nav-link">
+                  <i class="fas fa-angle-double-right"></i> <p>Low Stock Alert</p>
+                </a>
+              </li>
             </ul>
           </li>
 

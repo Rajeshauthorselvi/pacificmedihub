@@ -168,6 +168,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('cop_pdf/{order_id}','Admin\CompletedOrders@COPPdf');
 	Route::resource('completed-orders','Admin\CompletedOrders');
 	Route::resource('low-stocks','Admin\LowStockAlertController');
+	Route::resource('low-stock-purchase','Admin\LowStockPurchaseController');
 
 });
 

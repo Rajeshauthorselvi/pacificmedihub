@@ -21,17 +21,32 @@ class LowStockAlertController extends Controller
         $data=array();
         $products=Product::select('id','name','alert_quantity')->whereNotNull('alert_quantity')->get();
         $stock_details=array();
+        $avalivle_low_quantity=array();
         foreach ($products as $key => $product) {
             $query=DB::table('product_variant_vendors as pvv')
                    ->leftjoin('product_variants as pv','pv.id','pvv.product_variant_id')
                    ->where('pv.product_id',$product->id)
                    ->where('pvv.stock_quantity','<=',$product->alert_quantity)
                    ->get();
-            $stock_details[$product->name]=$query;
+
+                   foreach ($query as $key => $qq) {
+                       $check_purchase_exists=DB::table('purchase as p')
+                                              ->leftjoin('purchase_products as pp','p.id','pp.purchase_id')
+                                              ->where('pp.product_id',$product->id)
+                                              ->where('pp.product_variation_id',$qq->id)
+                                              ->where('p.purchase_status','<>',2)
+                                              ->exists();
+                        if (!$check_purchase_exists) {
+                             array_push($avalivle_low_quantity, $qq);
+                        }
+                   }
+
+            $stock_details[$product->name]=$avalivle_low_quantity;
         }
 
         $data['stock_details']=$stock_details;
         $data['all_vendors']=[''=>'Please Select']+Vendor::where('is_deleted',0)->where('status',1)->pluck('name','id')->toArray();
+
         return view('admin.stock.low_stock.index',$data);
     }
 
