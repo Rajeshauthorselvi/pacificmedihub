@@ -27,6 +27,8 @@ class LowStockAlertController extends Controller
                    ->leftjoin('product_variants as pv','pv.id','pvv.product_variant_id')
                    ->where('pv.product_id',$product->id)
                    ->where('pvv.stock_quantity','<=',$product->alert_quantity)
+                   ->where('pv.disabled',0)
+                   ->where('pv.is_deleted',0)
                    ->get();
 
                    foreach ($query as $key => $qq) {
