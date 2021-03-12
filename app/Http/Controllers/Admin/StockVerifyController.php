@@ -4,115 +4,73 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Purchase;
-use App\Models\PurchaseProducts;
-use App\Models\OrderStatus;
-use App\Models\ProductVariant;
-use App\Models\PaymentMethod;
-use App\Models\ProductVariantVendor;
+use App\Models\Orders;
 use App\Models\Product;
-use App\Models\Vendor;
-use App\Models\Prefix;
-use App\Models\PaymentHistory;
-use App\Models\Tax;
-use App\Models\PaymentTerm;
-use App\Models\UserCompanyDetails;
-use App\Models\PurchaseStockHistory;
-use App\Models\PurchseAttachments;
-use App\User;
+use App\Models\ProductVariantVendor;
+use App\Models\OrderProducts;
+use App\Models\ProductVariant;
 use App\Models\Employee;
-use Session;
+use App\User;
+use App\Events\StockNotificationEvent;
+use Mail;
 use Redirect;
-use Response;
-use Auth;
-use DB;
-use PDF;
-use Str;
-use App\Models\LowStock\PurchaseHistory;
-class LowStockPurchaseController extends Controller
+class StockVerifyController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $order_id=$request->order_id;
+        $data['order']=$order_details=Orders::with('orderProducts')->where('orders.id',$order_id)->first();
+        $low_quantity_data=array();
+        $products = OrderProducts::where('order_id',$order_id)->get();
+        $product_data=array();
+        foreach ($products as $key => $product) {
+            $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-      $data=array();
-
-          $product_id=$request->product_id;
-          $variant_id=$request->product_variant_id;
-          $vendor_id=$request->vendor_id;
-
-          $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,2,8])
-                                        ->pluck('status_name','id')->toArray();
-          $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
-          $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
-                                        ->pluck('name','id')->toArray();
-          $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
-          $data['purchase_code']='';
-          $purchase_code = Prefix::where('key','prefix')->where('code','purchase_no')->value('content');
-          if (isset($purchase_code)) {
-            $value = unserialize($purchase_code);
-            $char_val = $value['value'];
-            $year = date('Y');
-            $total_datas = Purchase::count();
-            $total_datas_count = $total_datas+1;
-
-            if(strlen($total_datas_count)==1){
-                $start_number = '0000'.$total_datas_count;
-            }else if(strlen($total_datas_count)==2){
-                $start_number = '000'.$total_datas_count;
-            }else if(strlen($total_datas_count)==3){
-                $start_number = '00'.$total_datas_count;
-            }else if(strlen($total_datas_count)==4){
-                $start_number = '0'.$total_datas_count;
-            }else{
-                $start_number = $total_datas_count;
+            if ($product->quantity > $check_product_quantity) {
+                $product_name    = Product::where('id',$product->product_id)->value('name');
+                $options         = $this->Options($product->product_id);
+                $all_variants    = OrderProducts::where('order_id',$order_id)->where('product_id',$product->product_id)->pluck('product_variation_id')->toArray();
+                $product_variant = $this->Variants($product->product_id,$all_variants);
+                $product_data[$product->product_id] = [
+                    'order_id'        => $order_id,
+                    'product_id'      => $product->product_id,
+                    'product_name'    => $product_name,
+                    'options'         => $options['options'],
+                    'option_count'    => $options['option_count'],
+                    'product_variant' => $product_variant,
+                    'order_quantity'        => $product->quantity,
+                    'total_avail_quantity'  => $check_product_quantity
+                ];
             }
-            $replace_year = str_replace('[yyyy]', $year, $char_val);
-            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
-            $data['purchase_code']=$replace_number;
-          }
-           
-           $data['product_name']=$product_name    = Product::where('id',$product_id)->value('name');
-           $options         = $this->Options($product_id);
-           $all_variants    = [$variant_id];
-           $product_variant = $this->Variants($product_id,$all_variants);
-           $product_data[$product_id] = [
-              'row_id'          => $product_id,
-              'product_id'      => $product_id,
-              'product_name'    => $product_name,
-              'options'         => $options['options'],
-              'option_count'    => $options['option_count'],
-              'product_variant' => $product_variant
-            ];
-            $data['purchase_products'] = $product_data;
-        $all_vendors=DB::table('vendors')
-                   ->where('status',1)
-                   ->where('id',$vendor_id)
-                   ->pluck('name','id')->toArray();
+        }
+      if ($order_details->created_user_type==2) {
+        $creater_name=Employee::where('id',$order_details->customer_id)->first();
+        $creater_name=$creater_name->emp_name;
+      }
+      else{
+        $creater_name=User::where('id',$order_details->customer_id)->first();
+        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+      }
 
-        $data['vendors'] = [''=>'Please Select']+$all_vendors;
-        $data['selected_vendor']=$vendor_id;
-        $data['product_id']=$product_id;
-        $data['options'] = $options['options'];
-        $data['option_count'] = $options['option_count'];
-        $data['product_variant'] = $product_variant;
+      $data['creater_name']=$creater_name;
+      $data['product_data']=$product_data;
 
-        return view('admin.stock.low_stock_purchase.create',$data);
+
+
+        Mail::send('admin.orders.completed_orders.notification_email', $data, function ($m) use($order_details) {
+         $m->from('dhinesh@authorselvi.com');
+           $m->to('dhinesh@authorselvi.com', 'Notification')->subject($order_details->order_no.'-Need quantity');
+       });
+
+
+        return Redirect::back()->with('success','Notification sent successfully...!');
     }
-   public function Variants($product_id,$variation_id=0)
+ public function Variants($product_id,$variation_id=0)
     {
 
         $variant = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->first();
@@ -120,17 +78,16 @@ class LowStockPurchaseController extends Controller
         if ($variation_id!=0) {
 
              $productVariants = ProductVariant::where('product_id',$product_id)
-                                  ->where('is_deleted',0)
-                                  ->whereIn('id',$variation_id)
-                                  ->where('disabled',0)
-                                  ->get();
+                            ->where('disabled',0)->where('is_deleted',0)
+                            ->whereIn('id',$variation_id)
+                            ->get();
         }
         else{
             $productVariants = ProductVariant::where('product_id',$product_id)
-                               ->where('is_deleted',0)
-                               ->where('disabled',0)
+                               ->where('disabled',0)->where('is_deleted',0)
                                ->get();
         }
+
 
         $product_variants = array();
         foreach ($productVariants as $key => $variants) {
@@ -258,6 +215,16 @@ class LowStockPurchaseController extends Controller
         return ['options'=>$options,'option_count'=>$option_count];
     }
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -274,9 +241,48 @@ class LowStockPurchaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($order_id)
     {
-        //
+
+
+        $data['order']=$order_details=Orders::with('orderProducts')->where('orders.id',$order_id)->first();
+        $low_quantity_data=array();
+        $products = OrderProducts::where('order_id',$order_id)->get();
+        $product_data=array();
+        foreach ($products as $key => $product) {
+            $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
+
+            $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
+
+            if ($product->quantity > $check_product_quantity) {
+                $product_name    = Product::where('id',$product->product_id)->value('name');
+                $all_variants    = OrderProducts::where('order_id',$order_id)->where('product_id',$product->product_id)->pluck('product_variation_id')->toArray();
+                $product_data[] = [
+                    'order_id'        => $order_id,
+                    'product_id'      => $product->product_id,
+                    'product_name'    => $product_name,
+                    'order_quantity'        => $product->quantity,
+                    'total_avail_quantity'  => $check_product_quantity
+                ];
+
+            }
+        }
+
+      if ($order_details->created_user_type==2) {
+        $creater_name=Employee::where('id',$order_details->customer_id)->first();
+        $creater_name=$creater_name->emp_name;
+      }
+      else{
+        $creater_name=User::where('id',$order_details->customer_id)->first();
+        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+      }
+
+      $data['creater_name']=$creater_name;
+      $data['product_data']=$product_data;
+
+      // dd($data);
+      return view('admin.stock.stock_verify.index',$data);
+
     }
 
     /**

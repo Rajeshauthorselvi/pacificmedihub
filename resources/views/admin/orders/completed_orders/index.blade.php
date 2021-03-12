@@ -32,7 +32,7 @@
               </div>
               <div class="card">
                 <div class="card-body">
-                  <table id="example2" class="table table-bordered table-striped">
+                  <table id="example2" class="table table-bordered" >
                     <thead>
                       <tr>
                         <th>Ordered Date</th>
@@ -47,7 +47,23 @@
                     </thead>
                     <tbody>
                       @foreach ($completed_orders as $order)
-                        <tr>
+                      <?php 
+                      $check_quantity=\App\Models\Orders::CheckQuantity($order->id);
+
+                      $disabled_stock_notify="";
+                        if(isset($order->deliveryPerson) ){
+                          $disabled_stock_notify="pointer-events:none;opacity:0.5";
+                        }
+                        
+                        if (isset($check_quantity[0]) && $check_quantity[0]=="yes") {
+                            $class_bg="background:#ffedb9 !important";
+                        }
+                        else{
+                          $class_bg="";
+                        }
+
+                      ?>
+                        <tr style="{{ $class_bg }}">
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
                             {{ isset($order->delivered_at)?date('d M Y g:i A',strtotime($order->delivered_at)):'-' }}
@@ -98,6 +114,17 @@
                                 <a href="{{ url('admin/cop_print/'.$order->id) }}" target="_blank">
                                   <li class="dropdown-item" >
                                   <i class="fa fa-print"></i>&nbsp;&nbsp;Print
+                                </li>
+                                </a>
+
+                                <a href="{{ route('verify-stock.show',[$order->id]) }}">
+                                  <li class="dropdown-item"  style="{{ $disabled_stock_notify }}">
+                                  <i class="fa fa-check-circle"></i>&nbsp;&nbsp;Verify Stock
+                                </li>
+                                </a>
+                                <a href="{{ route('verify-stock.index',['order_id'=>$order->id]) }}" target="_blank" style="{{$disabled_stock_notify}}">
+                                  <li class="dropdown-item" >
+                                  <i class="fa fa-user"></i>&nbsp;&nbsp;Notify Admin
                                 </li>
                                 </a>
                               </ul>

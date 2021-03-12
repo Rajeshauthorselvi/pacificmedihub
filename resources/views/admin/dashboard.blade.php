@@ -105,9 +105,9 @@
                 <p>Total Low Stocks</p>
               </div>
               <div class="icon">
-                <span>0</span>
+                <span>{{ $low_stock_count }}</span>
               </div>
-              <a href="{{route('stock-in-transit.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('low-stocks.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->

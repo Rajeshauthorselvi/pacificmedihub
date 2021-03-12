@@ -169,6 +169,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('completed-orders','Admin\CompletedOrders');
 	Route::resource('low-stocks','Admin\LowStockAlertController');
 	Route::resource('low-stock-purchase','Admin\LowStockPurchaseController');
+	Route::resource('verify-stock','Admin\StockVerifyController');
 
 });
 
