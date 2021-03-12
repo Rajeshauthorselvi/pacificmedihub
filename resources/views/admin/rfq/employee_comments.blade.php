@@ -129,17 +129,43 @@
                 </div>
                 <!--/.direct-chat-messages-->
                 <hr>
- 				<form action="{{ url('admin/rfq-comments-post') }}" method="post">
+ 				<form action="{{ url('admin/rfq-comments-post') }}" method="post" files="true" enctype="multipart/form-data">
  				@csrf
 
  				  <input type="hidden" name="rfq_id" value="{{ $rfq_id }}">
                   <div class="input-group">
                     <input type="text" name="comment" placeholder="Type Message ..." class="form-control">
                     <span class="input-group-append">
+                      <button type="button" class="btn btn-info" id="attachment">
+                        <i class="fa fa-paperclip"></i>
+                      </button>
                       <button type="submit" class="btn btn-primary">Send</button>
                     </span>
                   </div>
+        <!-- Modal -->
+        <div class="modal fade" id="attachment-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">Attach your file</div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <input type="file" name="attachment[]" class="form-control">
+                </div>
+                <div class="append-sec"></div>
+                <div class="text-right">
+                  <a href="javascript:void(0)" class="btn btn-primary add-more">
+                    <i class="fa fa-plus"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+              </div>
+            </div>
+          </div>
+        </div> 
                 </form>
+
                 <!-- /.direct-chat-pane -->
                 </div>
               </div>

@@ -431,7 +431,7 @@ class OrderController extends Controller
             'order_tax_amount'      => $rfq->order_tax_amount,
             'total_amount'          => $rfq->total_amount,
             'sgd_total_amount'      => $rfq->sgd_total_amount,
-            'exchange_total_amount' => $rfq->exchange_rate,
+            'exchange_total_amount' => $rfq->exchange_total_amount,
             'user_id'               => $rfq->user_id,
             'notes'                 => $rfq->notes,
             'created_at'            => date('Y-m-d H:i:s')
