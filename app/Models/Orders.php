@@ -108,12 +108,14 @@ class Orders extends Model
                                               ->exists();
                         if (!$check_purchase_exists) {
                              array_push($avalivle_low_quantity, $qq);
+                             $stock_details[$product->name]=$avalivle_low_quantity;
                              $count +=1;
                         }
                    }
 
-            $stock_details[$product->name]=$avalivle_low_quantity;
+            
         }
+
         return ['low_stock_count'=>$count,'stock_details'=>$stock_details];
     }
 }

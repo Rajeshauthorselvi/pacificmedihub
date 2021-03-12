@@ -76,13 +76,13 @@
                                               </td>
                                             @endif
                                             <td style="border: 1px solid #000">
-                                              {{ $product['total_avail_quantity'] }}
+                                              {{ $variant['stock_quantity'] }}
                                             </td>
                                             <td style="border: 1px solid #000">
                                               {{ $variation_details['quantity'] }}
                                             </td>
                                             <td style="border: 1px solid #000">
-                                              {{ $variation_details['quantity']-$product['total_avail_quantity'] }}
+                                              {{ $variation_details['quantity']-$variant['stock_quantity'] }}
                                             </td>
                                           </tr>
                                           <?php $total_quantity +=$variation_details['quantity']; ?>

@@ -59,7 +59,7 @@ class StockVerifyController extends Controller
 
       $data['creater_name']=$creater_name;
       $data['product_data']=$product_data;
-
+      
 
 
         Mail::send('admin.orders.completed_orders.notification_email', $data, function ($m) use($order_details) {
