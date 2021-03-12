@@ -30,7 +30,7 @@
              	</a>
             </li>
             <li>
-              <a class="link" href="javascript:void(0);">
+              <a class="link" href="{{ route('wishlist.index') }}">
             		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
             	</a>
             </li>

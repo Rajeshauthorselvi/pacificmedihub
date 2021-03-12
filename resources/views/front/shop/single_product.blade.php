@@ -51,6 +51,8 @@
 					</div>
 				</div>
 
+				<input type="hidden" class="product-img" value="{{ isset($product->main_image)?$product->main_image:'placeholder.jpg' }}">
+
 				@if(isset($product))
 				<div class="col-md-6">
 					<h2>{{ $product->name }}</h2>
@@ -296,7 +298,9 @@
         $('.cart-btn').on('click',function() {
        		var variantId = $(this).attr('variant-id');
        		var productId = <?php echo $product->id; ?>;
+       		var productImg = $('.product-img').val();
        		var qty = $('.qty-count').val();
+       		var variantSku = $('#printSku').text();
 
        		$.ajax({
 	            url:"{{ route('cart.store') }}",
@@ -304,7 +308,9 @@
 	            data:{
 	            	"_token": "{{ csrf_token() }}",
 	            	variant_id: variantId,
+		            variant_sku: variantSku,
 		            product_id: productId,
+		            product_img: productImg,
 		            qty_count: qty,
 		            price: 0
 	            },

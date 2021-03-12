@@ -58,7 +58,23 @@
 						    		<div class="product-thumb">
 						    			<a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}"><img src="{{asset($image)}}" alt="{{ $product->name }}" width="269" height="232" /></a>
 						    			<div class="pro-tag"><span class="new-label">NEW</span></div>
-						    			<div class="pro-fav"><a class="wishlist-action" href="javascript:void(0);"></a></div>
+						    			<div class="pro-fav">
+						    				<?php 
+						    					$wish_list = 0;
+						    					$wish_list = array_search($product->id, array_column($wishlist, 'product_id'));
+						    					$row = $wish_list+1;
+						    					$check_wish = (string)$wish_list;
+						    					if((count($wishlist)!=0)&&$check_wish!=""){
+						    						$row_id = $wishlist[$row]['row_id'];
+						    						$icon = 'fas';
+						    					}else{
+						    						$row_id = 1;
+						    						$icon = 'far';
+						    					}
+						    					
+						    				?>
+						    				<a productID="{{$product_id}}" rowID="{{ $row_id }}" class="wishlist-action"><i class="{{ $icon }} fa-heart"></i></a>
+					    				</div>
 						    		</div>
 						    		<div class="product-info">
 						    			<a class="btn" href="javascript:void(0);">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a>
@@ -99,7 +115,23 @@
 							    				@if(($product->created_at)>=($date))
 							    					<div class="pro-tag"><span class="new-label">NEW</span></div>
 							    				@endif
-							    				<div class="pro-fav"><a class="wishlist-action" href="javascript:void(0);"></a></div>
+							    				<div class="pro-fav">
+								    				<?php 
+								    					$wish_list = 0;
+								    					$wish_list = array_search($product->id, array_column($wishlist, 'product_id'));
+								    					$row = $wish_list+1;
+								    					$check_wish = (string)$wish_list;
+								    					if((count($wishlist)!=0)&&$check_wish!=""){
+								    						$row_id = $wishlist[$row]['row_id'];
+								    						$icon = 'fas';
+								    					}else{
+								    						$row_id = 1;
+								    						$icon = 'far';
+								    					}
+								    					
+								    				?>
+								    				<a productID="{{$product_id}}" rowID="{{ $row_id }}" class="wishlist-action"><i class="{{ $icon }} fa-heart"></i></a>
+							    				</div>
 							    			</div>
 							    			<div class="product-info">
 							    				<a class="btn" href="javascript:void(0)">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a>
@@ -120,6 +152,37 @@
 
 @push('custom-scripts')
 <script type="text/javascript">
+	$(document).find('.wishlist-action').click(function () {
+		var prodID  = $(this).attr('productID');
+		var rowID = $(this).attr('rowID');
+
+		if(rowID==0||rowID==1){
+			$(this).children('.fa-heart').attr('class','fas fa-heart');
+		}else{
+			$(this).children('.fa-heart').attr('class','far fa-heart');
+		}
+		
+		$.ajax({
+            url:"{{ route('wishlist.store') }}",
+            type:"POST",
+            data:{
+            	"_token": "{{ csrf_token() }}",
+            	product_id:prodID,
+            	row_id:rowID
+            },
+            success:function(res){
+            	if(res=='removed'){
+            		$(this).children('.fa-heart').attr('class','far fa-heart');
+            	}else if(res=='added'){
+            		$(this).children('.fa-heart').attr('class','fas fa-heart');
+            	}else if(res==false){
+            		window.location.href = "{{ route('customer.login') }}";
+            	}
+            }
+        })
+	});
+
+
 $ (document).ready(function() {
 	$('#home_slider').owlCarousel({
 	    loop:true,

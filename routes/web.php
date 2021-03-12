@@ -178,6 +178,9 @@ Route::get('my-profile/{id}','front\ProfileController@index')->name('profile.ind
 
 //Cart
 Route::resource('cart','front\CartController');
+Route::put('updatecart/{id}', 'front\CartController@update');
+//Wishlist
+Route::resource('wishlist', 'front\WishlistController');
 
 //Home Page
 Route::get('home','front\HomePageController@index');
