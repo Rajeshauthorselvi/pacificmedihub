@@ -11,6 +11,25 @@
 		$header_category_status = "";
 		$header_category_style  = "none";
 	}
+
+	$cart_data = [];
+	$cart_count = 0;
+	if(Auth::check()){
+        $user_id = Auth::id();
+        Cart::instance('cart')->restore('userID_'.$user_id);
+        $cart_items = Cart::content();
+        $cart_count = Cart::count();
+        foreach($cart_items as $key => $items)
+        {
+            $cart_data[$key]['uniqueId']      = $items->getUniqueId();
+            $cart_data[$key]['product_id']    = $items->id;
+            $cart_data[$key]['product_name']  = $items->name;
+            $cart_data[$key]['product_image'] = $items->options['product_img'];
+            $cart_data[$key]['qty']           = $items->quantity;
+            $cart_data[$key]['variant_id']    = $items->options['variant_id'];
+        }
+    }
+    $cartData = $cart_data;
 ?>
 <div class="header">
 	<div class="container">
@@ -86,6 +105,7 @@
 			                    	<span id="search_concept">All Categories </span> <span class="caret"></span>
 			                    </button>
 			                    <ul class="dropdown-menu" role="menu">
+			                    	<li><a class="search-category" href="" catgory-id="0">All Categories </a></li>
 			                    	@foreach($categories as $categoy)
 										<li><a class="search-category" href="" catgory-id="{{ $categoy->id }}">{{ $categoy->name }}</a></li>
 									@endforeach
@@ -104,12 +124,46 @@
                	<div class="col-sm-4 col-xs-3">
                		<div class="bottom-nav">
                			<ul>
-               				<li><a class="nav-link" href="javascript:void(0);">My Wishlist</a></li>
-               				<li><a class="nav-link" href="javascript:void(0);">Sign In</a></li>
+               				@if(!Auth::check())
+               					<li><a class="nav-link" href="{{ route('customer.login') }}">Sign In</a></li>
+               				@else
+               					<?php 
+               						$name = Auth::user()->first_name.' '.Auth::user()->last_name;
+               						$id = Auth::id();
+               					?>
+               					<li class="customer-dropdown">
+               						<a class="nav-link" href="javascript:void(0);">
+               							{{ $name }}<i class="fas fa-sort-down"></i>
+               						</a>
+               						<div class="customer-menu">
+				                    	<a class="menu-list" href="{{ route('profile.index',$id) }}">
+				                    		<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
+				                    	</a>
+				                    	<a class="menu-list" href="javascript:void(0);">
+				                    		<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
+				                    	</a>
+				                    	<a class="menu-list" href="javascript:void(0);">
+				                    		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
+				                    	</a>
+				                    	<a class="menu-list" href="{{ route('cart.index') }}">
+				                    		<i class="fas fa-shopping-cart"></i>&nbsp;&nbsp;My Cart
+				                    	</a>
+				                    	<a class="menu-list" href="{{ route('wishlist.index') }}">
+				                    		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
+				                    	</a>
+				                    	<a class="menu-list" href="javascript:void(0);">
+				                    		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
+				                    	</a>
+				                    		<a class="menu-list" href="{{route('customer.logout')}}">
+				                    		<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout
+				                    	</a>
+			                    	</div>
+               					</li>
+               				@endif
                				<li class="cart__menu">
 								<a class="nav-link" href="javascript:void(0);" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
 				                  <i class="fas fa-shopping-cart"></i>
-				                  <span class="badge rounded-pill badge-notification">12</span>
+				                  <span class="badge rounded-pill badge-notification">{{ $cart_count }}</span>
 				                </a>
                				</li>
                			</ul>
@@ -124,45 +178,47 @@
 <div class="body__overlay"></div>
 <!-- Start Cart Panel -->
 <div class="shopping__cart">
-    <div class="shopping__cart__inner">
-        <div class="offsetmenu__close__btn">
-            <a href="#"><i class="fas fa-times"></i></a>
-        </div>
-        <div class="shp__cart__wrap">
-            <div class="shp__single__product">
-                <div class="shp__pro__thumb">
-                    <a href="#">
-                        <img src="https://via.placeholder.com/150/cccccc/000000/?text=Product%20image" alt="product images">
-                    </a>
-                </div>
-                <div class="shp__pro__details">
-                    <h2><a href="product-details.html">BO&Play Wireless Speaker</a></h2>
-                    <span class="quantity">QTY: 1</span>
-                </div>
-                <div class="remove__btn">
-                    <a href="#" title="Remove this item"><i class="far fa-times-circle"></i></a>
-                </div>
-            </div>
-            <div class="shp__single__product">
-                <div class="shp__pro__thumb">
-                    <a href="#">
-                        <img src="https://via.placeholder.com/150/cccccc/000000/?text=Product%20image" alt="product images">
-                    </a>
-                </div>
-                <div class="shp__pro__details">
-                    <h2><a href="product-details.html">Brone Candle</a></h2>
-                    <span class="quantity">QTY: 1</span>
-                </div>
-                <div class="remove__btn">
-                    <a href="#" title="Remove this item"><i class="far fa-times-circle"></i></a>
-                </div>
-            </div>
-        </div>
-        <ul class="shopping__btn">
-            <li><a href="cart.html">View Cart</a></li>
-            <li class="shp__checkout"><a href="checkout.html">RGQ</a></li>
-        </ul>
-    </div>
+    @if($cart_count!=0)
+    	<div class="shopping__cart__inner">
+	        <div class="offsetmenu__close__btn">
+	            <a href="javascript:void(0);"><i class="fas fa-times"></i></a>
+	        </div>
+        	<div class="shp__cart__wrap">
+	        	@foreach($cartData as $data)
+		            <div class="shp__single__product">
+		                <div class="shp__pro__thumb">
+		                    <a href="javascript:void(0);">
+		                    	@if($data['product_image']!='placeholder.jpg')
+									<img src="{{asset('theme/images/products/main/'.$data['product_image'])}}">
+								@else
+									<img src="{{ asset('theme/images/products/placeholder.jpg') }}">
+								@endif
+		                    </a>
+		                </div>
+		                <div class="shp__pro__details">
+		                    <h2><a href="javascript:void(0);">{{ $data['product_name'] }}</a></h2>
+		                    <span class="quantity">QTY: {{ $data['qty'] }}</span>
+		                </div>
+		                {{-- <div class="remove__btn">
+		                	<form method="POST" action="{{ route('cart.destroy',$data['uniqueId']) }}">
+                                @csrf 
+                                <input name="_method" type="hidden" value="DELETE">
+                                <button class="btn" type="submit" onclick="return confirm('Are you sure you want to remove this item?');"><i class="far fa-times-circle"></i></button>
+                            </form>
+		                </div> --}}
+		            </div>
+		        @endforeach
+        	</div>
+        	<ul class="shopping__btn">
+            	<li><a href="{{ route('cart.index') }}">View Cart</a></li>
+            	<li class="shp__checkout"><a href="javascript:void(0);">RGQ</a></li>
+        	</ul>
+    	</div>
+    @else
+    	<div class="empty-cart">
+    		<img src="{{asset('theme/images/empty_cart.png') }}">
+    	</div>
+	@endif
 </div>
 <!-- End Cart Panel -->
 

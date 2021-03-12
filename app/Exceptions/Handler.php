@@ -81,7 +81,7 @@ class Handler extends ExceptionHandler
 
             return redirect()->route('error.page');
         }*/
-        
+       
         return parent::report($e);
     }
 

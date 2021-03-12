@@ -3,7 +3,7 @@
 <div class="breadcrumbs">
 	<div class="container">
 		<ul class="items">
-			<li><a href='/' title="Go to Home Page">Home</a></li>
+			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
 			<?php $all_cat_id = base64_encode('all'); ?>
 			<li><a href="{{ url("shop-by-category/$all_cat_id") }}" title="Categories Page">Categories</a></li>
 			<li><a title="Single Product Page">Products</a></li>
@@ -50,6 +50,8 @@
 						</div>
 					</div>
 				</div>
+
+				<input type="hidden" class="product-img" value="{{ isset($product->main_image)?$product->main_image:'placeholder.jpg' }}">
 
 				@if(isset($product))
 				<div class="col-md-6">
@@ -291,8 +293,36 @@
 		  		$(this).val(1);	
 		  	}
 		});
-
 	});
+
+        $('.cart-btn').on('click',function() {
+       		var variantId = $(this).attr('variant-id');
+       		var productId = <?php echo $product->id; ?>;
+       		var productImg = $('.product-img').val();
+       		var qty = $('.qty-count').val();
+       		var variantSku = $('#printSku').text();
+
+       		$.ajax({
+	            url:"{{ route('cart.store') }}",
+	            type:"POST",
+	            data:{
+	            	"_token": "{{ csrf_token() }}",
+	            	variant_id: variantId,
+		            variant_sku: variantSku,
+		            product_id: productId,
+		            product_img: productImg,
+		            qty_count: qty,
+		            price: 0
+	            },
+	        })
+       		.done(function() {
+	        	window.location.href = "{{ route('cart.index') }}";
+	        })
+	        .fail(function() {
+	        	console.log("error");
+	        })
+       	});
+        
 </script>
 
 @endpush

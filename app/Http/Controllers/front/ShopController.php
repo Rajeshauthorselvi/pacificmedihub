@@ -7,12 +7,27 @@ use Illuminate\Http\Request;
 use App\Models\Categories;
 use App\Models\Product;
 use App\Models\Option;
+use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
 use DB;
+use Auth;
 
 class ShopController extends Controller
 {
     public function category($value='',$category_id)
     {
+        $wishlist=[];
+        if(Auth::check()){
+            $user_id = Auth::id();
+            Cart::instance('wishlist')->restore('userID_'.$user_id);
+            $k = 1;
+            foreach(Cart::instance('Wishlist')->content() as $item){
+                $wishlist[$k]['product_id'] = $item->id;
+                $wishlist[$k]['row_id']     = $item->getUniqueId();
+                $k++;
+            }
+        }
+        $data['wishlist'] = $wishlist;
+
     	$id = base64_decode($category_id);
     	$category = Categories::where('id',$id)->first();
 

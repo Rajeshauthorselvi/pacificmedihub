@@ -32,7 +32,7 @@ class IsAdmin
         }elseif(Auth::user()->role_id==6){
             return redirect()->route('deliveryPerson.login');
         }elseif(Auth::user()->role_id==7){
-            return redirect()->route('customers.login');
+            return redirect()->route('customer.login');
         }else{
             return $next($request);    
         }        

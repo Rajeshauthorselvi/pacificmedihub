@@ -12,13 +12,29 @@ use App\Models\FeatureBlock;
 use App\Models\FeatureBlockData;
 use App\Models\Settings;
 use Carbon\Carbon;
+use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
 use DB;
+use Auth;
 
 class HomePageController extends Controller
 {
     public function index($value='')
     {
-    	$data = array();
+        $data = array();
+
+        $wishlist=[];
+        if(Auth::check()){
+            $user_id = Auth::id();
+            Cart::instance('wishlist')->restore('userID_'.$user_id);
+            $k = 1;
+            foreach(Cart::instance('Wishlist')->content() as $item){
+                $wishlist[$k]['product_id'] = $item->id;
+                $wishlist[$k]['row_id']     = $item->getUniqueId();
+                $k++;
+            }
+        }
+        $data['wishlist'] = $wishlist;
+
 
         $setting = Settings::where('key','front-end')->pluck('content','code')->toArray();
         if(isset($setting['home'])){
