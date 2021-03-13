@@ -141,6 +141,11 @@
 <script type="text/javascript">
 
 	$(document).find('.wishlist-action').click(function () {
+		var toastr = new Toastr({
+			theme: 'ocean',
+			animation: 'slide',
+			timeout: 5000
+		});
 		var prodID  = $(this).attr('productID');
 		var rowID = $(this).attr('rowID');
 
@@ -148,9 +153,11 @@
 		if(status==1){
 			$(this).attr('check','');
 			$(this).children('.fa-heart').attr('class','far fa-heart');
+			toastr.show('Item removed from Wishlist.!');
 		}else{
 			$(this).attr('check',1);
 			$(this).children('.fa-heart').attr('class','fas fa-heart');
+			toastr.show('Item added to Wishlist.!');
 		}
 		
 		$.ajax({

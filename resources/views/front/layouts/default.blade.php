@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="{{ asset('theme/plugins/fontawesome-free/css/all.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ asset('front/css/owl.carousel.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ asset('front/css/style.css') }}">
+  <!-- Toast -->
+  <link href="{{ asset('front/css/toastr/toastr.css') }}" rel="stylesheet">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed sidebar-collapse">
  @include('front.layouts.header')
@@ -30,6 +32,8 @@
 <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- Owl Carousel - 2.3.4 -->
 <script src="{{ asset('front/js/owl.carousel.min.js') }}"></script>
+<!-- Toast -->
+<script src="{{ asset('front/js/toastr/toastr.js') }}"></script>
 
 @stack('custom-scripts')
 </body>
