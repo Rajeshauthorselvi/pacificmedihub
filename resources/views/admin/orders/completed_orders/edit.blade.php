@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('completed-orders.index')}}">Order List</a></li>
+              <li class="breadcrumb-item"><a href="{{route('delivery-assign.index')}}">Order List</a></li>
               <li class="breadcrumb-item active">Edit Order</li>
             </ol>
           </div><!-- /.col -->
@@ -35,7 +35,7 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('completed-orders.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route('delivery-assign.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid">
@@ -47,7 +47,7 @@
               </div>
               <div class="card">
                 <div class="card-body">
-                  {!! Form::model($order,['method' => 'PATCH', 'route' =>['completed-orders.update',$order->id]]) !!}
+                  {!! Form::model($order,['method' => 'PATCH', 'route' =>['delivery-assign.update',$order->id]]) !!}
                     <div class="date-sec">
                       <div class="form-group">
                         <div class="col-sm-4">
@@ -202,7 +202,7 @@
 
                     <div class="form-group">
                       <div class="col-sm-12 submit-sec">
-                        <a href="{{ route('completed-orders.index') }}" class="btn  reset-btn">Cancel</a>
+                        <a href="{{ route('delivery-assign.index') }}" class="btn  reset-btn">Cancel</a>
                         <button class="btn save-btn" type="submit">Save</button>
                       </div>
                     </div>

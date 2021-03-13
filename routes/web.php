@@ -163,7 +163,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('get-commission-value','Admin\DashboardController@commissionValue');
 	Route::get('cop_print/{order_id}','Admin\CompletedOrders@COPrint');
 	Route::get('cop_pdf/{order_id}','Admin\CompletedOrders@COPPdf');
-	Route::resource('completed-orders','Admin\CompletedOrders');
+	Route::resource('delivery-assign','Admin\CompletedOrders');
 	Route::resource('low-stocks','Admin\LowStockAlertController');
 	Route::resource('low-stock-purchase','Admin\LowStockPurchaseController');
 	Route::resource('verify-stock','Admin\StockVerifyController');

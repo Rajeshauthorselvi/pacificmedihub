@@ -78,7 +78,7 @@ class OrderController extends Controller
         $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
 
-        $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[3,13,11])->pluck('status_name','id')
+        $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[3,18,11])->pluck('status_name','id')
                                         ->toArray();
         $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
         $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
@@ -289,7 +289,7 @@ class OrderController extends Controller
                                         ->where('role_id',7)->pluck('first_name','id')->toArray();
         $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
-        $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[3,13,11])->pluck('status_name','id')
+       $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[3,18,11])->pluck('status_name','id')
                                         ->toArray();
         $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
         $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();

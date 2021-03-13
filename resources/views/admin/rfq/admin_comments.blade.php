@@ -28,7 +28,7 @@
           <a href="{{route('rfq.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
-      <div class="container-fluid rfq show-page">
+      <div class="container-fluid rfq comment-page">
         <div class="row">
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -37,31 +37,40 @@
               </div>
               <div class="card">
                 <div class="card-body">
+                  <div class="rfq-info">
+                    <ul>
+                      <li>Order No: {{ $rfq_details->order_no }}</li>
+                      <li>Date: {{ date('d/m/Y',strtotime($rfq_details->created_at)) }}</li>
+                      <li>Status: {{ $rfq_details->statusName->status_name }}</li>
+                      <li>Sales Rep: {{ $rfq_details->salesrep->emp_name }}</li>
+                    </ul>
+                  </div>
+                  <br>
+                  <br>
                   <div class="action_sec">
                     <div class="clearfix"></div>
+
+                     <div class="clearfix"></div>
                     <ul class="list-unstyled">
                       <li>
-                        <a href="{{ route('rfq.toOrder',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
+                 <?php 
+                      $disabled="";
+                      if ($rfq_details->status==10) {
+                          $disabled="pointer-events:none;opacity:0.5";
+                      }
+                      ?>
+                        <a href="{{ route('rfq.toOrder',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')" style="{{ $disabled }}">
                           <i class="fa fa-plus-circle"></i>&nbsp; Place Order
                         </a>
                       </li>
                       <li>
-                        <a href="{{ url('admin/rfq_pdf/'.$rfq_id) }}" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
-                      </li>
-                      <li>
-                        <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
-                      </li>
-                      <li>
-                        <a href="{{ url('admin/rfq-comments/'.$rfq_id) }}" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
+                        <a href="{{ url('admin/rfq/'.$rfq_id) }}" class="view">
+                          <i class="fa fa-eye"></i>&nbsp; View
+                        </a>
                       </li>
                       <li>
                         <a href="{{ route('rfq.edit',$rfq_id) }}" class="edit">
                           <i class="fa fa-edit"></i>&nbsp; Edit
-                        </a>
-                      </li>
-                      <li>
-                        <a href="{{ route('rfq.delete',$rfq_id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
-                          <i class="fa fa-trash"></i>&nbsp; Delete
                         </a>
                       </li>
                     </ul>
@@ -186,6 +195,7 @@
 .direct-chat-messages {
   scrollbar-width: thin;
 }
+
     </style>
     @push('custom-scripts')
     	<script type="text/javascript">

@@ -7,13 +7,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Purchase Stock Alert</h1>
+            <h1 class="m-0">Verify Stock</h1>
           </div><!-- /.col -->
           
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item">Purchase Stock Alert</li>
+              <li class="breadcrumb-item">Verify Stock</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -29,7 +29,7 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">Purchase Stock Alert</h3>
+                <h3 class="card-title">All Verify Stock</h3>
               </div>
               <div class="card">
                 <div class="card-body">
@@ -54,7 +54,7 @@
                             <td>{{ $datas['order_quantity']-$datas['total_avail_quantity'] }}</td>
                             <td>
                               <a href="javascript:void(0)" class="btn btn-primary">
-                                <i class="fa fa-plus"></i> Verify Product Stock
+                                 Verify Stock
                               </a>
                             </td>
                           </tr>
