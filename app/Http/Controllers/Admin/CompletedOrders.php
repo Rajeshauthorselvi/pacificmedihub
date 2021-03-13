@@ -36,7 +36,7 @@ class CompletedOrders extends Controller
             }
         }
         $data['completed_orders']=Orders::with('customer','deliveryPerson','statusName','deliveryStatus')
-                              ->where('order_status',13)
+                              ->where('order_status',18)
                               ->orderBy('orders.id','desc')
                               ->get();
 
@@ -170,6 +170,9 @@ class CompletedOrders extends Controller
         $data['delivery_status']=[''=>'Please Select']+OrderStatus::where('status',1)
                                   ->whereIn('id',[14,15,16,17])
                                   ->pluck('status_name','id')->toArray();
+        $data['check_quantity']=Orders::CheckQuantity($order_id);
+
+
         return view('admin.orders.completed_orders.edit',$data);
     }
 
@@ -190,10 +193,11 @@ class CompletedOrders extends Controller
         $order->delivery_status=$request->delivery_status;
         if ($request->delivery_status==16) {
             $order->delivered_at=date('Y-m-d H:i:s');
+            $order->order_status=13;
         }
         $order->save();
 
-        return Redirect::route('completed-orders.index');
+        return Redirect::route('delivery-assign.index');
     }
 
     /**

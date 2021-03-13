@@ -7,12 +7,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">List Orders</h1>
+            <h1 class="m-0">Delivery Assign</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item active">List Orders</li>
+              <li class="breadcrumb-item active">Delivery Assign</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -28,7 +28,7 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">List Orders</h3>
+                <h3 class="card-title">All Delivery Assign</h3>
               </div>
               <div class="card">
                 <div class="card-body">
@@ -66,9 +66,9 @@
                         <tr style="{{ $class_bg }}">
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
-                            {{ isset($order->delivered_at)?date('d M Y g:i A',strtotime($order->delivered_at)):'-' }}
+                            {{ isset($order->delivered_at)?date('m/d/Y g:i A',strtotime($order->delivered_at)):'-' }}
                           </td>
-                          <td><a href="{{route('completed-orders.show',$order->id)}}">{{ $order->order_no }}</a></td>
+                          <td><a href="{{route('delivery-assign.show',$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->first_name }}</td>
                           <td>
                             @if(isset($order->deliveryPerson))
@@ -95,7 +95,7 @@
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
-                                <a href="{{route('completed-orders.show',$order->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;Show</li></a>
+                                <a href="{{route('delivery-assign.show',$order->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                 @if ($order->delivery_status==16)
                                   @php
                                     $disable_status="pointer-events:none;opacity:0.5";
@@ -105,7 +105,7 @@
                                     $disable_status="";
                                   @endphp
                                 @endif
-                                <a href="{{route('completed-orders.edit',$order->id)}}" style="{{ $disable_status }}">
+                                <a href="{{route('delivery-assign.edit',$order->id)}}" style="{{ $disable_status }}">
                                   <li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li>
                                 </a>
                                 <a href="{{ url('admin/cop_pdf/'.$order->id) }}"><li class="dropdown-item">

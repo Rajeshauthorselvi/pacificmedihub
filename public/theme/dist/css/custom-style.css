@@ -143,11 +143,13 @@ tr.hide-table-padding>td {padding: 0;}
 .total-head {border-left: 1px solid #ddd;}
 
 .show-page .action_sec li {float: left;width: 16.6%;text-align: center;}
-.show-page .action_sec li a {float: left;width: 100%;color: #fff;padding: 8px;}
-.show-page .place-order, .show-page .pdf{background-color:#3471a8;border-right: 1px solid #5cbfdd;}
+.comment-page .action_sec li {float: left;width: 32.6%;text-align: center;}
+.show-page .action_sec li a,.comment-page .action_sec li a {float: left;width: 100%;color: #fff;padding: 8px;}
+.show-page .place-order,.comment-page .place-order, .show-page .pdf{background-color:#3471a8;border-right: 1px solid #5cbfdd;}
 .show-page .email{background-color:#5cbfdd;}
 .show-page .comment{background-color:#48bb77;}
-.show-page .edit{background-color:#efab4f;}
+.show-page .view,.comment-page .view{background-color:#428bca;}
+.show-page .edit,.comment-page .edit{background-color:#efab4f;}
 .show-page .delete{background-color:#d85450;}
 .show-page .address-sec, .show-page .address-block,.show-page .address-block .address {display: flex;}
 .show-page .address-sec{padding: 20px 10px 0;}
@@ -212,3 +214,6 @@ tr.hide-table-padding>td {padding: 0;}
 #bannerList td{vertical-align: middle;}
 #bannerList .banner-img {width: 75px;height: 70px;cursor: pointer;border: 2px dotted #ddd;padding: 5px;}
 #bannerForm .table-responsive{padding:5px;}
+
+.rfq-info li {float: left; width: 22%; font-size: 23px; text-align: center; }
+.rfq-info ul {list-style: none; }

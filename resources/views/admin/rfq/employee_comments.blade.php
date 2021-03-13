@@ -28,7 +28,7 @@
           <a href="{{route('rfq.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
-      <div class="container-fluid rfq show-page">
+      <div class="container-fluid rfq comment-page">
         <div class="row">
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -37,31 +37,40 @@
               </div>
               <div class="card">
                 <div class="card-body">
+                  <div class="rfq-info">
+                    <ul>
+                      <li>Order No: {{ $rfq_details->order_no }}</li>
+                      <li>Date: {{ date('d/m/Y',strtotime($rfq_details->created_at)) }}</li>
+                      <li>Status: {{ $rfq_details->statusName->status_name }}</li>
+                      <li>Sales Rep: {{ $rfq_details->salesrep->emp_name }}</li>
+                    </ul>
+                  </div>
+                  <br>
+                  <br>
                   <div class="action_sec">
                     <div class="clearfix"></div>
+
+                     <div class="clearfix"></div>
                     <ul class="list-unstyled">
                       <li>
-                        <a href="{{ route('rfq.toOrder',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
+                 <?php 
+                      $disabled="";
+                      if ($rfq_details->status==10) {
+                          $disabled="pointer-events:none;opacity:0.5";
+                      }
+                      ?>
+                        <a href="{{ route('rfq.toOrder',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')" style="{{ $disabled }}">
                           <i class="fa fa-plus-circle"></i>&nbsp; Place Order
                         </a>
                       </li>
                       <li>
-                        <a href="{{ url('admin/rfq_pdf/'.$rfq_id) }}" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
-                      </li>
-                      <li>
-                        <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
-                      </li>
-                      <li>
-                        <a href="{{ url('admin/rfq-comments/'.$rfq_id) }}" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
+                        <a href="{{ url('admin/rfq/'.$rfq_id) }}" class="view">
+                          <i class="fa fa-eye"></i>&nbsp; View
+                        </a>
                       </li>
                       <li>
                         <a href="{{ route('rfq.edit',$rfq_id) }}" class="edit">
                           <i class="fa fa-edit"></i>&nbsp; Edit
-                        </a>
-                      </li>
-                      <li>
-                        <a href="{{ route('rfq.delete',$rfq_id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
-                          <i class="fa fa-trash"></i>&nbsp; Delete
                         </a>
                       </li>
                     </ul>
@@ -129,17 +138,43 @@
                 </div>
                 <!--/.direct-chat-messages-->
                 <hr>
- 				<form action="{{ url('admin/rfq-comments-post') }}" method="post">
+ 				<form action="{{ url('admin/rfq-comments-post') }}" method="post" files="true" enctype="multipart/form-data">
  				@csrf
 
  				  <input type="hidden" name="rfq_id" value="{{ $rfq_id }}">
                   <div class="input-group">
                     <input type="text" name="comment" placeholder="Type Message ..." class="form-control">
                     <span class="input-group-append">
+                      <button type="button" class="btn btn-info" id="attachment">
+                        <i class="fa fa-paperclip"></i>
+                      </button>
                       <button type="submit" class="btn btn-primary">Send</button>
                     </span>
                   </div>
+        <!-- Modal -->
+        <div class="modal fade" id="attachment-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">Attach your file</div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <input type="file" name="attachment[]" class="form-control">
+                </div>
+                <div class="append-sec"></div>
+                <div class="text-right">
+                  <a href="javascript:void(0)" class="btn btn-primary add-more">
+                    <i class="fa fa-plus"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+              </div>
+            </div>
+          </div>
+        </div> 
                 </form>
+
                 <!-- /.direct-chat-pane -->
                 </div>
               </div>

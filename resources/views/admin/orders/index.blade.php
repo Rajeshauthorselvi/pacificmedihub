@@ -71,7 +71,7 @@
                           <td><input type="checkbox" name="orders_ids" value="{{$order->id}}"></td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
-                            {{ isset($order->delivered_at)?date('d-m-Y H:i:s',strtotime($order->delivered_at)):'-' }}
+                            {{ isset($order->delivered_at)?date('m/d/Y g:i A',strtotime($order->delivered_at)):'-' }}
                           </td>
                           <td><a href="{{route('orders.show',$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->first_name }}</td>

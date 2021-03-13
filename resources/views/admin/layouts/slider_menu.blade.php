@@ -122,8 +122,8 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('completed-orders.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Completed Orders</p>
+                <a href="{{ route('delivery-assign.index') }}" class="nav-link">
+                  <i class="fas fa-angle-double-right"></i> <p>Delivery Assign</p>
                 </a>
               </li>
             </ul>

@@ -660,7 +660,8 @@ class RFQController extends Controller
     public function RFQComments(Request $request,$rfq_id)
     {
         $data=array();
-        $data['rfq_details']=RFQ::find($rfq_id);
+        $data['rfq_details']=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();
+
         $data['rfq_id']=$rfq_id;
         $data['comments']=RFQComments::where('rfq_id',$rfq_id)->get();
 
