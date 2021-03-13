@@ -96,13 +96,15 @@
 					    					if((count($wishlist)!=0)&&$check_wish!=""){
 					    						$row_id = $wishlist[$row]['row_id'];
 					    						$icon = 'fas';
+					    						$check = true;
 					    					}else{
 					    						$row_id = 1;
 					    						$icon = 'far';
+					    						$check = false;
 					    					}
 					    					
 					    				?>
-					    				<a productID="{{$product_id}}" rowID="{{ $row_id }}" class="wishlist-action"><i class="{{ $icon }} fa-heart"></i></a>
+					    				<a productID="{{$product_id}}" check="{{$check}}" rowID="{{ $row_id }}" class="wishlist-action"><i class="{{ $icon }} fa-heart"></i></a>
 				    				</div>
 						    	</div>
 						    	<div class="product-info d-flex flex-column">
@@ -142,10 +144,13 @@
 		var prodID  = $(this).attr('productID');
 		var rowID = $(this).attr('rowID');
 
-		if(rowID==0||rowID==1){
-			$(this).children('.fa-heart').attr('class','fas fa-heart');
-		}else{
+		var status = $(this).attr('check');
+		if(status==1){
+			$(this).attr('check','');
 			$(this).children('.fa-heart').attr('class','far fa-heart');
+		}else{
+			$(this).attr('check',1);
+			$(this).children('.fa-heart').attr('class','fas fa-heart');
 		}
 		
 		$.ajax({

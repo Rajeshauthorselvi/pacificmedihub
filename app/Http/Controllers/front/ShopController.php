@@ -48,6 +48,20 @@ class ShopController extends Controller
     }
     public function product($category_slug='',$product_slug='',$product_id)
     {
+        $wishlist=[];
+        if(Auth::check()){
+            $user_id = Auth::id();
+            Cart::instance('wishlist')->restore('userID_'.$user_id);
+            $k = 1;
+            foreach(Cart::instance('Wishlist')->content() as $item){
+                $wishlist[$k]['product_id'] = $item->id;
+                $wishlist[$k]['row_id']     = $item->getUniqueId();
+                $k++;
+            }
+        }
+        $data['wishlist'] = $wishlist;
+
+
         $id = base64_decode($product_id);
         $product = Product::with('product_images','sorted_product_image','product_variant')->where('id',$id)
                                   ->where('is_deleted',0)->first();

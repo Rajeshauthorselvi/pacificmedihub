@@ -8,6 +8,7 @@ use App\User;
 use Auth;
 use Redirect;
 use Session;
+use Hash;
 
 class AuthController extends Controller
 {
@@ -46,5 +47,24 @@ class AuthController extends Controller
         Auth::Logout();
         Session::flush();
         return redirect()->route('home.index');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $user = User::where('email',$request->email)->first();   
+        if($user){
+            $old_pwd = Hash::check($request->old_pwd,$user->password);
+            if($old_pwd){
+                $user->password = Hash::make($request->con_pwd);
+                $user->update();
+                Auth::Logout();
+                Session::flush();
+                return redirect()->route('customer.login');
+            }else{
+                return Redirect::back()->with('error','Current Password Not Matching, try again!');    
+            }
+        }else{
+            return Redirect::back()->with('error','User does not exist!');
+        }
     }
 }

@@ -178,9 +178,12 @@ Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');
 Route::get('customer-login','front\AuthController@index')->name('customer.login');
 Route::post('customer-login','front\AuthController@store')->name('customer.store');
 Route::get('customer-logout','front\AuthController@logout')->name('customer.logout');
+Route::post('change-customer-password','front\AuthController@changePassword')->name('change.cuspwd');
 
 //Customer Profile Page
 Route::get('my-profile/{id}','front\ProfileController@index')->name('profile.index');
+Route::get('edit-my-profile/{id}','front\ProfileController@edit')->name('profile.edit');
+Route::post('update-my-profile/{id}','front\ProfileController@update')->name('profile.update');
 
 //Cart
 Route::resource('cart','front\CartController');

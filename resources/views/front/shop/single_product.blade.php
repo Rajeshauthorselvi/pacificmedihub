@@ -115,7 +115,24 @@
 					</div>
 
 					<div class="social-links">
-						<a class="wishlist" href="javascript:void(0);"><i class="far fa-heart"></i></a>
+
+						<?php 
+	    					$wish_list = 0;
+	    					$wish_list = array_search($product->id, array_column($wishlist, 'product_id'));
+	    					$row = $wish_list+1;
+	    					$check_wish = (string)$wish_list;
+	    					if((count($wishlist)!=0)&&$check_wish!=""){
+	    						$row_id = $wishlist[$row]['row_id'];
+	    						$icon = 'fas';
+	    						$check = true;
+	    					}else{
+	    						$row_id = 1;
+	    						$icon = 'far';
+	    						$check = false;
+	    					}
+	    					$product_id = base64_encode($product->id);
+	    				?>
+	    				<a productID="{{$product_id}}" check="{{$check}}" rowID="{{ $row_id }}" class="wishlist-action"><i class="{{ $icon }} fa-heart"></i></a>
 						<a class="wishlist true" href="javascript:void(0);" style="display:none"><i class="fas fa-heart"></i></a>
 						<a class="share" href="javascript:void(0);"><i class="fas fa-share-alt"></i></a>
 					</div>
@@ -153,6 +170,40 @@
 
 @push('custom-scripts')
 <script type="text/javascript">
+
+	$(document).find('.wishlist-action').click(function () {
+		var prodID  = $(this).attr('productID');
+		var rowID = $(this).attr('rowID');
+
+		var status = $(this).attr('check');
+		if(status==1){
+			$(this).attr('check','');
+			$(this).children('.fa-heart').attr('class','far fa-heart');
+		}else{
+			$(this).attr('check',1);
+			$(this).children('.fa-heart').attr('class','fas fa-heart');
+		}
+		
+		$.ajax({
+            url:"{{ route('wishlist.store') }}",
+            type:"POST",
+            data:{
+            	"_token": "{{ csrf_token() }}",
+            	product_id:prodID,
+            	row_id:rowID
+            },
+            success:function(res){
+            	if(res=='removed'){
+            		$(this).children('.fa-heart').attr('class','far fa-heart');
+            	}else if(res=='added'){
+            		$(this).children('.fa-heart').attr('class','fas fa-heart');
+            	}else if(res==false){
+            		window.location.href = "{{ route('customer.login') }}";
+            	}
+            }
+        })
+	});
+
 	$(document).ready(function(){
       	$(".swatch-variant").change(onSelectChange);
        	function onSelectChange(){

@@ -25,10 +25,16 @@ class WishlistController extends Controller
             $wishlist_data = array();
             foreach($items as $key => $item)
             {
+                $product = Product::find($item->id);
                 $wishlist_data[$key]['uniqueId']      = $item->getUniqueId();
                 $wishlist_data[$key]['product_id']    = $item->id;
                 $wishlist_data[$key]['product_name']  = $item->name;
                 $wishlist_data[$key]['product_image'] = $item->options['product_img'];
+
+                $category_slug = $product->category->search_engine_name;
+                $product_id = base64_encode($product->id);
+                $url = url("$category_slug/$product->search_engine_name/$product_id");
+                $wishlist_data[$key]['link'] = $url;
             }
             $data['count'] = Cart::count();
             $data['wishlist_data'] = $wishlist_data;
