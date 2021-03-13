@@ -79,8 +79,14 @@
                           <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
                         </div>
                             <div class="col-sm-4">
+                              <?php 
+                              if (isset($check_quantity[0]) && $check_quantity[0]=="yes") 
+                                  $style="disabled";
+                              else
+                                  $style="";
+                                 ?> 
                               <label for="sales_rep_id">Delivery Status</label>
-                              {!! Form::select('delivery_status',$delivery_status,null,['class'=>'form-control','id'=>'delivery_status']) !!}
+                              {!! Form::select('delivery_status',$delivery_status,null,['class'=>'form-control','id'=>'delivery_status',$style]) !!}
                               <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
                             </div>
 

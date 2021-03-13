@@ -170,6 +170,9 @@ class CompletedOrders extends Controller
         $data['delivery_status']=[''=>'Please Select']+OrderStatus::where('status',1)
                                   ->whereIn('id',[14,15,16,17])
                                   ->pluck('status_name','id')->toArray();
+        $data['check_quantity']=Orders::CheckQuantity($order_id);
+
+
         return view('admin.orders.completed_orders.edit',$data);
     }
 
