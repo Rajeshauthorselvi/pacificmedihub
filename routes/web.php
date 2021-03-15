@@ -187,6 +187,14 @@ Route::get('my-profile/{id}','front\ProfileController@index')->name('profile.ind
 Route::get('edit-my-profile/{id}','front\ProfileController@edit')->name('profile.edit');
 Route::post('update-my-profile/{id}','front\ProfileController@update')->name('profile.update');
 
+//Get Sate and City
+Route::get('get-state','front\AddressController@getStateList');
+Route::get('get-city','front\AddressController@getCityList');
+
+//Customer Address
+Route::resource('my-address', 'front\AddressController');
+Route::get('set-primary-address/{address_id}', 'front\AddressController@setPrimaryAddress')->name('setPrimary.address');
+
 //Cart
 Route::resource('cart','front\CartController');
 Route::put('updatecart/{id}', 'front\CartController@update');

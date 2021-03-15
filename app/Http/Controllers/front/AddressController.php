@@ -1,0 +1,172 @@
+<?php
+
+namespace App\Http\Controllers\front;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\User;
+use App\Models\UserAddress;
+use App\Models\Countries;
+use App\Models\State;
+use App\Models\City;
+use Auth;
+use Arr;
+use Redirect;
+use Session;
+
+class AddressController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        if(Auth::check()){
+            $user_id = Auth::id();
+            $primary = $data['primary_id'] = Auth::user()->address_id;
+            $data['primary'] = UserAddress::where('id',$primary)->where('customer_id',$user_id)->first();
+            $data['all_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('id',[$primary])->get();
+            $data['user_id'] = $user_id;
+            return view('front/customer/address/index',$data);
+        }else{
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        if(Auth::check()){
+            $user_id = Auth::id();
+            $data['user_id'] = $user_id;
+            $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+            return view('front/customer/address/create',$data);
+        }else{
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');   
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        if(!Auth::check()){
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+        $address     = $request->except(['_token']);
+        $add_address = UserAddress::insert($address);
+        if($add_address){
+            return redirect()->route('my-address.index')->with('success', 'New address added Successfully.!');
+        }else{
+            return Redirect::back()->with('error','Somthing wrong please try again.!');
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        if(Auth::check()){
+            $user_id = Auth::id();
+            $data['user_id'] = $user_id;
+            $data['address'] = UserAddress::find($id);
+            $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+            return view('front/customer/address/edit',$data);
+        }else{
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');   
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        if(!Auth::check()){
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+        $address                = UserAddress::find($id);
+        $address->name          = $request->name;
+        $address->mobile        = $request->mobile;
+        $address->address_line1 = $request->address_line1;
+        $address->address_line2 = $request->address_line2;
+        $address->post_code     = $request->post_code;
+        $address->country_id    = $request->country_id;
+        $address->state_id      = $request->state_id;
+        $address->city_id       = $request->city_id;
+        $address->latitude      = $request->latitude;
+        $address->longitude     = $request->longitude;
+        $address->update();
+
+        if($address){
+            return redirect()->route('my-address.index')->with('info', 'Address Modified Successfully.!');
+        }else{
+            return Redirect::back()->with('error','Somthing wrong please try again.!');
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        UserAddress::where('id',$id)->delete();
+        return redirect()->route('my-address.index')->with('info', 'Address removed Successfully.!');
+
+    }
+
+    public function setPrimaryAddress($address_id)
+    {
+        if(Auth::check()){
+            $user_id = Auth::id();
+            User::where('id',$user_id)->update(['address_id'=>$address_id]);
+            return redirect()->route('my-address.index');
+        }else{
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+    }
+
+    public function getStateList(Request $request)
+    {
+        $state = State::where('country_id',$request->country_id)->pluck("name","id");    
+        return response()->json($state);
+    }
+
+    public function getCityList(Request $request)
+    {
+        $state = City::where('state_id',$request->state_id)->pluck("name","id");    
+        return response()->json($state);
+    }
+}
