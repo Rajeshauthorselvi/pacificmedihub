@@ -17,8 +17,15 @@
   <link rel="stylesheet" href="{{ asset('theme/plugins/fontawesome-free/css/all.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ asset('front/css/owl.carousel.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ asset('front/css/style.css') }}">
+  <!-- Toast -->
+  <link href="{{ asset('front/css/toastr/toastr.css') }}" rel="stylesheet">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed sidebar-collapse">
+  <div id="overlay">
+      <div class="cv-spinner">
+        <span class="spinner"></span>
+      </div>
+    </div>
  @include('front.layouts.header')
  @yield('front_end_container')
  @include('front.layouts.footer')
@@ -30,7 +37,39 @@
 <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- Owl Carousel - 2.3.4 -->
 <script src="{{ asset('front/js/owl.carousel.min.js') }}"></script>
+<!-- Toast -->
+<script src="{{ asset('front/js/toastr/toastr.js') }}"></script>
 
 @stack('custom-scripts')
+<style>
+    #overlay{ 
+      position: fixed;
+      top: 0;
+      z-index: 9999;
+      width: 100%;
+      height:100%;
+      display: none;
+      background: rgba(0,0,0,0.6);
+    }
+    .cv-spinner {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;  
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px #ddd solid;
+      border-top: 4px #3e72b1 solid;
+      border-radius: 50%;
+      animation: sp-anime 0.8s infinite linear;
+    }
+    @keyframes sp-anime {
+      100% { 
+        transform: rotate(360deg); 
+      }
+    }
+    </style>
 </body>
 </html>

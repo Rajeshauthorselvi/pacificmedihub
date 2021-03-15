@@ -1164,12 +1164,12 @@ div.customer-menu a:hover {
 .cart-block .cart-table form button:hover{
     color: #3e72b1;
 }
-.cart-block .cart-table .wishlist-action {
+.cart-block .cart-table .wishlist-action, .single-product .social-links .wishlist-action {
     color: #313131;
     cursor: pointer;
 }
 
-.cart-block .cart-table .wishlist-action .fas.fa-heart, .pro-fav .wishlist-action .fas.fa-heart {
+.cart-block .cart-table .wishlist-action .fas.fa-heart, .pro-fav .wishlist-action .fas.fa-heart, .single-product .social-links .wishlist-action .fas.fa-heart {
     color: #d11418;
 }
 
@@ -1192,10 +1192,61 @@ div.customer-menu a:hover {
     width: 85%;
     padding-left: 10px;
 }
+.wishlist-block .product-data .name a {
+    color: #313131;
+}
 .wishlist-block .product-data .remove {
     cursor: pointer;
     border: none;
 }
 .wishlist-block .product-data .remove button:hover{
     color: #3e72b1;
+}
+.btn-primary{
+    background-color: #3e72b1;
+    border-color: #3e72b1;
+}
+    .row.customer-page {margin-bottom: 30px;}
+    .customer-page #column-left a.link i {
+    position: relative;
+    top: 5px;
+}
+.customer-page .form-group{display:flex;}
+  .customer-page label {
+    font-weight: bold;
+}
+.customer-page .column-block ul.box-menu li a.link{
+  padding: 15px 25px 15px 50px;
+}
+.customer-page .col-sm-6 {
+    padding-left: 0;
+}
+.customer-page .tab-content.py-2 {
+    padding-top: 1.5rem !important;
+}
+.customer-page .nav-tabs .nav-item {
+  width:22%;
+  text-align: center;
+}
+.customer-page .nav-tabs .nav-link{
+  border: none;
+  padding:10px;
+  color: #313131;
+}
+.edit-customer {
+  text-align: right;
+}
+.customer-page .nav-tabs .nav-link.active {
+  background-color: #3e72b1;
+  color: #fff;
+  border: none;
+}
+.customer-page .form-control[readonly] {
+    background: transparent;
+    border-radius: 0;
+    height: calc(2em + .75rem + 2px);
+}
+.customer-page .form-control[readonly]:focus {
+    box-shadow: none;
+    border-color: #ccc;
 }

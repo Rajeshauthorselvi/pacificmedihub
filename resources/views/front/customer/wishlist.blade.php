@@ -21,12 +21,12 @@
 							<div class="product-data">
 								<div class="image">
 									@if($items['product_image']!=null)
-										<img src="{{asset('theme/images/products/main/'.$items['product_image'])}}">
+										<a href="{{ $items['link'] }}"><img src="{{asset('theme/images/products/main/'.$items['product_image'])}}"></a>
 									@else
-										<img src="{{ asset('theme/images/products/placeholder.jpg') }}">
+										<a href="{{ $items['link'] }}"><img src="{{ asset('theme/images/products/placeholder.jpg') }}"></a>
 									@endif
 								</div>
-								<div class="name">{{ $items['product_name'] }}</div>
+								<div class="name"><a href="{{ $items['link'] }}">{{ $items['product_name'] }}</a></div>
 								<div class="remove">
 									<form method="POST" action="{{ route('wishlist.destroy',$items['uniqueId']) }}">
                                         @csrf 

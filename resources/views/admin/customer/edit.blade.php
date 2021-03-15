@@ -113,7 +113,7 @@
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Country *</label>
-                          {!! Form::select('country',$countries,$customer->company->country_id,['class'=>'form-control select2bs4 required', 'id'=>'company_country' ]) !!}
+                          {!! Form::select('company[country_id]',$countries,$customer->company->country_id,['class'=>'form-control select2bs4 required', 'id'=>'company_country' ]) !!}
                           <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">

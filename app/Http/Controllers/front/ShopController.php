@@ -15,7 +15,10 @@ class ShopController extends Controller
 {
     public function category($value='',$category_id)
     {
+        $data = array();
+
         $wishlist=[];
+        $data['user_id'] = null;
         if(Auth::check()){
             $user_id = Auth::id();
             Cart::instance('wishlist')->restore('userID_'.$user_id);
@@ -25,6 +28,7 @@ class ShopController extends Controller
                 $wishlist[$k]['row_id']     = $item->getUniqueId();
                 $k++;
             }
+            $data['user_id'] = $user_id;
         }
         $data['wishlist'] = $wishlist;
 
@@ -47,7 +51,25 @@ class ShopController extends Controller
     	return view('front.shop.category_product',$data);
     }
     public function product($category_slug='',$product_slug='',$product_id)
-    {
+    {   
+        $data = array();
+
+        $wishlist=[];
+        $data['user_id'] = null;
+        if(Auth::check()){
+            $user_id = Auth::id();
+            Cart::instance('wishlist')->restore('userID_'.$user_id);
+            $k = 1;
+            foreach(Cart::instance('Wishlist')->content() as $item){
+                $wishlist[$k]['product_id'] = $item->id;
+                $wishlist[$k]['row_id']     = $item->getUniqueId();
+                $k++;
+            }
+            $data['user_id'] = $user_id;
+        }
+        $data['wishlist'] = $wishlist;
+
+
         $id = base64_decode($product_id);
         $product = Product::with('product_images','sorted_product_image','product_variant')->where('id',$id)
                                   ->where('is_deleted',0)->first();
