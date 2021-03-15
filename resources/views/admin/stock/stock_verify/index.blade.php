@@ -53,7 +53,7 @@
                             <td>{{ $datas['order_quantity'] }}</td>
                             <td>{{ $datas['order_quantity']-$datas['total_avail_quantity'] }}</td>
                             <td>
-                              <a href="javascript:void(0)" class="btn btn-primary">
+                              <a href="{{ route('verify-stock.edit',[$datas['order_id']]) }}" class="btn btn-primary">
                                  Verify Stock
                               </a>
                             </td>

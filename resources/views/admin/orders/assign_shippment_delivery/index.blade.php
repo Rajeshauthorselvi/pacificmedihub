@@ -25,22 +25,6 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12 action-controllers ">
-            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','delete'))
-            <div class="col-sm-6 text-left pull-left">
-              <a href="javascript:void(0)" class="btn btn-danger delete-all">
-                <i class="fa fa-trash"></i> Delete (selected)
-              </a>
-            </div>
-            @endif
-            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','create'))
-            <div class="col-sm-6 text-right pull-right">
-              <a class="btn add-new" href="{{route('orders.create')}}">
-              <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
-              </a>
-            </div>
-            @endif
-          </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
@@ -56,25 +40,28 @@
                         <th>Delivered Date</th>
                         <th>Order Code</th>
                         <th>Customer</th>
-                        <th>Sales Rep</th>
                         <th>Order Status</th>
-                        <th>Grand Total</th>
-                        <th>Paid</th>
-                        <th>Balance</th>
-                        <th>Payment Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       @foreach ($orders as $order)
-                      <?php $check_quantity=\App\Models\Orders::CheckQuantity($order->id);
+                      <?php 
+                      $check_quantity=\App\Models\Orders::CheckQuantity($order->id);
+                        $disabled_stock_notify=$disabled_edit="";
+                        if(isset($order->deliveryPerson) ){
+                          $disabled_stock_notify="pointer-events:none;opacity:0.5";
+                        }
                         if (isset($check_quantity[0]) && $check_quantity[0]=="yes") {
                             $class_bg="background:#ffedb9 !important";
                         }
                         else{
                           $class_bg="";
                         }
-                       ?>                      
+                        if ($order->order_status==17 || $order->order_status==11) {
+                          $disabled_edit="pointer-events:none;opacity:0.5";
+                        }
+                       ?>
                         <tr style="{{ $class_bg }}">
                           <td><input type="checkbox" name="orders_ids" value="{{$order->id}}"></td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
@@ -83,74 +70,44 @@
                           </td>
                           <td><a href="{{route('orders.show',$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->first_name }}</td>
-                          <td>{{ $order->salesrep->emp_name }}</td>
 
                           <td>
                             <span class="badge" style="background: {{ $order->statusName->color_codes }};color: #fff">
                             {{  $order->statusName->status_name  }}
                             </span>
                           </td>
-                          <td class="total_amount">{{$order->sgd_total_amount}}</td>
-                          <?php 
-                            $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($order->id,$order->sgd_total_amount,2);
-                          ?>
-                          <td>{{ $balance_amount['paid_amount'] }}</td>
-                          <td class="balance">
-                            {{ number_format($balance_amount['balance_amount'],2,'.','') }}
-
-                          </td>
-                          <td>
-                            <?php $color_code=[1=>'#00a65a',2=>'#5bc0de',3=>'#f0ad4e']?>
-                            <?php $payment_status=[0=>'',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
-                              <span class="badge" style="background:{{ $color_code[$order->payment_status] }};color: #fff ">
-                                {{ $payment_status[$order->payment_status] }}
-                              </span>
-                          </td>
-
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
                                 <a href="{{route($show_route,$order->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order_payment','read'))
-                                <a href="javascript:void(0)" class="view-payment" order-id="{{$order->id}}">
-                                  <li class="dropdown-item">
-                                    <i class="fa fa-credit-card"></i>&nbsp;&nbsp;View Payments
-                                  </li>
-                                </a>
-                                @endif
-                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order_payment','create'))
-                                <a href="javascript:void(0)" class="add-payment" order-id="{{$order->id}}">
-                                  <li class="dropdown-item">
-                                    <i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment
-                                  </li>
-                                </a>
-                                @endif
-                              
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','update'))
-                                <a href="{{route($edit_route,$order->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+
+                                <a href="{{route($edit_route,$order->id)}}"  style="{{ $disabled_edit }}">
+                                  <li class="dropdown-item">
+                                    <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
+                                  </li>
+                                </a>
                                 @endif
-
-                                <a href="{{ url('admin/cop_admin_pdf/'.$order->id) }}">
-                                  <li class="dropdown-item">
-                                    <i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
-                                  </li>
+                               <a href="{{ url('admin/cop_pdf/'.$order->id) }}"><li class="dropdown-item">
+                                  <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
+                                 </li></a>
+                                <a href="{{ url('admin/cop_print/'.$order->id) }}" target="_blank">
+                                  <li class="dropdown-item" >
+                                  <i class="fa fa-print"></i>&nbsp;&nbsp;Print
+                                </li>
                                 </a>
-
-                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</li></a>
-
-                                <a href="{{ url('admin/cop_admin_print/'.$order->id) }}" target="_blank">
-                                  <li class="dropdown-item">
-                                    <i class="fas fa-print"></i>&nbsp;&nbsp;Print
-                                  </li>
+                                @if (isset($check_quantity[0]) && $check_quantity[0]=="yes") 
+                                 <a href="{{ route('verify-stock.show',[$order->id]) }}">
+                                  <li class="dropdown-item"  style="{{ $disabled_stock_notify }}">
+                                  <i class="fa fa-check-circle"></i>&nbsp;&nbsp;Verify Stock
+                                </li>
                                 </a>
-                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','delete'))
-                                <a href="javascript:void(0)"><li class="dropdown-item">
-                                  <form method="POST" action="{{ route($delete_route,$order->id) }}">@csrf 
-                                    <input name="_method" type="hidden" value="DELETE">
-                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
-                                  </form>
-                                </li></a>
+                                <a href="{{ route('verify-stock.index',['order_id'=>$order->id]) }}" target="_blank" style="{{$disabled_stock_notify}}">
+                                  <li class="dropdown-item" >
+                                  <i class="fa fa-user"></i>&nbsp;&nbsp;Notify Admin
+                                </li>
+                                </a>
                                 @endif
                                   </ul>
                                 </div>

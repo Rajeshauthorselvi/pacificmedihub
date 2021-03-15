@@ -21,11 +21,14 @@ use App\Models\Currency;
 use App\Models\Tax;
 use App\Models\PaymentTerm;
 use App\Models\UserCompanyDetails;
+use App\Models\UserAddress;
 use App\User;
 use Auth;
 use Redirect;
 use Session;
-
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Route;
 class OrderController extends Controller
 {
     /**
@@ -35,25 +38,53 @@ class OrderController extends Controller
      */
     public function index()
     {
-        if (!Auth::check() && Auth::guard('employee')->check()) {
+
+/*        if (!Auth::check() && Auth::guard('employee')->check()) {
             if (!Auth::guard('employee')->user()->isAuthorized('order','read')) {
                 abort(404);
             }
-        }
+        }*/
         $data=array();
         
-        $orders=Orders::with('customer','salesrep','statusName');
-    if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
-        $orders->where('sales_rep_id',Auth::guard('employee')->user()->id);
-    }
-        $orders=$orders->orderBy('orders.id','desc')->get();
-
-
-        $data['orders']=$orders;
+        $orders=Orders::with('customer','salesrep','statusName','deliveryStatus');
+        if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
+            $orders->where('sales_rep_id',Auth::guard('employee')->user()->id);
+        }
+        $data=$this->RouteLinks();
         $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
                                   ->pluck('payment_method','id')
                                   ->toArray();
-        return view('admin.orders.index',$data);
+        $currenct_route=Route::currentRouteName();
+        $currenct_route=explode('.',$currenct_route);
+        $data['type']=$currenct_route[0];
+
+        if (isset($data['view'])) {
+          $view=$data['view'];
+        }
+        else{
+          $view='admin.orders.index';
+        }
+
+        if ($currenct_route[0]=="new-orders") {
+          $orders->where('order_status',19);
+        }
+        elseif($currenct_route[0]=="assign-shippment"){
+          $orders->whereIn('order_status',[18,15]);
+        }
+        elseif($currenct_route[0]=="assign-delivery"){
+          $orders->whereIn('order_status',[14,15,16]);
+        }
+        elseif($currenct_route[0]=="completed-orders"){
+          $orders->where('order_status',13);
+        }
+        elseif($currenct_route[0]=="cancelled-orders"){
+          $orders->whereIn('order_status',[21,17,11]);
+        }
+       
+        $orders=$orders->orderBy('orders.id','desc')->get();
+
+        $data['orders']=$orders;
+        return view($view,$data);
     }
 
     /**
@@ -70,6 +101,7 @@ class OrderController extends Controller
         }
         $rfq_id=$request->rfq_id;
         $data=array();
+        $data=$this->RouteLinks();
         $data['rfqs']           = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();     
         $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
         $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
@@ -78,7 +110,7 @@ class OrderController extends Controller
         $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
 
-        $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[3,18,11])->pluck('status_name','id')
+        $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[19,18,15,20,21])->pluck('status_name','id')
                                         ->toArray();
         $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
         $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
@@ -109,7 +141,6 @@ class OrderController extends Controller
             $replace_number = str_replace('[Start No]', $start_number, $replace_year);
             $data['order_code']=$replace_number;
         }
-
         return view('admin.orders.create',$data);
     }
 
@@ -218,7 +249,8 @@ class OrderController extends Controller
 
           Orders::where('id',$order_id)->update(['payment_status'=>$payment_status]);
        }
-       return Redirect::route('orders.index')->with('success','Order created successfully...!');
+       $route=$this->RouteLinks();
+       return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
     }
 
     /**
@@ -230,7 +262,7 @@ class OrderController extends Controller
     public function show(Orders $orders,$order_id)
     {
         $orders = Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)->first();
-        
+        $data=$this->RouteLinks();
         $data['order']            = $orders;
         $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
         $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
@@ -267,6 +299,24 @@ class OrderController extends Controller
             ];
         }
         $data['product_datas'] = $product_data;
+        $currenct_route=Route::currentRouteName();
+        $currenct_route=explode('.',$currenct_route);
+        $data['order_status']   = OrderStatus::where('status',1)
+                                  ->whereIn('id',[3,13,11])
+                                  ->pluck('status_name','id')->toArray();
+        $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
+                                        ->where('role_id',7)->pluck('first_name','id')->toArray();
+        $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                  ->where('emp_department',1)->pluck('emp_name','id')->toArray();
+        $data['delivery_status']=[''=>'Please Select']+OrderStatus::where('status',1)
+                                  ->whereIn('id',[14,15,16,17])
+                                  ->pluck('status_name','id')->toArray();
+        $data['delivery_persons']=[''=>'Please Select']+Employee::where('emp_department',3)
+                                  ->where('is_deleted',0)->where('status',1)
+                                  ->pluck('emp_name','id')->toArray();
+        if ($currenct_route[0]=="assign-shippment" || $currenct_route[0]=="assign-delivery") {
+           return view('admin.orders.assign_shippment_delivery.show',$data);
+        }
         return view('admin.orders.show',$data);
     }
 
@@ -278,19 +328,22 @@ class OrderController extends Controller
      */
     public function edit(Orders $orders,$order_id)
     {
+
         if (!Auth::check() && Auth::guard('employee')->check()) {
             if (!Auth::guard('employee')->user()->isAuthorized('order','update')) {
                 abort(404);
             }
         }
+        $data=$this->RouteLinks();
         $data['order']          = Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
                                         ->first();
         $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
                                         ->where('role_id',7)->pluck('first_name','id')->toArray();
         $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
-       $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[3,18,11])->pluck('status_name','id')
-                                        ->toArray();
+        /*$data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[19,18,15,20,21])
+                                  ->pluck('status_name','id')
+                                  ->toArray();*/
         $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
         $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
         $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
@@ -308,7 +361,6 @@ class OrderController extends Controller
                                     ->pluck('product_variation_id')
                                     ->toArray();
             $product_variant = $this->Variants($product->product_id,$all_variants);
-
             $product_data[$product->product_id] = [
                 'order_id'        => $order_id,
                 'product_id'      => $product->product_id,
@@ -318,7 +370,31 @@ class OrderController extends Controller
                 'product_variant' => $product_variant
             ];
         }
+     
+        $data['check_quantity']=Orders::CheckQuantity($order_id);
         $data['product_datas']=$product_data;
+
+        $currenct_route=Route::currentRouteName();
+        $currenct_route=explode('.',$currenct_route);
+       
+        $data['delivery_persons']=[''=>'Please Select']+Employee::where('emp_department',3)
+                                  ->where('is_deleted',0)->where('status',1)
+                                  ->pluck('emp_name','id')->toArray();
+         $order_status=OrderStatus::where('status',1);  
+                                 
+        if ($currenct_route[0]=="assign-delivery") {
+           $order_status->whereIn('id',[14,15,16,17]);
+        }
+        else{
+          $order_status->whereIn('id',[19,18,15,20,21]);
+        }
+
+        $order_status=$order_status->pluck('status_name','id')->toArray();
+        $data['order_status']=[''=>'Please Select']+$order_status;
+
+        if ($currenct_route[0]=="assign-shippment" || $currenct_route[0]=="assign-delivery") {
+           return view('admin.orders.assign_shippment_delivery.edit',$data);
+        }
         return view('admin.orders.edit',$data);
     }
 
@@ -331,10 +407,14 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate(request(),[
+        $currenct_route=Route::currentRouteName();
+        $route=explode('.',$currenct_route);
+        $data['type']=$currenct_route[0];
+
+/*        $this->validate(request(),[
             'order_status'   => 'required',
             'payment_status' => 'required'
-        ]);
+        ]);*/
             
         if($request->order_status==13){
             $order_completed_at = date('Y-m-d H:i:s');
@@ -342,33 +422,44 @@ class OrderController extends Controller
             $order_completed_at = NULL;
         }
 
+        if ($route[0]=="assign-shippment" || $route[0]=="assign-delivery") {
+          $order_data['delivery_person_id']=$request->delivery_person_id;
+          $order_data['approximate_delivery_date']=date('Y-m-d',strtotime($request->delivery_date));
+          $order_data['logistic_instruction']=$request->notes;
+          // $order_data['delivery_status']=$request->delivery_status;
+          $order_data['order_status']=$request->order_status;
 
-        $order_data=[
-            'sales_rep_id'          => $request->sales_rep_id,
-            'customer_id'           => $request->customer_id,
-            'order_status'          => $request->order_status,
-            'order_tax'             => $request->order_tax,
-            'order_discount'        => $request->order_discount,
-            'payment_term'          => $request->payment_term,
-            'payment_status'        => $request->payment_status,
-            'payment_ref_no'        => $request->payment_ref_no,
-            'paid_amount'           => $request->paid_amount,
-            'paying_by'             => $request->paying_by,
-            'payment_note'          => $request->payment_note,
-            'notes'                 => $request->note,
-            'currency'              => $request->currency,
-            'order_tax_amount'      => $request->order_tax_amount,
-            'total_amount'          => $request->total_amount,
-            'sgd_total_amount'      => $request->sgd_total_amount,
-            'exchange_total_amount' => $request->exchange_rate,
-            'order_completed_at'    => $order_completed_at,
-            'updated_at'            => date('Y-m-d H:i:s')
-       ];
-
-
+          if ($request->order_status==16) {
+              $order_data['delivered_at']=date('Y-m-d H:i:s');
+              $order_data['order_status']=13;
+          }
+        }
+        else{
+          $order_data=[
+              'sales_rep_id'          => $request->sales_rep_id,
+              'customer_id'           => $request->customer_id,
+              'order_status'          => $request->order_status,
+              'order_tax'             => $request->order_tax,
+              'order_discount'        => $request->order_discount,
+              'payment_term'          => $request->payment_term,
+              'payment_status'        => $request->payment_status,
+              'payment_ref_no'        => $request->payment_ref_no,
+              'paid_amount'           => $request->paid_amount,
+              'paying_by'             => $request->paying_by,
+              'payment_note'          => $request->payment_note,
+              'notes'                 => $request->note,
+              'currency'              => $request->currency,
+              'order_tax_amount'      => $request->order_tax_amount,
+              'total_amount'          => $request->total_amount,
+              'sgd_total_amount'      => $request->sgd_total_amount,
+              'exchange_total_amount' => $request->exchange_rate,
+              'order_completed_at'    => $order_completed_at,
+              'updated_at'            => date('Y-m-d H:i:s')
+          ];
+        }
        Orders::where('id',$id)->update($order_data);
-
-       return Redirect::route('orders.index')->with('success','Order details updated successfully');
+       $route=$this->RouteLinks();
+       return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
 
     }
 
@@ -684,5 +775,157 @@ class OrderController extends Controller
         }
 
         return ['options'=>$options,'option_count'=>$option_count];
+    }
+
+
+    public function RouteLinks()
+    {
+        $currenct_route=Route::currentRouteName();
+        $currenct_route=explode('.',$currenct_route);
+        $data['type']=$currenct_route[0];
+        if ($currenct_route[0]=="new-orders") {
+          $data['back_route']='new-orders.index';
+          $data['show_route']='new-orders.show';
+          $data['create_route']='new-orders.create';
+          $data['edit_route']='new-orders.edit';
+          $data['delete_route'] = 'new-orders.destroy';
+          $data['store_route']='new-orders.store';
+          $data['update_route']='new-orders.update';
+          
+        }
+        elseif($currenct_route[0]=="assign-shippment"){
+          $data['back_route']='assign-shippment.index';
+          $data['show_route']='assign-shippment.show';
+          $data['create_route']='assign-shippment.create';
+          $data['edit_route']='assign-shippment.edit';
+          $data['store_route']='assign-shippment.store';
+          $data['update_route']='assign-shippment.update';
+          $data['delete_route'] = 'assign-shippment.destroy';
+          $data['type']="new";
+          
+          $data['view']='admin.orders.assign_shippment_delivery.index';
+        }
+        elseif($currenct_route[0]=="assign-delivery"){
+          $data['back_route']='assign-delivery.index';
+          $data['show_route']='assign-delivery.show';
+          $data['create_route']='assign-delivery.create';
+          $data['edit_route']='assign-delivery.edit';
+          $data['delete_route'] = 'assign-delivery.destroy';
+          $data['store_route']='assign-delivery.store';
+          $data['update_route']='assign-delivery.update';
+          
+          $data['view']='admin.orders.assign_shippment_delivery.index';
+        }
+        elseif($currenct_route[0]=="completed-orders"){
+          $data['back_route']='completed-orders.index';
+          $data['show_route']='completed-orders.show';
+          $data['create_route']='completed-orders.create';
+          $data['edit_route']='completed-orders.edit';
+          $data['delete_route'] = 'completed-orders.destroy';
+          $data['store_route']='completed-orders.store';
+          $data['update_route']='completed-orders.update';
+          
+        }
+        elseif($currenct_route[0]=="cancelled-orders"){
+          $data['back_route']='cancelled-orders.index';
+          $data['show_route']='cancelled-orders.show';
+          $data['create_route']='cancelled-orders.create';
+          $data['edit_route']='cancelled-orders.edit';
+          $data['delete_route'] = 'cancelled-orders.destroy';
+          $data['store_route']='cancelled-orders.store';
+          $data['update_route']='cancelled-orders.update';
+          $data['view']='admin.orders.assign_shippment_delivery.index';
+          
+        }
+        else{
+          $data['back_route']='new-orders.index';
+          $data['show_route']='new-orders.show';
+          $data['create_route']='new-orders.create';
+          $data['edit_route']='new-orders.edit';
+          $data['delete_route'] = 'new-orders.destroy';
+          $data['store_route']='new-orders.store';
+          $data['update_route']='new-orders.update';
+        }
+
+        return $data;
+    }
+
+    public function COEmployeePrint($order_id)
+    {
+
+    $print_data=$this->PdfAndPrint($order_id);
+    
+    return view('admin.orders.assign_shippment_delivery.print',$print_data['data']);
+
+    }
+    public function COAdminPrint($order_id){
+        $print_data=$this->PdfAndPrint($order_id);
+
+      return view('admin.orders.print',$print_data['data']);        
+    }
+
+    public function COAdminPdf($order_id){
+      $print_data=$this->PdfAndPrint($order_id);
+      $data=$print_data['data'];
+      $order_details=$data['order'];
+
+      $layout = View::make('admin.orders.pdf',$print_data['data']);
+      $pdf = App::make('dompdf.wrapper');
+      $pdf->loadHTML($layout->render());
+      return $pdf->download('COP-'.$order_details->order_no.'.pdf');
+    }
+
+    public function COPEmployeePdf($order_id)
+    {
+      $print_data=$this->PdfAndPrint($order_id);
+
+      $data=$print_data['data'];
+      $order_details=$data['order'];
+
+      $layout = View::make('admin.orders.assign_shippment_delivery.pdf',$print_data['data']);
+      $pdf = App::make('dompdf.wrapper');
+      $pdf->loadHTML($layout->render());
+      return $pdf->download('COP-'.$order_details->order_no.'.pdf');
+    }
+
+    public function PdfAndPrint($order_id)
+    {
+        $data=array();
+        $data['order']=$order = Orders::find($order_id);
+        $data['admin_address']  = UserCompanyDetails::where('customer_id',1)->first();
+        $data['customer_address']  = UserAddress::where('id',$order->address_id)->first();
+
+          if ($order->created_user_type==2) {
+            $creater_name=Employee::where('id',$order->user_id)->first();
+            $creater_name=$creater_name->emp_name;
+          }
+          else{
+            $creater_name=User::where('id',$order->user_id)->first();
+            $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+          }
+        $data['creater_name']=$creater_name;
+        $products = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
+
+      $product_data = $product_variant = array();
+      foreach ($products as $key => $product) {
+        $product_name    = Product::where('id',$product->product_id)->value('name');
+        $options         = $this->Options($product->product_id);
+        $all_variants    = OrderProducts::where('order_id',$order_id)
+                            ->where('product_id',$product->product_id)
+                            ->pluck('product_variation_id')->toArray();
+        $product_variant = $this->Variants($product->product_id,$all_variants);
+        $product_data[$product->product_id] = [
+          'row_id'          => $product->id,
+          'order_id'     => $order_id,
+          'product_id'      => $product->product_id,
+          'product_name'    => $product_name,
+          'options'         => $options['options'],
+          'option_count'    => $options['option_count'],
+          'product_variant' => $product_variant
+        ];
+      }
+    $data['product_data']=$product_data;
+
+    return ['data'=>$data];
     }
 }

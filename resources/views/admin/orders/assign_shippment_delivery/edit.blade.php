@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('delivery-assign.index')}}">Order List</a></li>
+              <li class="breadcrumb-item"><a href="{{route($back_route)}}">Order List</a></li>
               <li class="breadcrumb-item active">Edit Order</li>
             </ol>
           </div><!-- /.col -->
@@ -35,7 +35,7 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('delivery-assign.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route($back_route)}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid">
@@ -47,7 +47,7 @@
               </div>
               <div class="card">
                 <div class="card-body">
-                  {!! Form::model($order,['method' => 'PATCH', 'route' =>['delivery-assign.update',$order->id]]) !!}
+                  {!! Form::model($order,['method' => 'PATCH', 'route' =>[$update_route,$order->id]]) !!}
                     <div class="date-sec">
                       <div class="form-group">
                         <div class="col-sm-4">
@@ -60,7 +60,7 @@
                         </div>
                         <div class="col-sm-4">
                           <label for="status">Order Status *</label>
-                          {!! Form::select('order_status',$order_status, $order->order_status,['class'=>'form-control no-search ','disabled']) !!}
+                          {!! Form::select('order_status',$order_status, $order->order_status,['class'=>'form-control no-search ','id'=>'order_status']) !!}
                         </div>
                       </div>
                     </div>
@@ -78,7 +78,7 @@
                           {!! Form::select('sales_rep_id',$sales_rep,null,['class'=>'form-control','id'=>'sales_rep_id','disabled']) !!}
                           <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
                         </div>
-                            <div class="col-sm-4">
+      {{--                       <div class="col-sm-4">
                               <?php 
                               if (isset($check_quantity[0]) && $check_quantity[0]=="yes") 
                                   $style="disabled";
@@ -88,7 +88,7 @@
                               <label for="sales_rep_id">Delivery Status</label>
                               {!! Form::select('delivery_status',$delivery_status,null,['class'=>'form-control','id'=>'delivery_status',$style]) !!}
                               <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
-                            </div>
+                            </div> --}}
 
                       </div>
                     </div>
@@ -209,7 +209,7 @@
 
                     <div class="form-group">
                       <div class="col-sm-12 submit-sec">
-                        <a href="{{ route('delivery-assign.index') }}" class="btn  reset-btn">Cancel</a>
+                        <a href="{{ route($back_route) }}" class="btn  reset-btn">Cancel</a>
                         <button class="btn save-btn" type="submit">Save</button>
                       </div>
                     </div>
@@ -230,7 +230,7 @@
   @push('custom-scripts')
     <script type="text/javascript">
       $(document).ready(function() {
-          var delivery_status="{{ $order->delivery_status }}";
+          var delivery_status="{{ $order->order_status }}";
           if (delivery_status==15 || delivery_status==16) {
               $('.delivery-date').css('display','block');
           }
@@ -240,7 +240,7 @@
       }); 
       var $datepicker = $('.date-picker').datepicker({ minDate: 0});
 
-      $(document).on('change', '#delivery_status', function(event) {
+      $(document).on('change', '#order_status', function(event) {
        var currenct_val=$(this).val();
           if (currenct_val==15 || currenct_val==16) {
               $('.delivery-date').css('display','block');
