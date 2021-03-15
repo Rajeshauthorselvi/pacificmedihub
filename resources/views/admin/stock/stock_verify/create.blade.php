@@ -7,7 +7,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Edit Purchase</h1>
+            <h1 class="m-0">Add Purchase</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -35,7 +35,7 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('purchase.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route('verify-stock.show',[$order_id])}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid product">
@@ -279,7 +279,7 @@
                       <div class="col-sm-3">
                         <label for="payment_status">Payment Status *</label>
                         <?php $payment_status=[''=>'Please Select',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
-                        {!! Form::select('payment_status',$payment_status,null,['class'=>'form-control no-search select2bs4','id'=>'payment_status']) !!}
+                        {!! Form::select('payment_status',$payment_status,3,['class'=>'form-control no-search select2bs4','id'=>'payment_status']) !!}
                       </div>
                     </div>
                   </div>
@@ -316,10 +316,10 @@
                     </div>
                   </div>
                   <div class="col-sm-12 submit-sec">
-                    <a href="{{ route('purchase.index') }}" class="btn  reset-btn">Cancel</a>
+                    <a href="{{ route('verify-stock.show',[$order_id]) }}" class="btn  reset-btn">Cancel</a>
                     <button class="btn save-btn" type="submit">Save</button>
                   </div>
-                {!! Form::close() !!}
+                </form>
               </div>
             </div>
           </div>

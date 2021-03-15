@@ -370,6 +370,9 @@ class StockVerifyController extends Controller
                    ->pluck('name','v.id')->toArray();
         $data['vendors']        = [''=>'Please Select']+$all_vendors;
 
+        $data['order_id']=$order_id;
+        
+
         return view('admin.stock.stock_verify.create',$data);
     }
 
