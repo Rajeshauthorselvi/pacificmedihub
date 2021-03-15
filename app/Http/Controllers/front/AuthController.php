@@ -4,11 +4,16 @@ namespace App\Http\Controllers\front;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\PasswordReset;
+use App\Mail\ResetPassword;
 use App\User;
 use Auth;
 use Redirect;
 use Session;
 use Hash;
+use Mail;
+use Str;
+
 
 class AuthController extends Controller
 {
@@ -65,6 +70,61 @@ class AuthController extends Controller
             }
         }else{
             return Redirect::back()->with('error','User does not exist!');
+        }
+    }
+
+
+    public function forgetPassword()
+    {
+        return view('front/customer/forget_password');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        if ($request->ajax()){
+            $this->validate(request(), ['email' => 'required']);
+
+            $check = User::where('email',$request->email)->where('role_id',7)->first();
+
+            if(isset($check->email)&&($check->email==$request->email)){
+                $code = Str::random(6);
+
+                $add = new PasswordReset;
+                $add->email = $request->email;
+                $add->token = $request->_token;
+                $add->code  = $code;
+                $add->created_at = date('Y-m-d H:i:s');
+                $add->save();
+                if($add){
+                    Mail::to($request->email)->send(new ResetPassword($request->email,$code));
+                    $data['is_exist'] = true;
+                    $data['code']    = $add->code;
+                    $data['email']   = $add->email;
+                    $data['status']  = true;
+                    return response()->json($data);
+                }else{
+                    $data['is_exist'] = true;
+                    $data['message'] = 'Email Not Sent, Please Try Again.!';
+                    $data['status']  = false;
+                    return response()->json($data);
+                }
+                
+            }else{
+                $data['is_exist'] = false;
+                $data['message'] = 'User does not exist.!';
+                $data['status']  = false;
+                return response()->json($data);
+            }
+        }else{
+            $user = User::where('email',$request->email)->first();
+            if($user){
+                $user->password = Hash::make($request->con_pwd);
+                $user->save();
+                Session::flush();
+                return redirect()->route('customer.login')->with('success', 'Your Password reset successfully.!');
+            }else{
+                return Redirect::back()->with('error','User does not exist!');
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 @extends('front.layouts.default')
 @section('front_end_container')
 <div class="main">
+	<input type="hidden" class="user-id" value="{{ $user_id }}">
 	@if($slider_status==1)
 		@if(isset($banners))
 			<div id="home_slider" class="owl-carousel owl-theme">
@@ -157,42 +158,47 @@
 @push('custom-scripts')
 <script type="text/javascript">
 	$(document).find('.wishlist-action').click(function () {
-		var toastr = new Toastr({
-			theme: 'ocean',
-			animation: 'slide',
-			timeout: 5000
-		});
-		var prodID  = $(this).attr('productID');
-		var rowID = $(this).attr('rowID');
+		var userID = $('.user-id').val();
+		if(userID!=''){
+			var toastr = new Toastr({
+				theme: 'ocean',
+				animation: 'slide',
+				timeout: 5000
+			});
+			var prodID  = $(this).attr('productID');
+			var rowID = $(this).attr('rowID');
 
-		var status = $(this).attr('check');
-		if(status==1){
-			$(this).attr('check','');
-			$(this).children('.fa-heart').attr('class','far fa-heart');
-			toastr.show('Item removed from Wishlist.!');
-		}else{
-			$(this).attr('check',1);
-			$(this).children('.fa-heart').attr('class','fas fa-heart');
-			toastr.show('Item added to Wishlist.!');
+			var status = $(this).attr('check');
+			if(status==1){
+				$(this).attr('check','');
+				$(this).children('.fa-heart').attr('class','far fa-heart');
+				toastr.show('Item removed from Wishlist.!');
+			}else{
+				$(this).attr('check',1);
+				$(this).children('.fa-heart').attr('class','fas fa-heart');
+				toastr.show('Item added to Wishlist.!');
+			}
+			$.ajax({
+	            url:"{{ route('wishlist.store') }}",
+	            type:"POST",
+	            data:{
+	            	"_token": "{{ csrf_token() }}",
+	            	product_id:prodID,
+	            	row_id:rowID
+	            },
+	            success:function(res){
+	            	if(res=='removed'){
+	            		$(this).children('.fa-heart').attr('class','far fa-heart');
+	            	}else if(res=='added'){
+	            		$(this).children('.fa-heart').attr('class','fas fa-heart');
+	            	}else if(res==false){
+	            		window.location.href = "{{ route('customer.login') }}";
+	            	}
+	            }
+	        })
+	    }else{
+			window.location.href = "{{ route('customer.login')}}";
 		}
-		$.ajax({
-            url:"{{ route('wishlist.store') }}",
-            type:"POST",
-            data:{
-            	"_token": "{{ csrf_token() }}",
-            	product_id:prodID,
-            	row_id:rowID
-            },
-            success:function(res){
-            	if(res=='removed'){
-            		$(this).children('.fa-heart').attr('class','far fa-heart');
-            	}else if(res=='added'){
-            		$(this).children('.fa-heart').attr('class','fas fa-heart');
-            	}else if(res==false){
-            		window.location.href = "{{ route('customer.login') }}";
-            	}
-            }
-        })
 	});
 
 

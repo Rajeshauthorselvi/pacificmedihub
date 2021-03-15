@@ -179,6 +179,8 @@ Route::get('customer-login','front\AuthController@index')->name('customer.login'
 Route::post('customer-login','front\AuthController@store')->name('customer.store');
 Route::get('customer-logout','front\AuthController@logout')->name('customer.logout');
 Route::post('change-customer-password','front\AuthController@changePassword')->name('change.cuspwd');
+Route::get('forget-password','front\AuthController@forgetPassword')->name('forget.password');
+Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
 
 //Customer Profile Page
 Route::get('my-profile/{id}','front\ProfileController@index')->name('profile.index');

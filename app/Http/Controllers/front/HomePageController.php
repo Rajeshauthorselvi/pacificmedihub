@@ -22,6 +22,7 @@ class HomePageController extends Controller
     {
         $data = array();
 
+        $data['user_id'] = null;
         $wishlist=[];
         if(Auth::check()){
             $user_id = Auth::id();
@@ -32,6 +33,7 @@ class HomePageController extends Controller
                 $wishlist[$k]['row_id']     = $item->getUniqueId();
                 $k++;
             }
+            $data['user_id'] = $user_id;
         }
         $data['wishlist'] = $wishlist;
 
@@ -59,9 +61,6 @@ class HomePageController extends Controller
         if ($feature) {
             $data['features'] = FeatureBlockData::where('feature_id',$feature->id)->get();
         }
-
-        //dd($data['features']);
-
         $categories = DB::table('categories as c')
                         ->select('c.name as category_name','c.search_engine_name as category_search_engine_name','p.*')
                         ->leftJoin('products as p','c.id','p.category_id')
@@ -73,7 +72,6 @@ class HomePageController extends Controller
             $category_products[$value->category_name][] = $value;
         }
         $data['category_products'] = $category_products;
-
     	return view('front.home.home',$data);
     }
 
