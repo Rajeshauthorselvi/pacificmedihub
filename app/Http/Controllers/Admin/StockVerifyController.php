@@ -252,7 +252,7 @@ class StockVerifyController extends Controller
 
         $low_quantity_data=array();
          $data['order']=$order_details=Orders::with('orderProducts')->where('orders.id',$order_id)->first();
-        $products = OrderProducts::where('order_id',$order_id)->get();
+        $products = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
         $product_data=array();
         foreach ($products as $key => $product) {
             $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
@@ -272,6 +272,7 @@ class StockVerifyController extends Controller
                 ];
             }
         }
+
 
       if ($order_details->created_user_type==2) {
         $creater_name=Employee::where('id',$order_details->customer_id)->first();
@@ -297,6 +298,7 @@ class StockVerifyController extends Controller
      */
     public function edit(Request $request,$order_id)
     {
+
       $data=array();
 
           $product_id=$request->product_id;
@@ -335,7 +337,7 @@ class StockVerifyController extends Controller
           }
 
             $order_details=Orders::where('id',$order_id)->first();
-            $order_products=OrderProducts::where('order_id',$order_id)->get();
+            $order_products=OrderProducts::where('order_id',$order_id)->where('product_id',$product_id)->get();
             $product_data=$all_product_ids=array();
             foreach ($order_products as $key => $product) {
             $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
@@ -347,7 +349,7 @@ class StockVerifyController extends Controller
                 $product_name    = Product::where('id',$product->product_id)->value('name');
                 $product_variant = $this->Variants($product->product_id,$all_variants);
                 $options         = $this->Options($product->product_id);
-                $product_data[] = [
+                $product_data[$product->product_id] = [
                     'order_id'        => $order_id,
                     'product_id'      => $product->product_id,
                     'product_name'    => $product_name,
