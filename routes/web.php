@@ -96,7 +96,6 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('rfq','Admin\RFQController');
 
 	//Orders
-	Route::resource('orders','Admin\OrderController');
 	Route::get('orders-product',['as'=>'orders.product','uses'=>'Admin\OrderController@ProductSearch']);
 	Route::post('create_order_payment',[
 		'as'=>'create.order.payment','uses'=>'Admin\OrderController@CreatePurchasePayment'
@@ -104,6 +103,19 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('view_order_payment/{order_id}',[
 		'as'=>'view.order.payment','uses'=>'Admin\OrderController@ViewPurchasePayment'
 	]);
+	Route::get('cop_print/{order_id}','Admin\OrderController@COEmployeePrint');
+	Route::get('cop_pdf/{order_id}','Admin\OrderController@COPEmployeePdf');
+
+	Route::get('cop_admin_print/{order_id}','Admin\OrderController@COAdminPrint');
+	Route::get('cop_admin_pdf/{order_id}','Admin\OrderController@COAdminPdf');
+
+
+	Route::resource('orders','Admin\OrderController');
+	Route::resource('new-orders','Admin\OrderController');
+	Route::resource('assign-shippment','Admin\OrderController');
+	Route::resource('assign-delivery','Admin\OrderController');
+	Route::resource('completed-orders','Admin\OrderController');
+	Route::resource('cancelled-orders','Admin\OrderController');
 
 	//Customer
 	Route::resource('customers','Admin\CustomerController');
@@ -161,11 +173,14 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('view_payment_history/{slip_date}','Admin\EmployeeController@ViewPaymentHistory');
 	//Get Commission Value
 	Route::get('get-commission-value','Admin\DashboardController@commissionValue');
-	Route::get('cop_print/{order_id}','Admin\CompletedOrders@COPrint');
+
+/*	Route::get('cop_print/{order_id}','Admin\CompletedOrders@COPrint');
 	Route::get('cop_pdf/{order_id}','Admin\CompletedOrders@COPPdf');
-	Route::resource('delivery-assign','Admin\CompletedOrders');
+	Route::resource('delivery-assign','Admin\CompletedOrders');*/
+
 	Route::resource('low-stocks','Admin\LowStockAlertController');
 	Route::resource('low-stock-purchase','Admin\LowStockPurchaseController');
+	
 	Route::resource('verify-stock','Admin\StockVerifyController');
 
 });

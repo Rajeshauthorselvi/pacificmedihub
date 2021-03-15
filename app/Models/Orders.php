@@ -118,4 +118,9 @@ class Orders extends Model
 
         return ['low_stock_count'=>$count,'stock_details'=>$stock_details];
     }
+
+    static function LowQuantityInStockVerifyPage($product_id,$product_variant_id)
+    {
+        
+    }
 }

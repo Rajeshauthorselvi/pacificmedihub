@@ -36,7 +36,7 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('orders.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route($back_route)}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid">
@@ -48,7 +48,7 @@
               </div>
               <div class="card">
                 <div class="card-body">
-                  {!! Form::open(['route'=>'orders.store','method'=>'POST','class'=>'orders-form']) !!}
+                  {!! Form::open(['route'=>$store_route,'method'=>'POST','class'=>'orders-form']) !!}
                     
                     <div class="date-sec">
                       <div class="form-group">
@@ -62,7 +62,7 @@
                         </div>
                         <div class="col-sm-4">
                           <label for="orderStatus">Status *</label>
-                          {!! Form::select('order_status',$order_status, null,['class'=>'form-control no-search select2bs4','id'=>'orderStatus']) !!}
+                          {!! Form::select('order_status',$order_status, 19,['class'=>'form-control no-search select2bs4','id'=>'orderStatus']) !!}
                           <span class="text-danger order" style="display:none;">Status is required. Please Select</span>
                         </div>
                       </div>
@@ -173,7 +173,7 @@
                     </div>
                     <div class="form-group">
                       <div class="col-sm-12 submit-sec">
-                        <a href="{{ route('orders.index') }}" class="btn reset-btn">Cancel</a>
+                        <a href="{{ route($back_route) }}" class="btn reset-btn">Cancel</a>
                         <button class="btn save-btn" type="submit">Submit</button>
                       </div>
                     </div>

@@ -35,7 +35,7 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('delivery-assign.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route($back_route)}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid">
@@ -200,7 +200,7 @@
 
                     <div class="form-group">
                       <div class="col-sm-12 submit-sec">
-                        <a href="{{ route('orders.index') }}" class="btn  reset-btn">Cancel</a>
+                        <a href="{{ route($back_route) }}" class="btn  reset-btn">Cancel</a>
                         <button class="btn save-btn" type="submit">Save</button>
                       </div>
                     </div>

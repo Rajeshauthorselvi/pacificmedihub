@@ -35,7 +35,7 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('orders.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{route($back_route)}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid">
@@ -47,7 +47,7 @@
               </div>
               <div class="card">
                 <div class="card-body">
-                  {!! Form::model($order,['method' => 'PATCH', 'route' =>['orders.update',$order->id]]) !!}
+                  {!! Form::model($order,['method' => 'PATCH', 'route' =>[$update_route,$order->id]]) !!}
                     <div class="date-sec">
                       <div class="form-group">
                         <div class="col-sm-4">
