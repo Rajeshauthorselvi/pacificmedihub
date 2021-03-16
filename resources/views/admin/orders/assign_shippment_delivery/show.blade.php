@@ -89,11 +89,6 @@
                             {!! Form::label('doj', 'Delivery Date *') !!}
                             <input type="text" name="delivery_date" class="form-control date-picker" value="{{ $approximate_delivery_date }}" readonly />
                             </div>
-                            <div class="col-sm-4">
-                              <label for="sales_rep_id">Delivery Status *</label>
-                              {!! Form::select('delivery_status',$delivery_status,null,['class'=>'form-control','id'=>'delivery_person_id','disabled']) !!}
-                              <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
-                            </div>
                           </div>
                         </div>
                           

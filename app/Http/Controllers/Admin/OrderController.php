@@ -72,7 +72,7 @@ class OrderController extends Controller
           $data['data_title']='New Orders';
         }
         elseif($currenct_route[0]=="assign-shippment"){
-          $orders->whereIn('order_status',[18,15]);
+          $orders->whereIn('order_status',[18,15,14]);
           $data['data_title']='Assigned for Shipment Orders';
         }
         elseif($currenct_route[0]=="assign-delivery"){
@@ -91,6 +91,7 @@ class OrderController extends Controller
         $orders=$orders->orderBy('orders.id','desc')->get();
 
         $data['orders']=$orders;
+
         return view($view,$data);
     }
 
@@ -360,7 +361,7 @@ class OrderController extends Controller
      */
     public function edit(Orders $orders,$order_id)
     {
-
+      
         if (!Auth::check() && Auth::guard('employee')->check()) {
             if (!Auth::guard('employee')->user()->isAuthorized('order','update')) {
                 abort(404);
@@ -412,16 +413,18 @@ class OrderController extends Controller
         $data['delivery_persons']=[''=>'Please Select']+Employee::where('emp_department',3)
                                   ->where('is_deleted',0)->where('status',1)
                                   ->pluck('emp_name','id')->toArray();
+
          $order_status=OrderStatus::where('status',1);  
                                  
         if ($currenct_route[0]=="assign-delivery") {
-           $order_status->whereIn('id',[14,15,16,17]);
+           $order_status->whereIn('id',[16,17]);
         }
         else{
-          $order_status->whereIn('id',[19,18,15,20,21]);
+          $order_status->whereIn('id',[14,19,18,15,20,21]);
         }
 
         $order_status=$order_status->pluck('status_name','id')->toArray();
+
         $data['order_status']=[''=>'Please Select']+$order_status;
 
         if ($currenct_route[0]=="assign-shippment" || $currenct_route[0]=="assign-delivery") {
@@ -443,10 +446,9 @@ class OrderController extends Controller
         $route=explode('.',$currenct_route);
         $data['type']=$currenct_route[0];
 
-/*        $this->validate(request(),[
+        $this->validate(request(),[
             'order_status'   => 'required',
-            'payment_status' => 'required'
-        ]);*/
+        ]);
             
         if($request->order_status==13){
             $order_completed_at = date('Y-m-d H:i:s');
