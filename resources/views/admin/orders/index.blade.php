@@ -47,9 +47,11 @@
                 <div class="pull-left">
                   <h3 class="card-title">List Orders</h3>
                 </div>
-                <div class="pull-right">
-                  <img src="{{ asset('theme/images/low_stock_color_code.png') }}"> Low Stock Orders
-                </div>
+                @if ($type=="new-orders")
+                  <div class="pull-right">
+                    <img src="{{ asset('theme/images/low_stock_color_code.png') }}"> Low Stock Orders
+                  </div>
+                @endif
               </div>
               <div class="card">
                 <div class="card-body">
@@ -137,7 +139,7 @@
                                 <a href="{{route($edit_route,[$order->id,'low_stock'=>$low_stock])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                 @endif
                                 @endif
-                                
+
                                 @if($low_stock=="yes")
                                   <a href="{{ url('admin/order-purchase/'.$order->id) }}">
                                     <li class="dropdown-item">

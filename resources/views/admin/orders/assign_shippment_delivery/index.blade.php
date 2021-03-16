@@ -31,9 +31,11 @@
                 <div class="pull-left">
                   <h3 class="card-title">List Orders</h3>
                 </div>
+                @if ($type=="assign-shippment")
                 <div class="pull-right">
                   <img src="{{ asset('theme/images/low_stock_color_code.png') }}"> Low Stock Orders
                 </div>
+                @endif
               </div>
               <div class="card">
                 <div class="card-body">
