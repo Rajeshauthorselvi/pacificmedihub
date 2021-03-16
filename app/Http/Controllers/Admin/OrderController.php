@@ -22,6 +22,7 @@ use App\Models\Tax;
 use App\Models\PaymentTerm;
 use App\Models\UserCompanyDetails;
 use App\Models\UserAddress;
+use App\Models\OrderHistory;
 use App\User;
 use Auth;
 use Redirect;
@@ -157,6 +158,7 @@ class OrderController extends Controller
             'payment_status' => 'required'
         ]);
 
+        /*Order*/
         if($request->order_status==13){
             $order_completed_at = date('Y-m-d H:i:s');
         }else{
@@ -196,7 +198,9 @@ class OrderController extends Controller
        ];
        
         $order_id = Orders::insertGetId($order_data);
+        /*Order*/
 
+        /*Order Products*/
         $quantites             = $request->quantity;
         $variant               = $request->variant;
         $product_ids           = $variant['product_id'];
@@ -224,7 +228,9 @@ class OrderController extends Controller
                 OrderProducts::insert($data);
             }
         }
+        /*Order Products*/
 
+        /*Order Payment*/
        if ($request->amount!="" || $request->amount!=0) {
            PaymentHistory::insert([
                 'ref_id'  => $order_id,
@@ -249,6 +255,26 @@ class OrderController extends Controller
 
           Orders::where('id',$order_id)->update(['payment_status'=>$payment_status]);
        }
+       /*Order Payment*/
+
+       /*OrderHistory*/
+         if (!Auth::check() && Auth::guard('employee')->check()) {
+            $updated_by=Auth::guard('employee')->user()->id;
+            $user_type=2;
+         }
+         else{
+            $updated_by=Auth::id();
+            $user_type=1;
+         }
+         $order_history=[
+            'order_id'    => $order_id,
+            'order_status_id' => $order_data['order_status'],
+            'updated_by'  => $updated_by,
+            'user_type'   => $user_type 
+         ];
+         OrderHistory::insert($order_history);
+       /*OrderHistory*/
+       
        $route=$this->RouteLinks();
        return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
     }
@@ -457,7 +483,25 @@ class OrderController extends Controller
               'updated_at'            => date('Y-m-d H:i:s')
           ];
         }
+
+
        Orders::where('id',$id)->update($order_data);
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+          $updated_by=Auth::guard('employee')->user()->id;
+          $user_type=2;
+       }
+       else{
+          $updated_by=Auth::id();
+          $user_type=1;
+       }
+       $order_history=[
+          'order_id'    => $id,
+          'order_status_id' => $order_data['order_status'],
+          'updated_by'  => $updated_by,
+          'user_type'   => $user_type 
+       ];
+       OrderHistory::insert($order_history);
+
        $route=$this->RouteLinks();
        return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
 
@@ -475,9 +519,9 @@ class OrderController extends Controller
         if($delete_order){
           OrderProducts::where('order_id',$id)->delete();
         }
-        
+        $route=$this->RouteLinks();
         if ($request->ajax())  return ['status'=>true];
-        else return redirect()->route('orders.index')->with('error','Order deleted successfully.!');
+        else return redirect()->route($route['back_route'])->with('error','Order deleted successfully.!');
     }
 
 
