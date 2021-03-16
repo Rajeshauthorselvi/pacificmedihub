@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('delivery-assign.index')}}">Order List</a></li>
+              <li class="breadcrumb-item"><a href="{{route($back_route)}}">Order List</a></li>
               <li class="breadcrumb-item active">Edit Order</li>
             </ol>
           </div><!-- /.col -->
@@ -47,7 +47,6 @@
               </div>
               <div class="card">
                 <div class="card-body">
-                  {!! Form::model($order,['method' => 'PATCH', 'route' =>['delivery-assign.update',$order->id]]) !!}
                     <div class="date-sec">
                       <div class="form-group">
                         <div class="col-sm-4">

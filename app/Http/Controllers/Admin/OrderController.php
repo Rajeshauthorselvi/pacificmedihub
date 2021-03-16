@@ -66,20 +66,26 @@ class OrderController extends Controller
           $view='admin.orders.index';
         }
 
+        $data['data_title']="List Orders";
         if ($currenct_route[0]=="new-orders") {
           $orders->where('order_status',19);
+          $data['data_title']='New Orders';
         }
         elseif($currenct_route[0]=="assign-shippment"){
           $orders->whereIn('order_status',[18,15]);
+          $data['data_title']='Assigned for Shipment Orders';
         }
         elseif($currenct_route[0]=="assign-delivery"){
           $orders->whereIn('order_status',[14,15,16]);
+          $data['data_title']='Assigned for Delivery Orders';
         }
         elseif($currenct_route[0]=="completed-orders"){
           $orders->where('order_status',13);
+          $data['data_title']='Completed Orders';
         }
         elseif($currenct_route[0]=="cancelled-orders"){
           $orders->whereIn('order_status',[21,17,11]);
+          $data['data_title']='Cancelled/Missed Orders';
         }
        
         $orders=$orders->orderBy('orders.id','desc')->get();
@@ -274,7 +280,7 @@ class OrderController extends Controller
          ];
          OrderHistory::insert($order_history);
        /*OrderHistory*/
-       
+
        $route=$this->RouteLinks();
        return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
     }
