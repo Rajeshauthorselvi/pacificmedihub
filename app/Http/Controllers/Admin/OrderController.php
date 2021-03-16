@@ -535,6 +535,8 @@ class OrderController extends Controller
      */
     public function destroy(Request $request,$id)
     {
+
+        OrderHistory::where('order_id',$id)->delete();
         $delete_order = Orders::where('id',$id)->delete();
         if($delete_order){
           OrderProducts::where('order_id',$id)->delete();
