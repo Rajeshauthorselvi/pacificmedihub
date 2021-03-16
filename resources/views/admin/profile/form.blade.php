@@ -50,11 +50,11 @@
                     <div class="form-group">
                       <div class="col-sm-6">
                         <label for="firstName">First Name *</label>
-                        {!! Form::text('first_name', $admin->first_name,['class'=>'form-control','readonly']) !!}
+                        {!! Form::text('first_name', $admin->first_name,['class'=>'form-control']) !!}
                       </div>
                       <div class="col-sm-6">
                         <label for="lastName">Last Name *</label>
-                        {!! Form::text('last_name', $admin->last_name,['class'=>'form-control','readonly']) !!}
+                        {!! Form::text('last_name', $admin->last_name,['class'=>'form-control']) !!}
                       </div>
                     </div>
                     <div class="form-group">
@@ -64,11 +64,12 @@
                       </div>
                       <div class="col-sm-6">
                         <label for="contactNo">Contact No *</label>
-                        {!! Form::text('contact_number', $admin->contact_number,['class'=>'form-control','readonly']) !!}
+                        {!! Form::text('contact_number', $admin->contact_number,['class'=>'form-control']) !!}
+                        <span class="text-danger">{{ $errors->first('contact_number') }}</span>
                       </div>
                     </div>
                     <div class="form-group">
-                      <div class="col-sm-6">
+              {{--         <div class="col-sm-6">
                         <label for="gender">Gender *</label>
                         <?php 
                           $gender=null;
@@ -76,10 +77,11 @@
                           else if($admin->gender=='Female') $gender='Female'
                         ?>
                         {!! Form::text('gender', $gender,['class'=>'form-control','readonly']) !!}
-                      </div>
+                      </div> --}}
                       <div class="col-sm-6">
                         <label for="gst">GST No *</label>
-                        {!! Form::text('gst', $company->company_gst,['class'=>'form-control','readonly']) !!}
+                        {!! Form::text('gst', $company->company_gst,['class'=>'form-control']) !!}
+                        <span class="text-danger">{{ $errors->first('gst') }}</span>
                       </div>
                     </div>
                     <div class="form-group">

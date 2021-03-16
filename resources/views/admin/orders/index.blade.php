@@ -137,6 +137,14 @@
                                 <a href="{{route($edit_route,[$order->id,'low_stock'=>$low_stock])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                 @endif
                                 @endif
+                                
+                                @if($low_stock=="yes")
+                                  <a href="{{ url('admin/order-purchase/'.$order->id) }}">
+                                    <li class="dropdown-item">
+                                      <i class="far fa-star"></i>&nbsp;&nbsp;Create Purchase
+                                    </li>
+                                  </a>
+                                @endif
 
                                 <a href="{{ url('admin/cop_admin_pdf/'.$order->id) }}">
                                   <li class="dropdown-item">

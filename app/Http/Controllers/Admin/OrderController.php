@@ -23,8 +23,10 @@ use App\Models\PaymentTerm;
 use App\Models\UserCompanyDetails;
 use App\Models\UserAddress;
 use App\Models\OrderHistory;
+use App\Models\Purchase;
 use App\User;
 use Auth;
+use DB;
 use Redirect;
 use Session;
 use Illuminate\Support\Facades\App;
@@ -1021,8 +1023,105 @@ class OrderController extends Controller
     return ['data'=>$data];
     }
 
-    public function EmployeeStockVerify()
+    public function OrderPurchase(Request $request,$order_id)
     {
-      # code...
+
+      $data=array();
+
+          $product_id=$request->product_id;
+          $variant_id=$request->product_variant_id;
+          $vendor_id=$request->vendor_id;
+
+          $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,2,8])
+                                        ->pluck('status_name','id')->toArray();
+          $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
+          $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                        ->pluck('name','id')->toArray();
+          $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
+          $data['purchase_code']='';
+          $purchase_code = Prefix::where('key','prefix')->where('code','purchase_no')->value('content');
+          if (isset($purchase_code)) {
+            $value = unserialize($purchase_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Purchase::count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $data['purchase_code']=$replace_number;
+          }
+          $product_ids=$this->VariantIds($order_id);
+
+          // dd($product_ids);
+          $product_ids=$product_ids['product_ids'];
+
+            $order_details=Orders::where('id',$order_id)->first();
+            $order_products=OrderProducts::where('order_id',$order_id)
+            ->whereIn('product_id',$product_ids)
+            // ->groupBy('product_id')
+            ->get();
+
+            $product_data=$all_product_ids=array();
+            foreach ($order_products as $key => $product) {
+            $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
+            if ($product->quantity > $check_product_quantity) {
+         
+                $all_variants=$this->VariantIds($order_id);
+                $all_variants=$all_variants['variants'];
+
+
+                $product_name    = Product::where('id',$product->product_id)->value('name');
+                $product_variant = $this->Variants($product->product_id,$all_variants);
+                $options         = $this->Options($product->product_id);
+                $product_data[$product->product_id] = [
+                    'order_id'        => $order_id,
+                    'product_id'      => $product->product_id,
+                    'product_name'    => $product_name,
+                    'order_quantity'        => $product->quantity,
+                    'total_avail_quantity'  => $check_product_quantity,
+                    'options'               => $options['options'],
+                    'option_count'          => $options['option_count'],
+                    'product_variant'       => $product_variant
+                ];
+                $all_product_ids[]=$product->product_id;
+            }
+        }
+        $data['purchase_products'] = $product_data;
+        $all_vendors=DB::table('product_variant_vendors as pvv')
+                   ->leftjoin('vendors as v','v.id','pvv.vendor_id')
+                   ->where('status',1)
+                   ->whereIn('product_id',$all_product_ids)
+                   ->pluck('name','v.id')->toArray();
+        $data['vendors']        = [''=>'Please Select']+$all_vendors;
+
+        $data['order_id']=$order_id;
+
+
+        return view('admin.orders.create_purchase',$data);
+        
+    }
+    public function VariantIds($order_id='')
+    {
+        $product_variant=DB::select("SELECT op.product_variation_id,product_id FROM order_products as op where `quantity` > (SELECT stock_quantity from product_variant_vendors as pvv WHERE pvv.product_id=op.product_id and pvv.product_variant_id=op.product_variation_id) AND op.order_id='".$order_id."'");
+
+            $all_variants=array();
+            foreach ($product_variant as $key => $row) {
+                            $all_variants[$key] = $row->product_variation_id;
+                            $all_product_ids[$key] = $row->product_id;
+                          }
+
+        return ['product_ids'=>$all_product_ids,'variants'=>$all_variants];
     }
 }
