@@ -36,7 +36,7 @@
             	</a>
             </li>
             <li>
-            	<a class="link" href="javascript:void(0);">
+            	<a class="link" href="{{ route('my-address.index') }}">
             		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
             	</a>
             </li>

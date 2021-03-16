@@ -13,6 +13,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('front/css/bootstrap.min.css') }}" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{{ asset('theme/plugins/select2/css/select2.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('theme/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ asset('theme/dist/css/adminlte.min.css') }}">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/fontawesome-free/css/all.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ asset('front/css/owl.carousel.min.css') }}">
@@ -35,12 +41,45 @@
 <script src="{{ asset('theme/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 <!-- Bootstrap 4 -->
 <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- Select2 -->
+<script src="{{ asset('theme/plugins/select2/js/select2.full.min.js') }}"></script>
 <!-- Owl Carousel - 2.3.4 -->
 <script src="{{ asset('front/js/owl.carousel.min.js') }}"></script>
 <!-- Toast -->
 <script src="{{ asset('front/js/toastr/toastr.js') }}"></script>
 
 @stack('custom-scripts')
+
+<script type="text/javascript">
+  //Validate Number
+      function validateNum(e , field) {
+        var val = field.value;
+        var re = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
+        var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
+        if (re.test(val)) {
+
+          } else {
+              val = re1.exec(val);
+              if (val) {
+                  field.value = val[0];
+              } else {
+                  field.value = "";
+              }
+          }
+      }
+      $(function() {
+        $('.validateTxt').keydown(function (e) {
+          if (e.shiftKey || e.ctrlKey || e.altKey) {
+            e.preventDefault();
+          } else {
+            var key = e.keyCode;
+            if (!((key == 8) || (key == 32) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90))) {
+              e.preventDefault();
+            }
+          }
+        });
+      });
+</script>
 <style>
     #overlay{ 
       position: fixed;

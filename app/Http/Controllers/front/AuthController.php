@@ -76,6 +76,8 @@ class AuthController extends Controller
 
     public function forgetPassword()
     {
+        Auth::Logout();
+        Session::flush();
         return view('front/customer/forget_password');
     }
 

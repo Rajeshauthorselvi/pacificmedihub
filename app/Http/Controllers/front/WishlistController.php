@@ -36,6 +36,7 @@ class WishlistController extends Controller
                 $url = url("$category_slug/$product->search_engine_name/$product_id");
                 $wishlist_data[$key]['link'] = $url;
             }
+            $data['user_id'] = $user_id;
             $data['count'] = Cart::count();
             $data['wishlist_data'] = $wishlist_data;
             

@@ -1189,7 +1189,7 @@ div.customer-menu a:hover {
     width: 75px;
 }
 .wishlist-block .product-data .name {
-    width: 85%;
+    width: 82%;
     padding-left: 10px;
 }
 .wishlist-block .product-data .name a {
@@ -1250,3 +1250,47 @@ div.customer-menu a:hover {
     box-shadow: none;
     border-color: #ccc;
 }
+.btn.reset-btn {background: #363636;padding: 5px 15px;border-radius: 2px;color: #fff;margin-right: 5px;}
+.btn.save-btn {padding: 5px 20px;background: #3287c7;color: #fff;border-radius: 2px;}
+
+.add-address {
+    padding: 15px 25px;
+    border: 1px solid #ededed;
+}
+.address-block {
+    margin: 2rem 0;
+}
+
+  .address-block .map-block{width: 100%;}
+  .address-block #myMap {height: 450px;width: 100%;}
+  .address-block .pac-card {
+    -moz-box-sizing: border-box;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    top: 5px !important;
+    right: 8px !important;
+  }
+
+  .address-block #title {
+    color: #fff;
+    background-color: #3e72b1;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 8px;
+  }
+
+  .address-block #pac-container {
+    padding: 5px 10px;
+  }
+
+  .address-block #pac-input {
+    background-color: #fff;
+    font-size: 14px;
+    padding: 5px 10px;
+    width: 400px;
+  }
+
+  .address-block #pac-input:focus {
+    border-color: #3e72b1;
+  }
