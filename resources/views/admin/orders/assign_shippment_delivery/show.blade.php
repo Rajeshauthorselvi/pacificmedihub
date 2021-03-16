@@ -68,23 +68,25 @@
                       <div class="form-group">
                         <div class="col-sm-4">
                           <label for="customer_id">Customer *</label>
-                            {!! Form::select('customer_id',$customers,  null,['class'=>'form-control','id'=>'customer','disabled']) !!}
+                            {!! Form::select('customer_id',$customers,  $order->customer->id,['class'=>'form-control','id'=>'customer','disabled']) !!}
                             {!! Form::hidden('customer_id',$order->customer_id,['class'=>'form-control','readonly']) !!}
                           <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
                         </div>
                         <div class="col-sm-4">
                           <label for="sales_rep_id">Sales Rep *</label>
-                          {!! Form::select('sales_rep_id',$sales_rep,null,['class'=>'form-control','id'=>'sales_rep_id','disabled']) !!}
+                          {!! Form::select('sales_rep_id',$sales_rep,$order->salesrep->id,['class'=>'form-control','id'=>'sales_rep_id','disabled']) !!}
                         </div>
                         <div class="col-sm-4">
                           <label for="sales_rep_id">Delivery Person *</label>
-                          {!! Form::select('delivery_person_id',$delivery_persons,null,['class'=>'form-control','id'=>'delivery_person_id','disabled']) !!}
+
+                          {!! Form::select('delivery_person_id',$delivery_persons,$order->delivery_person_id,['class'=>'form-control','id'=>'delivery_person_id','disabled']) !!}
                         </div>
                       </div>
                     </div>
                     <div class="delivery-date">
                       <div class="form-group">
-                      <?php $approximate_delivery_date=isset($order->approximate_delivery_date)?date('d/m/Y',strtotime($order->approximate_delivery_date)):''; ?>
+                      <?php $approximate_delivery_date=($order->approximate_delivery_date!="")?date('d/m/Y',strtotime($order->approximate_delivery_date)):""; ?>
+
                           <div class="col-sm-4">
                             {!! Form::label('doj', 'Delivery Date *') !!}
                             <input type="text" name="delivery_date" class="form-control date-picker" value="{{ $approximate_delivery_date }}" readonly />

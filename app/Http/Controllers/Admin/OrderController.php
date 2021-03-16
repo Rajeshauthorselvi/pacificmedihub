@@ -335,7 +335,6 @@ class OrderController extends Controller
         $currenct_route=Route::currentRouteName();
         $currenct_route=explode('.',$currenct_route);
         $data['order_status']   = OrderStatus::where('status',1)
-                                  ->whereIn('id',[3,13,11])
                                   ->pluck('status_name','id')->toArray();
         $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
                                         ->where('role_id',7)->pluck('first_name','id')->toArray();
@@ -361,7 +360,7 @@ class OrderController extends Controller
      */
     public function edit(Orders $orders,$order_id)
     {
-      
+
         if (!Auth::check() && Auth::guard('employee')->check()) {
             if (!Auth::guard('employee')->user()->isAuthorized('order','update')) {
                 abort(404);
