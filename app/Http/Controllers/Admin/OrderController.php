@@ -335,6 +335,7 @@ class OrderController extends Controller
         $currenct_route=Route::currentRouteName();
         $currenct_route=explode('.',$currenct_route);
         $data['order_status']   = OrderStatus::where('status',1)
+                                  ->whereIn('id',[3,13,11])
                                   ->pluck('status_name','id')->toArray();
         $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
                                         ->where('role_id',7)->pluck('first_name','id')->toArray();
@@ -419,7 +420,7 @@ class OrderController extends Controller
            $order_status->whereIn('id',[16,17]);
         }
         else{
-          $order_status->whereIn('id',[14,19,18,15,20,21]);
+          $order_status->whereIn('id',[14,18,15,16,17]);
         }
 
         $order_status=$order_status->pluck('status_name','id')->toArray();
@@ -978,6 +979,32 @@ class OrderController extends Controller
         ];
       }
     $data['product_data']=$product_data;
+
+         $data['order_code']= '';
+        $order_code = Prefix::where('key','prefix')->where('code','invoice')->value('content');
+        if (isset($order_code)) {
+            $value = unserialize($order_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Orders::count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $data['order_code']=$replace_number;
+        }
+        
 
     return ['data'=>$data];
     }

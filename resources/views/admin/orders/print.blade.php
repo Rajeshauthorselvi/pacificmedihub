@@ -15,6 +15,7 @@
                       <div style="width:30%;float: left;">
                         <ul class="list-unstyled order-no-sec"  style="font-size: 14px;padding-left: 0;list-style: none;">
                           <li><strong>Order Code : </strong>{{ $order->order_no }}</li>
+                          <li><strong>Invoice Number:</strong> {{ $order_code }}</li>
                           <li><strong>Date : </strong>{{date('d F, Y',strtotime($order->created_at))}}</li>
                           @if(isset($purchase->payTerm->name))
                             <li><strong>Payment Term : </strong>{{$order->payTerm->name}}</li>
