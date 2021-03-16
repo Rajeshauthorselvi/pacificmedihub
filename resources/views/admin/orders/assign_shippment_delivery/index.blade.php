@@ -32,7 +32,7 @@
                   <h3 class="card-title">List Orders</h3>
                 </div>
                 <div class="pull-right">
-                  #ffc1c1 Low Stock Orders
+                  <img src="{{ asset('theme/images/low_stock_color_code.png') }}"> Low Stock Orders
                 </div>
               </div>
               <div class="card">
@@ -59,9 +59,11 @@
                         }
                         if (isset($check_quantity[0]) && $check_quantity[0]=="yes") {
                             $class_bg="background:#ffc1c1 !important";
+                            $low_stock="yes";
                         }
                         else{
                           $class_bg="";
+                          $low_stock="no";
                         }
                         if ($order->order_status==17 || $order->order_status==11) {
                           $disabled_edit="pointer-events:none;opacity:0.5";
@@ -87,12 +89,13 @@
                               <ul class="dropdown-menu">
                                 <a href="{{route($show_route,$order->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','update'))
-
-                                <a href="{{route($edit_route,$order->id)}}"  style="{{ $disabled_edit }}">
-                                  <li class="dropdown-item">
-                                    <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
-                                  </li>
-                                </a>
+                                  @if ($low_stock!="yes")
+                                  <a href="{{route($edit_route,$order->id)}}"  style="{{ $disabled_edit }}">
+                                    <li class="dropdown-item">
+                                      <i class="far fa-edit"></i>&nbsp;&nbsp;Edit
+                                    </li>
+                                  </a>
+                                  @endif
                                 @endif
                                <a href="{{ url('admin/cop_pdf/'.$order->id) }}"><li class="dropdown-item">
                                   <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF

@@ -44,11 +44,16 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">List Orders</h3>
+                <div class="pull-left">
+                  <h3 class="card-title">List Orders</h3>
+                </div>
+                <div class="pull-right">
+                  <img src="{{ asset('theme/images/low_stock_color_code.png') }}"> Low Stock Orders
+                </div>
               </div>
               <div class="card">
                 <div class="card-body">
-                  <table id="example2" class="table table-bordered table-striped">
+                  <table id="example2" class="table table-bordered">
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
@@ -70,9 +75,11 @@
                       <?php $check_quantity=\App\Models\Orders::CheckQuantity($order->id);
                         if (isset($check_quantity[0]) && $check_quantity[0]=="yes") {
                             $class_bg="background:#ffc1c1 !important";
+                            $low_stock='yes';
                         }
                         else{
                           $class_bg="";
+                          $low_stock='no';
                         }
                        ?>                      
                         <tr style="{{ $class_bg }}">
@@ -84,7 +91,6 @@
                           <td><a href="{{route('orders.show',$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->first_name }}</td>
                           <td>{{ $order->salesrep->emp_name }}</td>
-
                           <td>
                             <span class="badge" style="background: {{ $order->statusName->color_codes }};color: #fff">
                             {{  $order->statusName->status_name  }}
@@ -106,7 +112,6 @@
                                 {{ $payment_status[$order->payment_status] }}
                               </span>
                           </td>
-
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
@@ -128,7 +133,9 @@
                                 @endif
                               
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','update'))
-                                <a href="{{route($edit_route,$order->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                @if ($order->order_status!=13)
+                                <a href="{{route($edit_route,[$order->id,'low_stock'=>$low_stock])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                @endif
                                 @endif
 
                                 <a href="{{ url('admin/cop_admin_pdf/'.$order->id) }}">

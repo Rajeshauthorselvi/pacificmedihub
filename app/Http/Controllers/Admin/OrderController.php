@@ -68,7 +68,7 @@ class OrderController extends Controller
 
         $data['data_title']="List Orders";
         if ($currenct_route[0]=="new-orders") {
-          $orders->where('order_status',19);
+          $orders->whereIn('order_status',[19,20]);
           $data['data_title']='New Orders';
         }
         elseif($currenct_route[0]=="assign-shippment"){
@@ -359,7 +359,7 @@ class OrderController extends Controller
      * @param  \App\Models\Orders  $orders
      * @return \Illuminate\Http\Response
      */
-    public function edit(Orders $orders,$order_id)
+    public function edit(Orders $orders,$order_id,Request $request)
     {
 
         if (!Auth::check() && Auth::guard('employee')->check()) {
@@ -367,6 +367,8 @@ class OrderController extends Controller
                 abort(404);
             }
         }
+
+        $low_stock=$request->low_stock;
         $data=$this->RouteLinks();
         $data['order']          = Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
                                         ->first();
@@ -418,9 +420,17 @@ class OrderController extends Controller
                                  
         if ($currenct_route[0]=="assign-delivery") {
            $order_status->whereIn('id',[16,17]);
+        }                     
+        elseif ($currenct_route[0]=="assign-shippment") {
+           $order_status->whereIn('id',[14,15,18,16,17]);
         }
-        else{
-          $order_status->whereIn('id',[14,18,15,16,17]);
+        elseif($currenct_route[0]=="new-orders"){
+          if ($low_stock=="yes") {
+             $order_status->whereIn('id',[19,20,21]);
+          }
+          else{
+            $order_status->whereIn('id',[19,20,21,18]);
+          }
         }
 
         $order_status=$order_status->pluck('status_name','id')->toArray();
