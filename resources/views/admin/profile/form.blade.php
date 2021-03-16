@@ -50,11 +50,11 @@
                     <div class="form-group">
                       <div class="col-sm-6">
                         <label for="firstName">First Name *</label>
-                        {!! Form::text('first_name', $admin->first_name,['class'=>'form-control']) !!}
+                        {!! Form::text('first_name', $admin->first_name,['class'=>'form-control','readonly']) !!}
                       </div>
                       <div class="col-sm-6">
                         <label for="lastName">Last Name *</label>
-                        {!! Form::text('last_name', $admin->last_name,['class'=>'form-control']) !!}
+                        {!! Form::text('last_name', $admin->last_name,['class'=>'form-control','readonly']) !!}
                       </div>
                     </div>
                     <div class="form-group">

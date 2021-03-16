@@ -92,8 +92,8 @@ class AdminProfileController extends Controller
        $address_details->save();
 
        $user_details=User::find(2);
-       $user_details->first_name=$request->first_name;
-       $user_details->last_name=$request->last_name;
+       // $user_details->first_name=$request->first_name;
+       // $user_details->last_name=$request->last_name;
        $user_details->contact_number=$request->contact_number;
        $user_details->save();
 
