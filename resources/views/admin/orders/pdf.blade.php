@@ -41,7 +41,7 @@
                               <p>
                                 <span>Tel: {{$admin_address->post_code}}</span><br>
                                 <span>Email: {{$admin_address->company_email}}</span><br>
-                                <span>GST: </span>
+                                <span>GST: {{ $admin_address->company_gst }} </span>
                               </p>
                           </div>
                         @else
@@ -75,7 +75,7 @@
                               <p>
                                 <span>Tel: {{$customer_address->contact_number}}</span><br>
                                 <span>Email: {{$customer_address->email}}</span><br>
-                                <span>GST: </span>
+                                <span>GST:- {{ $customer_gst_number }} </span>
                               </p>
                             </div>
                           </div>

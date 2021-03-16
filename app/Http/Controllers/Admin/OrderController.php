@@ -944,6 +944,8 @@ class OrderController extends Controller
         $data['order']=$order = Orders::find($order_id);
         $data['admin_address']  = UserCompanyDetails::where('customer_id',1)->first();
         $data['customer_address']  = UserAddress::where('id',$order->address_id)->first();
+        $data['customer_gst_number']=UserCompanyDetails::where('customer_id',$order->customer_id)
+                                     ->value('company_gst');
 
           if ($order->created_user_type==2) {
             $creater_name=Employee::where('id',$order->user_id)->first();
@@ -977,5 +979,10 @@ class OrderController extends Controller
     $data['product_data']=$product_data;
 
     return ['data'=>$data];
+    }
+
+    public function EmployeeStockVerify()
+    {
+      # code...
     }
 }

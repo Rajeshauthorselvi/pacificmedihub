@@ -38,8 +38,8 @@
                               </p>
                               <p>
                                 <span>Tel: {{$admin_address->post_code}}</span><br>
-                                <span>Email: {{$admin_address->company_email}}</span>
-                                <span>GST:- </span>
+                                <span>Email: {{$admin_address->company_email}}</span><br>
+                                <span>GST: {{ $admin_address->company_gst }} </span>
                               </p>
                           </div>
                         @else
@@ -73,7 +73,7 @@
                               <p>
                                 <span>Tel: {{$customer_address->contact_number}}</span><br>
                                 <span>Email: {{$customer_address->email}}</span><br>
-                                <span>GST:- </span>
+                                <span>GST:- {{ $customer_gst_number }} </span>
                               </p>
                             </div>
                           </div>
@@ -230,7 +230,7 @@
   </div>
 
   <script type="text/javascript">
-      // window.onload = function() { window.print(); }
+      window.onload = function() { window.print(); }
   </script>
 </body>
 </html>
