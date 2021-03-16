@@ -87,7 +87,7 @@ class OrderController extends Controller
           $orders->whereIn('order_status',[21,17,11]);
           $data['data_title']='Cancelled/Missed Orders';
         }
-       
+        
         $orders=$orders->orderBy('orders.id','desc')->get();
 
         $data['orders']=$orders;
