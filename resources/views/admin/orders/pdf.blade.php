@@ -199,7 +199,7 @@
                             </tr>
                             <tr class="total-calculation">
                               <th colspan="4"  style="text-align: right;">Total Amount(SGD): </th>
-                              <th id="total_amount_sgd">{{$order->sgd_total_amount}}</th>
+                              <th style="text-align: left;">{{$order->sgd_total_amount}}</th>
                             </tr>
                             @if($order->currencyCode->currency_code!='SGD')
                               @php $currency = 'contents'; @endphp 
@@ -210,7 +210,7 @@
                               <th colspan="4" class="title">
                                 Total Amount (<span class="exchange-code">{{$order->currencyCode->currency_code}}</span>)
                               </th>
-                              <th colspan="4" id="toatl_exchange_rate">{{$order->exchange_total_amount}}</th>
+                              <th colspan="4" style="text-align: left;">{{$order->exchange_total_amount}}</th>
                             </tr>
                             <tr><td colspan="6"></td></tr>
                           </tbody>
