@@ -921,6 +921,7 @@ class OrderController extends Controller
       $data=$print_data['data'];
       $order_details=$data['order'];
 
+      // return view('admin.orders.pdf',$print_data['data']);
       $layout = View::make('admin.orders.pdf',$print_data['data']);
       $pdf = App::make('dompdf.wrapper');
       $pdf->loadHTML($layout->render());
@@ -1004,7 +1005,7 @@ class OrderController extends Controller
             $replace_number = str_replace('[Start No]', $start_number, $replace_year);
             $data['order_code']=$replace_number;
         }
-        
+
 
     return ['data'=>$data];
     }
