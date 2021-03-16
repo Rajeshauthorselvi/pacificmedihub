@@ -133,7 +133,7 @@
 
                                 <a href="{{ url('admin/cop_admin_pdf/'.$order->id) }}">
                                   <li class="dropdown-item">
-                                    <i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
+                                    <i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download Invoice
                                   </li>
                                 </a>
 

@@ -15,9 +15,9 @@
                       <div style="width:30%;float: left;">
                         <ul class="list-unstyled order-no-sec"  style="font-size: 14px;padding-left: 0;list-style: none;">
                           <li><strong>Order Code : </strong>{{ $order->order_no }}</li>
-                          <li><strong>Date : </strong>{{date('d F, Y - g:i A',strtotime($order->created_at))}}</li>
-                          <li><strong>Order Status : </strong>{{$order->statusName->status_name}}</li>
-                          <li><strong>Delivery Status : </strong>{{ isset($order->deliveryStatus->status_name)?$order->deliveryStatus->status_name:'-' }}</li>
+                          <li><strong>Date : </strong>{{date('d F, Y',strtotime($order->created_at))}}</li>
+                          {{-- <li><strong>Order Status : </strong>{{$order->statusName->status_name}}</li> --}}
+                          {{-- <li><strong>Delivery Status : </strong>{{ isset($order->deliveryStatus->status_name)?$order->deliveryStatus->status_name:'-' }}</li> --}}
                           @if(isset($purchase->payTerm->name))
                             <li><strong>Payment Term : </strong>{{$order->payTerm->name}}</li>
                           @endif
@@ -40,7 +40,8 @@
                               </p>
                               <p>
                                 <span>Tel: {{$admin_address->post_code}}</span><br>
-                                <span>Email: {{$admin_address->company_email}}</span>
+                                <span>Email: {{$admin_address->company_email}}</span><br>
+                                <span>GST: </span>
                               </p>
                           </div>
                         @else
@@ -73,7 +74,8 @@
                               </p>
                               <p>
                                 <span>Tel: {{$customer_address->contact_number}}</span><br>
-                                <span>Email: {{$customer_address->email}}</span>
+                                <span>Email: {{$customer_address->email}}</span><br>
+                                <span>GST: </span>
                               </p>
                             </div>
                           </div>
