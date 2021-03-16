@@ -91,11 +91,7 @@ class AdminProfileController extends Controller
        $address_details->company_gst=$request->gst;
        $address_details->save();
 
-       $user_details=User::find(2);
-       // $user_details->first_name=$request->first_name;
-       // $user_details->last_name=$request->last_name;
-       $user_details->contact_number=$request->contact_number;
-       $user_details->save();
+       User::where('id',2)->update(['contact_number'=>$request->contact_number]);
 
        return Redirect::back()->with('success','Profile details updated successfully...!');
     }
