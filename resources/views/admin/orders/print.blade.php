@@ -11,19 +11,20 @@
 </head>
 <body>
   <div style="width: 700px;margin: auto;">
+                    <div>
+                      <div style="width: 42%;float: left;">
+                        <img src="{{ asset('theme/images/logo.jpeg') }}">
+                      </div>
+                      <div style="width: 50%;float: left;padding-top: 20px">
+                        <strong>Invoice No:</strong> {{ $order_code }}
+                      </div>
+                    </div>
                     <div class="address-sec">
-                      <div style="width:30%;float: left;">
-                        <ul class="list-unstyled order-no-sec"  style="font-size: 14px;padding-left: 0;list-style: none;">
-                          <li><strong>Order Code : </strong>{{ $order->order_no }}</li>
-                          <li><strong>Date : </strong>{{date('d F, Y',strtotime($order->created_at))}}</li>
-                          @if(isset($purchase->payTerm->name))
-                            <li><strong>Payment Term : </strong>{{$order->payTerm->name}}</li>
-                          @endif
-                        </ul>
-                      </div> 
+
                       <div style="width: 70%;float: left; font-size: 14px">
                         @if(isset($admin_address))
-                          <div class="customer address" style="width: 43%;float:left;padding-right: 7%;">
+                          <div class="customer address" style="width: 43%;float:left;">
+                              
                               <h4>{{$admin_address->company_name}}</h4>
                               <p>
                                 <span>
@@ -38,8 +39,8 @@
                               </p>
                               <p>
                                 <span>Tel: {{$admin_address->post_code}}</span><br>
-                                <span>Email: {{$admin_address->company_email}}</span>
-                                <span>GST:- </span>
+                                <span>Email: {{$admin_address->company_email}}</span><br>
+                                <span>GST: {{ $admin_address->company_gst }} </span>
                               </p>
                           </div>
                         @else
@@ -53,7 +54,7 @@
                         @endif
                       
                       @if(isset($customer_address))
-                          <div class="admin address" style="width: 40%; float:right;">
+                          <div class="admin address" style="width: 49%; float:right;padding-right: 15px;">
                             <div class="col-sm-2">
                               <span><i class="fas fa-people-carry"></i></span>
                             </div>
@@ -73,7 +74,7 @@
                               <p>
                                 <span>Tel: {{$customer_address->contact_number}}</span><br>
                                 <span>Email: {{$customer_address->email}}</span><br>
-                                <span>GST:- </span>
+                                <span>GST:- {{ $customer_gst_number }} </span>
                               </p>
                             </div>
                           </div>
@@ -87,6 +88,16 @@
                           </div>
                         @endif
                     </div>
+                      <div style="width:30%;float: left;">
+                        <ul class="list-unstyled order-no-sec"  style="font-size: 14px;padding-left: 0;list-style: none;">
+                          <li><strong>Order Code : </strong>{{ $order->order_no }}</li>
+                          
+                          <li><strong>Date : </strong>{{date('d F, Y',strtotime($order->created_at))}}</li>
+                          @if(isset($purchase->payTerm->name))
+                            <li><strong>Payment Term : </strong>{{$order->payTerm->name}}</li>
+                          @endif
+                        </ul>
+                      </div> 
                     </div>
                     <div style="clear: both;"></div>
                     <hr>
@@ -196,7 +207,7 @@
                             </tr>
                             <tr class="total-calculation">
                               <th colspan="4"  style="text-align: right;">Total Amount(SGD): </th>
-                              <th id="total_amount_sgd">{{$order->sgd_total_amount}}</th>
+                              <th style="text-align: left;">{{$order->sgd_total_amount}}</th>
                             </tr>
                             @if($order->currencyCode->currency_code!='SGD')
                               @php $currency = 'contents'; @endphp 
@@ -207,7 +218,7 @@
                               <th colspan="4" class="title">
                                 Total Amount (<span class="exchange-code">{{$order->currencyCode->currency_code}}</span>)
                               </th>
-                              <th colspan="4" id="toatl_exchange_rate">{{$order->exchange_total_amount}}</th>
+                              <th colspan="4" style="text-align: left;">{{$order->exchange_total_amount}}</th>
                             </tr>
                             <tr><td colspan="6"></td></tr>
                           </tbody>
@@ -230,7 +241,7 @@
   </div>
 
   <script type="text/javascript">
-      // window.onload = function() { window.print(); }
+      window.onload = function() { window.print(); }
   </script>
 </body>
 </html>

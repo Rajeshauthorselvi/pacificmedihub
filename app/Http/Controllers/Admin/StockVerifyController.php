@@ -20,6 +20,7 @@ use App\User;
 use App\Events\StockNotificationEvent;
 use Mail;
 use DB;
+use Auth;
 use Redirect;
 class StockVerifyController extends Controller
 {
@@ -55,13 +56,13 @@ class StockVerifyController extends Controller
                 ];
             }
         }
-      if ($order_details->created_user_type==2) {
-        $creater_name=Employee::where('id',$order_details->customer_id)->first();
-        $creater_name=$creater_name->emp_name;
+      if (Auth::check()) {
+        // $creater_name=Employee::where('id',$order_details->customer_id)->first();
+        $creater_name=Auth::user()->first_name;
       }
       else{
-        $creater_name=User::where('id',$order_details->customer_id)->first();
-        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+        // $creater_name=User::where('id',$order_details->customer_id)->first();
+        $creater_name=Auth::guard('employee')->user()->emp_name;
       }
 
       $data['creater_name']=$creater_name;
@@ -371,9 +372,16 @@ class StockVerifyController extends Controller
         $data['vendors']        = [''=>'Please Select']+$all_vendors;
 
         $data['order_id']=$order_id;
-        
 
-        return view('admin.stock.stock_verify.create',$data);
+        // dd($data);
+        
+        if (Auth::check()) {
+            return view('admin.stock.stock_verify.create',$data);
+        }
+        elseif (Auth::guard('employee')->check()) {
+            return view('admin.stock.stock_verify.show',$data);
+        }
+        
     }
 
     /**

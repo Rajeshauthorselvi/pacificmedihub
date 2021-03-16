@@ -15,6 +15,7 @@
                       <div style="width:30%;float: left;">
                         <ul class="list-unstyled order-no-sec"  style="font-size: 14px;padding-left: 0;list-style: none;">
                           <li><strong>Order Code : </strong>{{ $order->order_no }}</li>
+                          <li><strong>Invoice Number:</strong> {{ $order_code }}</li>
                           <li><strong>Date : </strong>{{date('d F, Y',strtotime($order->created_at))}}</li>
                           {{-- <li><strong>Order Status : </strong>{{$order->statusName->status_name}}</li> --}}
                           {{-- <li><strong>Delivery Status : </strong>{{ isset($order->deliveryStatus->status_name)?$order->deliveryStatus->status_name:'-' }}</li> --}}
@@ -41,7 +42,7 @@
                               <p>
                                 <span>Tel: {{$admin_address->post_code}}</span><br>
                                 <span>Email: {{$admin_address->company_email}}</span><br>
-                                <span>GST: </span>
+                                <span>GST: {{ $admin_address->company_gst }} </span>
                               </p>
                           </div>
                         @else
@@ -75,7 +76,7 @@
                               <p>
                                 <span>Tel: {{$customer_address->contact_number}}</span><br>
                                 <span>Email: {{$customer_address->email}}</span><br>
-                                <span>GST: </span>
+                                <span>GST:- {{ $customer_gst_number }} </span>
                               </p>
                             </div>
                           </div>
@@ -184,6 +185,34 @@
                               </tr>
 
                             @endforeach
+ <tr class="total-calculation">
+                              <td colspan="4" style="text-align: right;">Total: </td>
+                              <td>{{ $order->total_amount }}</td>
+                            </tr>
+                            <tr class="total-calculation">
+                              <td colspan="4"  style="text-align: right;">Order Discount: </td>
+                              <td><span class="order-discount">{{$order->order_discount}}</span></td>
+                            </tr>
+                            <tr class="total-calculation">
+                              <td colspan="4"  style="text-align: right;">Order Tax: </td>
+                              <td id="orderTax">{{$order->order_tax_amount}}</td>
+                            </tr>
+                            <tr class="total-calculation">
+                              <th colspan="4"  style="text-align: right;">Total Amount(SGD): </th>
+                              <th style="text-align: left;">{{$order->sgd_total_amount}}</th>
+                            </tr>
+                            @if($order->currencyCode->currency_code!='SGD')
+                              @php $currency = 'contents'; @endphp 
+                            @else
+                              @php $currency = 'none'; @endphp
+                            @endif
+                            <tr class="total-calculation" id="total_exchange" style="display:{{$currency}}">
+                              <th colspan="4" class="title">
+                                Total Amount (<span class="exchange-code">{{$order->currencyCode->currency_code}}</span>)
+                              </th>
+                              <th colspan="4" style="text-align: left;">{{$order->exchange_total_amount}}</th>
+                            </tr>
+                            <tr><td colspan="6"></td></tr>
                           </tbody>
                         </table>
                         <div style="clear: both;"></div>

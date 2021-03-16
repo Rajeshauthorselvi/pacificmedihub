@@ -24,6 +24,11 @@
     @include('flash-message')
     <!-- Main content -->
     <section class="content">
+      <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item active">
+          <a href="{{route('assign-shippment.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+        </li>
+      </ol>
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
@@ -41,7 +46,9 @@
                         <th>Current Stock</th>
                         <th>Ordered Stock</th>
                         <th>Remaining Needed</th>
+                        @if (!Auth::guard('employee')->check())
                         <th>Action</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -52,11 +59,13 @@
                             <td>{{ $datas['total_avail_quantity'] }}</td>
                             <td>{{ $datas['order_quantity'] }}</td>
                             <td>{{ $datas['order_quantity']-$datas['total_avail_quantity'] }}</td>
-                            <td>
-                              <a href="{{ route('verify-stock.edit',[$datas['order_id'],'product_id'=>$datas['product_id']]) }}" class="btn btn-primary">
-                                 Verify Stock
-                              </a>
-                            </td>
+                            @if (!Auth::guard('employee')->check())
+                              <td>
+                                <a href="{{ route('verify-stock.edit',[$datas['order_id'],'product_id'=>$datas['product_id']]) }}" class="btn btn-primary">
+                                   <i class="fa fa-plus"></i> Create Purchase
+                                </a>
+                              </td>
+                            @endif
                           </tr>
                         @endforeach
                     </tbody>

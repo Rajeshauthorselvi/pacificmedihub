@@ -64,11 +64,12 @@
                       </div>
                       <div class="col-sm-6">
                         <label for="contactNo">Contact No *</label>
-                        {!! Form::text('contact_number', $admin->contact_number,['class'=>'form-control','readonly']) !!}
+                        {!! Form::text('contact_number', $admin->contact_number,['class'=>'form-control']) !!}
+                        <span class="text-danger">{{ $errors->first('contact_number') }}</span>
                       </div>
                     </div>
                     <div class="form-group">
-                      <div class="col-sm-6">
+              {{--         <div class="col-sm-6">
                         <label for="gender">Gender *</label>
                         <?php 
                           $gender=null;
@@ -76,10 +77,11 @@
                           else if($admin->gender=='Female') $gender='Female'
                         ?>
                         {!! Form::text('gender', $gender,['class'=>'form-control','readonly']) !!}
-                      </div>
+                      </div> --}}
                       <div class="col-sm-6">
                         <label for="gst">GST No *</label>
-                        {!! Form::text('gst', $company->company_gst,['class'=>'form-control','readonly']) !!}
+                        {!! Form::text('gst', $company->company_gst,['class'=>'form-control']) !!}
+                        <span class="text-danger">{{ $errors->first('gst') }}</span>
                       </div>
                     </div>
                     <div class="form-group">
@@ -114,12 +116,11 @@
                     </div>
                     <div class="form-group">
                       <div class="col-sm-6">
-                        <label for="city">Latitude</label>
+                        <label for="city">Warehouse Latitude</label>
                         {!! Form::text('latitude', $company->latitude,['class'=>'form-control','id'=>'latitude']) !!}
                       </div>
                       <div class="col-sm-6">
-
-                        <label for="postCode">Longitude</label>
+                        <label for="postCode">Warehouse Longitude</label>
                         {!! Form::text('longitude', $company->longitude,['class'=>'form-control','id'=>'longitude']) !!}
                       </div>
                     </div>

@@ -23,8 +23,10 @@ use App\Models\PaymentTerm;
 use App\Models\UserCompanyDetails;
 use App\Models\UserAddress;
 use App\Models\OrderHistory;
+use App\Models\Purchase;
 use App\User;
 use Auth;
+use DB;
 use Redirect;
 use Session;
 use Illuminate\Support\Facades\App;
@@ -66,25 +68,32 @@ class OrderController extends Controller
           $view='admin.orders.index';
         }
 
+        $data['data_title']="List Orders";
         if ($currenct_route[0]=="new-orders") {
-          $orders->where('order_status',19);
+          $orders->whereIn('order_status',[19,20]);
+          $data['data_title']='New Orders';
         }
         elseif($currenct_route[0]=="assign-shippment"){
-          $orders->whereIn('order_status',[18,15]);
+          $orders->whereIn('order_status',[18,15,14]);
+          $data['data_title']='Assigned for Shipment Orders';
         }
         elseif($currenct_route[0]=="assign-delivery"){
           $orders->whereIn('order_status',[14,15,16]);
+          $data['data_title']='Assigned for Delivery Orders';
         }
         elseif($currenct_route[0]=="completed-orders"){
           $orders->where('order_status',13);
+          $data['data_title']='Completed Orders';
         }
         elseif($currenct_route[0]=="cancelled-orders"){
           $orders->whereIn('order_status',[21,17,11]);
+          $data['data_title']='Cancelled/Missed Orders';
         }
-       
+        
         $orders=$orders->orderBy('orders.id','desc')->get();
 
         $data['orders']=$orders;
+
         return view($view,$data);
     }
 
@@ -274,7 +283,7 @@ class OrderController extends Controller
          ];
          OrderHistory::insert($order_history);
        /*OrderHistory*/
-       
+
        $route=$this->RouteLinks();
        return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
     }
@@ -352,7 +361,7 @@ class OrderController extends Controller
      * @param  \App\Models\Orders  $orders
      * @return \Illuminate\Http\Response
      */
-    public function edit(Orders $orders,$order_id)
+    public function edit(Orders $orders,$order_id,Request $request)
     {
 
         if (!Auth::check() && Auth::guard('employee')->check()) {
@@ -360,6 +369,8 @@ class OrderController extends Controller
                 abort(404);
             }
         }
+
+        $low_stock=$request->low_stock;
         $data=$this->RouteLinks();
         $data['order']          = Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
                                         ->first();
@@ -406,16 +417,26 @@ class OrderController extends Controller
         $data['delivery_persons']=[''=>'Please Select']+Employee::where('emp_department',3)
                                   ->where('is_deleted',0)->where('status',1)
                                   ->pluck('emp_name','id')->toArray();
+
          $order_status=OrderStatus::where('status',1);  
                                  
         if ($currenct_route[0]=="assign-delivery") {
-           $order_status->whereIn('id',[14,15,16,17]);
+           $order_status->whereIn('id',[16,17]);
+        }                     
+        elseif ($currenct_route[0]=="assign-shippment") {
+           $order_status->whereIn('id',[14,15,18,16,17]);
         }
-        else{
-          $order_status->whereIn('id',[19,18,15,20,21]);
+        elseif($currenct_route[0]=="new-orders"){
+          if ($low_stock=="yes") {
+             $order_status->whereIn('id',[19,20,21]);
+          }
+          else{
+            $order_status->whereIn('id',[19,20,21,18]);
+          }
         }
 
         $order_status=$order_status->pluck('status_name','id')->toArray();
+
         $data['order_status']=[''=>'Please Select']+$order_status;
 
         if ($currenct_route[0]=="assign-shippment" || $currenct_route[0]=="assign-delivery") {
@@ -437,10 +458,9 @@ class OrderController extends Controller
         $route=explode('.',$currenct_route);
         $data['type']=$currenct_route[0];
 
-/*        $this->validate(request(),[
+        $this->validate(request(),[
             'order_status'   => 'required',
-            'payment_status' => 'required'
-        ]);*/
+        ]);
             
         if($request->order_status==13){
             $order_completed_at = date('Y-m-d H:i:s');
@@ -515,6 +535,8 @@ class OrderController extends Controller
      */
     public function destroy(Request $request,$id)
     {
+
+        OrderHistory::where('order_id',$id)->delete();
         $delete_order = Orders::where('id',$id)->delete();
         if($delete_order){
           OrderProducts::where('order_id',$id)->delete();
@@ -557,7 +579,7 @@ class OrderController extends Controller
             'sales_rep_id'          => $rfq->sales_rep_id,
             'customer_id'           => $rfq->customer_id,
             'order_no'              => $order_no,
-            'order_status'          => $rfq->status,
+            'order_status'          => 19,
             'order_tax'             => $rfq->order_tax,
             'order_discount'        => $rfq->order_discount,
             'currency'              => $rfq->currency,
@@ -591,7 +613,7 @@ class OrderController extends Controller
        }
 
        RFQ::where('id',$rfq->id)->update(['status'=>10]);
-       return Redirect::route('orders.index')->with('success','Order created successfully...!');
+       return Redirect::route('new-orders.index')->with('success','Order created successfully...!');
     }
 
     public function CreatePurchasePayment(Request $request)
@@ -913,6 +935,8 @@ class OrderController extends Controller
       $data=$print_data['data'];
       $order_details=$data['order'];
 
+
+      // return view('admin.orders.pdf',$print_data['data']);
       $layout = View::make('admin.orders.pdf',$print_data['data']);
       $pdf = App::make('dompdf.wrapper');
       $pdf->loadHTML($layout->render());
@@ -938,6 +962,8 @@ class OrderController extends Controller
         $data['order']=$order = Orders::find($order_id);
         $data['admin_address']  = UserCompanyDetails::where('customer_id',1)->first();
         $data['customer_address']  = UserAddress::where('id',$order->address_id)->first();
+        $data['customer_gst_number']=UserCompanyDetails::where('customer_id',$order->customer_id)
+                                     ->value('company_gst');
 
           if ($order->created_user_type==2) {
             $creater_name=Employee::where('id',$order->user_id)->first();
@@ -970,6 +996,134 @@ class OrderController extends Controller
       }
     $data['product_data']=$product_data;
 
+         $data['order_code']= '';
+        $order_code = Prefix::where('key','prefix')->where('code','invoice')->value('content');
+        if (isset($order_code)) {
+            $value = unserialize($order_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Orders::count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $data['order_code']=$replace_number;
+        }
+
+
     return ['data'=>$data];
+    }
+
+    public function OrderPurchase(Request $request,$order_id)
+    {
+
+      $data=array();
+
+          $product_id=$request->product_id;
+          $variant_id=$request->product_variant_id;
+          $vendor_id=$request->vendor_id;
+
+          $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,2,8])
+                                        ->pluck('status_name','id')->toArray();
+          $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
+          $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                        ->pluck('name','id')->toArray();
+          $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
+          $data['purchase_code']='';
+          $purchase_code = Prefix::where('key','prefix')->where('code','purchase_no')->value('content');
+          if (isset($purchase_code)) {
+            $value = unserialize($purchase_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Purchase::count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $data['purchase_code']=$replace_number;
+          }
+          $product_ids=$this->VariantIds($order_id);
+
+          // dd($product_ids);
+          $product_ids=$product_ids['product_ids'];
+
+            $order_details=Orders::where('id',$order_id)->first();
+            $order_products=OrderProducts::where('order_id',$order_id)
+            ->whereIn('product_id',$product_ids)
+            // ->groupBy('product_id')
+            ->get();
+
+            $product_data=$all_product_ids=array();
+            foreach ($order_products as $key => $product) {
+            $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
+            if ($product->quantity > $check_product_quantity) {
+         
+                $all_variants=$this->VariantIds($order_id);
+                $all_variants=$all_variants['variants'];
+
+
+                $product_name    = Product::where('id',$product->product_id)->value('name');
+                $product_variant = $this->Variants($product->product_id,$all_variants);
+                $options         = $this->Options($product->product_id);
+                $product_data[$product->product_id] = [
+                    'order_id'        => $order_id,
+                    'product_id'      => $product->product_id,
+                    'product_name'    => $product_name,
+                    'order_quantity'        => $product->quantity,
+                    'total_avail_quantity'  => $check_product_quantity,
+                    'options'               => $options['options'],
+                    'option_count'          => $options['option_count'],
+                    'product_variant'       => $product_variant
+                ];
+                $all_product_ids[]=$product->product_id;
+            }
+        }
+        $data['purchase_products'] = $product_data;
+        $all_vendors=DB::table('product_variant_vendors as pvv')
+                   ->leftjoin('vendors as v','v.id','pvv.vendor_id')
+                   ->where('status',1)
+                   ->whereIn('product_id',$all_product_ids)
+                   ->pluck('name','v.id')->toArray();
+        $data['vendors']        = [''=>'Please Select']+$all_vendors;
+
+        $data['order_id']=$order_id;
+
+
+        return view('admin.orders.create_purchase',$data);
+        
+    }
+    public function VariantIds($order_id='')
+    {
+        $product_variant=DB::select("SELECT op.product_variation_id,product_id FROM order_products as op where `quantity` > (SELECT stock_quantity from product_variant_vendors as pvv WHERE pvv.product_id=op.product_id and pvv.product_variant_id=op.product_variation_id) AND op.order_id='".$order_id."'");
+
+            $all_variants=array();
+            foreach ($product_variant as $key => $row) {
+                            $all_variants[$key] = $row->product_variation_id;
+                            $all_product_ids[$key] = $row->product_id;
+                          }
+
+        return ['product_ids'=>$all_product_ids,'variants'=>$all_variants];
     }
 }
