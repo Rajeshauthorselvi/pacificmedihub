@@ -69,7 +69,7 @@
                       @foreach ($orders as $order)
                       <?php $check_quantity=\App\Models\Orders::CheckQuantity($order->id);
                         if (isset($check_quantity[0]) && $check_quantity[0]=="yes") {
-                            $class_bg="background:#ffedb9 !important";
+                            $class_bg="background:#ffc1c1 !important";
                         }
                         else{
                           $class_bg="";

@@ -921,6 +921,7 @@ class OrderController extends Controller
       $data=$print_data['data'];
       $order_details=$data['order'];
 
+
       // return view('admin.orders.pdf',$print_data['data']);
       $layout = View::make('admin.orders.pdf',$print_data['data']);
       $pdf = App::make('dompdf.wrapper');

@@ -11,20 +11,20 @@
 </head>
 <body>
   <div style="width: 700px;margin: auto;">
+                    <div>
+                      <div style="width: 42%;float: left;">
+                        <img src="{{ asset('theme/images/logo.jpeg') }}">
+                      </div>
+                      <div style="width: 50%;float: left;padding-top: 20px">
+                        <strong>Invoice No:</strong> {{ $order_code }}
+                      </div>
+                    </div>
                     <div class="address-sec">
-                      <div style="width:30%;float: left;">
-                        <ul class="list-unstyled order-no-sec"  style="font-size: 14px;padding-left: 0;list-style: none;">
-                          <li><strong>Order Code : </strong>{{ $order->order_no }}</li>
-                          <li><strong>Invoice Number:</strong> {{ $order_code }}</li>
-                          <li><strong>Date : </strong>{{date('d F, Y',strtotime($order->created_at))}}</li>
-                          @if(isset($purchase->payTerm->name))
-                            <li><strong>Payment Term : </strong>{{$order->payTerm->name}}</li>
-                          @endif
-                        </ul>
-                      </div> 
+
                       <div style="width: 70%;float: left; font-size: 14px">
                         @if(isset($admin_address))
-                          <div class="customer address" style="width: 43%;float:left;padding-right: 7%;">
+                          <div class="customer address" style="width: 43%;float:left;">
+                              
                               <h4>{{$admin_address->company_name}}</h4>
                               <p>
                                 <span>
@@ -54,7 +54,7 @@
                         @endif
                       
                       @if(isset($customer_address))
-                          <div class="admin address" style="width: 40%; float:right;">
+                          <div class="admin address" style="width: 49%; float:right;padding-right: 15px;">
                             <div class="col-sm-2">
                               <span><i class="fas fa-people-carry"></i></span>
                             </div>
@@ -88,6 +88,16 @@
                           </div>
                         @endif
                     </div>
+                      <div style="width:30%;float: left;">
+                        <ul class="list-unstyled order-no-sec"  style="font-size: 14px;padding-left: 0;list-style: none;">
+                          <li><strong>Order Code : </strong>{{ $order->order_no }}</li>
+                          
+                          <li><strong>Date : </strong>{{date('d F, Y',strtotime($order->created_at))}}</li>
+                          @if(isset($purchase->payTerm->name))
+                            <li><strong>Payment Term : </strong>{{$order->payTerm->name}}</li>
+                          @endif
+                        </ul>
+                      </div> 
                     </div>
                     <div style="clear: both;"></div>
                     <hr>

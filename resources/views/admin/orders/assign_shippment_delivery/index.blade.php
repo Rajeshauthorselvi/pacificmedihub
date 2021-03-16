@@ -28,7 +28,12 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">List Orders</h3>
+                <div class="pull-left">
+                  <h3 class="card-title">List Orders</h3>
+                </div>
+                <div class="pull-right">
+                  #ffc1c1 Low Stock Orders
+                </div>
               </div>
               <div class="card">
                 <div class="card-body">
@@ -53,7 +58,7 @@
                           $disabled_stock_notify="pointer-events:none;opacity:0.5";
                         }
                         if (isset($check_quantity[0]) && $check_quantity[0]=="yes") {
-                            $class_bg="background:#ffedb9 !important";
+                            $class_bg="background:#ffc1c1 !important";
                         }
                         else{
                           $class_bg="";

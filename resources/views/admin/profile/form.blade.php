@@ -114,12 +114,11 @@
                     </div>
                     <div class="form-group">
                       <div class="col-sm-6">
-                        <label for="city">Latitude</label>
+                        <label for="city">Warehouse Latitude</label>
                         {!! Form::text('latitude', $company->latitude,['class'=>'form-control','id'=>'latitude']) !!}
                       </div>
                       <div class="col-sm-6">
-
-                        <label for="postCode">Longitude</label>
+                        <label for="postCode">Warehouse Longitude</label>
                         {!! Form::text('longitude', $company->longitude,['class'=>'form-control','id'=>'longitude']) !!}
                       </div>
                     </div>
