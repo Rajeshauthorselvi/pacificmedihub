@@ -13,12 +13,13 @@ use App\User;
 use Carbon\Carbon;
 use App\Models\CommissionValue;
 use Auth;
+use Redirect;
+
 class DashboardController extends Controller
 {
     public function index()
     {
-
-         
+    
         $data = array();
         $data['rfq_count'] = RFQ::where('status',1)->count();
         $data['orders_count'] = Orders::where('created_at', '>', Carbon::now()->startOfWeek())
@@ -30,7 +31,6 @@ class DashboardController extends Controller
         $low_stock_count=Orders::LowStockQuantity();
         $data['low_stock_count']=$low_stock_count['low_stock_count'];
         
-        //dd($data);
     	return view('admin/dashboard',$data);
     }
 
