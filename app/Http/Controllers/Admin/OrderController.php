@@ -577,7 +577,7 @@ class OrderController extends Controller
             'sales_rep_id'          => $rfq->sales_rep_id,
             'customer_id'           => $rfq->customer_id,
             'order_no'              => $order_no,
-            'order_status'          => $rfq->status,
+            'order_status'          => 19,
             'order_tax'             => $rfq->order_tax,
             'order_discount'        => $rfq->order_discount,
             'currency'              => $rfq->currency,
@@ -611,7 +611,7 @@ class OrderController extends Controller
        }
 
        RFQ::where('id',$rfq->id)->update(['status'=>10]);
-       return Redirect::route('orders.index')->with('success','Order created successfully...!');
+       return Redirect::route('new-orders.index')->with('success','Order created successfully...!');
     }
 
     public function CreatePurchasePayment(Request $request)
