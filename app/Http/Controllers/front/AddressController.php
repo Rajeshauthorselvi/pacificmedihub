@@ -27,7 +27,8 @@ class AddressController extends Controller
             $user_id = Auth::id();
             $primary = $data['primary_id'] = Auth::user()->address_id;
             $data['primary'] = UserAddress::where('id',$primary)->where('customer_id',$user_id)->first();
-            $data['all_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('id',[$primary])->get();
+            $data['all_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('id',[$primary])
+                                                ->whereNotIn('address_type',[2])->where('is_deleted',0)->get();
             $data['user_id'] = $user_id;
             return view('front/customer/address/index',$data);
         }else{
@@ -62,14 +63,25 @@ class AddressController extends Controller
     {
         if(!Auth::check()){
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
-        }
+        }        
         $address     = $request->except(['_token']);
-        $add_address = UserAddress::insert($address);
+
+        $add_address = UserAddress::insertGetId($address);
+        
         if($add_address){
+            if ($request->ajax()){
+                $data = $add_address;
+                return response()->json($data);
+            }
             return redirect()->route('my-address.index')->with('success', 'New address added Successfully.!');
         }else{
+            if ($request->ajax()){
+                $data = 'error';
+                return response()->json($data);
+            }
             return Redirect::back()->with('error','Somthing wrong please try again.!');
-        }
+        }    
+        
     }
 
     /**
@@ -142,14 +154,26 @@ class AddressController extends Controller
      */
     public function destroy($id)
     {
-        UserAddress::where('id',$id)->delete();
+        $address = UserAddress::where('id',$id)->first();
+        $address->is_deleted = 1;
+        $address->deleted_at = date('y-m-d H:i:s');
+        $address->update();
+
         return redirect()->route('my-address.index')->with('info', 'Address removed Successfully.!');
 
     }
 
-    public function setPrimaryAddress($address_id)
+    public function setPrimaryAddress(Request $request, $address_id)
     {
         if(Auth::check()){
+
+            if ($request->ajax()){
+                UserAddress::where('address_type',1)->update(['address_type'=>0]);
+                $change_delivery = UserAddress::find($request->delivery_address_id);
+                $change_delivery->address_type = 1;
+                $change_delivery->save();
+                return response()->json(true);
+            }
             $user_id = Auth::id();
             User::where('id',$user_id)->update(['address_id'=>$address_id]);
             return redirect()->route('my-address.index');

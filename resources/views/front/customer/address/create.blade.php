@@ -83,7 +83,7 @@
               <div class="form-group">
                 <div class="col-sm-6">
                   {!! Form::label('address_country', 'Country *') !!}
-                  {!! Form::select('address[country_id]',$countries,null,['class'=>'form-contol select2bs4', 'id'=>'address_country','style'=>'width:100%']) !!}
+                  {!! Form::select('address[country_id]',$countries,null,['class'=>'form-control select2bs4', 'id'=>'address_country']) !!}
                   <span class="text-danger country" style="display:none">Country is required</span>
                 </div>
                 <div class="col-sm-6">

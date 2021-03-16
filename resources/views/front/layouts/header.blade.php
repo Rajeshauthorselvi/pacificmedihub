@@ -151,7 +151,7 @@
 				                    	<a class="menu-list" href="{{ route('wishlist.index') }}">
 				                    		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
 				                    	</a>
-				                    	<a class="menu-list" href="javascript:void(0);">
+				                    	<a class="menu-list" href="{{ route('my-address.index') }}">
 				                    		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
 				                    	</a>
 				                    		<a class="menu-list" href="{{route('customer.logout')}}">
@@ -211,7 +211,7 @@
         	</div>
         	<ul class="shopping__btn">
             	<li><a href="{{ route('cart.index') }}">View Cart</a></li>
-            	<li class="shp__checkout"><a href="javascript:void(0);">RGQ</a></li>
+            	<li class="shp__checkout"><a href="javascript:void(0);">RFQ</a></li>
         	</ul>
     	</div>
     @else

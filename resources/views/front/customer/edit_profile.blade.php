@@ -4,7 +4,8 @@
 	<div class="container">
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
-			<li><a title="My Profile Page">My Profile</a></li>
+			<li><a href="{{ route('profile.index',$user_id) }}" title="My Profile Page">My Profile</a></li>
+      <li><a title="Edit Profile Page">Edit</a></li>
 		</ul>
 	</div>
 </div>
@@ -205,8 +206,8 @@
 
 @push('custom-scripts')
   <script type="text/javascript">
-    $(function () {
-      $('.select2').select2();
+    $(function ($) {
+      $('.select2bs4').select2();
     });
 
 
@@ -251,7 +252,7 @@
                 $(append_id).empty();
               }
             },
-            error: function(res) { alert(res.responseText) }
+            error: function(res) { console.log(res.responseText) }
           });
         }else{
           $(append_id).empty();        
@@ -277,17 +278,17 @@
                 $(append_id).empty();
               }
             },
-            error: function(res) { alert(res.responseText) }
+            error: function(res) { console.log(res.responseText) }
           });
         }else{
           $(append_id).empty();        
         }      
       }
 
-    $('.save-change').on('click',function() {
+    /*$('.save-change').on('click',function() {
      
     });
-
+*/
   </script>
 @endpush
 @endsection

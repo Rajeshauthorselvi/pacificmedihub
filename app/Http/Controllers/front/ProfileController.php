@@ -38,6 +38,7 @@ class ProfileController extends Controller
     		return redirect()->route('customer.login')->with('info', 'You must be logged in!');
     	}
     	$data=array();
+        $data['user_id']  = Auth::id();
         $data['customer'] = User::with('alladdress','company','bank')
                             ->where('users.role_id',7)
                             ->where('id',$id)

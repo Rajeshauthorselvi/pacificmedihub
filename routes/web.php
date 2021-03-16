@@ -194,14 +194,14 @@ Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');
 //Customer Auth
 Route::get('customer-login','front\AuthController@index')->name('customer.login');
 Route::post('customer-login','front\AuthController@store')->name('customer.store');
+Route::get('forget-password','front\AuthController@forgetPassword')->name('forget.password');
+Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
 
 Route::group(['middleware' => 'customer'], function () {
 	//Customer Auth
 	Route::get('customer-logout','front\AuthController@logout')->name('customer.logout');
 	Route::post('change-customer-password','front\AuthController@changePassword')->name('change.cuspwd');
-	Route::get('forget-password','front\AuthController@forgetPassword')->name('forget.password');
-	Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
-
+	
 	//Customer Profile Page
 	Route::get('my-profile/{id}','front\ProfileController@index')->name('profile.index');
 	Route::get('edit-my-profile/{id}','front\ProfileController@edit')->name('profile.edit');
@@ -220,6 +220,9 @@ Route::group(['middleware' => 'customer'], function () {
 	Route::put('updatecart/{id}', 'front\CartController@update');
 	//Wishlist
 	Route::resource('wishlist', 'front\WishlistController');
+
+	//Request RFQ
+	Route::get('request-rfq','front\RequestRfqController@index')->name('requestRfq.index');
 });
 
 //Home Page

@@ -80,7 +80,7 @@
 							</div>
 							
 							<div class="col-sm-6" style="text-align:right;padding-right:0">
-								<a class="btn checkout">Proceed to RFQ</a>
+								<a href="{{ route('requestRfq.index') }}" class="btn checkout">Proceed to RFQ</a>
 							</div>
 						</div>
 				@else
