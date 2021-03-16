@@ -237,11 +237,11 @@ if(Auth::guard('employee')->user()->isAuthorized('payment_setting','read')){
               <i class="fas fa-dolly-flatbed"></i> <p>Orders <i class="fas fa-angle-left right"></i></p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
+{{--               <li class="nav-item">
                 <a href="{{ route('new-orders.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>New Orders</p>
                 </a>
-              </li>
+              </li> --}}
               <li class="nav-item">
                 <a href="{{ route('assign-shippment.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Assigned For Shippment</p>
@@ -252,7 +252,7 @@ if(Auth::guard('employee')->user()->isAuthorized('payment_setting','read')){
                   <i class="fas fa-angle-double-right"></i> <p>Assigned For Delivery</p>
                 </a>
               </li>
-              <li class="nav-item">
+{{--               <li class="nav-item">
                 <a href="{{ route('completed-orders.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Orders Completed</p>
                 </a>
@@ -261,8 +261,8 @@ if(Auth::guard('employee')->user()->isAuthorized('payment_setting','read')){
                 <a href="{{ route('cancelled-orders.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Cancelled/Missed Orders</p>
                 </a>
-              </li>
-              <li class="nav-item">
+              </li> --}}
+{{--               <li class="nav-item">
                 <a href="{{ route('orders.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>List Orders</p>
                 </a>
@@ -271,7 +271,7 @@ if(Auth::guard('employee')->user()->isAuthorized('payment_setting','read')){
                 <a href="{{ route('delivery-assign.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Delivery Assign</p>
                 </a>
-              </li>
+              </li> --}}
             </ul>
           </li>
           @endif
