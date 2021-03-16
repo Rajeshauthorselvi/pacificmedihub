@@ -19,6 +19,9 @@ class AuthController extends Controller
 {
     public function index()
     {
+        if(Auth::check()){
+            return redirect()->route('home.index');
+        }
     	return view('front/customer/customer_login');
     }
 

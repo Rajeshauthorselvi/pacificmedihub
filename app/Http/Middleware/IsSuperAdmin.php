@@ -21,6 +21,8 @@ class IsSuperAdmin
         if (!Auth::guard('employee')->check() && !Auth::check()) {
             Session::flash('info', 'You must be logged in!');
             return Redirect::to('/login');
+        }elseif(Auth::check() && Auth::user()->role_id==7){
+            return Redirect::to('/customer-login');
         }else{
             return $next($request);    
         }

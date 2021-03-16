@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\Log;
 //Admin Routes
 Route::get('admin','Admin\AuthController@index')->name('admin.login');
 Route::post('admin','Admin\AuthController@store')->name('admin.store');
-Route::get('login','WhoYouAreController@index');
+Route::get('login','Admin\AuthController@index');
+
 Route::resource('employee', 'Employee\EmployeeLoginController');
 
 Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], function () {
@@ -188,33 +189,38 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 //Error Page
 Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');	
 
-	
+
+
 //Customer Auth
 Route::get('customer-login','front\AuthController@index')->name('customer.login');
 Route::post('customer-login','front\AuthController@store')->name('customer.store');
-Route::get('customer-logout','front\AuthController@logout')->name('customer.logout');
-Route::post('change-customer-password','front\AuthController@changePassword')->name('change.cuspwd');
-Route::get('forget-password','front\AuthController@forgetPassword')->name('forget.password');
-Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
 
-//Customer Profile Page
-Route::get('my-profile/{id}','front\ProfileController@index')->name('profile.index');
-Route::get('edit-my-profile/{id}','front\ProfileController@edit')->name('profile.edit');
-Route::post('update-my-profile/{id}','front\ProfileController@update')->name('profile.update');
+Route::group(['middleware' => 'customer'], function () {
+	//Customer Auth
+	Route::get('customer-logout','front\AuthController@logout')->name('customer.logout');
+	Route::post('change-customer-password','front\AuthController@changePassword')->name('change.cuspwd');
+	Route::get('forget-password','front\AuthController@forgetPassword')->name('forget.password');
+	Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
 
-//Get Sate and City
-Route::get('get-state','front\AddressController@getStateList');
-Route::get('get-city','front\AddressController@getCityList');
+	//Customer Profile Page
+	Route::get('my-profile/{id}','front\ProfileController@index')->name('profile.index');
+	Route::get('edit-my-profile/{id}','front\ProfileController@edit')->name('profile.edit');
+	Route::post('update-my-profile/{id}','front\ProfileController@update')->name('profile.update');
 
-//Customer Address
-Route::resource('my-address', 'front\AddressController');
-Route::get('set-primary-address/{address_id}', 'front\AddressController@setPrimaryAddress')->name('setPrimary.address');
+	//Get Sate and City
+	Route::get('get-state','front\AddressController@getStateList');
+	Route::get('get-city','front\AddressController@getCityList');
 
-//Cart
-Route::resource('cart','front\CartController');
-Route::put('updatecart/{id}', 'front\CartController@update');
-//Wishlist
-Route::resource('wishlist', 'front\WishlistController');
+	//Customer Address
+	Route::resource('my-address', 'front\AddressController');
+	Route::get('set-primary-address/{address_id}', 'front\AddressController@setPrimaryAddress')->name('setPrimary.address');
+
+	//Cart
+	Route::resource('cart','front\CartController');
+	Route::put('updatecart/{id}', 'front\CartController@update');
+	//Wishlist
+	Route::resource('wishlist', 'front\WishlistController');
+});
 
 //Home Page
 Route::get('home','front\HomePageController@index');
@@ -227,6 +233,3 @@ Route::get('{slug}/{category_id}','front\ShopController@category');
 Route::get('{category_slug}/{product_slug}/{product_id}','front\ShopController@product');
 //About Us
 Route::get('about-us','front\AboutController@index');
-
-
-

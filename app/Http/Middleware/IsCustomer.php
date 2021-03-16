@@ -18,15 +18,11 @@ class IsCustomer
      */
     public function handle($request, Closure $next)
     {
-        /*if (!Auth::guard('employee')->check() && !Auth::guard('superAdmin')->check()) {
-            Session::flash('info', 'You must be logged in!');
-            return Redirect::to('/login');
-        }elseif(!Auth::check()){
+        if (!Auth::check()) {
             Session::flash('info', 'You must be logged in!');
             return Redirect::to('/customer-login');
         }else{
             return $next($request);    
-        }*/
-        return $next($request);    
+        }
     }
 }
