@@ -59,7 +59,7 @@
                       </div>
                       <div class="col-sm-4">
                         <label for="purchase_order_number">Status *</label>
-                        {!! Form::select('purchase_status',$order_status, 1,['class'=>'form-control read-only select2bs4']) !!}
+                        {!! Form::select('purchase_status',$order_status, 1,['class'=>'form-control','disabled']) !!}
                         {!! Form::hidden('purchase_status',1,['class'=>'form-control','readonly']) !!}
                       </div>
                     </div>
