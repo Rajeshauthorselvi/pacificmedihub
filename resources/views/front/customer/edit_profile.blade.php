@@ -4,7 +4,7 @@
 	<div class="container">
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
-			<li><a href="{{ route('profile.index',$user_id) }}" title="My Profile Page">My Profile</a></li>
+			<li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
       <li><a title="Edit Profile Page">Edit</a></li>
 		</ul>
 	</div>
@@ -22,7 +22,7 @@
               </a>
             </li>
 		        <li>
-          		<a class="link" href="javascript:void(0);">
+          		<a class="link" href="{{ route('myrfq.index') }}">
               	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
               </a>
             </li>
@@ -52,8 +52,9 @@
 
 		
 		  <div class="col-sm-9">
-        <form action="{{ route('profile.update',$customer->id) }}" method="post" id="profileForm">
+        <form action="{{ route('my-profile.update',$customer->id) }}" method="post" id="profileForm" enctype="multipart/form-data">
           @csrf
+          <input name="_method" type="hidden" value="PATCH">
   		    <ul class="nav nav-tabs flex-nowrap" role="tablist">
             <li role="presentation" class="nav-item">
               <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Company Details </a>
@@ -130,8 +131,12 @@
               <div class="form-group">
                 <div class="col-sm-6">
                   <label for="companyLogo">Company Logo</label>
-                  <div><img class="img-company" style="width:110px;height:100px;" src="{{asset($image)}}"></div>
+                  <div class="custom-file">
+                      <input type="file" class="custom-file-input" name="company[logo]" id="companyLogo" accept="image/*" >
+                      <label class="custom-file-label" for="companyLogo">Choose file</label>
+                    </div>
                 </div>
+                  <div><img class="img-company" style="width:110px;height:100px;" src="{{asset($image)}}"></div>
               </div>
 
             </div>
@@ -195,7 +200,8 @@
               </div>
             </div>
             <div>
-              <button class="btn btn-primary save-change">Save</button>
+              <a class="btn reset-btn" href="{{ route('my-profile.index') }}">Cancel</a>
+              <button class="btn save-btn save-change">Save</button>
             </div>
           </div>
         </form>

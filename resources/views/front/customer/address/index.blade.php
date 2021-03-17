@@ -4,7 +4,8 @@
 	<div class="container">
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
-			<li><a title="My Profile Page">My Profile</a></li>
+			<li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
+      <li><a title="My Address">My Address</a></li>
 		</ul>
 	</div>
 </div>
@@ -16,12 +17,12 @@
 		   	<div class="column-block">
 		     	<ul class="box-menu treeview-list treeview collapsable" >
 		     		<li>
-		     			<a class="link" href="{{ route('profile.index',$user_id) }}">
+		     			<a class="link" href="{{ route('my-profile.index') }}">
            			<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
               </a>
             </li>
 		        <li>
-          		<a class="link" href="javascript:void(0);">
+          		<a class="link" href="{{ route('myrfq.index') }}">
               	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
               </a>
             </li>
@@ -87,12 +88,12 @@
                     <button type="submit" onclick="return confirm('Are you sure you want to delete this?');">Remove</button>
                   </form>
                 </a><span class="space-break"></span>
-                <a href="{{ route('setPrimary.address',$address->id) }}"><i class="far fa-check-circle"></i> Set as Primary</a>
+                <a href="{{ route('setPrimary.address',$address->id) }}" onclick="return confirm('Are you sure?');">
+                  <i class="far fa-check-circle"></i> Set as Primary
+                </a>
               </div>
             </div>
           @endforeach
-
-         
 
         </div>
         

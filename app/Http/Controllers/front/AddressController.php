@@ -65,11 +65,16 @@ class AddressController extends Controller
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
         }        
         $address     = $request->except(['_token']);
-
         $add_address = UserAddress::insertGetId($address);
         
         if($add_address){
             if ($request->ajax()){
+                if($request->address_type==1){
+                    UserAddress::where('address_type',1)->update(['address_type'=>0]);
+                    $change_delivery = UserAddress::find($add_address);
+                    $change_delivery->address_type = 1;
+                    $change_delivery->save();
+                }
                 $data = $add_address;
                 return response()->json($data);
             }

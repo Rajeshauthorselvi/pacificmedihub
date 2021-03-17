@@ -80,7 +80,7 @@
                         <li><h5>RFQ Code: <small>{{ $rfqs->order_no }}</small></h5></li>
                         <li><strong>Date: </strong>{{date('d F, Y',strtotime($rfqs->created_at))}}</li>
                         <li><strong>Status: </strong>{{$rfqs->statusName->status_name}}</li>
-                        <li><strong>Sales Rep: </strong>{{$rfqs->salesrep->emp_name}}</li>
+                        <li><strong>Sales Rep: </strong>{{isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:''}}</li>
                         @if(isset($rfqs->payTerm->name))
                           <li><strong>Payment Term: </strong>{{$rfqs->payTerm->name}}</li>
                         @endif

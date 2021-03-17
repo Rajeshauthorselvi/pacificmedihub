@@ -136,10 +136,10 @@
                							{{ $name }}<i class="fas fa-sort-down"></i>
                						</a>
                						<div class="customer-menu">
-				                    	<a class="menu-list" href="{{ route('profile.index',$id) }}">
+				                    	<a class="menu-list" href="{{ route('my-profile.index') }}">
 				                    		<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
 				                    	</a>
-				                    	<a class="menu-list" href="javascript:void(0);">
+				                    	<a class="menu-list" href="{{ route('myrfq.index') }}">
 				                    		<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
 				                    	</a>
 				                    	<a class="menu-list" href="javascript:void(0);">

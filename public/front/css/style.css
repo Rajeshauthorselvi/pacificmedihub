@@ -1507,7 +1507,7 @@ div.customer-menu a:hover {
 }
 
 .customer-page .address-block.primary{
-  background: #6eafff;
+  background: #3e72b1;
 color: #fff;
 }
 .customer-page .address-block.primary .action-block a {
@@ -1525,6 +1525,9 @@ color: #fff;
     .request-rfq .col-sm-6{
         padding:0;
     }
+    .request-rfq .address-container {
+    margin-bottom: 1.5rem;
+}
     .request-rfq .address-block {
     margin: 1.2rem 0 0;
     }
@@ -1552,13 +1555,121 @@ color: #fff;
     font-size: ;
     font-weight: 500;
 }
-.request-rfq .action-block .btn.save-btn, .request-rfq .action-block .btn.reset-btn{
-    width: 100px;
-    margin:10px 0;
+.delivery-address a, .billing-address a{
+    margin-top: 5px;
 }
 .address-block .address-details .form-group{
     display: flex;
 }
 .request-rfq .select2-container, .request-rfq .select2-results__option{
     font-size: 14px;
+}
+.request-rfq .rfq.customer-notes {
+    width: 90%;
+    margin-top: 2rem;
+}
+.rfq.message {
+    border: 1px solid rgba(122, 192, 66, 0.3);
+    background: #f8fff1;
+    padding: 3rem;
+    width: 80%;
+    margin: 0 auto 3rem;
+    text-align: center;
+}
+.rfq.message img {
+    width: 125px;
+}
+
+.rfq.message .btn.save-btn {
+    background: transparent;
+    border: 1px solid #313131;
+    width: 15%;
+    color: #313131;
+    margin-top: 10px;
+}
+.rfq.message .btn.save-btn:hover {
+    background: #3287c7;
+    border-color: #3287c7;
+    color: #fff;
+}
+
+ .rfq-container .no-data {
+    text-align: center;
+    margin: 2rem;
+}
+  .rfq-block {margin-bottom: 1.5rem;}
+  .rfq-block .header {
+    display: flex;
+    width: 100%;
+    border: 1px solid #ddd;
+    background: #f1f4f6;
+    padding: 8px;
+    border-bottom: none;
+    font-size: 14px;
+  }
+  .rfq-block .body {
+    display: flex;
+    width: 100%;
+    border: 1px solid #ddd;
+    background: transparent;
+    padding: 1rem;
+    font-size: 14px;
+}
+.rfq-block .body .btn.comment, .rfq-block .body .btn.view {
+    border: 1px solid #ddd;
+    background: #f4f4f4;
+    font-size: 12px;
+}
+.rfq-block .body .btn.comment:hover, .rfq-block .body .btn.view:hover {
+  background: #3e72b1;
+  color: #fff;
+ }
+ .rfq-block .header span {
+    font-weight: bold;
+}
+.rfq-view-block .action_sec .list-unstyled{ display:flex; }
+.rfq-view-block .action_sec .list-unstyled li{ width: 100%;
+    text-align: center;
+    padding: 5px;
+    border: 1px solid transparent; 
+}
+.rfq-view-block .action_sec .list-unstyled li a{
+   color: #fff;
+}
+  
+  .rfq-view-block .col-sm-12, .rfq-view-block .col-sm-10, .rfq-view-block .col-sm-8, .rfq-view-block .col-sm-6, .rfq-view-block .col-sm-4, .rfq-view-block .col-sm-2{
+    padding:0;
+    float: left;
+  }
+  .rfq-view-block .address-sec {
+    margin-bottom: 3rem;
+  }
+  .rfq-view-block .address-sec .rfq-detail {
+    font-size: 14px;
+  }
+  .rfq-view-block .address-sec .rfq-detail strong {
+    font-size: 16px;
+    line-height: 2.5;
+  }
+  .rfq-view-block .address-sec .rfq-detail span {
+    font-weight: 500;
+    padding-right: 10px;
+  }
+  .rfq-view-block .address-sec .address-block {
+    margin: 0;
+    border: 1px solid #ddd;
+    background: #f6f6f6;
+}
+ .rfq-view-block .address-sec .address-block .address{
+    padding: 1rem;
+}
+.rfq-view-block .address-sec .address-block .address .details{
+  font-size: 12px;
+}
+.rfq-view-block .address-sec .address-block .address i {
+    font-size: 31px;
+    color: #767676;
+}
+.rfq-view-block .address-sec .address-block .customer.address {
+    border-right: 1px solid #ddd;
 }

@@ -17,12 +17,12 @@
 		   		<div class="column-block">
 		     		<ul class="box-menu treeview-list treeview collapsable" >
 		     			<li>
-		     				<a class="link" href="{{ route('profile.index',$user_id) }}">
+		     				<a class="link" href="{{ route('my-profile.index') }}">
            						<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
               				</a>
             			</li>
 		        		<li>
-			          		<a class="link" href="javascript:void(0);">
+			          		<a class="link" href="{{ route('myrfq.index') }}">
 			              	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
 			              </a>
 			            </li>

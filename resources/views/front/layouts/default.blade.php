@@ -48,10 +48,17 @@
 <script src="{{ asset('front/js/owl.carousel.min.js') }}"></script>
 <!-- Toast -->
 <script src="{{ asset('front/js/toastr/toastr.js') }}"></script>
+<!-- bs-custom-file-input -->
+<script src="{{ asset('theme/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
 
 @stack('custom-scripts')
 
 <script type="text/javascript">
+
+  $(function () {
+    bsCustomFileInput.init();
+  });
+  
   //Validate Number
       function validateNum(e , field) {
         var val = field.value;

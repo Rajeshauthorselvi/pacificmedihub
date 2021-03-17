@@ -36,20 +36,23 @@ class CartController extends Controller
             $cart_data = [];
             $user_id = Auth::id();
             Cart::instance('cart')->restore('userID_'.$user_id);
-
             $cart_items = Cart::content();
-            foreach($cart_items as $key => $items)
-            {
-                $cart_data[$key]['uniqueId']      = $items->getUniqueId();
-                $cart_data[$key]['product_id']    = $items->id;
-                $cart_data[$key]['product_name']  = $items->name;
-                $cart_data[$key]['product_image'] = $items->options['product_img'];
-                $cart_data[$key]['price']         = $items->price;
-                $cart_data[$key]['qty']           = $items->quantity;
-                $cart_data[$key]['variant_id']    = $items->options['variant_id'];
-                $cart_data[$key]['sku']           = $items->options['variant_sku'];
+
+            $cart_count = $data['cart_count'] = Cart::count();
+            
+            if($cart_count!=0){
+                foreach($cart_items as $key => $items)
+                {
+                    $cart_data[$key]['uniqueId']      = $items->getUniqueId();
+                    $cart_data[$key]['product_id']    = $items->id;
+                    $cart_data[$key]['product_name']  = $items->name;
+                    $cart_data[$key]['product_image'] = $items->options['product_img'];
+                    $cart_data[$key]['price']         = $items->price;
+                    $cart_data[$key]['qty']           = $items->quantity;
+                    $cart_data[$key]['variant_id']    = $items->options['variant_id'];
+                    $cart_data[$key]['sku']           = $items->options['variant_sku'];
+                }
             }
-            $data['cart_count'] = Cart::count();
             $data['cart_data'] = $cart_data;
             return view('front/customer/cart',$data);
         }else{
@@ -76,16 +79,18 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
+        if(!Auth::check()){
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+
         $price = (float)$request->price;
         $qty = (int)$request->qty_count;
         
-        $product = Product::find($request->product_id);
+        $product = Product::find($request->product_id);    
+    
+        $user_id = Auth::id();
+        Cart::instance('cart')->restore('userID_'.$user_id);
         
-        if(Auth::check()){
-            $user_id = Auth::id();
-            Cart::instance('cart')->restore('userID_'.$user_id);
-        }
-
         if(isset($user_id)){
             Cart::instance('cart')->add($product->id, $product->name, $price, $qty,[
                 'product_img' => $request->product_img,

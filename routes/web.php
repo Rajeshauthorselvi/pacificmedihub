@@ -202,10 +202,8 @@ Route::group(['middleware' => 'customer'], function () {
 	Route::get('customer-logout','front\AuthController@logout')->name('customer.logout');
 	Route::post('change-customer-password','front\AuthController@changePassword')->name('change.cuspwd');
 	
-	//Customer Profile Page
-	Route::get('my-profile/{id}','front\ProfileController@index')->name('profile.index');
-	Route::get('edit-my-profile/{id}','front\ProfileController@edit')->name('profile.edit');
-	Route::post('update-my-profile/{id}','front\ProfileController@update')->name('profile.update');
+	//Customer Profile
+	Route::resource('my-profile','front\ProfileController');
 
 	//Get Sate and City
 	Route::get('get-state','front\AddressController@getStateList');
@@ -213,7 +211,7 @@ Route::group(['middleware' => 'customer'], function () {
 
 	//Customer Address
 	Route::resource('my-address', 'front\AddressController');
-	Route::get('set-primary-address/{address_id}', 'front\AddressController@setPrimaryAddress')->name('setPrimary.address');
+	Route::get('set-primary-address/{address_id}','front\AddressController@setPrimaryAddress')->name('setPrimary.address');
 
 	//Cart
 	Route::resource('cart','front\CartController');
@@ -222,7 +220,11 @@ Route::group(['middleware' => 'customer'], function () {
 	Route::resource('wishlist', 'front\WishlistController');
 
 	//Request RFQ
-	Route::get('request-rfq','front\RequestRfqController@index')->name('requestRfq.index');
+	Route::get('my-rfq','front\RequestRfqController@index')->name('myrfq.index');
+	Route::get('my-rfq-view/{rfq_id}','front\RequestRfqController@show')->name('myrfq.show');
+	Route::get('request-rfq','front\RequestRfqController@request')->name('request.rfq');
+	Route::post('send-rfq','front\RequestRfqController@store')->name('send.rfq');
+	Route::get('rfq-status','front\RequestRfqController@status')->name('rfq.status');
 });
 
 //Home Page
