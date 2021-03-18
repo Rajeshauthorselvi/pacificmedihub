@@ -219,12 +219,11 @@ Route::group(['middleware' => 'customer'], function () {
 	//Wishlist
 	Route::resource('wishlist', 'front\WishlistController');
 
-	//Request RFQ
-	Route::get('my-rfq','front\RequestRfqController@index')->name('myrfq.index');
-	Route::get('my-rfq-view/{rfq_id}','front\RequestRfqController@show')->name('myrfq.show');
-	Route::get('request-rfq','front\RequestRfqController@request')->name('request.rfq');
-	Route::post('send-rfq','front\RequestRfqController@store')->name('send.rfq');
-	Route::get('rfq-status','front\RequestRfqController@status')->name('rfq.status');
+	//My RFQ
+	Route::resource('my-rfq','front\MyRFQController');
+	Route::get('request-rfq','front\MyRFQController@request')->name('request.rfq');
+	Route::get('rfq-status','front\MyRFQController@status')->name('rfq.status');
+	Route::post('change-address','front\MyRFQController@changeAddress')->name('change.address');
 });
 
 //Home Page

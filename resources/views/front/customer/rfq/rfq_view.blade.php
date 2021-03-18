@@ -5,7 +5,7 @@
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
       <li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
-			<li><a href="{{ route('myrfq.index') }}" title="My RFQ">My RFQ</a></li>
+			<li><a href="{{ route('my-rfq.index') }}" title="My RFQ">My RFQ</a></li>
       <li><a title="RFQ View">View</a></li>
 		</ul>
 	</div>
@@ -23,7 +23,7 @@
               </a>
             </li>
 		        <li>
-          		<a class="link active" href="{{ route('myrfq.index') }}">
+          		<a class="link active" href="{{ route('my-rfq.index') }}">
               	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
               </a>
             </li>
@@ -77,7 +77,8 @@
                   </a>
                 </li>
                 <li style="background-color: #f6ac50">
-                  <a href="javascript:void(0);" class="edit">
+                  <?php $rfq_id = base64_encode($rfq->id); ?>
+                  <a href="{{ route('my-rfq.edit',$rfq_id) }}" class="edit">
                     <i class="fa fa-edit"></i>&nbsp; Edit
                   </a>
                 </li>

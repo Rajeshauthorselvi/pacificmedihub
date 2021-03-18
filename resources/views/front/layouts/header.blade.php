@@ -139,7 +139,7 @@
 				                    	<a class="menu-list" href="{{ route('my-profile.index') }}">
 				                    		<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
 				                    	</a>
-				                    	<a class="menu-list" href="{{ route('myrfq.index') }}">
+				                    	<a class="menu-list" href="{{ route('my-rfq.index') }}">
 				                    		<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
 				                    	</a>
 				                    	<a class="menu-list" href="javascript:void(0);">

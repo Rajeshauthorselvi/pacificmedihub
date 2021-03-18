@@ -14,7 +14,7 @@
 <div class="main">
 	<div class="container">
 			<h3>Request RFQ</h3>
-      <form action="{{route('send.rfq')}}" method="post" id="rfqForm">
+      <form action="{{route('my-rfq.store')}}" method="post" id="rfqForm">
       @csrf
 		<div class="row request-rfq">
 			<div class="col-sm-6">
@@ -306,6 +306,19 @@
 </script>
 
 @push('custom-scripts')
+  
+  <script type="text/javascript">
+    $(".qty-count").on('keyup',function(e) {
+        if (/\D/g.test(this.value))
+        {
+          this.value = this.value.replace(/\D/g, '');
+        }
+        if(this.value==''){
+          $(this).val(1); 
+        }
+    });
+  </script>
+
 	<script type="text/javascript">
 		$(function ($) {
       $('.select2bs4').select2();

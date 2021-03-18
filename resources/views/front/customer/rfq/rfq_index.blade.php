@@ -22,7 +22,7 @@
               </a>
             </li>
 		        <li>
-          		<a class="link active" href="{{ route('myrfq.index') }}">
+          		<a class="link active" href="{{ route('my-rfq.index') }}">
               	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
               </a>
             </li>
@@ -82,7 +82,7 @@
                   <div class="col-sm-4 text-right">
                     <?php $rfq_id = base64_encode($rfq['id']);?>
                     <a href="javascript:void(0);" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>&nbsp;&nbsp;
-                    <a href="{{ route('myrfq.show',$rfq_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
+                    <a href="{{ route('my-rfq.show',$rfq_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
                   </div>
                 </div>
               </div>

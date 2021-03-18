@@ -96,6 +96,19 @@
 </div>
 
 @push('custom-scripts')
+
+  	<script type="text/javascript">
+    	$(".qty-count").on('keyup',function(e) {
+        	if (/\D/g.test(this.value))
+        	{
+          		this.value = this.value.replace(/\D/g, '');
+        	}
+        	if(this.value==''){
+          		$(this).val(1); 
+        	}
+    	});
+  	</script>
+
 	<script type="text/javascript">
 		$('.minus').click(function () {
 			var $input = $(this).parent().find('input');

@@ -22,7 +22,7 @@
               </a>
             </li>
 		        <li>
-          		<a class="link" href="{{ route('myrfq.index') }}">
+          		<a class="link" href="{{ route('my-rfq.index') }}">
               	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
               </a>
             </li>

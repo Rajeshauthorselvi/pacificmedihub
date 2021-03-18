@@ -5,8 +5,8 @@
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
       <li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
-			<li><a href="{{ route('myrfq.index') }}" title="My RFQ">My RFQ</a></li>
-      <li><a title="RFQ View">View</a></li>
+			<li><a href="{{ route('my-rfq.index') }}" title="My RFQ">My RFQ</a></li>
+      <li><a title="RFQ Edit">Edit</a></li>
 		</ul>
 	</div>
 </div>
@@ -23,7 +23,7 @@
               </a>
             </li>
 		        <li>
-          		<a class="link active" href="{{ route('myrfq.index') }}">
+          		<a class="link active" href="{{ route('my-rfq.index') }}">
               	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
               </a>
             </li>
@@ -52,111 +52,22 @@
       </div>
 
 		  <div class="col-sm-9">
-        <div class="rfq view-block">
-          <div class="action_sec">
+        <div class="rfq edit view-block">
+  
+          <div class="rfq-detail">
             <ul class="list-unstyled">
-              <li style="background-color: #216ea7;border-right: 1px solid #227bbb;">
-                <a href="javascript:void(0);" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
-                  <i class="fa fa-plus-circle"></i>&nbsp; Place Order
-                </a>
-              </li>
-              <li style="background-color: #216ea7">
-                <a href="javascript:void(0);" class="pdf">
-                  <i class="fa fa-download"></i>&nbsp; PDF
-                </a>
-              </li>
-              <li style="background-color: #43bfdd">
-                <a href="javascript:void(0);" class="email">
-                  <i class="fa fa-envelope"></i>&nbsp; Email
-                </a>
-              </li>
-              <li style="background-color: #23bf79">
-                <a href="javascript:void(0);" class="comment">
-                  <i class="fa fa-comment"></i>&nbsp; Comment
-                </a>
-              </li>
-              <li style="background-color: #f6ac50">
-                <a href="javascript:void(0);" class="edit">
-                  <i class="fa fa-edit"></i>&nbsp; Edit
-                </a>
-              </li>
+              <li><strong>RFQ Code : #{{ $rfq->order_no }}</strong></li>
+              <li><span>Date: </span>{{ date('d/m/Y - H:i a',strtotime($rfq->created_at)) }}</li>
+              <li><span>Status: </span>{{ $rfq->statusName->status_name }}</li>
+              <li><span>Sales Rep: </span>{{ isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'' }}</li>
             </ul>
-          </div>
-
-          <div class="col-sm-12 address-sec">
-            <div class="rfq-detail col-sm-4">
-              <ul class="list-unstyled">
-                <li><strong>RFQ Code : #{{ $rfq->order_no }}</strong></li>
-                <li><span>Date: </span>{{ date('d/m/Y - H:i a',strtotime($rfq->created_at)) }}</li>
-                <li><span>Status: </span>{{ $rfq->statusName->status_name }}</li>
-                <li><span>Sales Rep: </span>{{ isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'' }}</li>
-              </ul>
-            </div>
-            <div class="address-block col-sm-8">
-              <div class="col-sm-6 customer address">
-                <div class="col-sm-2 icon">
-                  <span><i class="fas fa-user"></i></span>
-                </div>
-                <div class="col-sm-10 details">
-                  <strong>{{$rfq->deliveryAddress->name}}</strong>
-                  <p>
-                    <span>
-                      {{$rfq->deliveryAddress->address_line1}},&nbsp;{{isset($rfq->deliveryAddress->address_line2)?$rfq->deliveryAddress->address_line2:''}}
-                    </span><br>
-                    <span>
-                      {{$rfq->deliveryAddress->country->name}},&nbsp;{{isset($rfq->deliveryAddress->state->name)?$rfq->deliveryAddress->state->name:''}}
-                    </span><br>
-                    <span>
-                      {{isset($rfq->deliveryAddress->city->name)?$rfq->deliveryAddress->city->name:''}}&nbsp;-&nbsp;{{isset($rfq->deliveryAddress->post_code)?$rfq->deliveryAddress->post_code:''}}.
-                    </span>
-                  </p>
-                  <p>
-                    <span>Tel: {{$rfq->deliveryAddress->mobile}}</span><br>
-                    <span>Email: {{Auth::user()->email}}</span>
-                  </p>
-                </div>
-              </div>
-              @if(isset($admin_address))
-                <div class="col-sm-6 admin address">
-                  <div class="col-sm-2 icon">
-                    <span><i class="far fa-building"></i></span>
-                  </div>
-                  <div class="col-sm-10 details">
-                    <strong>{{$admin_address->company_name}}</strong>
-                    <p>
-                      <span>
-                        {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}
-                      </span><br>
-                      <span>
-                        {{$admin_address->getCountry->name}},&nbsp;{{$admin_address->getState->name}}
-                      </span><br>
-                      <span>
-                        {{$admin_address->getCity->name}}&nbsp;-&nbsp;{{$admin_address->post_code}}.
-                      </span>
-                    </p>
-                    <p>
-                      <span>Tel: {{$admin_address->post_code}}</span><br>
-                      <span>Email: {{$admin_address->company_email}}</span>
-                    </p>
-                  </div>
-                </div>
-              @else
-                <div class="admin address">
-                  <div class="icon">
-                    <span><i class="far fa-building"></i></span>
-                  </div>
-                  <div class="details">
-                  </div>
-                </div>
-              @endif
-            </div>
           </div>
 
           <div class="product-sec">
             <div class="table-responsive">
               <table class="table">
                 <thead>
-                  <tr><th>No.</th><th>Product Name</th><th>Quantity</th><th>RFQ Price</th><th>Sub Total</th></tr>
+                  <tr><th>No.</th><th>Product Name</th><th class="text-center">Quantity</th></tr>
                 </thead>
                 <tbody>
                   @php $s_no = 1 @endphp
@@ -188,37 +99,201 @@
                         </div>
                       </div>
                     </td>
-                    <td>{{ $products['quantity'] }}</td>
-                    <td>{{ $products['rfq_price'] }}</td>
-                    <td>{{ number_format($products['sub_total'],2,'.','') }}</td>
+                    <td>
+                      <div class="number">
+                        <span class="minus">-</span><input type="text" class="qty-count" value="{{ $products['quantity'] }}" /><span class="plus">+</span>
+                      </div>
+                    </td>
+                    
                   </tr>
                   @php $s_no++ @endphp
                   @endforeach
-                  <tr class="outer">
-                    <td colspan="4" class="text-right">Total</td><td>{{ $rfq_data['total'] }}</td>
-                  </tr>
-                  <tr class="outer">
-                    <td colspan="4" class="text-right">Order Discount</td><td>{{ $rfq_data['discount'] }}</td>
-                  </tr>
-                  <tr class="outer">
-                    <td colspan="4" class="text-right">Order Tax</td><td>{{ $rfq_data['tax'] }}</td>
-                  </tr>
-                  <tr class="outer grand">
-                    <th colspan="4" class="text-right">Total Amount (SGD)</th><th>{{ $rfq_data['grand_total'] }}</th>
-                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
-            
-          <div class="footer-sec">
-            <label>Note:</label>
-            <div class="notes">{{ $rfq_data['notes'] }}</div>
-          </div>
+          
+          <div class="address-sec">
+            <div class="address-container col-sm-12">
+              <div class="col-sm-6">
+                <div class="address-block" style="margin-right:5px;">
+                <h4><i class="fas fa-truck"></i> Delivery Address</h4>
+                <h6>{{ $delivery->name }}</h6>
+                <div class="address-box">
+                  <div class="show-address">{{ $delivery->address_line1 }}  {{ $delivery->address_line2 }}</div>
+                </div>
+                <div class="contact">
+                  <span>Contact Number </span>: {{ $delivery->mobile }}
+                </div>
+                <a class="btn save-btn" id="changeDelivery">Change</a>
+                </div>
+              </div>
+          
+              <div class="col-sm-6">
+                <div class="address-block" style="margin-left:5px;">
+                <h4><i class="fas fa-file-invoice-dollar"></i> Billing Address</h4>
+                <h6>{{ $billing->name }}</h6>
+                <div class="address-box">
+                  <div class="show-address">{{ $billing->address_line1 }}  {{ $billing->address_line2 }}</div>
+                </div>
+                <div class="contact">
+                  <span>Contact Number </span>: {{ $billing->mobile }}
+                </div>
+                <a class="btn save-btn" id="changeBilling">Change</a>
+                </div>
+              </div>
 
+              <input type="hidden" id="addID">
+              <input type="hidden" id="addType">
+              <input type="hidden" id="rfqID" value="{{ $rfq->id }}">
+
+              <div class="change-address">
+                <h5>Change <span class="change-name"></span> Address</h5>
+                <select class="form-control select2bs4" id="allAddress">
+                  <option value="" selected>Please Select Address</option>
+                  @foreach($all_address as $address)
+                    <option value="{{ $address->id }}">{{ $address->name }}, {{ $address->address_line1 }} {{ $address->address_line2 }}</option>
+                  @endforeach
+                  {{-- <option value="new">Add New</option> --}}
+                </select>
+                <a class="btn reset-btn" id="cancelChange">Close</a>
+                <a class="btn save-btn" id="saveChange">Save</a>
+              </div>
+
+            </div>
+            
+            <div class="footer-sec">
+              <label>Note:</label>
+              <div class="notes">
+                <textarea class="form-control" name="notes" rows="4">{{ $rfq_data['notes'] }}</textarea>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+
+  <style type="text/css">
+    .rfq.edit.view-block .product-sec .number {
+      margin: 0;
+      text-align: center;
+    }
+   .rfq.edit.view-block .product-sec .number .minus, .rfq.edit.view-block .product-sec .number .plus {
+      width: 30px;
+      height: 35px;
+      padding:5px;
+    }
+    .rfq.edit.view-block .product-sec .number input{ 
+      height: 35px;
+      width: 50px;
+      font-size: 18px;
+    }
+    .rfq.edit.view-block .address-sec .footer-sec {
+    width: 100%;
+    float: left;
+}
+  .rfq.edit.view-block .address-sec .address-block {
+    padding: 1rem;
+    height: 250px;
+}
+.rfq.edit.view-block .address-block .btn.save-btn {
+    margin-top: 10px;
+}
+.rfq.edit.view-block .address-container .change-address{
+  display: none;
+  width: 100%;
+  float: left;
+  margin-top: 1rem;
+}
+.rfq.edit.view-block .address-container .change-address a {
+    margin-top: 10px;
+}
+  </style>
+
+@push('custom-scripts')
+  <script type="text/javascript">
+
+    $(function ($) {
+      $('.select2bs4').select2();
+    });
+
+    $('#changeDelivery').on('click',function(){
+      $('.change-address').show();
+      $('.change-name').text('Delivery');
+      $('#addType').val(1);
+      $('#allAddress').val(null).trigger("change");
+    });
+
+    $('#changeBilling').on('click',function(){
+      $('.change-address').show();
+      $('.change-name').text('Billing');
+      $('#addType').val(2);
+      $('#allAddress').val(null).trigger("change");
+    });
+
+    $('#cancelChange').on('click',function(){
+      $('.change-address').hide();
+      $('.change-name').text('');
+    });
+
+    $('#allAddress').on('change', function(event) {
+      event.preventDefault();
+      var adderssID = $('option:selected', this).val();
+      $('#addID').val(adderssID);
+    });
+
+    $('#saveChange').on('click',function(){
+      var getAddID = $('#addID').val();
+      var getAddType = $('#addType').val();
+      var getRFQID =$('#rfqID').val();
+
+      if(getAddID==""||getAddID==null){
+        alert('Please select address.!');
+        return false;
+      }
+
+      $.ajax({
+        url:"{{ route('change.address') }}",
+        type:"POST",
+        data:{
+          "_token": "{{ csrf_token() }}",
+          address_id:getAddID,
+          address_type:getAddType,
+          rfq_id:getRFQID
+        },
+      }).done(function(data) {
+        window.location.reload();
+      })
+
+    });
+
+    $(".qty-count").on('keyup',function(e) {
+        if (/\D/g.test(this.value))
+        {
+          this.value = this.value.replace(/\D/g, '');
+        }
+        if(this.value==''){
+          $(this).val(1); 
+        }
+    });
+
+    $('.minus').click(function () {
+      var $input = $(this).parent().find('input');
+      var count = parseInt($input.val()) - 1;
+      count = count < 1 ? 1 : count;
+      $input.val(count);
+      $input.change();
+      return false;
+    });
+    $('.plus').click(function () {
+      var $input = $(this).parent().find('input');
+      $input.val(parseInt($input.val()) + 1);
+      $input.change();
+      return false;
+    });
+
+  </script>
+@endpush
 @endsection

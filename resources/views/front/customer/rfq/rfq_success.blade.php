@@ -11,7 +11,7 @@
 					<img src="{{ asset('theme/images/successfully.png') }}">
 					<h5>Thank you, We received your RFQ request.</h5>
 					<h5>Your RFQ Code : {{ Session::get('message') }}</h5>
-					<a href="{{ route('myrfq.index') }}" class="btn save-btn">MY RFQ</a>
+					<a href="{{ route('my-rfq.index') }}" class="btn save-btn">MY RFQ</a>
 				</div>
 			</div>
 		</div>
