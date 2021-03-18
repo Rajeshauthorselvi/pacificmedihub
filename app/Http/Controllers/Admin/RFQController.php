@@ -80,8 +80,8 @@ class RFQController extends Controller
       $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
 
-      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[1,10])
-                                  ->pluck('status_name','id')->toArray();
+      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[1])->pluck('status_name','id')->toArray();
+
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
                                   ->toArray();
       $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
@@ -269,7 +269,7 @@ class RFQController extends Controller
         }
       $data=array();
       $data['rfqs']=$rfq_details= RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
-      $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,10,11])
+      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[1,11])
                                     ->pluck('status_name','id')->toArray();
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
                                     ->pluck('payment_method','id')->toArray();
@@ -339,12 +339,12 @@ class RFQController extends Controller
       $active_product_ids=array_merge($existing_product_id,$new_product_variant);
        
 
-      $deleted_products=RFQProducts::whereNotIn('product_id',$active_product_ids)
+      $deleted_products=RFQProducts::where('rfq_id',$id)->whereNotIn('product_id',$active_product_ids)
                         ->pluck('product_id')
                         ->toArray();
 
       if(isset($deleted_products)) {
-        RFQProducts::whereIn('product_id',array_unique($deleted_products))->delete();
+        RFQProducts::where('rfq_id',$id)->whereIn('product_id',array_unique($deleted_products))->delete();
       }
 
       $rfq_details=[

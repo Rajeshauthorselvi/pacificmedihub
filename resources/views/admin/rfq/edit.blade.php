@@ -127,6 +127,7 @@
               								  <td class="expand-button"></td>
                                 <?php
                                 $total_based_products=\App\Models\RFQProducts::TotalDatas($rfqs->id,$product['product_id']);
+                                  $sum_of_retail_qty=$total_based_products->retail_price*$total_based_products->quantity;
                                  ?>
                 								<td>{{ $product['product_name'] }}</td>
                 								<th>
@@ -135,7 +136,11 @@
                                 </th>
                 								{{-- <th>Price: {{ $total_based_products->rfq_price }}</th> --}}
                                 <th class="total-head">
-                                  Total: &nbsp;<span class="total">{{ $total_based_products->sub_total }}</span>
+                                  <input type="hidden" value="@if($total_based_products->sub_total!=0) {{$total_based_products->sub_total}}
+                                    @else {{$sum_of_retail_qty}} @endif" class="get-total">
+                                  Total: &nbsp;<span class="total">
+                                    @if($total_based_products->sub_total!=0) {{$total_based_products->sub_total}}
+                                    @else {{$sum_of_retail_qty}} @endif</span>
                                 </th>
                                 <td>
                                     <a href="javascript:void(0)" class="btn btn-danger remove-product-row">
@@ -234,7 +239,7 @@
                                             </td>
                                             @endif
                                             <td>
-                                              <?php $high_value=$variation_details['rfq_price']; ?>
+                                              <?php $high_value = isset($variation_details['rfq_price'])?$variation_details['rfq_price']:$variant['retail_price']; ?>
                                               <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{ $high_value }}" autocomplete="off">
                                             </td>
                                             <td>
@@ -244,13 +249,14 @@
                                               </div>
                                             </td>  
                                             <td>
+                                              <?php $sub_total = $variation_details['quantity']*$high_value; ?>
                                               <div class="form-group">
-                                                <span class="sub_total">{{ $variation_details['sub_total'] }}</span>
-                                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{$variation_details['sub_total']}}">
+                                                <span class="sub_total">{{ $sub_total }}</span>
+                                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $sub_total }}">
                                               </div>
                                             </td>
                                           </tr>
-                                          <?php $total_amount +=$variation_details['sub_total']; ?>
+                                          <?php $total_amount +=$sub_total; ?>
                                           <?php $total_quantity +=$variation_details['quantity']; ?>
                                           <?php $rfq_price +=$high_value; ?>
                                         @endforeach
@@ -268,30 +274,30 @@
                             @endforeach
                             <tr class="total-calculation">
                               <td colspan="3" class="title">Total</td>
-                              <td><span class="all_amount">{{$rfqs->total_amount}}</span></td>
+                              <td colspan="2"><span class="all_amount">{{$rfqs->total_amount}}</span></td>
                               <input type="hidden" name="total_amount" id="total_amount_hidden" value="{{$rfqs->total_amount}}">
                             </tr>
                             <tr class="total-calculation"><td colspan="3" class="title">Order Discount</td>
-                              <td><span class="order-discount">{{$rfqs->order_discount}}</span></td>
+                              <td colspan="2"><span class="order-discount">{{isset($rfqs->order_discount)?$rfqs->order_discount:'0.00'}}</span></td>
                             </tr>
                             <tr class="total-calculation">
                               <td colspan="3" class="title">Order Tax</td>
-                              <td id="orderTax">{{$rfqs->order_tax_amount}}</td>
-                              <input type="hidden" name="order_tax_amount" id="order_tax_amount_hidden" value="{{$rfqs->order_tax_amount}}">
+                              <td id="orderTax" colspan="2">{{isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:'0.00'}}</td>
+                              <input type="hidden" name="order_tax_amount" id="order_tax_amount_hidden" value="{{isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:0.00}}">
                             </tr>
                             <tr class="total-calculation">
                               <th colspan="3" class="title">Total Amount(SGD)</th>
-                              <th id="total_amount_sgd">{{$rfqs->sgd_total_amount}}</th>
+                              <th id="total_amount_sgd" colspan="2">{{$rfqs->sgd_total_amount}}</th>
                               <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$rfqs->sgd_total_amount}}">
                             </tr>
-                            @if($rfqs->currencyCode->currency_code!='SGD')
+                            @if(isset($rfqs->currencyCode->currency_code) && $rfqs->currencyCode->currency_code!='SGD')
                               @php $currency = 'contents'; @endphp 
                             @else
                               @php $currency = 'none'; @endphp
                             @endif
                               <tr class="total-calculation" id="total_exchange" style="display:{{$currency}}">
                                 <th colspan="3" class="title">
-                                  Total Amount (<span class="exchange-code">{{$rfqs->currencyCode->currency_code}}</span>)
+                                  Total Amount (<span class="exchange-code">{{isset($rfqs->currencyCode->currency_code)?$rfqs->currencyCode->currency_code:'SGD'}}</span>)
                                 </th>
                                 <th>
                                   <input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="{{$rfqs->exchange_total_amount}}" onkeyup="validateNum(event,this);" autocomplete="off">
@@ -324,7 +330,7 @@
                       </div>
                       <div class="col-sm-4">
                         <label for="purchase_date">Order Discount</label>
-                        {!! Form::text('order_discount', $rfqs->order_discount,['class'=>'form-control','id'=>'order-discount']) !!}
+                        {!! Form::text('order_discount', isset($rfqs->order_discount)?$rfqs->order_discount:0,['class'=>'form-control','id'=>'order-discount']) !!}
                       </div>
                       <div class="col-sm-4">
                         <label for="purchase_date">Payment Term</label>
@@ -356,6 +362,21 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
+
+      $(document).ready(function($) {
+        var sum = 0;
+        $('.get-total').each(function() {
+          sum += Number($(this).val());
+        });
+        $('.all_amount').text(sum);
+        $('#total_amount_hidden').val(sum);
+
+        var sgdTotal = $('#sgd_total_amount_hidden').val();
+        if(sgdTotal==''){
+          $('#sgd_total_amount_hidden').val(sum);
+          $('#total_amount_sgd').text(sum);
+        }
+      });
 
       $(document).on('change', '#customer', function(event) {
         if ($('.vatiant_table').length!=0) {

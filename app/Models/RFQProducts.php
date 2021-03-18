@@ -20,7 +20,7 @@ class RFQProducts extends Model
 
     static function TotalDatas($rfq_id,$product_id=0)
     {
-    	$total_datas=self::select(DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'),DB::raw('sum(rfq_price) as rfq_price'));
+    	$total_datas=self::select('retail_price',DB::raw('sum(quantity) as quantity'),DB::raw('sum(sub_total) as sub_total'),DB::raw('sum(rfq_price) as rfq_price'));
 
     		if ($product_id!=0) {
     			$total_datas=$total_datas->where('product_id',$product_id);
@@ -28,4 +28,16 @@ class RFQProducts extends Model
     		$total_datas=$total_datas->where('rfq_id',$rfq_id)->first();
     		return $total_datas;
     }
+
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class,'product_id');
+    }
+
+    public function variant()
+    {
+        return $this->belongsTo(ProductVariant::class,'product_variant_id');
+    }
+    
 }

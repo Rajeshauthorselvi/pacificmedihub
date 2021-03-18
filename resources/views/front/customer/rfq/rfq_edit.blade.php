@@ -54,35 +54,33 @@
 		  <div class="col-sm-9">
         <div class="rfq view-block">
           <div class="action_sec">
-            @if($rfq->status!=11)
-              <ul class="list-unstyled">
-                <li style="background-color: #216ea7;border-right: 1px solid #227bbb;">
-                  <a href="javascript:void(0);" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
-                    <i class="fa fa-plus-circle"></i>&nbsp; Place Order
-                  </a>
-                </li>
-                <li style="background-color: #216ea7">
-                  <a href="javascript:void(0);" class="pdf">
-                    <i class="fa fa-download"></i>&nbsp; PDF
-                  </a>
-                </li>
-                <li style="background-color: #43bfdd">
-                  <a href="javascript:void(0);" class="email">
-                    <i class="fa fa-envelope"></i>&nbsp; Email
-                  </a>
-                </li>
-                <li style="background-color: #23bf79">
-                  <a href="javascript:void(0);" class="comment">
-                    <i class="fa fa-comment"></i>&nbsp; Comment
-                  </a>
-                </li>
-                <li style="background-color: #f6ac50">
-                  <a href="javascript:void(0);" class="edit">
-                    <i class="fa fa-edit"></i>&nbsp; Edit
-                  </a>
-                </li>
-              </ul>
-            @endif
+            <ul class="list-unstyled">
+              <li style="background-color: #216ea7;border-right: 1px solid #227bbb;">
+                <a href="javascript:void(0);" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
+                  <i class="fa fa-plus-circle"></i>&nbsp; Place Order
+                </a>
+              </li>
+              <li style="background-color: #216ea7">
+                <a href="javascript:void(0);" class="pdf">
+                  <i class="fa fa-download"></i>&nbsp; PDF
+                </a>
+              </li>
+              <li style="background-color: #43bfdd">
+                <a href="javascript:void(0);" class="email">
+                  <i class="fa fa-envelope"></i>&nbsp; Email
+                </a>
+              </li>
+              <li style="background-color: #23bf79">
+                <a href="javascript:void(0);" class="comment">
+                  <i class="fa fa-comment"></i>&nbsp; Comment
+                </a>
+              </li>
+              <li style="background-color: #f6ac50">
+                <a href="javascript:void(0);" class="edit">
+                  <i class="fa fa-edit"></i>&nbsp; Edit
+                </a>
+              </li>
+            </ul>
           </div>
 
           <div class="col-sm-12 address-sec">
@@ -95,31 +93,29 @@
               </ul>
             </div>
             <div class="address-block col-sm-8">
-           
               <div class="col-sm-6 customer address">
                 <div class="col-sm-2 icon">
                   <span><i class="fas fa-user"></i></span>
                 </div>
                 <div class="col-sm-10 details">
-                  <strong>{{$delivery_address->name}}</strong>
+                  <strong>{{$rfq->deliveryAddress->name}}</strong>
                   <p>
                     <span>
-                      {{$delivery_address->address_line1}},&nbsp;{{isset($delivery_address->address_line2)?$delivery_address->address_line2:''}}
+                      {{$rfq->deliveryAddress->address_line1}},&nbsp;{{isset($rfq->deliveryAddress->address_line2)?$rfq->deliveryAddress->address_line2:''}}
                     </span><br>
                     <span>
-                      {{$delivery_address->country->name}},&nbsp;{{isset($delivery_address->state->name)?$delivery_address->state->name:''}}
+                      {{$rfq->deliveryAddress->country->name}},&nbsp;{{isset($rfq->deliveryAddress->state->name)?$rfq->deliveryAddress->state->name:''}}
                     </span><br>
                     <span>
-                      {{isset($delivery_address->city->name)?$delivery_address->city->name:''}}&nbsp;-&nbsp;{{isset($delivery_address->post_code)?$delivery_address->post_code:''}}.
+                      {{isset($rfq->deliveryAddress->city->name)?$rfq->deliveryAddress->city->name:''}}&nbsp;-&nbsp;{{isset($rfq->deliveryAddress->post_code)?$rfq->deliveryAddress->post_code:''}}.
                     </span>
                   </p>
                   <p>
-                    <span>Tel: {{$delivery_address->mobile}}</span><br>
-                    <span>Email: {{$cus_email}}</span>
+                    <span>Tel: {{$rfq->deliveryAddress->mobile}}</span><br>
+                    <span>Email: {{Auth::user()->email}}</span>
                   </p>
                 </div>
               </div>
-              
               @if(isset($admin_address))
                 <div class="col-sm-6 admin address">
                   <div class="col-sm-2 icon">
@@ -145,11 +141,11 @@
                   </div>
                 </div>
               @else
-                <div class="col-sm-6 admin address">
-                  <div class="col-sm-2 icon">
+                <div class="admin address">
+                  <div class="icon">
                     <span><i class="far fa-building"></i></span>
                   </div>
-                  <div class="col-sm-10 details">
+                  <div class="details">
                   </div>
                 </div>
               @endif

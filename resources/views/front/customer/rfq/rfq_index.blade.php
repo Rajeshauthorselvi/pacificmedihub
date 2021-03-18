@@ -56,7 +56,11 @@
           @if(count($rfq_datas)!=0)
             @foreach($rfq_datas as $rfq)
               <div class="rfq-block">
-                <div class="header">
+                <?php 
+                  if($rfq['status']=='Cancelled') $head_class = 'cancelled';
+                  else $head_class = '';
+                ?>
+                <div class="header {{ $head_class }}">
                   <div class="col-sm-4 text-left">
                     <span>Order Date</span>: {{ $rfq['create_date'] }}
                   </div>
@@ -68,7 +72,7 @@
                   </div>
                 </div>
 
-                <div class="body">
+                <div class="body {{ $head_class }}">
                   <div class="col-sm-4 text-left">
                     <span>Total Items</span>: {{ $rfq['item_count'] }}
                   </div>

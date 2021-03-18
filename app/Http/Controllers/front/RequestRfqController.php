@@ -30,7 +30,8 @@ class RequestRfqController extends Controller
         }
         $data = array();
         $user_id = Auth::id();
-        $all_rfq_data = RFQ::where('user_id',$user_id)->orderBy('id','desc')->get();
+        $all_rfq_data = RFQ::where('customer_id',$user_id)->orderBy('id','desc')->get();
+        
         $rfq_data = array();
         foreach ($all_rfq_data as $key => $rfq) {
             $item_count  = RFQProducts::where('rfq_id',$rfq->id)->count();
@@ -52,8 +53,46 @@ class RequestRfqController extends Controller
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
         }
         $id = base64_decode($rfq_id);
-        $data['admin_address'] = UserCompanyDetails::where('customer_id',1)->first();
-        $data['rfq'] = RFQ::find($id);
+        $rfq = $data['rfq'] = RFQ::find($id);
+        
+        $user = User::find($rfq->customer_id);
+        if(isset($rfq->delivery_address_id)&& $rfq->delivery_address_id!=null){
+            $del_add_id = $rfq->delivery_address_id;
+        }else{
+            $del_add_id = $user->address_id;
+        }
+        $data['cus_email']        = $user->email;
+        $data['delivery_address'] = UserAddress::find($del_add_id);
+        $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+        
+        $rfq_products = RFQProducts::with('product','variant')->where('rfq_id',$id)->orderBy('id','desc')->get();
+        $rfq_data = $rfq_items = array();
+        foreach ($rfq_products as $key => $item) {
+            $rfq_items[$key]['product_name'] =  $item->product->name;
+            $rfq_items[$key]['variant_sku'] = $item->variant->sku;
+            $rfq_items[$key]['variant_option1'] = isset($item->variant->optionName1->option_name)?$item->variant->optionName1->option_name:null;
+            $rfq_items[$key]['variant_option_value1'] = isset($item->variant->optionValue1->option_value)?$item->variant->optionValue1->option_value:null;
+            $rfq_items[$key]['variant_option2'] = isset($item->variant->optionName2->option_name)?$item->variant->optionName2->option_name:null;
+            $rfq_items[$key]['variant_option_value2'] = isset($item->variant->optionValue2->option_value)?$item->variant->optionValue2->option_value:null;
+            $rfq_items[$key]['variant_option3'] = isset($item->variant->optionName3->option_name)?$item->variant->optionName3->option_name:null;
+            $rfq_items[$key]['variant_option_value3'] = isset($item->variant->optionValue3->option_value)?$item->variant->optionValue3->option_value:null;
+            $rfq_items[$key]['variant_option4'] = isset($item->variant->optionName4->option_name)?$item->variant->optionName4->option_name:null;
+            $rfq_items[$key]['variant_option_value4'] = isset($item->variant->optionValue4->option_value)?$item->variant->optionValue4->option_value:null;
+            $rfq_items[$key]['variant_option5'] = isset($item->variant->optionName5->option_name)?$item->variant->optionName5->option_name:null;
+            $rfq_items[$key]['variant_option_value5'] = isset($item->variant->optionValue5->option_value)?$item->variant->optionValue5->option_value:null;
+            $rfq_items[$key]['quantity'] = $item->quantity;
+            $rfq_items[$key]['rfq_price'] = isset($item->rfq_price)?(float)$item->rfq_price:'0.00';
+            $rfq_items[$key]['sub_total'] = isset($item->sub_total)?(float)$item->sub_total:'0.00';
+        }
+
+        $rfq_data['total']       = isset($rfq->total_amount)?(float)$rfq->total_amount:'0.00';
+        $rfq_data['discount']    = isset($rfq->order_discount)?(float)$rfq->order_discount:'0.00';
+        $rfq_data['tax']         = isset($rfq->order_tax_amount)?(float)$rfq->order_tax_amount:'0.00';
+        $rfq_data['grand_total'] = isset($rfq->sgd_total_amount)?(float)$rfq->sgd_total_amount:'0.00';
+        $rfq_data['notes']       = isset($rfq->notes)?$rfq->notes:'';
+
+        $data['rfq_data']     = $rfq_data;
+        $data['rfq_products'] = $rfq_items;
         //dd($data);
         return view('front/customer/rfq/rfq_view',$data);
     }
