@@ -42,4 +42,14 @@ class RFQ extends Model
     {
         return $this->belongsTo(User::class,'user_id');
     }
+
+    public function deliveryAddress()
+    {
+        return $this->belongsTo(UserAddress::class,'delivery_address_id');
+    }
+
+    public function billingAddress()
+    {
+        return $this->belongsTo(UserAddress::class,'billing_address_id');
+    }
 }

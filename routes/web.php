@@ -197,18 +197,16 @@ Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');
 //Customer Auth
 Route::get('customer-login','front\AuthController@index')->name('customer.login');
 Route::post('customer-login','front\AuthController@store')->name('customer.store');
+Route::get('forget-password','front\AuthController@forgetPassword')->name('forget.password');
+Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
 
 Route::group(['middleware' => 'customer'], function () {
 	//Customer Auth
 	Route::get('customer-logout','front\AuthController@logout')->name('customer.logout');
 	Route::post('change-customer-password','front\AuthController@changePassword')->name('change.cuspwd');
-	Route::get('forget-password','front\AuthController@forgetPassword')->name('forget.password');
-	Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
-
-	//Customer Profile Page
-	Route::get('my-profile/{id}','front\ProfileController@index')->name('profile.index');
-	Route::get('edit-my-profile/{id}','front\ProfileController@edit')->name('profile.edit');
-	Route::post('update-my-profile/{id}','front\ProfileController@update')->name('profile.update');
+	
+	//Customer Profile
+	Route::resource('my-profile','front\ProfileController');
 
 	//Get Sate and City
 	Route::get('get-state','front\AddressController@getStateList');
@@ -216,13 +214,19 @@ Route::group(['middleware' => 'customer'], function () {
 
 	//Customer Address
 	Route::resource('my-address', 'front\AddressController');
-	Route::get('set-primary-address/{address_id}', 'front\AddressController@setPrimaryAddress')->name('setPrimary.address');
+	Route::get('set-primary-address/{address_id}','front\AddressController@setPrimaryAddress')->name('setPrimary.address');
 
 	//Cart
 	Route::resource('cart','front\CartController');
 	Route::put('updatecart/{id}', 'front\CartController@update');
 	//Wishlist
 	Route::resource('wishlist', 'front\WishlistController');
+
+	//My RFQ
+	Route::resource('my-rfq','front\MyRFQController');
+	Route::get('request-rfq','front\MyRFQController@request')->name('request.rfq');
+	Route::get('rfq-status','front\MyRFQController@status')->name('rfq.status');
+	Route::post('change-address','front\MyRFQController@changeAddress')->name('change.address');
 });
 
 //Home Page

@@ -13,12 +13,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('front/css/bootstrap.min.css') }}" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{{ asset('theme/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{asset('theme/plugins/image_viewer/jquery.magnify.css')}}">
   <!-- Select2 -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/select2/css/select2.min.css') }}">
   <link rel="stylesheet" href="{{ asset('theme/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{{ asset('theme/dist/css/adminlte.min.css') }}">
+  
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/fontawesome-free/css/all.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ asset('front/css/owl.carousel.min.css') }}">
@@ -47,10 +48,17 @@
 <script src="{{ asset('front/js/owl.carousel.min.js') }}"></script>
 <!-- Toast -->
 <script src="{{ asset('front/js/toastr/toastr.js') }}"></script>
+<!-- bs-custom-file-input -->
+<script src="{{ asset('theme/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
 
 @stack('custom-scripts')
 
 <script type="text/javascript">
+
+  $(function () {
+    bsCustomFileInput.init();
+  });
+  
   //Validate Number
       function validateNum(e , field) {
         var val = field.value;

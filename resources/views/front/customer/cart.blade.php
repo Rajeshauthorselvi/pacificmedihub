@@ -80,7 +80,7 @@
 							</div>
 							
 							<div class="col-sm-6" style="text-align:right;padding-right:0">
-								<a class="btn checkout">Proceed to RFQ</a>
+								<a href="{{ route('request.rfq') }}" class="btn checkout">Proceed to RFQ</a>
 							</div>
 						</div>
 				@else
@@ -96,6 +96,19 @@
 </div>
 
 @push('custom-scripts')
+
+  	<script type="text/javascript">
+    	$(".qty-count").on('keyup',function(e) {
+        	if (/\D/g.test(this.value))
+        	{
+          		this.value = this.value.replace(/\D/g, '');
+        	}
+        	if(this.value==''){
+          		$(this).val(1); 
+        	}
+    	});
+  	</script>
+
 	<script type="text/javascript">
 		$('.minus').click(function () {
 			var $input = $(this).parent().find('input');

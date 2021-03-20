@@ -4,7 +4,8 @@
 	<div class="container">
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
-			<li><a title="My Profile Page">My Profile</a></li>
+			<li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
+      <li><a title="My Address">My Address</a></li>
 		</ul>
 	</div>
 </div>
@@ -16,12 +17,12 @@
 		   	<div class="column-block">
 		     	<ul class="box-menu treeview-list treeview collapsable" >
 		     		<li>
-		     			<a class="link" href="javascript:void(0);">
+		     			<a class="link" href="{{ route('my-profile.index') }}">
            			<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
               </a>
             </li>
 		        <li>
-          		<a class="link" href="javascript:void(0);">
+          		<a class="link" href="{{ route('my-rfq.index') }}">
               	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
               </a>
             </li>
@@ -102,16 +103,9 @@
                   {!! Form::text('post_code', $address->post_code,['class'=>'form-control add_post_code']) !!}
                 </div>
               </div>
-              <div class="form-group">
-                <div class="col-sm-6">
-                  <label for="city">Latitude</label>
-                  {!! Form::text('latitude', $address->latitude,['class'=>'form-control','id'=>'latitude']) !!}
-                </div>
-                <div class="col-sm-6">
-                  <label for="postCode">Longitude</label>
-                  {!! Form::text('longitude', $address->longitude,['class'=>'form-control','id'=>'longitude']) !!}
-                </div>
-              </div>
+
+              {!! Form::hidden('latitude', $address->latitude,['class'=>'form-control','id'=>'latitude']) !!}
+              {!! Form::hidden('longitude', $address->longitude,['class'=>'form-control','id'=>'longitude']) !!}
 
               <div class="form-group">
                 <div class="map-block">

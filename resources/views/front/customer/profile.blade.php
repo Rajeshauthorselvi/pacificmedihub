@@ -21,7 +21,7 @@
               </a>
             </li>
 		        <li>
-          		<a class="link" href="javascript:void(0);">
+          		<a class="link" href="{{ route('my-rfq.index') }}">
               	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
               </a>
             </li>
@@ -79,7 +79,7 @@
               </div>
               <div class="col-sm-6">
                 <div class="edit-customer">
-                  <a class="btn btn-primary" href="{{route('profile.edit',$customer->id)}}">
+                  <a class="btn btn-primary" href="{{route('my-profile.edit',$customer->id)}}">
                     <i class="far fa-edit"></i> Edit Profile
                   </a>
                 </div>

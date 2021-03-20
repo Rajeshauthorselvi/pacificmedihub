@@ -75,7 +75,7 @@
                           <td>{{ date('m/d/Y',strtotime($rfq->created_at)) }}</td>
                           <td><a href="{{route('rfq.show',$rfq->id)}}">{{ $rfq->order_no }}</a></td>
                           <td>{{ $rfq->customer->first_name }}</td>
-                          <td>{{ $rfq->salesrep->emp_name }}</td>
+                          <td>{{ isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'' }}</td>
                           <td>
                             <?php $total_quantity=\App\Models\RFQProducts::TotalDatas($rfq->id); ?>
                             {{ $total_quantity['quantity'] }}

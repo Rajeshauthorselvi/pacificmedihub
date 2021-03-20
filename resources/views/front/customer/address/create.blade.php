@@ -4,7 +4,8 @@
 	<div class="container">
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
-			<li><a title="My Profile Page">My Profile</a></li>
+			<li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
+      <li><a title="My Address">My Address</a></li>
 		</ul>
 	</div>
 </div>
@@ -16,12 +17,12 @@
 		   	<div class="column-block">
 		     	<ul class="box-menu treeview-list treeview collapsable" >
 		     		<li>
-		     			<a class="link" href="javascript:void(0);">
+		     			<a class="link" href="{{ route('my-profile.index') }}">
            			<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
               </a>
             </li>
 		        <li>
-          		<a class="link" href="javascript:void(0);">
+          		<a class="link" href="{{ route('my-rfq.index') }}">
               	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
               </a>
             </li>
@@ -83,7 +84,7 @@
               <div class="form-group">
                 <div class="col-sm-6">
                   {!! Form::label('address_country', 'Country *') !!}
-                  {!! Form::select('address[country_id]',$countries,null,['class'=>'form-contol select2bs4', 'id'=>'address_country','style'=>'width:100%']) !!}
+                  {!! Form::select('address[country_id]',$countries,null,['class'=>'form-control select2bs4', 'id'=>'address_country']) !!}
                   <span class="text-danger country" style="display:none">Country is required</span>
                 </div>
                 <div class="col-sm-6">
@@ -101,16 +102,9 @@
                   {!! Form::text('address[post_code]', '',['class'=>'form-control add_post_code']) !!}
                 </div>
               </div>
-              <div class="form-group">
-                <div class="col-sm-6">
-                  <label for="city">Latitude</label>
-                  {!! Form::text('address[latitude]', null,['class'=>'form-control','id'=>'latitude']) !!}
-                </div>
-                <div class="col-sm-6">
-                  <label for="postCode">Longitude</label>
-                  {!! Form::text('address[longitude]', null,['class'=>'form-control','id'=>'longitude']) !!}
-                </div>
-              </div>
+              
+              {!! Form::hidden('address[latitude]', null,['class'=>'form-control','id'=>'latitude']) !!}
+              {!! Form::hidden('address[longitude]', null,['class'=>'form-control','id'=>'longitude']) !!}
 
               <div class="form-group">
                 <div class="map-block">
