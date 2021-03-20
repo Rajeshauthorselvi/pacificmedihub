@@ -755,9 +755,26 @@ class OrderController extends Controller
     {
 
         $variant = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->first();
-
+/* $productVariants=ProductVariant::select('product_variants.*')
+                               ->select('product_variants.*')
+                               ->leftjoin('product_variant_vendors as pvv','pvv.product_variant_id','product_variants.id')
+                               ->where('pv.product_id',$product_id)
+                               ->whereIn('pv.id',$variation_id)
+                               ->where('disabled',0)
+                               ->where('is_deleted',0)
+                               ->orderBy('minimum_selling_price','DESC')
+                               ->groupBy('pvv.product_variant_id')
+                               ->get();
+$productVariants=ProductVariant::select('product_variants.*')
+                               ->leftjoin('product_variant_vendors as pvv','pvv.product_variant_id','product_variants.id')
+                               ->where('product_variants.product_id',$product_id)
+                               ->where('disabled',0)
+                               ->where('is_deleted',0)
+                               ->orderBy('minimum_selling_price','DESC')
+                               ->groupBy('pvv.product_variant_id')
+                               ->get();*/
+                               
         if ($variation_id!=0) {
-
              $productVariants = ProductVariant::where('product_id',$product_id)
                             ->where('disabled',0)->where('is_deleted',0)
                             ->whereIn('id',$variation_id)
