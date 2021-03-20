@@ -74,7 +74,8 @@
                       </div>
                       <div class="col-sm-4">
                         <label for="vendorId">Vendor *</label>
-                        {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control select2bs4','id'=>'vendorId']) !!}
+                        
+                        {!! Form::select('vendor_id',$vendors,array_key_last($vendors),['class'=>'form-control select2bs4','id'=>'vendorId']) !!}
                         <span class="text-danger vendor" style="display:none;">Status is required. Please Select</span>
                       </div>
                     </div>
@@ -204,7 +205,7 @@
                 <td>
                   <div class="form-group">
                     <?php $quantity=0 ?>
-                    <input type="text" class="form-control stock_qty"  name="variant[stock_qty][]" value="0">
+                    <input type="text" class="form-control stock_qty"  name="variant[stock_qty][]" value="0" remaining-quantity="{{ $balance_quantities[$product['product_id']][$variant['variant_id']] }}">
                   </div>
                 </td>
                 <td>
@@ -441,20 +442,23 @@
         $(this).parents('tr').remove();
       });
 
-      $(document).on('keyup', '.stock_qty', function(event) {
-        if (/\D/g.test(this.value))
-        {
-          this.value = this.value.replace(/\D/g, '');
-        }
-        else{
-          var base=$(this).parents('.parent_tr');
+      $('.stock_qty').each(function(index, el) {
+        var remain_quantity=$(this).attr('remaining-quantity');
+
+        $(this).val(remain_quantity);
+
+        StockQuantityKeyUp($(this));
+      });
+
+      function StockQuantityKeyUp($this) {
+          var base=$this.parents('.parent_tr');
           var base_price=base.find('.base_price').val();
-          var total_price=base_price*$(this).val();
+          var total_price=base_price*$this.val();
           base.find('.subtotal_hidden').val(total_price);
           base.find('.sub_total').text(total_price);          
 
-          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
-          var attr=$(this).parents('tbody').find('.collapse.show');
+          var attr_id=$this.parents('tbody').find('.collapse.show').attr('id');
+          var attr=$this.parents('tbody').find('.collapse.show');
           var total_quantity=SumTotal('.collapse.show .stock_qty');
           console.log(total_quantity);
 
@@ -470,6 +474,14 @@
           var all_amount = $('#allAmount').text();
           var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
           overallCalculation(all_amount,tax_rate);
+      }
+      $(document).on('keyup', '.stock_qty', function(event) {
+        if (/\D/g.test(this.value))
+        {
+          this.value = this.value.replace(/\D/g, '');
+        }
+        else{
+            StockQuantityKeyUp($(this));
         }
       });
 

@@ -185,11 +185,12 @@ class StockInTransitController extends Controller
     }
     public function update(Request $request, $id)
     {
-      // dd($request->all());
+      
         $this->validate(request(),[
             'purchase_status'   => 'required'
         ]);
        $quantity_received=$request->qty_received;
+       $vendor_id=$request->vendor_id;
 
        $variant=$request->variant;
        $row_ids=$variant['row_id'];
@@ -199,7 +200,6 @@ class StockInTransitController extends Controller
        $missed_quantity=$variant['missed_qty'];
        $stock_quantity=$variant['stock_quantity'];
        $product_id=$variant['product_id'];
-       $product_id=$variant['product_id'];
        if(isset($variant['goods_type'])){
          $goods_type=$variant['goods_type'];
        }
@@ -207,12 +207,16 @@ class StockInTransitController extends Controller
        $status=1;
        if ($request->purchase_status!=1) {
 
+
          foreach ($row_ids as $key => $row_id) {
 
             $purchase_data=DB::table('purchase_products')->where('id',$row_id)->first();
             $variant_data=DB::table('product_variant_vendors')
                           ->where('product_variant_id',$purchase_data->product_variation_id)
+                          ->where('vendor_id',$vendor_id)
                           ->first();
+
+              // dd($variant_data);
 
               /*Add Stock History*/
               if ($qty_received[$key]!=0) {
@@ -239,9 +243,12 @@ class StockInTransitController extends Controller
 
           /*Update Stock Quantity*/
               if ($request->purchase_status==2 || $request->purchase_status==4) {
+
                 $total_quantity=$variant_data->stock_quantity+$stock_quantity[$key];
                   DB::table('product_variant_vendors')
                   ->where('product_variant_id',$purchase_data->product_variation_id)
+                  ->where('vendor_id',$vendor_id)
+                  ->where('product_id',$product_id)
                   ->update(['stock_quantity'=>$total_quantity]);
 
                   /*Update Return quantity to purchase products table*/
@@ -279,6 +286,7 @@ class StockInTransitController extends Controller
           }
 
        }
+
           $total_quantity=PurchaseProducts::where('purchase_id',$id)->sum('quantity');
           $return_quantity=PurchaseStockHistory::where('purchase_id',$id)
                            ->where('goods_type',1)

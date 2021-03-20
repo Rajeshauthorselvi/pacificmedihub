@@ -522,8 +522,61 @@ class OrderController extends Controller
        ];
        OrderHistory::insert($order_history);
 
+       if ($request->order_status==14) {
+         $this->ReduceQuantityToVendor($id);
+       }
+
        $route=$this->RouteLinks();
        return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
+
+    }
+
+    public function ReduceQuantityToVendor($order_id='')
+    {
+        $order_products=OrderProducts::where('order_id',$order_id)
+                        ->groupBy('product_id','product_variation_id')
+                        ->get();
+
+        foreach ($order_products as $key => $products) {
+          $variant_vendor_details=ProductVariantVendor::where('product_id',$products->product_id)
+                                  ->where('product_variant_id',$products->product_variation_id)
+                                  // ->orderBy('minimum_selling_price','DESC')
+                                  ->orderBy('stock_quantity','DESC')
+                                  ->pluck('stock_quantity','vendor_id')->toArray();
+          foreach ($variant_vendor_details as $vendor_id => $stock_quantity) {
+            if($products->quantity >= $stock_quantity){
+                $products->quantity -=  $stock_quantity; 
+                $stock_quantity=0;
+                ProductVariantVendor::where('vendor_id',$vendor_id)
+                ->where('product_id',$products->product_id)
+                ->where('product_variant_id',$products->product_variation_id)
+                ->where('vendor_id',$vendor_id)
+                ->update(['stock_quantity'=>$stock_quantity]);
+            }
+            elseif ($products->quantity <= $stock_quantity) {
+                $balance_quantity=($stock_quantity-$products->quantity);
+                ProductVariantVendor::where('vendor_id',$vendor_id)
+                ->where('product_id',$products->product_id)
+                ->where('product_variant_id',$products->product_variation_id)
+                ->where('vendor_id',$vendor_id)
+                ->update(['stock_quantity'=>$balance_quantity]);
+
+             break;
+            }
+            else
+            {
+               $stock_quantity -=$products->quantity;
+                ProductVariantVendor::where('vendor_id',$vendor_id)
+                ->where('product_id',$products->product_id)
+                ->where('product_variant_id',$products->product_variation_id)
+                ->where('vendor_id',$vendor_id)
+                ->update(['stock_quantity'=>$stock_quantity]);
+            }
+
+            if ($products->quantity==0)  break;
+          }
+
+        }
 
     }
 
@@ -1064,26 +1117,23 @@ class OrderController extends Controller
             $replace_number = str_replace('[Start No]', $start_number, $replace_year);
             $data['purchase_code']=$replace_number;
           }
-          $product_ids=$this->VariantIds($order_id);
+          $variant_details=$this->VariantIds($order_id);
 
-          // dd($product_ids);
-          $product_ids=$product_ids['product_ids'];
+          $product_ids=$variant_details['product_ids'];
 
             $order_details=Orders::where('id',$order_id)->first();
             $order_products=OrderProducts::where('order_id',$order_id)
             ->whereIn('product_id',$product_ids)
             // ->groupBy('product_id')
             ->get();
-
             $product_data=$all_product_ids=array();
             foreach ($order_products as $key => $product) {
+
             $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
-            if ($product->quantity > $check_product_quantity) {
-         
-                $all_variants=$this->VariantIds($order_id);
-                $all_variants=$all_variants['variants'];
+            if ($check_product_quantity < $product->quantity) {
 
 
+                $all_variants=$variant_details['variants'];
                 $product_name    = Product::where('id',$product->product_id)->value('name');
                 $product_variant = $this->Variants($product->product_id,$all_variants);
                 $options         = $this->Options($product->product_id);
@@ -1107,23 +1157,83 @@ class OrderController extends Controller
                    ->whereIn('product_id',$all_product_ids)
                    ->pluck('name','v.id')->toArray();
         $data['vendors']        = [''=>'Please Select']+$all_vendors;
-
         $data['order_id']=$order_id;
-
-
+        $data['balance_quantities']=$variant_details['remaining_quantity'];
         return view('admin.orders.create_purchase',$data);
         
     }
     public function VariantIds($order_id='')
     {
-        $product_variant=DB::select("SELECT op.product_variation_id,product_id FROM order_products as op where `quantity` > (SELECT stock_quantity from product_variant_vendors as pvv WHERE pvv.product_id=op.product_id and pvv.product_variant_id=op.product_variation_id) AND op.order_id='".$order_id."'");
+        $products=Orders::with('orderProducts')
+                    ->where('orders.id',$order_id)
+                    ->where('delivery_person_id',0)->first();
 
-            $all_variants=array();
-            foreach ($product_variant as $key => $row) {
-                            $all_variants[$key] = $row->product_variation_id;
-                            $all_product_ids[$key] = $row->product_id;
-                          }
+        $all_variant_ids=array();
+        $all_product_ids=array();
+        $remaining_quantity=array();
+        if (isset($products->orderProducts)) {
+            foreach ($products->orderProducts as $key => $product) {
+              // $all_variants=Orders::AllProductVariantIds($product->product_id,$product->product_variation_id);
+                $check_product_quantity=ProductVariantVendor::where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
 
-        return ['product_ids'=>$all_product_ids,'variants'=>$all_variants];
+                if ($check_product_quantity < $product->quantity) {
+                    array_push($all_variant_ids, array($product->product_variation_id));
+                    array_push($all_product_ids, $product->product_id);
+
+                    $remaining_quantity[$product->product_id][$product->product_variation_id]=($product->quantity-$check_product_quantity);
+                }
+            }
+        }
+
+return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_quantity'=>$remaining_quantity];
+
+    }
+
+    public function SummaryReport(Request $request)
+    {
+
+        if ($request->ajax()) {
+          $order_ids=$request->order_ids;
+        }
+        else{
+          $order_ids=$request->order_ids;
+          $order_ids=explode(',', $order_ids);
+        }
+      $product_datas=array();
+      foreach ($order_ids as $key => $order_id) {
+        $order=Orders::with('orderProducts')
+                    ->where('orders.id',$order_id)
+                    ->where('delivery_person_id',0)->first(); 
+
+        $products = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
+        $product_data = $product_variant = array();
+        foreach ($products as $key => $product) {
+            $product_name    = Product::where('id',$product->product_id)->value('name');
+            $options         = $this->Options($product->product_id);
+            $all_variants    = OrderProducts::where('order_id',$order_id)->where('product_id',$product->product_id)
+                                ->pluck('product_variation_id')->toArray();
+            $product_variant = $this->Variants($product->product_id,$all_variants);
+            $product_data[$product->product_id] = [
+                'order_id'        => $order_id,
+                'product_id'      => $product->product_id,
+                'product_name'    => $product_name,
+                'options'         => $options['options'],
+                'option_count'    => $options['option_count'],
+                'product_variant' => $product_variant
+            ];
+        }
+        array_push($product_datas, $product_data);
+      }
+      $data['summary_report']=$product_datas;
+    if ($request->ajax()) {
+        return ['url'=>url('admin/order-summary?order_ids='.implode(',',$order_ids))];
+    }
+    else{
+      $layout = View::make('admin.orders.assign_shippment_delivery.download_summary',$data);
+      $pdf = App::make('dompdf.wrapper');
+      $pdf->loadHTML($layout->render());
+      return $pdf->download('Order-Summary.pdf');
+    }
+        
     }
 }

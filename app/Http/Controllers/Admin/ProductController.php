@@ -25,6 +25,7 @@ use DB;
 use Session;
 use Response;
 use Auth;
+
 class ProductController extends Controller
 {
     /**
@@ -122,6 +123,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
         $this->validate(request(), [
             'product_name'  => 'required',
             'product_code'  => 'required',
@@ -147,14 +149,13 @@ class ProductController extends Controller
         $product = new Product();
         $product->name = $request->product_name;
         $product->code = $request->product_code;
-        /*$product->sku = $request->product_sku;*/
+        $product->sku = $request->product_sku;
+
         $product->category_id = $request->category;
         $product->brand_id = $request->brand;
         $product->main_image = $image_name;
         $product->short_description = $request->short_description;
         $product->long_description = $request->product_details;
-        /*$product->treatment_information = $request->treatment_information;
-        $product->dosage_instructions = $request->dosage_instructions;*/
         $product->alert_quantity = $request->alert_qty;
         $product->commission_type = $request->commision_type;
         $product->commission_value = $request->commision_value;
@@ -166,7 +167,66 @@ class ProductController extends Controller
         $product->meta_description = $request->meta_description;
         $product->created_at =  date('Y-m-d H:i:s');
         $product->save();
+            
+        $allvariants=$request->variant_data;
+        $product_id=$product->id;
 
+        $key=0;
+        foreach ($allvariants as $vendor_id => $total_variant) {
+                if ($key==0) {
+                    foreach ($total_variant['option_value_id1'] as $data => $variants) {
+                            $variant_id=ProductVariant::insertGetId([
+                                'product_id'        => $product_id,
+                                'option_id'         => $total_variant['option_id1'][$data],
+                                'option_value_id'   => $total_variant['option_value_id1'][$data],
+                                'option_id2'        => isset($total_variant['option_id2'][$data])?$total_variant['option_id2'][$data]:'',
+                                'option_value_id2'  => isset($total_variant['option_value_id2'][$data])?$total_variant['option_value_id2'][$data]:'',
+                                'option_id3'        => isset($total_variant['option_id3'][$data])?$total_variant['option_id3'][$data]:'',
+                                'option_value_id3'  => isset($total_variant['option_value_id3'][$data])?$total_variant['option_value_id3'][$data]:'',
+                                'option_id4'        => isset($total_variant['option_id4'][$data])?$total_variant['option_id4'][$data]:'',
+                                'option_value_id4'  => isset($total_variant['option_value_id4'][$data])?$total_variant['option_value_id4'][$data]:'',
+                                'option_id5'        => isset($total_variant['option_id5'][$data])?$total_variant['option_id5'][$data]:'',
+                                'option_value_id5'  => isset($total_variant['option_value_id5'][$data])?$total_variant['option_value_id5'][$data]:'',
+                                'is_deleted'        => 0
+                            ]); 
+                        ProductVariantVendor::insert([
+                            'product_id'            => $product_id,
+                            'product_variant_id'    => $variant_id,
+                            'base_price'            => $total_variant['base_price'][$data],
+                            'retail_price'          => $total_variant['retail_price'][$data],
+                            'minimum_selling_price' => $total_variant['minimum_price'][$data],
+                            'display_variant'       => $total_variant['display'][$data],
+                            'display_order'         => $total_variant['display_order'][$data],
+                            'stock_quantity'        => $total_variant['stock_qty'][$data],
+                            'sku'                   => $total_variant['sku'][$data],
+                            'vendor_id'             => $vendor_id,
+                        ]); 
+                    }
+                }
+                else{
+                    foreach ($total_variant['option_value_id1'] as $data => $variants) {
+
+                        $variant_id=ProductVariant::where(['product_id'=> $product_id, 'option_id' => $total_variant['option_id1'][$data], 'option_value_id'   => $total_variant['option_value_id1'][$data], 'option_id2'=> isset($total_variant['option_id2'][$data])?$total_variant['option_id2'][$data]:'', 'option_value_id2'  => isset($total_variant['option_value_id2'][$data])?$total_variant['option_value_id2'][$data]:'', 'option_id3'=> isset($total_variant['option_id3'][$data])?$total_variant['option_id3'][$data]:'', 'option_value_id3'  => isset($total_variant['option_value_id3'][$data])?$total_variant['option_value_id3'][$data]:'', 'option_id4'=> isset($total_variant['option_id4'][$data])?$total_variant['option_id4'][$data]:'', 'option_value_id4'  => isset($total_variant['option_value_id4'][$data])?$total_variant['option_value_id4'][$data]:'', 'option_id5'=> isset($total_variant['option_id5'][$data])?$total_variant['option_id5'][$data]:'', 'option_value_id5'  => isset($total_variant['option_value_id5'][$data])?$total_variant['option_value_id5'][$data]:''])->first();
+
+                            ProductVariantVendor::insert([
+                                'product_id'            => $product_id,
+                                'product_variant_id'    => $variant_id->id,
+                                'base_price'            => $total_variant['base_price'][$data],
+                                'retail_price'          => $total_variant['retail_price'][$data],
+                                'minimum_selling_price' => $total_variant['minimum_price'][$data],
+                                'display_variant'       => $total_variant['display'][$data],
+                                'display_order'         => $total_variant['display_order'][$data],
+                                'stock_quantity'        => $total_variant['stock_qty'][$data],
+                                'vendor_id'             => $vendor_id,
+                                'sku'                   => $total_variant['sku'][$data],
+                            ]);   
+                    }
+                }
+            $key++;
+        }
+        // dd($request->all());
+
+/*
         if($product->id){
             if($request->variant){
                 $variant_data = [];
@@ -311,7 +371,7 @@ class ProductController extends Controller
                     }
                 }
 
-                $i = 0;
+              $i = 0;
                 foreach ($request->variant['sku'] as $sku) {
                     $variant_data[$i]['sku'] = $sku;
                     $i = $i + 1;
@@ -359,7 +419,7 @@ class ProductController extends Controller
                 foreach ($variant_data as $value) {
                     $add = new ProductVariant();
                     $add->product_id = $product->id;
-                    $add->sku        = $value['sku'];   
+                    // $add->sku        = $value['sku'];   
                     $add->option_id  = $value['option_id1'];
                     $add->option_value_id = $value['option_value_id1'];
                     $add->option_id2 = $value['option_id2'];
@@ -389,6 +449,7 @@ class ProductController extends Controller
                     }
                 }
             }
+            */
             if($request->hasfile('images')){
                 $gal_images = $request->file('images');
                 $image_name = [];
@@ -419,9 +480,7 @@ class ProductController extends Controller
                 return Redirect::route('vendor-products.index',['vendor_id'=>$vendor_id])->with('success','New Product Added successfully...!');
             }
             return redirect()->route('products.index')->with('success','New Product Added successfully...!');
-        }else{
-            return Redirect::back()->with('error','Somthing wrong please try again...!'); 
-        }
+        
     }
 
     /**
@@ -542,6 +601,7 @@ class ProductController extends Controller
                   ->first();
        //dd($variant);
         $options_val=$this->Options($variant,$vendor_id);
+
         $option_count=$options_val['option_count'];
         $options=$options_val['options'];
         $options_id=$options_val['options_id'];
@@ -553,7 +613,6 @@ class ProductController extends Controller
         $product_variants=$this->Variants($id);
         $data['product_variant'] =$product_variants;
         Session::put('existing_vendors',$vendor_id);
-
 
         $old_variant = ProductVariant::where('product_id',$id)
                   ->where('disabled',1)
@@ -588,7 +647,7 @@ class ProductController extends Controller
         $data['commissions']     = CommissionValue::where('commission_id',2)->where('published',1)
                                         ->where('is_deleted',0)->get();
         $data['order_exists']    = PurchaseProducts::where('product_id',$id)->exists();
-        //dd($data);
+        // dd($data);
         return view('admin/products/edit',$data);
     }
 
@@ -602,6 +661,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
 
+
          $this->validate(request(), [
             'product_name' => 'required',
             'product_code' => 'required',
@@ -612,7 +672,7 @@ class ProductController extends Controller
 
         $product = Product::where('id',$id)->first();
 
-        $order_exists=PurchaseProducts::where('product_id',$product->id)->exists();
+        $purchase_exists=PurchaseProducts::where('product_id',$product->id)->exists();
         $rfq_exists=RFQProducts::where('product_id',$product->id)->exists();
 
 
@@ -625,11 +685,10 @@ class ProductController extends Controller
             $existing_vendor=json_decode($request->existVendor,true);
             $diff_vendor=array_diff($vendors, $existing_vendor);
         }
-        
-        if (!$order_exists && !$rfq_exists) {
+        if (!$purchase_exists && !$rfq_exists) {
             ProductVariant::where('product_id',$id)->delete();
             ProductVariantVendor::where('product_id',$id)->delete();
-        }elseif($order_exists || $rfq_exists){
+        }elseif($purchase_exists || $rfq_exists){
             $product_variants = ProductVariant::where('product_id',$id)->get();
             foreach ($product_variants as $key => $value) {
                 ProductVariant::where('id',$value->id)->update(['disabled'=>1]);
@@ -678,8 +737,22 @@ class ProductController extends Controller
 
         if($product->id){
             if($request->variant){
+
                 $variant_data = [];
 
+                if(isset($request->variant['variant_id'])){
+                        $i = 0;
+                    foreach ($request->variant['variant_id'] as $id) {
+                        $variant_data[$i]['variant_id'] = $id;
+                        $i = $i + 1;
+                    }
+                }else{
+                    $i = 0;
+                    foreach ($request->variant['base_price'] as $base_price) {
+                        $variant_data[$i]['variant_id'] = null;
+                        $i = $i + 1;
+                    }
+                }
                 if(isset($request->variant['id'])){
                         $i = 0;
                     foreach ($request->variant['id'] as $id) {
@@ -884,9 +957,8 @@ class ProductController extends Controller
                 if (!$check_order_exists) {
                     ProductVariant::where('product_id',$product->id)->delete();
                 }*/
-                //dd($variant_data);
                 foreach ($variant_data as $key=>$value) {
-                    $update_variant = ProductVariant::find($value['id']);
+                    $update_variant = ProductVariant::find($value['variant_id']);
                     if($update_variant!=null)
                     {
                         $update_variant->product_id = $product_id;
@@ -905,22 +977,24 @@ class ProductController extends Controller
                         $update_variant->save();
                         
                         if($update_variant){
-                            $update_vendor = ProductVariantVendor::where('product_variant_id',$value['id'])->first();
-                            $update_vendor->product_id = $product->id;
-                            $update_vendor->product_variant_id = $update_variant->id;
-                            $update_vendor->base_price = $value['base_price'];
-                            $update_vendor->retail_price = $value['retail_price'];
-                            $update_vendor->minimum_selling_price = $value['minimum_price'];
-                            $update_vendor->display_variant = $value['display'];
-                            $update_vendor->display_order = $value['display_order'];
-                            $update_vendor->stock_quantity = $value['stock_qty'];
-                            $update_vendor->vendor_id = $value['vendor_id'];
-                            $update_vendor->timestamps = false;
-                            $update_vendor->save();
+
+                            ProductVariantVendor::where('product_variant_id',$value['id'])
+                            ->update([
+                                'product_id' => $product_id,
+                                'product_variant_id' => $update_variant->id,
+                                'base_price' => $value['base_price'],
+                                'retail_price' => $value['retail_price'],
+                                'minimum_selling_price' => $value['minimum_price'],
+                                'display_variant' => $value['display'],
+                                'display_order' => $value['display_order'],
+                                'stock_quantity' => $value['stock_qty'],
+                                'vendor_id' => $value['vendor_id'],
+                            ]);
+
                         }
                     }
                     elseif($update_variant==null)
-                    {
+                    {   
                         $add = new ProductVariant();
                         $add->product_id = $product->id;
                         $add->sku        = $value['sku'];
@@ -1144,11 +1218,15 @@ class ProductController extends Controller
                                ->where('is_deleted',0)
                                ->get();
          }
-         //dd($productVariants);
-        $product_variants = array();
-        foreach ($productVariants as $key => $variants) {
-            
-            $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)->where('product_variant_id',$variants->id)->first();
+        $variant_vendors=ProductVariantVendor::where('product_id',$product_id)->get();
+
+
+        foreach ($variant_vendors as $key => $variant_vendor) {
+            $variants=ProductVariant::where('id',$variant_vendor->product_variant_id)->first();
+
+            // $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)->where('product_variant_id',$variants->id)->first();
+
+            $product_variants[$key]['row_id'] = $variant_vendor->id;
             $product_variants[$key]['variant_id'] = $variants->id;
             if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
             {
@@ -1212,16 +1290,16 @@ class ProductController extends Controller
             }
             $product_variants[$key]['sku'] = isset($variants->sku)?$variants->sku:'';
 
-            $product_variants[$key]['base_price'] = isset($variant_details->base_price)?$variant_details->base_price:'';
-            $product_variants[$key]['retail_price'] = isset($variant_details->retail_price)?$variant_details->retail_price:'';
-            $product_variants[$key]['minimum_selling_price'] = isset($variant_details->minimum_selling_price)?$variant_details->minimum_selling_price:'';
-            $product_variants[$key]['display_order'] = isset($variant_details->display_order)?$variant_details->display_order:'';
-            $product_variants[$key]['stock_quantity'] = isset($variant_details->stock_quantity)?$variant_details->stock_quantity:'';
-            $product_variants[$key]['display_variant'] = isset($variant_details->display_variant)?$variant_details->display_variant:'';
-            $product_variants[$key]['vendor_id'] = isset($variant_details->vendor_id)?$variant_details->vendor_id:'';
-            $product_variants[$key]['vendor_name'] = isset($variant_details->vendorName->name)?$variant_details->vendorName->name:'';
+                $product_variants[$key]['base_price'] = isset($variant_vendor->base_price)?$variant_vendor->base_price:'';
+                $product_variants[$key]['retail_price'] = isset($variant_vendor->retail_price)?$variant_vendor->retail_price:'';
+                $product_variants[$key]['minimum_selling_price'] = isset($variant_vendor->minimum_selling_price)?$variant_vendor->minimum_selling_price:'';
+                $product_variants[$key]['display_order'] = isset($variant_vendor->display_order)?$variant_vendor->display_order:'';
+                $product_variants[$key]['stock_quantity'] = isset($variant_vendor->stock_quantity)?$variant_vendor->stock_quantity:'';
+                $product_variants[$key]['display_variant'] = isset($variant_vendor->display_variant)?$variant_vendor->display_variant:'';
+                $product_variants[$key]['vendor_id'] = isset($variant_vendor->vendor_id)?$variant_vendor->vendor_id:'';
+                $product_variants[$key]['vendor_name'] = isset($variant_vendor->vendorName->name)?$variant_vendor->vendorName->name:'';
         }
-
+            
         return $product_variants;
     }
 

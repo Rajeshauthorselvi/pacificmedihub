@@ -67,14 +67,17 @@ class Orders extends Model
     {
         $products =self::with('orderProducts')
                     ->where('orders.id',$order_id)
+                    ->where('order_status','<>',14)
                     ->where('delivery_person_id',0)->first();
 
         $product_data=array();
         $check_quantity=array();
         if (isset($products->orderProducts)) {
             foreach ($products->orderProducts as $key => $product) {
-                $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)
-                                        ->where('product_variant_id',$product->product_variation_id)
+              // var_dump($product->product_variation_id)
+              // $all_variants=self::AllProductVariantIds($product->product_id,$product->product_variation_id);
+
+                $check_product_quantity=ProductVariantVendor::where('product_variant_id',$product->product_variation_id)
                                         ->sum('stock_quantity');
                 if ($product->quantity > $check_product_quantity) {
                     array_push($check_quantity, 'yes');
@@ -98,7 +101,6 @@ class Orders extends Model
                    ->where('pv.disabled',0)
                    ->where('pv.is_deleted',0)
                    ->get();
-
                    foreach ($query as $key => $qq) {
                        $check_purchase_exists=DB::table('purchase as p')
                                               ->leftjoin('purchase_products as pp','p.id','pp.purchase_id')
@@ -112,13 +114,36 @@ class Orders extends Model
                              $count +=1;
                         }
                    }
-
-            
         }
 
         return ['low_stock_count'=>$count,'stock_details'=>$stock_details];
     }
 
+    static function AllProductVariantIds($product_id,$product_variation_id)
+    {
+              $check_variant_vendors=DB::table('product_variant_vendors')
+                                                ->where('product_id',$product_id)
+                                                ->where('product_variant_id',$product_variation_id)
+                                                ->value('product_variant_id');
+                $variants=DB::table('product_variants')
+                                       ->where('id',$check_variant_vendors)
+                                       ->first();
+                $all_variants=DB::table('product_variants')
+                              ->where('product_id',$product_id)
+                              ->where('option_id',$variants->option_id)
+                              ->where('option_value_id',$variants->option_value_id)
+                              ->where('option_id2',$variants->option_id2)
+                              ->where('option_value_id2',$variants->option_value_id2)
+                              ->where('option_id3',$variants->option_id3)
+                              ->where('option_value_id3',$variants->option_value_id3)
+                              ->where('option_id4',$variants->option_id4)
+                              ->where('option_value_id4',$variants->option_value_id4)
+                              ->where('option_id5',$variants->option_id5)
+                              ->where('option_value_id5',$variants->option_value_id5)
+                              ->pluck('id')->toArray();
+
+        return $all_variants;
+    }
     static function LowQuantityInStockVerifyPage($product_id,$product_variant_id)
     {
         

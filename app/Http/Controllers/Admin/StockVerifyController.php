@@ -16,6 +16,7 @@ use App\Models\PaymentTerm;
 use App\Models\Tax;
 use App\Models\Prefix;
 use App\Models\Purchase;
+use App\Models\Notification;
 use App\User;
 use App\Events\StockNotificationEvent;
 use Mail;
@@ -59,11 +60,24 @@ class StockVerifyController extends Controller
       if (Auth::check()) {
         // $creater_name=Employee::where('id',$order_details->customer_id)->first();
         $creater_name=Auth::user()->first_name;
+        $creater_id=Auth::id();
+        $user_type=1;
       }
       else{
         // $creater_name=User::where('id',$order_details->customer_id)->first();
         $creater_name=Auth::guard('employee')->user()->emp_name;
+        $creater_id=Auth::guard('employee')->user();
+        $user_type=2;
       }
+
+      Orders::where('id',$request->order_id)->update(['order_status'=>19]);
+      Notification::insert([
+        'content'=> 'Stock Needed-'.$order_details->order_no,
+        'url'    => route('new-orders.show',$order_id),
+        'created_by' => $creater_id,
+        'created_user_type' => $user_type,
+        'created_at' =>date('Y-m-d H:i:s'),
+      ]);
 
       $data['creater_name']=$creater_name;
       $data['product_data']=$product_data;

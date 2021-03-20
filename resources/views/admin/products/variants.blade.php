@@ -84,77 +84,77 @@
 					?>
 					<tr>
 						@if($data_from=="edit")
-							<input type="hidden" name="variant[id][]" value=0>
+							<input type="hidden" name="variant_data[{{ $vendor_id }}][id][]" value=0>
 						@endif
 						<td>
-		                	<input type="hidden" name="variant[vendor_id][]" class="vendor_id" value="{{$vendor_id}}">
+		                	<input type="hidden" name="variant_data[{{ $vendor_id }}][vendor_id][]" class="vendor_id" value="{{$vendor_id}}">
 							{{$vendor_name}}
 		                </td>
 						<td>
-							<input type="hidden" name="variant[option_id1][]" value="{{$option_id1}}">
-							<input type="hidden" name="variant[option_value_id1][]" value="{{$option_value_id1}}">
+							<input type="hidden" name="variant_data[{{ $vendor_id }}][option_id1][]" value="{{$option_id1}}">
+							<input type="hidden" name="variant_data[{{ $vendor_id }}][option_value_id1][]" value="{{$option_value_id1}}">
 							{{$option1}}
 						</td>
 						@if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
 							<td>
-								<input type="hidden" name="variant[option_id2][]" value="{{$option_id2}}">
-								<input type="hidden" name="variant[option_value_id2][]" value="{{$option_value_id2}}">
+								<input type="hidden" name="variant_data[{{ $vendor_id }}][option_id2][]" value="{{$option_id2}}">
+								<input type="hidden" name="variant_data[{{ $vendor_id }}][option_value_id2][]" value="{{$option_value_id2}}">
 								{{$option2}}
 							</td>
 						@endif
 						@if($option_count==3||$option_count==4||$option_count==5)
 							<td>
-								<input type="hidden" name="variant[option_id3][]" value="{{$option_id3}}">
-								<input type="hidden" name="variant[option_value_id3][]" value="{{$option_value_id3}}">
+								<input type="hidden" name="variant_data[{{ $vendor_id }}][option_id3][]" value="{{$option_id3}}">
+								<input type="hidden" name="variant_data[{{ $vendor_id }}][option_value_id3][]" value="{{$option_value_id3}}">
 								{{$option3}}
 							</td>
 						@endif
 						@if($option_count==4||$option_count==5)
 							<td>
-								<input type="hidden" name="variant[option_id4][]" value="{{$option_id4}}">
-								<input type="hidden" name="variant[option_value_id4][]" value="{{$option_value_id4}}">
+								<input type="hidden" name="variant_data[{{ $vendor_id }}][option_id4][]" value="{{$option_id4}}">
+								<input type="hidden" name="variant_data[{{ $vendor_id }}][option_value_id4][]" value="{{$option_value_id4}}">
 								{{$option4}}
 							</td>
 						@endif
 						@if($option_count==5)
 							<td>
-								<input type="hidden" name="variant[option_id5][]" value="{{$option_id5}}">
-								<input type="hidden" name="variant[option_value_id5][]" value="{{$option_value_id5}}">
+								<input type="hidden" name="variant_data[{{ $vendor_id }}][option_id5][]" value="{{$option_id5}}">
+								<input type="hidden" name="variant_data[{{ $vendor_id }}][option_value_id5][]" value="{{$option_value_id5}}">
 								{{$option5}}
 							</td>
 						@endif
 						<td>
-							<input type="hidden" name="variant[sku][]" value="{{ $sku }}">
+							<input type="hidden" name="variant_data[{{ $vendor_id }}][sku][]" value="{{ $sku }}">
 							{{ $sku }}
 						</td>
 						<td>
 							<div class="form-group">
-		                        <input type="text" class="form-control base_price_row" id="{{$base_price_row_id}}" onkeyup="validateNum(event,this);" name="variant[base_price][]">
+		                        <input type="text" class="form-control base_price_row" id="{{$base_price_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][base_price][]">
 		                    </div>
 		                </td>
 		                <td>
 		                	<div class="form-group">
-		                		<input type="text" class="form-control retail_price_row" id="{{$retail_price_row_id}}" onkeyup="validateNum(event,this);" name="variant[retail_price][]">
+		                		<input type="text" class="form-control retail_price_row" id="{{$retail_price_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][retail_price][]">
 		                	</div>
 		                </td>
 		                <td>
 		                	<div class="form-group">
-		                		<input type="text" class="form-control minimum_price_row" id="{{$minimum_price_row_id}}" onkeyup="validateNum(event,this);" name="variant[minimum_price][]">
+		                		<input type="text" class="form-control minimum_price_row" id="{{$minimum_price_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][minimum_price][]">
 		                	</div>
 		                </td>
 		                <td>
 		                	<div class="form-group">
-		                		<input type="text" class="form-control stock_qty_row" id="{{$stock_qty_row_id}}" onkeyup="validateNum(event,this);" name="variant[stock_qty][]">
+		                		<input type="text" class="form-control stock_qty_row" id="{{$stock_qty_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][stock_qty][]">
 		                	</div>
 		                </td>
 		                <td>
 		                	<div class="form-group">
-		                		<input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant[display_order][]" value="{{$count}}">
+		                		<input type="text" class="form-control" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][display_order][]" value="{{$count}}">
 		                	</div>
 		                </td>
 		                <td>
 		                	<div class="form-group">
-		                		<select class="form-control display select2bs4" name="variant[display][]">
+		                		<select class="form-control display select2bs4" name="variant_data[{{ $vendor_id }}][display][]">
 		                            <option value="1" selected>Yes</option>
 		                            <option value="0">No</option>
 		                        </select>

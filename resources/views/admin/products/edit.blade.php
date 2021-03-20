@@ -193,6 +193,7 @@
                   </div>
                   <div class="product-variant-block">
                     <label>Product Variants</label>
+{{-- {{ dd($product_variant) }} --}}
                     <?php inputFields($get_options,$product_variant,$option_count); ?>
                       
                   </div>
@@ -284,6 +285,7 @@
   </div>
   @php function inputFields($get_options,$product_variant,$option_count,$type='') { @endphp
 
+
     @php if($type=="old") $class="old_variant"; else $class=""; @endphp
     <table class="list {{ $class }}" id="variantList">
       <thead>
@@ -308,7 +310,8 @@
         <input type="hidden" id="product_variant_count" value="{{count($product_variant)}}">
         @php foreach($product_variant as $variant){ @endphp
           <tr>
-            <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}">
+            <input type="hidden" name="variant[id][]" value="{{$variant['row_id']}}">
+            <input type="hidden" name="variant[variant_id][]" value="{{$variant['variant_id']}}">
             <td>
               <div class="form-group">
                 <input type="hidden" name="variant[vendor_id][]" value="{{$variant['vendor_id']}}">

@@ -23,6 +23,7 @@ use App\Models\Currency;
 use App\Models\RFQComments;
 use App\Models\RFQCommentsAttachments;
 use App\Models\Orders;
+use App\Models\Notification;
 use Auth;
 use Redirect;
 use Session;
@@ -477,7 +478,8 @@ class RFQController extends Controller
       $variant = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->first();
 
       if ($variation_id!=0) {
-        $productVariants = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)
+        $productVariants = ProductVariant::where('product_id',$product_id)->where('disabled',0)
+                            ->where('is_deleted',0)
                             ->whereIn('id',$variation_id)->get();
       }
       else{
@@ -486,7 +488,9 @@ class RFQController extends Controller
       $product_variants = array();
       foreach ($productVariants as $key => $variants) {            
         $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)
-                            ->where('product_variant_id',$variants->id)->where('display_variant',1)->first();
+                            ->where('product_variant_id',$variants->id)
+                            ->where('display_variant',1)
+                            ->first();
         $product_variants[$key]['variant_id'] = $variants->id;
         $product_variants[$key]['product_name']=Product::where('id',$variants->product_id)->value('name');
         $product_variants[$key]['product_id']=$product_id;
@@ -679,11 +683,14 @@ class RFQController extends Controller
        if (!Auth::check() && Auth::guard('employee')->check()) {
           $created_user_type=2;
           $auth_id=Auth::guard('employee')->user()->id;
+          $creater_name=Auth::guard('employee')->emp_name;
        }
        else{
           $created_user_type=1;
           $auth_id=Auth::id();
+          $creater_name=Auth::user()->first_name;
        }
+
       $data=[
           'rfq_id'                  => $request->rfq_id,
           'comment'                 => $request->comment,
@@ -706,6 +713,14 @@ class RFQController extends Controller
             ]);
         }
       } 
+      $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$request->rfq_id)->first();
+      Notification::insert([
+        'content'             => $creater_name.' added new comment to '.$rfq_details->order_no,
+        'url'                 => url('admin/rfq-comments/'.$request->rfq_id),
+        'created_at'          => date('Y-m-d H:i:s'),
+        'created_by'          => $auth_id,
+        'created_user_type'   => $created_user_type,
+      ]);
 
       return Redirect::back();
     }

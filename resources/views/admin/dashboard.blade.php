@@ -47,7 +47,7 @@
                 <p>Total New Orders</p>
               </div>
               <div class="icon">
-                <span>{{$orders_count}}</span>
+                <span>{{$delivery_completed}}</span>
               </div>
               <a href="{{route('orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -58,7 +58,7 @@
             <div class="small-box">
               <div class="inner">
                 <h4>Deliveries</h4>
-                <p>Total Pending Orders</p>
+                <p>Total Delivered</p>
               </div>
               <div class="icon">
                 <span>{{$pending_order_count}}</span>
@@ -163,7 +163,6 @@
         <!-- /.row -->
         <!-- Main row -->
         <div class="row">
-          
          
         </div>
         <!-- /.row (main row) -->
@@ -172,4 +171,14 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+
+  @push('custom-scripts')
+    <script type="text/javascript">
+/*
+        setInterval(function() {
+            console.log('test');  
+        }, 2000);
+        */
+    </script>
+  @endpush
 @endsection
