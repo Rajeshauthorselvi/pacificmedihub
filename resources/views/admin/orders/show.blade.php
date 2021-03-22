@@ -47,12 +47,12 @@
                         <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
                       </li>
                       <li>
-                        <a href="{{ route('orders.edit',$order->id) }}" class="edit">
+                        <a href="{{ route($edit_route,$order->id) }}" class="edit">
                           <i class="fa fa-edit"></i>&nbsp; Edit
                         </a>
                       </li>
                       <li>
-                        <a href="{{ route('orders.destroy',$order->id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
+                        <a href="{{ route($delete_route,$order->id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
                           <i class="fa fa-trash"></i>&nbsp; Delete
                         </a>
                       </li>
