@@ -128,7 +128,8 @@ class WastageController extends Controller
         $data['wastage_quantity']=WastageProducts::where('wastage_id',$wastage->id)
                           ->pluck('quantity','product_variation_id')
                           ->toArray();
-
+        $data['vendors']        = [''=>'Please Select']+Vendor::where('is_deleted',0)->where('status',1)
+                                    ->pluck('name','id')->toArray();
         foreach ($wastage_products as $key => $product) {
 
             $product_name    = Product::where('id',$product->product_id)->value('name');

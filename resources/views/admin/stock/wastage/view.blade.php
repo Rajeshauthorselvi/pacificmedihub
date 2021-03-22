@@ -50,6 +50,11 @@
                           {!! Form::text('reference_number',$wastages->reference_number,['class'=>'form-control','readonly']) !!}
                         </div>
                     </div>
+                    <div class="col-sm-4">
+                          <label for="reference_number">Vendor</label>
+                          {!! Form::select('vendor_id',$vendors,$wastages->vendor_id,['class'=>'form-control','style'=>'pointer-events:none;','readonly']) !!}
+                      
+                    </div>
                   </div>
                   <div class="order-item-sec">
 			        <div class="table-responsive">
