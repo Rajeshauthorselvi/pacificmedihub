@@ -37,6 +37,7 @@
               </div>
               <div class="card-body">
                   {{ Form::model($purchase,['method' => 'PATCH', 'route' =>['stock-in-transit.update',$purchase->id]]) }}
+                  {!! Form::hidden('vendor_id',$purchase->vendor_id) !!}
                   <div class="date-sec">
                     <div class="col-sm-4">
                         <div class="form-group">

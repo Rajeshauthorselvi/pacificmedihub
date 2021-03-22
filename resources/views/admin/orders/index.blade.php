@@ -90,7 +90,7 @@
                           <td>
                             {{ isset($order->delivered_at)?date('m/d/Y',strtotime($order->delivered_at)):'-' }}
                           </td>
-                          <td><a href="{{route('orders.show',$order->id)}}">{{ $order->order_no }}</a></td>
+                          <td><a href="{{route($show_route,$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->first_name }}</td>
                           <td>{{ $order->salesrep->emp_name }}</td>
                           <td>
@@ -307,6 +307,8 @@
 
           var total_amount=$(this).parents('tr').find('.total_amount').text();
           var total_amount=parseInt(total_amount);
+
+          alert(total_amount);
 
           if (balance_amount==0) {
             alert('Payment status is already paid for the purchase.');

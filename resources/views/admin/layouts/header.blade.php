@@ -59,19 +59,14 @@
       </li>
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
+        <a class="nav-link notificaion_icon" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge"></span>
+          <strong><span class="badge badge-warning navbar-badge notificaion_count"></span></strong>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header"></span>
+          <span class="dropdown-item dropdown-header"><span class="notificaion_count">0</span> Notifications</span>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            
-            
-          </a>
-          
-          <a href="#" class="dropdown-item dropdown-footer"></a>
+          <div class="notification-append-sec"></div>
         </div>
       </li>
 

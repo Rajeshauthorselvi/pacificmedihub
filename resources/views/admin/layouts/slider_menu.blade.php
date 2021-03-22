@@ -123,12 +123,12 @@
               </li>
               <li class="nav-item">
                 <a href="{{ route('assign-shippment.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Assigned For Shippment</p>
+                  <i class="fas fa-angle-double-right"></i> <p>Assigned for Delivery</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('assign-delivery.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Assigned For Delivery</p>
+                  <i class="fas fa-angle-double-right"></i> <p>Delivery In Progress</p>
                 </a>
               </li>
               <li class="nav-item">

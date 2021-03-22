@@ -26,6 +26,8 @@ Route::get('login','Admin\AuthController@index');
 Route::resource('employee', 'Employee\EmployeeLoginController');
 
 Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], function () {
+
+	Route::resource('notification','Admin\NotificationController');
 	//Admin
 	Route::get('admin-dashboard','Admin\DashboardController@index')->name('admin.dashboard');
 	Route::get('admin-logout','Admin\AuthController@logout')->name('admin.logout');
@@ -97,6 +99,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('rfq','Admin\RFQController');
 
 	//Orders
+	Route::get('order-summary',['as'=>'order.summary','uses'=>'Admin\OrderController@SummaryReport']);
 	Route::get('orders-product',['as'=>'orders.product','uses'=>'Admin\OrderController@ProductSearch']);
 	Route::post('create_order_payment',[
 		'as'=>'create.order.payment','uses'=>'Admin\OrderController@CreatePurchasePayment'
