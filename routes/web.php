@@ -81,10 +81,11 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::post('create_return_payment',[
 		'as'=>'create.return.payment','uses'=>'Admin\PurchaseReturnController@CreatePurchasePayment'
 	]);
-	Route::resource('wastage','Admin\WastageController');
+	Route::post('vendor-product-price','Admin\WastageController@GetAllVendorProductPrice');
 	Route::get('wastage-product-search',[
 		'as'=>'wastage.product.search','uses'=>'Admin\WastageController@ProductSearch'
 	]);
+	Route::resource('wastage','Admin\WastageController');
 
 	//RFQ
 	Route::get('check-rfq-existing','Admin\RFQController@CheckRfqExistingPrice');
