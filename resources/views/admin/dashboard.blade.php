@@ -61,7 +61,7 @@
                 <p>Total Delivered</p>
               </div>
               <div class="icon">
-                <span>{{$pending_order_count}}</span>
+                <span>{{$delivery_completed}}</span>
               </div>
               <a href="{{route('completed-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
