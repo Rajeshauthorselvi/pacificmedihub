@@ -525,6 +525,9 @@ class OrderController extends Controller
        if ($request->order_status==14) {
          $this->ReduceQuantityToVendor($id);
        }
+       elseif ($request->order_status==17) {
+          // $this->UpdateQuantity*
+       }
 
        $route=$this->RouteLinks();
        return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
@@ -1256,6 +1259,7 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
         $product_datas[$order->order_no]=$product_data;
         $order_nos[]=$order->order_no;
       }
+      asort($order_nos);
       $data['order_nos']=$order_nos;
       $data['product_datas']=$product_data;
     if ($request->ajax()) {
