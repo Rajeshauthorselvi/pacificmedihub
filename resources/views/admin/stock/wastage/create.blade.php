@@ -59,7 +59,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="reference_number">Reference Number</label>
-                          {!! Form::text('reference_number',$ref_data,['class'=>'form-control']) !!}
+                          {!! Form::text('reference_number',$ref_data,['class'=>'form-control','readonly']) !!}
                         </div>
                     </div>
                   </div>
@@ -68,6 +68,12 @@
                         <div class="form-group">
                           <label for="product">Products *</label>
                           {!! Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec']) !!}
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                       <div class="form-group">
+                          <label for="product">Vendor *</label>
+                            {!! Form::select('vendor_id',[],null,['class'=>'form-control vendors']) !!}
                         </div>
                     </div>
                   </div>
@@ -113,7 +119,43 @@
     }
 
   });
-  
+
+    function unique(array){
+      return $.grep(array,function(el,index){
+          return index == $.inArray(el,array);
+      });
+    }
+
+    $(document).on('change', '.vendors', function(event) {
+      event.preventDefault();
+      AvailQuantity();
+    });
+
+    function AvailQuantity() {
+
+      var product_id=[];
+      $.each($('.product_id'), function(index, val) {
+           product_id.push($(this).val());
+      });
+
+      $.ajax({
+        url: '{{ url('admin/vendor-product-price') }}',
+        type: 'POST',
+        data: {
+          '_token':"{{ csrf_token() }}",
+          product_ids:unique(product_id),
+          vendor_id:$( ".vendors option:selected" ).val()
+        },
+      })
+      .done(function(response) {
+        $.each(response, function(index, variant_ids) {
+            $.each(variant_ids, function(index, val) {
+                $(".variant_"+index).val(val);
+            });
+        });
+      });
+    }
+
 
   $(document).on('keyup', '.stock_qty', function(event) {
     event.preventDefault();
@@ -181,10 +223,39 @@
             $(this).val('');
             return false;
         }
+          /*Load Related Vendors*/
+
          $(this).val('');
          ajaxFunction('header',ui)
          ajaxFunction('options',ui);
          $('.no-match').hide();
+
+            $.ajax({
+              url: '{{ url('admin/search-vendor') }}',
+              type: 'post',
+              data:{
+                '_token':"{{ csrf_token() }}",
+                product_id:ui.item.value
+              }
+            })
+            .done(function(response) {
+              $('.vendors').empty();
+              $.each(response.products, function(key, value) {
+                   var $option = $("<option/>", {
+                      value: key,
+                      text: value
+                    });
+                    $('.vendors').append($option);
+              });
+              $("select.vendors").change();
+              
+            })
+            .fail(function() {
+              alert('Ajax Error:--');
+            });
+
+          /*Load Related Vendors*/
+
 
 
          return false;

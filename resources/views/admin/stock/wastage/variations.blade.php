@@ -64,8 +64,8 @@
                   </td>
                 @endif
                 <td>
-                  <input type="hidden" class="total-avail-quantity" value="{{ $variant['stock_quantity'] }}">
-                  <input type="text" name="variant[total_avalible_quantity][]" readonly class="form-control total-quantity" value="{{ $variant['stock_quantity'] }}">
+                  <input type="hidden" class="total-avail-quantity variant_{{ $variant['variant_id'] }}" value="{{ $variant['stock_quantity'] }}">
+                  <input type="text" name="variant[total_avalible_quantity][]" readonly class="form-control total-quantity variant_{{ $variant['variant_id'] }}" value="{{ $variant['stock_quantity'] }}" >
                 </td>
                 <td>
                   <div class="form-group">

@@ -308,8 +308,6 @@
           var total_amount=$(this).parents('tr').find('.total_amount').text();
           var total_amount=parseInt(total_amount);
 
-          alert(total_amount);
-
           if (balance_amount==0) {
             alert('Payment status is already paid for the purchase.');
             return false;

@@ -49,7 +49,7 @@
               <div class="icon">
                 <span>{{$delivery_completed}}</span>
               </div>
-              <a href="{{route('orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('new-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -61,9 +61,9 @@
                 <p>Total Delivered</p>
               </div>
               <div class="icon">
-                <span>{{$pending_order_count}}</span>
+                <span>{{$delivery_completed}}</span>
               </div>
-              <a href="{{route('orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('completed-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <div class="col-lg-3 col-6">

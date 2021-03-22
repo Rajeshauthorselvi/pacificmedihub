@@ -41,18 +41,18 @@
                   <div class="action_sec">
                     <ul class="list-unstyled">
                       <li>
-                        <a href="" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
+                        <a href="{{ url('admin/cop_admin_pdf/'.$order->id) }}" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
                       </li>
                       <li>
                         <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
                       </li>
                       <li>
-                        <a href="{{ route('orders.edit',$order->id) }}" class="edit">
+                        <a href="{{ route($edit_route,$order->id) }}" class="edit">
                           <i class="fa fa-edit"></i>&nbsp; Edit
                         </a>
                       </li>
                       <li>
-                        <a href="{{ route('orders.destroy',$order->id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
+                        <a href="{{ route($delete_route,$order->id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
                           <i class="fa fa-trash"></i>&nbsp; Delete
                         </a>
                       </li>

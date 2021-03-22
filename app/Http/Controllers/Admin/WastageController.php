@@ -72,7 +72,9 @@ class WastageController extends Controller
             'variant'   => 'required'
         ],['variant.required'=>'Product is required']);
         $variant=$request->get('variant');
+        $vendor_id=$request->vendor_id;
         $wastage=[
+            'vendor_id' => $vendor_id,
             'reference_number'  =>$request->reference_number,
             'notes'  => $request->note,
             'created_by'  =>Auth::user()->role_id,
@@ -81,6 +83,7 @@ class WastageController extends Controller
        $wastage_id=Wastage::insertGetId($wastage);
        $product_id=$variant['product_id'];
        $variant_id=$variant['variant_id'];
+
         foreach ($variant['stock_qty'] as $key => $stock_quantity) {
             if ($stock_quantity>0) {
                 $product_id=$product_id[$key];
@@ -95,12 +98,15 @@ class WastageController extends Controller
                 ]);
                 $avalible_quantity=ProductVariantVendor::where('product_variant_id',$variant_id)
                                 ->where('product_id',$product_id)
+                                ->where('vendor_id',$vendor_id)
                                 ->where('display_variant',1)
                                 ->value('stock_quantity');
                 $total_quantity=$avalible_quantity-$stock_quantity;
+
                 ProductVariantVendor::where('product_variant_id',$variant_id)
-                ->where('display_variant',1)
                 ->where('product_id',$product_id)
+                ->where('vendor_id',$vendor_id)
+                ->where('display_variant',1)
                 ->update(['stock_quantity'=>$total_quantity]);
             }
         }
@@ -122,7 +128,8 @@ class WastageController extends Controller
         $data['wastage_quantity']=WastageProducts::where('wastage_id',$wastage->id)
                           ->pluck('quantity','product_variation_id')
                           ->toArray();
-
+        $data['vendors']        = [''=>'Please Select']+Vendor::where('is_deleted',0)->where('status',1)
+                                    ->pluck('name','id')->toArray();
         foreach ($wastage_products as $key => $product) {
 
             $product_name    = Product::where('id',$product->product_id)->value('name');
@@ -431,5 +438,19 @@ class WastageController extends Controller
         }
 
         return ['options'=>$options,'option_count'=>$option_count];
+    }
+
+    public function GetAllVendorProductPrice(Request $request)
+    {
+      $product_ids=$request->product_ids;
+      $vendor_id=$request->vendor_id;
+      $vendor_price=array();
+      foreach ($product_ids as $key => $product_id) {
+        $vendor_price[$product_id]=ProductVariantVendor::where('product_id',$product_id)
+                      ->where('vendor_id',$vendor_id)
+                      ->pluck('stock_quantity','product_variant_id')
+                      ->toArray();
+      }
+        return $vendor_price;
     }
 }
