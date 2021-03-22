@@ -29,7 +29,7 @@
           <div class="col-md-12 action-controllers ">
             <div class="col-sm-6 text-left pull-left">
               <a class="btn btn-primary download-summary" href="javascript:void(0)">
-              <i class="fas fa-list-alt"></i>&nbsp;Download Summary
+              <i class="fas fa-list-alt"></i>&nbsp;Generate Summary
               </a>
             </div>
           </div>
@@ -76,7 +76,7 @@
                           $class_bg="";
                           $low_stock="no";
                         }
-                        if ($order->order_status==17 || $order->order_status==11) {
+                        if ($order->order_status==11) {
                           $disabled_edit="pointer-events:none;opacity:0.5";
                         }
                        ?>
