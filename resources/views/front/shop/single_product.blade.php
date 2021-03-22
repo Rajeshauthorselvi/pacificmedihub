@@ -398,10 +398,9 @@
        		var productImg = $('.product-img').val();
        		var qty = $('.qty-count').val();
        		var variantSku = $('#printSku').text();
-       		var from = "RFQ";
 
        		$.ajax({
-	            url:"{{ route('cart.store') }}",
+	            url:"{{ route('proceed.rfq') }}",
 	            type:"POST",
 	            data:{
 	            	"_token": "{{ csrf_token() }}",
@@ -410,12 +409,15 @@
 		            product_id: productId,
 		            product_img: productImg,
 		            qty_count: qty,
-		            price: 0,
-		            from:from
+		            price: 0
 	            },
 	        })
-       		.done(function() {
-	        	window.location.href = "{{ route('cart.index') }}";
+       		.done(function(data) {
+       			if(data['status']==true){
+	        		window.location.href = "{{ url('proceed-rfq') }}"+'/'+data['cartID'];
+       			}else{
+       				window.location.href = "{{ route('customer.login')}}";
+       			}
 	        })
 	        .fail(function() {
 	        	console.log("error");

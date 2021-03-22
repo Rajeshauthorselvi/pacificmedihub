@@ -80,7 +80,7 @@
 					    				</div>
 						    		</div>
 						    		<div class="product-info">
-						    			<a class="btn" href="javascript:void(0);">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a>
+						    			<a class="btn" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a>
 						    			<h3><a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">{{ Str::limit($product->name, 30) }}</a></h3>
 						    		</div>
 						    	</div>
@@ -139,7 +139,7 @@
 							    				</div>
 							    			</div>
 							    			<div class="product-info">
-							    				<a class="btn" href="javascript:void(0)">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a>
+							    				<a class="btn" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a>
 							    				<h3><a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">{{ Str::limit($product->name, 30) }}</a></h3>
 							    			</div>
 							    		</div>

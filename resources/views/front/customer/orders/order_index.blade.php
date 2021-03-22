@@ -5,7 +5,7 @@
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
       <li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
-			<li><a title="My RFQ">My RFQ</a></li>
+			<li><a title="My Orders">My Orders</a></li>
 		</ul>
 	</div>
 </div>
@@ -18,38 +18,38 @@
       </div>
 
 		  <div class="col-sm-9">
-        <h2>All RFQ</h2>
+        <h2>All Orders</h2>
         <div class="rfq-container">
-          @if(count($rfq_datas)!=0)
-            @foreach($rfq_datas as $rfq)
-              <div class="rfq-block">
+          @if(count($order_data)!=0)
+            @foreach($order_data as $order)
+              <div class="order rfq-block">
                 <?php 
-                  if($rfq['status']=='Rejected') $head_class = 'cancelled';
+                  if($order['status']=='Rejected') $head_class = 'cancelled';
                   else $head_class = '';
                 ?>
                 <div class="header {{ $head_class }}">
-                  <div class="col-sm-4 text-left">
-                    <span>Order Date</span>: {{ $rfq['create_date'] }}
+                  <div class="col-sm-6 text-left">
+                    <span>Order Date</span>: {{$order['create_date']}}&nbsp;@if(isset($order['delivered_at']))-&nbsp;<span>Delivered Date</span>: {{ date('d/m/Y',strtotime($order['delivered_at'])) }}@endif
                   </div>
-                  <div class="col-sm-4 text-center">
-                    <span>Status</span>: {{ $rfq['status'] }}
+                  <div class="col-sm-3 text-center">
+                    <span>Status</span>: {{ $order['status'] }}
                   </div>
-                  <div class="col-sm-4 text-right">
-                    <span>RFQ Code</span>: #{{ $rfq['code'] }}
+                  <div class="col-sm-3 text-right">
+                    <span>Order Code</span>: #{{ $order['code'] }}
                   </div>
                 </div>
 
                 <div class="body {{ $head_class }}">
                   <div class="col-sm-4 text-left">
-                    <span>Total Items</span>: {{ $rfq['item_count'] }}
+                    <span>Total Items</span>: {{ $order['item_count'] }}
                   </div>
                   <div class="col-sm-4 text-center">
-                    <span>Total Qty</span>: {{ $rfq['toatl_qty'] }}
+                    <span>Total Qty</span>: {{ $order['toatl_qty'] }}
                   </div>
                   <div class="col-sm-4 text-right">
-                    <?php $rfq_id = base64_encode($rfq['id']);?>
+                    <?php $order_id = base64_encode($order['id']);?>
                     <a href="javascript:void(0);" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>&nbsp;&nbsp;
-                    <a href="{{ route('my-rfq.show',$rfq_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
+                    <a href="{{ route('my-orders.show',$order_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
                   </div>
                 </div>
               </div>

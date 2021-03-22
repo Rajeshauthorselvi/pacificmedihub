@@ -86,10 +86,6 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        if(!Auth::check()){
-            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
-        }
-
         $price = (float)$request->price;
         $qty = (int)$request->qty_count;
         
@@ -113,7 +109,7 @@ class CartController extends Controller
                 'variant_sku' => $request->variant_sku
             ]);
         }
-        return redirect()->route('cart.index')->with('success', 'Item was added to your cart!');
+        return true;
     }
 
     /**

@@ -229,6 +229,13 @@ Route::group(['middleware' => 'customer'], function () {
 	Route::get('rfq-status','front\MyRFQController@status')->name('rfq.status');
 	Route::post('change-address','front\MyRFQController@changeAddress')->name('change.address');
 	Route::put('updaterfqitem', 'front\MyRFQController@updateItem');
+
+	//Direct RFQ
+	Route::post('proceed-rfq','front\MyRFQController@proceedRFQ')->name('proceed.rfq');	
+	Route::get('proceed-rfq/{cart_id}','front\MyRFQController@proceedRFQGet')->name('proceed.rfq.get');
+
+	//My Order
+	Route::resource('my-orders','front\MyOrdersController');
 });
 
 //Home Page

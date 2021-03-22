@@ -116,15 +116,24 @@ class MyRFQController extends Controller
 
         $rfq_id = RFQ::insertGetId($rfq_details);
 
-        $item_data = [];
         Cart::instance('cart')->restore('userID_'.$user_id);
-        $cart_items = Cart::content();
-        foreach($cart_items as $key => $items)
-        {
-            $item_data[$key]['uniqueId']      = $items->getUniqueId();
-            $item_data[$key]['product_id']    = $items->id;
-            $item_data[$key]['qty']           = $items->quantity;
-            $item_data[$key]['variant_id']    = $items->options['variant_id'];
+
+        $item_data = [];
+        if(isset($request->direct_rfq)){
+            $items = Cart::get($request->direct_rfq);
+            $item_data[$request->direct_rfq]['uniqueId']      = $items->getUniqueId();
+            $item_data[$request->direct_rfq]['product_id']    = $items->id;
+            $item_data[$request->direct_rfq]['qty']           = $items->quantity;
+            $item_data[$request->direct_rfq]['variant_id']    = $items->options['variant_id'];
+        }else{
+            $cart_items = Cart::content();
+            foreach($cart_items as $key => $items)
+            {
+                $item_data[$key]['uniqueId']      = $items->getUniqueId();
+                $item_data[$key]['product_id']    = $items->id;
+                $item_data[$key]['qty']           = $items->quantity;
+                $item_data[$key]['variant_id']    = $items->options['variant_id'];
+            }
         }
         
         foreach($item_data as $item){
@@ -323,6 +332,7 @@ class MyRFQController extends Controller
     public function request()
     {
         if(Auth::check()){
+
             $user_id    = Auth::id();
             $primary_id = Auth::user()->address_id;
 
@@ -345,8 +355,10 @@ class MyRFQController extends Controller
 
             $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
 
-            $cart_data = [];
             Cart::instance('cart')->restore('userID_'.$user_id);
+
+            $cart_data = [];
+
             $cart_items = Cart::content();
             foreach($cart_items as $key => $items)
             {
@@ -369,11 +381,97 @@ class MyRFQController extends Controller
             $data['user_id']    = $user_id;
             $data['cart_count'] = Cart::count();
             $data['cart_data']  = $cart_data;
+        
             return view('front/customer/rfq/proceed_rfq',$data);
         }else{
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
         }
     }
+
+    public function proceedRFQGet($cart_id)
+    {
+        if(Auth::check()){
+            $user_id    = Auth::id();
+            $primary_id = Auth::user()->address_id;
+
+            $data['all_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('address_type',[1,2])
+                                              ->where('is_deleted',0)->get();
+
+            $delivery   = UserAddress::where('address_type',1)->where('customer_id',$user_id)->first();
+            $primary    = UserAddress::where('id',$primary_id)->where('customer_id',$user_id)->first();
+
+            if(isset($delivery)){
+                $data['delivery'] = $delivery;
+                $remove_id        = $delivery->id;
+            }else{
+                $data['delivery'] = $primary;
+                $remove_id        = $primary_id;
+            }
+
+            $data['billing_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('id',[$remove_id])
+                                                  ->where('is_deleted',0)->get();
+
+            $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
+
+            Cart::instance('cart')->restore('userID_'.$user_id);
+
+            $cart_data = [];
+                
+            $item = Cart::get($cart_id);
+            $product = Product::find($item->id);
+            $cart_data['uniqueId']      = $item->getUniqueId();
+            $cart_data['product_id']    = $item->id;
+            $cart_data['product_name']  = $item->name;
+            $cart_data['product_sku']   = $item->options['variant_sku'];
+            $cart_data['product_image'] = $item->options['product_img'];
+            $cart_data['qty']           = $item->quantity;
+            $cart_data['variant_id']    = $item->options['variant_id'];
+
+            $category_slug = $product->category->search_engine_name;
+            $product_id = base64_encode($product->id);
+            $url = url("$category_slug/$product->search_engine_name/$product_id");
+            $cart_data['link'] = $url;
+            $items[$item->getUniqueId()] = $cart_data;
+            $data['from_direct'] = true;
+            $data['user_id']    = $user_id;
+            $data['cart_count'] = Cart::count();
+            $data['cart_data'] = $items;
+
+            return view('front/customer/rfq/proceed_rfq',$data);
+        }else{
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+
+    }
+
+    public function proceedRFQ(Request $request)
+    {
+        $price = (float)$request->price;
+        $qty = (int)$request->qty_count;
+        
+        $product = Product::find($request->product_id);    
+        
+        $user_id = Auth::id();
+        Cart::instance('cart')->restore('userID_'.$user_id);
+        
+        if(isset($user_id)){
+            $cartItem = Cart::instance('cart')->add($product->id, $product->name, $price, $qty,[
+                'product_img' => $request->product_img,
+                'variant_id'  => $request->variant_id,
+                'variant_sku' => $request->variant_sku,
+                'from'        => 'ProceedRFQ'
+            ]);
+            Cart::store('userID_'.$user_id);
+            $data['status'] = true;
+            $data['cartID'] = $cartItem->getUniqueId();
+            return response()->json($data);
+        }else{
+            $data['status'] = false;
+            return response()->json($data);
+        }
+        
+    }
+
 
     public function status()
     {
