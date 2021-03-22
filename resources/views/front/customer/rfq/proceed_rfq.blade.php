@@ -106,7 +106,12 @@
 										</td>
 										<td>
 											<div class="number">
-												<span class="minus">-</span><input type="text" class="qty-count" value="{{ $items['qty'] }}"/><span class="plus">+</span>
+                        @if(isset($from_direct))
+                          <input type="hidden" name="direct_rfq" value="{{$items['uniqueId']}}">
+                          <span>{{ $items['qty'] }}</span>
+                        @else
+												  <span class="minus">-</span><input type="text" class="qty-count" value="{{ $items['qty'] }}"/><span class="plus">+</span>
+                        @endif
 											</div>
 										</td>
 									</tr>

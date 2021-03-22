@@ -34,4 +34,14 @@ class OrderProducts extends Model
     		$total_datas=$total_datas->where('order_id',$order_id)->first();
     		return $total_datas;
     }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class,'product_id');
+    }
+
+    public function variant()
+    {
+        return $this->belongsTo(ProductVariant::class,'product_variation_id');
+    }
 }

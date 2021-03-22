@@ -12,7 +12,7 @@
       </a>
     </li>
     <li>
-    	<a class="link" href="javascript:void(0);">
+    	<a class="link @if($current_route=='my-orders.index'||$current_route=='my-orders.show'||$current_route=='my-orders.edit') active @endif" href="@if($current_route=='my-orders.index') javascript:void(0); @else {{ route('my-orders.index') }} @endif">
      		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
      	</a>
     </li>

@@ -142,7 +142,7 @@
 				                    	<a class="menu-list" href="{{ route('my-rfq.index') }}">
 				                    		<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
 				                    	</a>
-				                    	<a class="menu-list" href="javascript:void(0);">
+				                    	<a class="menu-list" href="{{ route('my-orders.index') }}">
 				                    		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
 				                    	</a>
 				                    	<a class="menu-list" href="{{ route('cart.index') }}">
