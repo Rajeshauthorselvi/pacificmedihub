@@ -5,8 +5,15 @@
   	<h3>Ordered Summary:</h3>
                         <table class="table" width="100%">
                             <tbody>
-                              <?php $count=1; ?>
-                            	@foreach ($summary_report as $product_data)
+                            	@foreach ($summary_report as $order_no=>$product_data)
+                                    <?php $count=1; ?>
+                              @if ($count==1)
+                            	<tr style="padding-top: 20px;">
+                              @else
+                              	<tr>
+                              @endif
+                            		<td colspan="2">Order No: <b>{{ $order_no }}</b><br></td>
+                            	</tr>
                             @foreach ($product_data as $key=>$product)
                               <?php 
                                 if ($count!=1) {
@@ -80,6 +87,10 @@
                                       </tbody>
                                     </table>
                                   </div>
+                                  @if($loop->last)
+                                  	<hr>
+                                  @endif
+
                                 </td>
                               </tr>
 
@@ -87,9 +98,6 @@
                             	@endforeach
                           </tbody>
                         </table>
-                        <div style="clear: both;"></div>
-                        <div style="clear: both;"></div>
-                        <hr>
                         <div style="clear: both;"></div>
                         <div class="stamp" style="float: right;padding-top: 80px">
                           Stamp & Signature

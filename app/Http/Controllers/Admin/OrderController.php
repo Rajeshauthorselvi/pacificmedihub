@@ -1239,8 +1239,9 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
                 'product_variant' => $product_variant
             ];
         }
-        array_push($product_datas, $product_data);
+        $product_datas[$order->order_no]=$product_data;
       }
+
       $data['summary_report']=$product_datas;
     if ($request->ajax()) {
         return ['url'=>url('admin/order-summary?order_ids='.implode(',',$order_ids))];
