@@ -43,6 +43,8 @@ class CartController extends Controller
             if($cart_count!=0){
                 foreach($cart_items as $key => $items)
                 {
+                    $product = Product::find($items->id);
+                    
                     $cart_data[$key]['uniqueId']      = $items->getUniqueId();
                     $cart_data[$key]['product_id']    = $items->id;
                     $cart_data[$key]['product_name']  = $items->name;
@@ -51,6 +53,11 @@ class CartController extends Controller
                     $cart_data[$key]['qty']           = $items->quantity;
                     $cart_data[$key]['variant_id']    = $items->options['variant_id'];
                     $cart_data[$key]['sku']           = $items->options['variant_sku'];
+
+                    $category_slug = $product->category->search_engine_name;
+                    $product_id = base64_encode($product->id);
+                    $url = url("$category_slug/$product->search_engine_name/$product_id");
+                    $cart_data[$key]['link'] = $url;
                 }
             }
             $data['cart_data'] = $cart_data;

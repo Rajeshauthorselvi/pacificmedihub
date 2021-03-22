@@ -391,6 +391,37 @@
 	        })
        	});
         
+
+        $('.rfq-btn').on('click',function() {
+       		var variantId = $(this).attr('variant-id');
+       		var productId = <?php echo $product->id; ?>;
+       		var productImg = $('.product-img').val();
+       		var qty = $('.qty-count').val();
+       		var variantSku = $('#printSku').text();
+       		var from = "RFQ";
+
+       		$.ajax({
+	            url:"{{ route('cart.store') }}",
+	            type:"POST",
+	            data:{
+	            	"_token": "{{ csrf_token() }}",
+	            	variant_id: variantId,
+		            variant_sku: variantSku,
+		            product_id: productId,
+		            product_img: productImg,
+		            qty_count: qty,
+		            price: 0,
+		            from:from
+	            },
+	        })
+       		.done(function() {
+	        	window.location.href = "{{ route('cart.index') }}";
+	        })
+	        .fail(function() {
+	        	console.log("error");
+	        })
+       	});
+
 </script>
 
 @endpush

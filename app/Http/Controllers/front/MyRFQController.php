@@ -287,7 +287,18 @@ class MyRFQController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if(!Auth::check()){
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+        RFQ::where('id',$id)->update(['notes'=>$request->notes]);
+        return redirect()->route('my-rfq.index')->with('info', 'Your RFQ data updated successfully!');
+    }
+
+
+    public function updateItem(Request $request)
+    {
+        $rfq_item_count = RFQProducts::where('id',$request->rfq_item_id)->update(['quantity'=>$request->qty_count]);
+        return true;
     }
 
     /**
@@ -298,8 +309,14 @@ class MyRFQController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        dd($request->all(),$id);
-        //RFQProducts::
+        RFQProducts::where('id',$id)->delete();
+        $rfq_item_count = RFQProducts::where('rfq_id',$request->rfq_id)->count();
+
+        if($rfq_item_count==0){
+            RFQ::where('id',$request->rfq_id)->delete();
+            return redirect()->route('my-rfq.index')->with('error', 'Your RFQ Request deleted successfully.!');
+        }
+        return redirect()->back()->with('info', 'Your item removed successfully.!');
     }
 
 
@@ -333,12 +350,21 @@ class MyRFQController extends Controller
             $cart_items = Cart::content();
             foreach($cart_items as $key => $items)
             {
+                $product = Product::find($items->id);
+                
                 $cart_data[$key]['uniqueId']      = $items->getUniqueId();
                 $cart_data[$key]['product_id']    = $items->id;
                 $cart_data[$key]['product_name']  = $items->name;
+                $cart_data[$key]['product_sku']   = $items->options['variant_sku'];
                 $cart_data[$key]['product_image'] = $items->options['product_img'];
                 $cart_data[$key]['qty']           = $items->quantity;
                 $cart_data[$key]['variant_id']    = $items->options['variant_id'];
+
+                $category_slug = $product->category->search_engine_name;
+                $product_id = base64_encode($product->id);
+                $url = url("$category_slug/$product->search_engine_name/$product_id");
+                $cart_data[$key]['link'] = $url;
+
             }
             $data['user_id']    = $user_id;
             $data['cart_count'] = Cart::count();

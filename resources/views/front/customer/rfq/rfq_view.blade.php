@@ -15,46 +15,14 @@
 	<div class="container">
 		<div class="row">
 		  <div id="column-left" class="col-sm-3 hidden-xs column-left">
-		   	<div class="column-block">
-		     	<ul class="box-menu treeview-list treeview collapsable" >
-		     		<li>
-		     			<a class="link" href="{{ route('my-profile.index') }}">
-           			<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
-              </a>
-            </li>
-		        <li>
-          		<a class="link active" href="{{ route('my-rfq.index') }}">
-              	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
-              </a>
-            </li>
-            <li>
-            	<a class="link" href="javascript:void(0);">
-             		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
-             	</a>
-            </li>
-            <li>
-              <a class="link" href="{{ route('wishlist.index') }}">
-            		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
-            	</a>
-            </li>
-            <li>
-            	<a class="link" href="javascript:void(0);">
-            		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
-            	</a>
-            </li>
-            <li>
-            	<a class="link" href="{{route('customer.logout')}}">
-            		<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout
-            	</a>
-            </li>
-          </ul>
-        </div>
+		   	@include('front.customer.customer_menu')
       </div>
 
 		  <div class="col-sm-9">
+        <a href="{{ url()->previous() }}" class="go-back"><i class="fas fa-angle-left"></i> Back</a>
         <div class="rfq view-block">
           <div class="action_sec">
-            @if($rfq->status!=11)
+            @if($rfq->status!=21)
               <ul class="list-unstyled">
                 <li style="background-color: #216ea7;border-right: 1px solid #227bbb;">
                   <a href="javascript:void(0);" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
@@ -76,7 +44,7 @@
                     <i class="fa fa-comment"></i>&nbsp; Comment
                   </a>
                 </li>
-                <li style="background-color: #f6ac50">
+                <li style="background-color: #f6ac50;@if($rfq->status==13) display:none; @endif">
                   <?php $rfq_id = base64_encode($rfq->id); ?>
                   <a href="{{ route('my-rfq.edit',$rfq_id) }}" class="edit">
                     <i class="fa fa-edit"></i>&nbsp; Edit

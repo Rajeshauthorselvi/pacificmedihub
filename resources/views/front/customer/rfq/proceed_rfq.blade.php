@@ -91,12 +91,18 @@
 										<td class="product-data">
 											<div class="image">
 												@if($items['product_image']!='placeholder.jpg')
-													<img src="{{asset('theme/images/products/main/'.$items['product_image'])}}">
+													<a href="{{ $items['link'] }}"><img src="{{asset('theme/images/products/main/'.$items['product_image'])}}"></a>
 												@else
-													<img src="{{ asset('theme/images/products/placeholder.jpg') }}">
+													<a href="{{ $items['link'] }}"><img src="{{ asset('theme/images/products/placeholder.jpg') }}"></a>
 												@endif
 											</div>
-											<div class="name">{{ $items['product_name'] }}</div>
+                      <div class="product-details">
+                        <?php $sku = str_replace(':', '', $items['product_sku']); ?>
+											  <a href="{{ $items['link'] }}">
+                          <div class="name">{{ $items['product_name'] }}</div>
+                          <div class="sku">{{ $sku }}</div>
+                        </a>
+                      </div>
 										</td>
 										<td>
 											<div class="number">

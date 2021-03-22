@@ -1095,13 +1095,32 @@ div.customer-menu a:hover {
     vertical-align: middle;
 }
 .cart-block .cart-table td.product-data .image {
-    display: inline-block;
+    float:left;
     width: 15%;
+    padding: 0 10px;
+}
+.cart-block .cart-table td.product-data .name{
+    width: 80%;
+    float: left;
     padding: 10px;
 }
-.cart-block .cart-table td.product-data .name {
-    display: inline-block;
+.cart-block .cart-table td.product-data .name a, .cart-block .cart-table td.product-data .product-details a, .wishlist-block .product-data .name a{
+    color: #313131;
+}
+.cart-block .cart-table td.product-data .name a:hover, .cart-block .cart-table td.product-data .product-details a:hover, .wishlist-block .product-data .name a:hover{
+    color: #3e72b1;
+}
+
+.cart-block .cart-table td.product-data .product-details {
+    float:left;
     width: 82%;
+    padding:0;
+}
+.cart-block .cart-table td.product-data .product-details .name{
+    padding:0;   
+}
+.cart-block .cart-table td.product-data .product-details .sku {
+    font-size: 10px;
 }
 .cart-block .cart-table .number {
     margin: 0;
@@ -1199,9 +1218,6 @@ div.customer-menu a:hover {
     width: 82%;
     padding-left: 10px;
 }
-.wishlist-block .product-data .name a {
-    color: #313131;
-}
 .wishlist-block .product-data .remove {
     cursor: pointer;
     border: none;
@@ -1248,11 +1264,7 @@ div.customer-menu a:hover {
   color: #fff;
   border: none;
 }
-.customer-page .form-control[readonly] {
-    background: transparent;
-    border-radius: 0;
-    height: calc(2em + .75rem + 2px);
-}
+
 .customer-page .form-control[readonly]:focus {
     box-shadow: none;
     border-color: #ccc;
@@ -1717,4 +1729,43 @@ color: #fff;
 }
 .rfq-block .body.cancelled {
     border-color: #ff3c3c;
+}
+.go-back {
+    margin-bottom: .5rem;
+    display: block;
+}
+.rfq.edit.view-block .product-sec .number {
+  margin: 0;
+  text-align: center;
+}
+.rfq.edit.view-block .product-sec .number .minus, .rfq.edit.view-block .product-sec .number .plus {
+  width: 30px;
+  height: 35px;
+  padding:5px;
+}
+.rfq.edit.view-block .product-sec .number input{ 
+  height: 35px;
+  width: 50px;
+  font-size: 18px;
+}
+.rfq.edit.view-block .address-sec .footer-sec {
+    width: 100%;
+    float: left;
+    margin-bottom:1rem;
+}
+  .rfq.edit.view-block .address-sec .address-block {
+    padding: 1rem;
+    height: 250px;
+}
+.rfq.edit.view-block .address-block .btn.save-btn {
+    margin-top: 10px;
+}
+.rfq.edit.view-block .address-container .change-address{
+  display: none;
+  width: 100%;
+  float: left;
+  margin-top: 1rem;
+}
+.rfq.edit.view-block .address-container .change-address a {
+    margin-top: 10px;
 }

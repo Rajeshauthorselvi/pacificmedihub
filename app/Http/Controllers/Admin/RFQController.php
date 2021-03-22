@@ -81,7 +81,7 @@ class RFQController extends Controller
       $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
 
-      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[1])->pluck('status_name','id')->toArray();
+      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[20,1])->pluck('status_name','id')->toArray();
 
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
                                   ->toArray();
@@ -270,7 +270,7 @@ class RFQController extends Controller
         }
       $data=array();
       $data['rfqs']=$rfq_details= RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
-      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[1,11])
+      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[20,1,13,21])
                                     ->pluck('status_name','id')->toArray();
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
                                     ->pluck('payment_method','id')->toArray();

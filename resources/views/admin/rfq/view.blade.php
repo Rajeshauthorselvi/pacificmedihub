@@ -43,7 +43,7 @@
                     <ul class="list-unstyled">
                       <?php 
                       $disabled="";
-                      if ($rfqs->status==10) {
+                      if ($rfqs->status==13) {
                           $disabled="pointer-events:none;opacity:0.5";
                       }
                       ?>
