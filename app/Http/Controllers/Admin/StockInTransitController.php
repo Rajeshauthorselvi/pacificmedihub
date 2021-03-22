@@ -214,6 +214,7 @@ class StockInTransitController extends Controller
             $variant_data=DB::table('product_variant_vendors')
                           ->where('product_variant_id',$purchase_data->product_variation_id)
                           ->where('vendor_id',$vendor_id)
+                          ->where('product_id',$product_id[$key])
                           ->first();
 
               // dd($variant_data);

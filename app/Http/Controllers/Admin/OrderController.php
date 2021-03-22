@@ -1217,32 +1217,47 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
           $order_ids=explode(',', $order_ids);
         }
       $product_datas=array();
-      foreach ($order_ids as $key => $order_id) {
-        $order=Orders::with('orderProducts')
-                    ->where('orders.id',$order_id)
-                    ->where('delivery_person_id',0)->first(); 
+      $products = OrderProducts::whereIn('order_id',$order_ids)
+      ->groupBy('product_id','product_variation_id')->get();
 
-        $products = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
+      foreach ($order_ids as $key => $order_id) {
+  $order=Orders::where('orders.id',$order_id)
+                    ->where('delivery_person_id',0)->first(); 
         $product_data = $product_variant = array();
         foreach ($products as $key => $product) {
-            $product_name    = Product::where('id',$product->product_id)->value('name');
-            $options         = $this->Options($product->product_id);
-            $all_variants    = OrderProducts::where('order_id',$order_id)->where('product_id',$product->product_id)
-                                ->pluck('product_variation_id')->toArray();
-            $product_variant = $this->Variants($product->product_id,$all_variants);
-            $product_data[$product->product_id] = [
-                'order_id'        => $order_id,
-                'product_id'      => $product->product_id,
-                'product_name'    => $product_name,
-                'options'         => $options['options'],
-                'option_count'    => $options['option_count'],
-                'product_variant' => $product_variant
-            ];
+
+          $option_values=$this->TotalQuantity($order_ids,$product->product_id,$product->product_variation_id);
+
+          $product_name    = Product::where('id',$product->product_id)->value('name');
+          $variants=$this->Variants($product->product_id,[$option_values->product_variation_id]);
+          $variant_name="";
+          if (isset($variants[0]['option_value1'])) {
+              $variant_name=$variants[0]['option_value1'];
+          }
+          if (isset($variants[0]['option_value2'])) {
+             $variant_name=$variants[0]['option_value1'].'-'.$variants[0]['option_value2'];
+          }
+          if (isset($variants[0]['option_value3'])) {
+             $variant_name=$variants[0]['option_value1'].'-'.$variants[0]['option_value2'].'-'.$variants[0]['option_value3'];
+          }
+          if (isset($variants[0]['option_value4'])) {
+             $variant_name=$variants[0]['option_value1'].'-'.$variants[0]['option_value2'].'-'.$variants[0]['option_value3'].'-'.$variants[0]['option_value4'];
+          }
+          if (isset($variants[0]['option_value5'])) {
+             $variant_name=$variants[0]['option_value1'].'-'.$variants[0]['option_value2'].'-'.$variants[0]['option_value3'].'-'.$variants[0]['option_value4'].'-'.$variants[0]['option_value5'];
+          }
+          $product_data[]=[
+            'total_quantity'=>$option_values->total_quantity,
+            'product_name'=>$product_name,
+            'product_variant' => $variant_name
+          ];
+
         }
         $product_datas[$order->order_no]=$product_data;
+        $order_nos[]=$order->order_no;
       }
-
-      $data['summary_report']=$product_datas;
+      $data['order_nos']=$order_nos;
+      $data['product_datas']=$product_data;
     if ($request->ajax()) {
         return ['url'=>url('admin/order-summary?order_ids='.implode(',',$order_ids))];
     }
@@ -1253,5 +1268,20 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
       return $pdf->download('Order-Summary.pdf');
     }
         
+    }
+
+
+    public function TotalQuantity($order_ids,$product_id,$variant_id)
+    {
+        $total_quantity=DB::table('order_products as op')
+        ->select(DB::raw('sum(quantity) as total_quantity'),'op.product_variation_id')
+        ->whereIn('order_id',$order_ids)
+        ->where('product_id',$product_id)
+        ->where('product_variation_id',$variant_id)
+        ->groupBy('product_variation_id')
+        ->first();
+
+
+        return $total_quantity;
     }
 }
