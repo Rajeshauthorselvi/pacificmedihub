@@ -67,7 +67,7 @@
             <div class="table-responsive">
               <table class="table">
                 <thead>
-                  <tr><th>No.</th><th>Product Name</th><th class="text-center">Quantity</th></tr>
+                  <tr><th>No.</th><th>Product Name</th><th class="text-center">Quantity</th><th>Remove</th></tr>
                 </thead>
                 <tbody>
                   @php $s_no = 1 @endphp
@@ -104,7 +104,13 @@
                         <span class="minus">-</span><input type="text" class="qty-count" value="{{ $products['quantity'] }}" /><span class="plus">+</span>
                       </div>
                     </td>
-                    
+                    <td>
+                      <form method="POST" action="{{ route('my-rfq.destroy',$products['rfq_items_id']) }}"> @csrf 
+                        <input name="_method" type="hidden" value="DELETE">
+                        <input name="rfq_id" type="hidden" value="{{ $products['rfq_id'] }}">
+                        <button class="btn" type="submit" onclick="return confirm('Are you sure, you want to delete this item?');"><i class="far fa-trash-alt"></i></button>
+                      </form>
+                    </td>
                   </tr>
                   @php $s_no++ @endphp
                   @endforeach
