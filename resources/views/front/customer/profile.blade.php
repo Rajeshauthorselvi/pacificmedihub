@@ -13,50 +13,17 @@
 	<div class="container">
 		<div class="row customer-page">
 		  <div id="column-left" class="col-sm-3 hidden-xs column-left">
-		   	<div class="column-block">
-		     	<ul class="box-menu treeview-list treeview collapsable" >
-		     		<li>
-		     			<a class="link active" href="javascript:void(0);">
-           			<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
-              </a>
-            </li>
-		        <li>
-          		<a class="link" href="{{ route('my-rfq.index') }}">
-              	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
-              </a>
-            </li>
-            <li>
-            	<a class="link" href="javascript:void(0);">
-             		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
-             	</a>
-            </li>
-            <li>
-              <a class="link" href="{{ route('wishlist.index') }}">
-            		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
-            	</a>
-            </li>
-            <li>
-            	<a class="link" href="{{ route('my-address.index') }}">
-            		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
-            	</a>
-            </li>
-            <li>
-            	<a class="link" href="{{route('customer.logout')}}">
-            		<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout
-            	</a>
-            </li>
-          </ul>
-        </div>
+		   	@include('front.customer.customer_menu')
       </div>
 
 		
 		  <div class="col-sm-9">
 		    <ul class="nav nav-tabs flex-nowrap" role="tablist">
           <li role="presentation" class="nav-item">
-            <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Company Details </a>
+            <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Profile Details </a>
           </li>
           <li role="presentation" class="nav-item">
-            <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
+            <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> Company Details </a>
           </li>
           <li role="presentation" class="nav-item">
             <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Bank Accounts</a>
@@ -67,7 +34,38 @@
         </ul>
 
       	<div class="tab-content py-2">
-          <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
+
+          <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
+            <div class="form-group">
+              <div class="col-sm-5">
+                <label for="">Name</label>
+                {!! Form::text('customer[first_name]',$customer->first_name,['class'=>'form-control','readonly']) !!}
+              </div>
+              <div class="col-sm-5">
+                <label for="">Company UEN</label>
+                {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control','readonly']) !!}
+              </div>
+              <div class="col-sm-2">
+                <div class="edit-customer">
+                  <a class="btn btn-primary" href="{{route('my-profile.edit',$customer->id)}}">
+                    <i class="far fa-edit"></i> Edit
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-5">
+                <label for="">Email</label>
+                {!! Form::email('customer[email]',  $customer->email,['class'=>'form-control','readonly']) !!}
+              </div>
+              <div class="col-sm-5">
+                <label for="">Contact No</label>
+                {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control','readonly']) !!}
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane company-tabs" tab-count="2" role="tabpanel" id="step2">
             <?php 
               if(!empty($customer->company->logo)){$image = 'theme/images/customer/company/'.$customer->company->id.'/'.$customer->company->logo;}
               else {$image = "theme/images/no_image.jpg";}
@@ -80,7 +78,7 @@
               <div class="col-sm-6">
                 <div class="edit-customer">
                   <a class="btn btn-primary" href="{{route('my-profile.edit',$customer->id)}}">
-                    <i class="far fa-edit"></i> Edit Profile
+                    <i class="far fa-edit"></i> Edit
                   </a>
                 </div>
               </div>
@@ -141,57 +139,41 @@
             </div>
           </div>
 
-          <div class="tab-pane customer-tabs" tab-count="2" role="tabpanel" id="step2">
-            <div class="form-group">
-              <div class="col-sm-6">
-                <label for="">POC Name</label>
-                {!! Form::text('customer[first_name]',$customer->first_name,['class'=>'form-control','readonly']) !!}
-              </div>
-              <div class="col-sm-6">
-               	<label for="">Company UEN</label>
-                {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control','readonly']) !!}
-              </div>
-           	</div>
-            <div class="form-group">
-              <div class="col-sm-6">
-                <label for="">Email</label>
-                {!! Form::email('customer[email]',  $customer->email,['class'=>'form-control','readonly']) !!}
-              </div>
-              <div class="col-sm-6">
-                <label for="">Contact No</label>
-                {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control','readonly']) !!}
-              </div>
-            </div>
-          </div>
-
           <div class="tab-pane bank-tabs" tab-count="3" role="tabpanel" id="step3">
             <div class="col-sm-12">
               <div class="form-group">
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                   <label for="accountName">Account Name</label>
                   {!! Form::text('bank[account_name]',$customer->bank->account_name,['class'=>'form-control','readonly']) !!}
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                   <label for="accountNumber">Account Number</label>
                   {!! Form::text('bank[account_number]',$customer->bank->account_number,['class'=>'form-control','readonly','onkeyup'=>"validateNum(event,this);"]) !!}
                 </div>
+                <div class="col-sm-2">
+                <div class="edit-customer">
+                  <a class="btn btn-primary" href="{{route('my-profile.edit',$customer->id)}}">
+                    <i class="far fa-edit"></i> Edit
+                  </a>
+                </div>
+              </div>
               </div>
               <div class="form-group">
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                   <label for="bankName">Bank Name</label>
                   {!! Form::text('bank[bank_name]',$customer->bank->bank_name,['class'=>'form-control','readonly']) !!}
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                   <label for="bankBranch">Bank Branch</label>
                   {!! Form::text('bank[bank_branch]',$customer->bank->bank_branch,['class'=>'form-control','readonly']) !!}
                 </div>
               </div>
               <div class="form-group">
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                   <label for="payNow">PayNow Contact No</label>
                   {!! Form::text('bank[paynow_contact]',$customer->bank->paynow_contact,['class'=>'form-control','readonly','onkeyup'=>"validateNum(event,this);"]) !!}
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                   <label for="Place">Place</label>
                   {!! Form::text('bank[place]',$customer->bank->place,['class'=>'form-control','readonly']) !!}
                 </div>

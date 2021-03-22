@@ -14,40 +14,7 @@
 	<div class="container">
 		<div class="row customer-page">
 		  <div id="column-left" class="col-sm-3 hidden-xs column-left">
-		   	<div class="column-block">
-		     	<ul class="box-menu treeview-list treeview collapsable" >
-		     		<li>
-		     			<a class="link" href="{{ route('my-profile.index') }}">
-           			<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
-              </a>
-            </li>
-		        <li>
-          		<a class="link" href="{{ route('my-rfq.index') }}">
-              	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
-              </a>
-            </li>
-            <li>
-            	<a class="link" href="javascript:void(0);">
-             		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
-             	</a>
-            </li>
-            <li>
-              <a class="link" href="{{ route('wishlist.index') }}">
-            		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
-            	</a>
-            </li>
-            <li>
-            	<a class="link active" href="javascript:void(0);">
-            		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
-            	</a>
-            </li>
-            <li>
-            	<a class="link" href="{{route('customer.logout')}}">
-            		<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout
-            	</a>
-            </li>
-          </ul>
-        </div>
+		   	@include('front.customer.customer_menu')
       </div>
 
       <div class="col-sm-9">

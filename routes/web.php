@@ -228,6 +228,7 @@ Route::group(['middleware' => 'customer'], function () {
 	Route::get('request-rfq','front\MyRFQController@request')->name('request.rfq');
 	Route::get('rfq-status','front\MyRFQController@status')->name('rfq.status');
 	Route::post('change-address','front\MyRFQController@changeAddress')->name('change.address');
+	Route::put('updaterfqitem', 'front\MyRFQController@updateItem');
 });
 
 //Home Page
