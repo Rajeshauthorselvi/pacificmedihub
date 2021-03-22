@@ -41,7 +41,7 @@
                   <div class="action_sec">
                     <ul class="list-unstyled">
                       <li>
-                        <a href="" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
+                        <a href="{{ url('admin/cop_admin_pdf/'.$order->id) }}" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
                       </li>
                       <li>
                         <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
