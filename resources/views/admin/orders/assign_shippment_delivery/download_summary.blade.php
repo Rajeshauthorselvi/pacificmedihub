@@ -11,14 +11,22 @@
 		}
 	</style>
   <div style="width: 700px;margin: auto;">
-  	<h3>Ordered Summary:</h3>
-  	<h4>Generated Date: {{ date('d-m-Y') }}</h4>
-  	<h4>Orderno :</h4>
-  	@foreach ($order_nos as $key=>$order_no)
-  		{{ $order_no }}@if (!$loop->last),@endif
-  	@endforeach
+  	<h2 style="text-align: center;">Ordered Summary</h2>
+  	<div> <strong>Generated Date: </strong>{{ date('d-m-Y') }} </div>
   	<br>
-  	<h4>Product: </h4>
+  	<div class="order_nos">
+	  	<div>
+	  		<strong>Orderno: </strong>
+			@foreach ($order_nos as $key=>$order_no)
+		  		{{ $order_no }}@if (!$loop->last),@endif
+		  	@endforeach
+	  	</div>
+  	</div>
+  	<br>
+  	<div style="clear: both"></div>
+  	<strong>Product: </strong>
+  	<div style="clear: both"></div>
+  	<br>
   	<table style="width: 100%;float: left;" width="100%">
   		<tr>
 	  		<th style="text-align: left;">S.No</th>
@@ -29,7 +37,7 @@
 		  	@foreach ($product_datas as $key=>$data)
 		  	<tr style="padding-top: 20px;clear: both;">
 		  		<td style="text-align: left;">{{ $loop->iteration }}</td>
-		  		<td style="text-align: left;">{{ $data['product_name'] }}-{{ $data['product_variant'] }}</td>
+		  		<td style="text-align: left;">{{ $data['product_name'] }}-<b>{{ $data['product_variant'] }}</b></td>
 		  		<td style="text-align: center;">{{ $data['total_quantity'] }}</td>
 		  	</tr>
 		  		<?php $total +=$data['total_quantity']; ?>
@@ -45,4 +53,4 @@
 </body>
 </html>
 
-<?php 	//exit ?>
+<?php //exit ?>
