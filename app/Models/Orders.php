@@ -62,6 +62,10 @@ class Orders extends Model
     {
         return $this->belongsTo(OrderStatus::class,'delivery_status');
     }
+    public function address()
+    {
+        return $this->belongsTo(UserAddress::class,'address_id');
+    }
 
     static function CheckQuantity($order_id)
     {
