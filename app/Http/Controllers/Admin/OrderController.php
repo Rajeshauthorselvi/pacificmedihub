@@ -461,6 +461,9 @@ class OrderController extends Controller
             $order_status->whereIn('id',[19,20,21,18]);
           }
         }
+        elseif ($currenct_route[0]=="cancelled-orders") {
+          $order_status->whereIn('id',[17,18,19,20]);
+        }
 
         $order_status=$order_status->pluck('status_name','id')->toArray();
 
