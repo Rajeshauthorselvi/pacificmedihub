@@ -161,7 +161,7 @@
   @push('custom-scripts')
   <script type="text/javascript">
 
-  var oTable = $('#data-table').dataTable();
+  var oTable = $('#data-table').dataTable({"ordering": false});
   var allPages = oTable.fnGetNodes();
     $('body').on('click', '.select-all', function () {
         if ($(this).hasClass('allChecked')) {
