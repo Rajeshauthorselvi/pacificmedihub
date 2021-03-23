@@ -42,21 +42,60 @@
               <div class="card-body">
                 <ul class="nav nav-tabs flex-nowrap" role="tablist">
                   <li role="presentation" class="nav-item">
-                    <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Company Details </a>
+                    <a href="#step1" class="nav-link active" data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Customer"> Customer Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
+                    <a href="#step2" class="nav-link " data-toggle="tab" aria-controls="step2" role="tab"  tab-count="2" title="Company"> Company Details </a>
+                  </li>
+                  
+                  <li role="presentation" class="nav-item">
+                    <a href="#step3" class="nav-link " data-toggle="tab" aria-controls="step3" role="tab" tab-count="3" title="POC"> POC Details </a>
+                  </li>
+
+                  <li role="presentation" class="nav-item">
+                    <a href="#step4" class="nav-link " data-toggle="tab" aria-controls="step4" role="tab"  tab-count="4" title="Delivery">Delivery Address</a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Delivery Address</a>
-                  </li>
-                  <li role="presentation" class="nav-item">
-                    <a href="#step4" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
+                    <a href="#step5" class="nav-link" data-toggle="tab" aria-controls="step5" role="tab"  tab-count="5" title="Bank">Bank Accounts</a>
                   </li>
                 </ul>
                 
                 <div class="tab-content py-2">
-                  <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
+
+                  <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Customer Code *</label>
+                          {!! Form::text('customer[customer_no]',$customer->customer_no,['class'=>'form-control','readonly']) !!}
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Name *</label>
+                          {!! Form::text('customer[first_name]', $customer->first_name,['class'=>'form-control','readonly']) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Contact No *</label>
+                          {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control','readonly']) !!}
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Email *</label>
+                          {!! Form::email('customer[email]', $customer->email,['class'=>'form-control','readonly']) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <div class="icheck-info d-inline">
+                            <input type="checkbox" name="customer[status]" id="Status" disabled @if($customer->status==1) checked @endif>
+                            <label for="Status">Published</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="tab-pane company-tabs" tab-count="2" role="tabpanel" id="step2">
                     <div class="col-sm-12">
                       <div class="form-group">
                         {!! Form::hidden('company[company_id]',$customer->company->id) !!}
@@ -83,19 +122,16 @@
                         <div class="col-sm-6">
                           <label for="">Company Email *</label>
                           {!! Form::text('company[company_email]', null,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">
-                          <label for="">Telephone No *</label>
+                          <label for="">Contact No *</label>
                           {!! Form::text('company[telephone]', null,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Address Line1 *</label>
                           {!! Form::text('company[address_1]', null,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Address Line2</label>
@@ -119,7 +155,7 @@
                         </div>
                         <div class="col-sm-6">
                           <label for="">Post Code</label>
-                          {!! Form::text('company[post_code]', null,['readonly','class'=>'form-control company_postcode']) !!}
+                          {!! Form::text('company[post_code]', null,['readonly','class'=>'form-control']) !!}
                         </div>
                       </div>
                       <div class="form-group">
@@ -152,53 +188,36 @@
                           <img class="img-company" style="width:125px;height:100px;" src="{{asset($gst_file)}}">
                         </div>
                       </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="customer[status]" id="Status" disabled @if($customer->status==1) checked @endif>
-                            <label for="Status">Published</label>
-                          </div>
-                        </div>
-                      </div>
+                      
                     </div>
                   </div>
 
-                  <div class="tab-pane customer-tabs" tab-count="2" role="tabpanel" id="step2">
+                  <div class="tab-pane customer-tabs" tab-count="3" role="tabpanel" id="step3">
                     <div class="col-sm-12">
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="vendorName">Customer Code *</label>
-                          {!! Form::text('customer[customer_no]',$customer->customer_no,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
+                          <label for="">POC Name *</label>
+                          {!! Form::text('customer[first_name]',$customer->poc->name,['class'=>'form-control','readonly']) !!}
                         </div>
                         <div class="col-sm-6">
-                          <label for="">POC Name *</label>
-                          {!! Form::text('customer[first_name]',$customer->first_name,['class'=>'form-control','readonly']) !!}
+                          <label for="">Company UEN *</label>
+                          {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control','readonly']) !!}
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Contact No *</label>
-                          {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
+                          {!! Form::text('customer[contact_number]', $customer->poc->contact_number,['class'=>'form-control','readonly']) !!}
                         </div>
                         <div class="col-sm-6">
                           <label for="">Email *</label>
-                          {!! Form::email('customer[email]',  $customer->email,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="">Company UEN *</label>
-                          {!! Form::text('company[company_uen]', null,['class'=>'form-control','readonly']) !!}
-                          <span class="text-danger"></span>
+                          {!! Form::email('customer[email]',$customer->poc->email,['class'=>'form-control','readonly']) !!}
                         </div>
                       </div>
                     </div>
                   </div>
                    
-                  <div class="tab-pane address-tabs " tab-count="3" role="tabpanel" id="step3">
+                  <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
                     <div class="address-list-sec col-sm-10">
                       @foreach ($customer->alladdress as $address)
                         <div class="col-sm-12">
@@ -222,7 +241,7 @@
                     </div>
                   </div>
 
-                  <div class="tab-pane " tab-count="4" role="tabpanel" id="step4">
+                  <div class="tab-pane " tab-count="5" role="tabpanel" id="step5">
                     {!! Form::hidden('bank[account_id]',$customer->bank->id) !!}
                     <div class="form-group">
                       <div class="col-sm-6">
