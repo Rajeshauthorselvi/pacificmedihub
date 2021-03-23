@@ -1019,29 +1019,46 @@ button:focus{outline:none}
     object-fit: cover;
 }
 
-    .login-page {
+.login-page, .register-page {
     align-items: center;
     height: 100vh;
     justify-content: center;
     display: flex;
     border-top: 1px solid #ddd;
 }
+.register-page{
+    height: 150vh;
+}
 .login-box {
     width: 50%;
+}
+.register-box {
+        width: 70%;
 }
 .login-page .login-box .card-body {
     padding: 5rem;
 }
-.login-header {
+.register-page .register-box .card-body{
+    padding: 4rem;   
+}
+.login-header, .register-header {
     padding-bottom: 20px;
 }
 .login-header h4 {
     margin: 0;
 }
-.login-box .form-control {
+.login-box .form-control, .register-page .form-control, .register-page .select2-container--default .select2-selection--single{
     border-radius: 0;
     height: 40px;
 }
+.register-page .left-column, .register-page .right-column {
+    width: 49%;
+    display: inline-grid;
+}
+.register-page .left-column {
+    margin-right: 10px;
+}
+
 .login-page .forget {
     text-align: right;
 }
@@ -1051,14 +1068,15 @@ button:focus{outline:none}
 .login-page .forget a:hover{
     text-decoration: underline;
 }
-.login-page .btn {
-    padding: 10px;
-    background-color: #3e72b1;
-    border-color: #3e72b1;
-}
+
 .login-page .btn:hover{
-        background-color: #007bff;
+    background-color: #007bff;
     border-color: #007bff;
+}
+
+.login-page .btn-primary, .register-page .btn-primary {
+    border-radius: 0;
+    height: 40px;
 }
 
 li.customer-dropdown:hover div.customer-menu{display: block;}

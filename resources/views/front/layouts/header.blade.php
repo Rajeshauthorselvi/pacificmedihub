@@ -53,7 +53,7 @@
 							</div>
 						</li>
 						<li>
-							<a href="javascript:void(0);"><label>New Customer?</label><br />Click Here</a>
+							<a href="{{ route('register.new.customer') }}"><label>New Customer?</label><br />Click Here</a>
 						</li>
 					</ul>
 				</div>

@@ -201,6 +201,13 @@ Route::post('customer-login','front\AuthController@store')->name('customer.store
 Route::get('forget-password','front\AuthController@forgetPassword')->name('forget.password');
 Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
 
+Route::get('new-customer','front\AuthController@newCustomerPage')->name('register.new.customer');
+Route::post('new-customer','front\AuthController@newCustomerStore')->name('store.new.customer');
+
+//Get Sate and City
+Route::get('get-state','front\AddressController@getStateList');
+Route::get('get-city','front\AddressController@getCityList');
+
 Route::group(['middleware' => 'customer'], function () {
 	//Customer Auth
 	Route::get('customer-logout','front\AuthController@logout')->name('customer.logout');
@@ -208,10 +215,6 @@ Route::group(['middleware' => 'customer'], function () {
 	
 	//Customer Profile
 	Route::resource('my-profile','front\ProfileController');
-
-	//Get Sate and City
-	Route::get('get-state','front\AddressController@getStateList');
-	Route::get('get-city','front\AddressController@getCityList');
 
 	//Customer Address
 	Route::resource('my-address', 'front\AddressController');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PasswordReset;
 use App\Mail\ResetPassword;
+use App\Models\Countries;
 use App\User;
 use Auth;
 use Redirect;
@@ -131,5 +132,16 @@ class AuthController extends Controller
                 return Redirect::back()->with('error','User does not exist!');
             }
         }
+    }
+
+    public function newCustomerPage()
+    {
+        $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        return view('front/customer/new_register',$data);
+    }
+
+    public function newCustomerStore(Request $request)
+    {
+        //dd($request->all());
     }
 }
