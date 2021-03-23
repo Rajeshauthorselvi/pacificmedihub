@@ -53,7 +53,7 @@
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
                         <th>Ordered Date</th>
-                        <th>Delivered Date</th>
+                        <th>Delivery Date</th>
                         <th>Order Code</th>
                         <th>Customer</th>
                         <th>Order Status</th>
@@ -81,10 +81,17 @@
                         }
                        ?>
                         <tr style="{{ $class_bg }}">
-                          <td><input type="checkbox" class="orders_ids" value="{{$order->id}}"></td>
+                          <td class="text-center">
+                            @if ($order->order_status==18)
+                              <input type="checkbox" class="orders_ids" value="{{$order->id}}">  
+                            @else
+                              -
+                            @endif
+                            
+                          </td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
-                            {{ isset($order->delivered_at)?date('m/d/Y',strtotime($order->delivered_at)):'-' }}
+                            {{ isset($order->approximate_delivery_date)?date('m/d/Y',strtotime($order->approximate_delivery_date)):'-' }}
                           </td>
                           <td><a href="{{route($show_route,$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->first_name }}</td>
