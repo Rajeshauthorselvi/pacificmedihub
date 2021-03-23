@@ -7,19 +7,25 @@ use Illuminate\Http\Request;
 use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\ProductVariantVendor;
 use App\Models\UserAddress;
 use App\Models\UserCompanyDetails;
 use App\Models\Countries;
 use App\Models\RFQ;
 use App\Models\RFQProducts;
 use App\Models\Prefix;
-use App\Models\ProductVariantVendor;
+use App\Models\PaymentTerm;
+use App\Models\Currency;
+use App\Models\Tax;
 use App\User;
 use Auth;
 use Str;
 use Session;
 use Redirect;
 use DB;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\View;
+use PDF;
 
 class MyRFQController extends Controller
 {
@@ -490,4 +496,198 @@ class MyRFQController extends Controller
         }
         return response()->json(true);
     }
+
+    public function RFQPDF($id)
+    {
+
+          $data = array();
+          $products = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
+          $product_data = $product_variant = array();
+          foreach ($products as $key => $product) {
+            $product_name    = Product::where('id',$product->product_id)->value('name');
+            $all_variants    = RFQProducts::where('rfq_id',$id)->where('product_id',$product->product_id)
+                                ->pluck('product_variant_id')->toArray();
+            $options         = $this->Options($product->product_id);
+            $product_variant = $this->Variants($product->product_id,$all_variants);
+
+            $product_data[$product->product_id]=[
+              'rfq_id'          => $id,
+              'product_id'      => $product->product_id,
+              'product_name'    => $product_name,
+              'options'         => $options['options'],
+              'option_count'    => $options['option_count'],
+              'product_variant' => $product_variant
+            ];
+          }
+          $rfq = RFQ::where('id',$id)->first();
+
+          if ($rfq->created_user_type==2) {
+            $creater_name=Employee::where('id',$rfq->user_id)->first();
+            $creater_name=$creater_name->emp_name;
+          }
+          else{
+            $creater_name=User::where('id',$rfq->user_id)->first();
+            $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+          }
+          $data['creater_name']=$creater_name;
+
+
+          $data['rfqs']             = $rfq;
+          $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+          $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
+          $data['product_datas']    = $product_data;
+          $data['rfq_id']           = $id;
+          $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
+          $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                        ->pluck('name','id')->toArray();  
+          $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
+
+          return view('front/customer/rfq/rfq_pdf',$data);
+
+          /*$layout = View::make('admin.rfq.rfq_pdf',$data);
+          $pdf = App::make('dompdf.wrapper');
+          $pdf->loadHTML($layout->render());
+          return $pdf->download('RFQ-'.$rfq->order_no.'.pdf');*/
+
+    }
+
+
+    public function Variants($product_id,$variation_id=0)
+    {
+      $variant = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->first();
+
+      if ($variation_id!=0) {
+        $productVariants = ProductVariant::where('product_id',$product_id)->where('disabled',0)
+                            ->where('is_deleted',0)
+                            ->whereIn('id',$variation_id)->get();
+      }
+      else{
+        $productVariants = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->get();
+      }
+      $product_variants = array();
+      foreach ($productVariants as $key => $variants) {            
+        $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)
+                            ->where('product_variant_id',$variants->id)
+                            ->where('display_variant',1)
+                            ->first();
+        $product_variants[$key]['variant_id'] = $variants->id;
+        $product_variants[$key]['product_name']=Product::where('id',$variants->product_id)->value('name');
+        $product_variants[$key]['product_id']=$product_id;
+
+        if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = $variants->option_id2;
+          $product_variants[$key]['option_value_id2'] = $variants->option_value_id2;
+          $product_variants[$key]['option_value2'] = $variants->optionValue2->option_value;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+          $product_variants[$key]['option_value_id2']=isset($variants->option_value_id2)?$variants->option_value_id2:'';
+          $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+          $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+          $product_variants[$key]['option_value_id3']=isset($variants->option_value_id3)?$variants->option_value_id3:'';
+          $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+          $product_variants[$key]['option_value_id2']=isset($variants->option_value_id2)?$variants->option_value_id2:'';
+          $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+          $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+          $product_variants[$key]['option_value_id3']=isset($variants->option_value_id3)?$variants->option_value_id3:'';
+          $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+          $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
+          $product_variants[$key]['option_value_id4']=isset($variants->option_value_id4)?$variants->option_value_id4:'';
+          $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5!=NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+          $product_variants[$key]['option_value_id2']=isset($variants->option_value_id2)?$variants->option_value_id2:'';
+          $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+          $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+          $product_variants[$key]['option_value_id3']=isset($variants->option_value_id3)?$variants->option_value_id3:'';
+          $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+          $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
+          $product_variants[$key]['option_value_id4']=isset($variants->option_value_id4)?$variants->option_value_id4:'';
+          $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
+          $product_variants[$key]['option_id5'] = isset($variants->option_id5)?$variants->option_id5:'';
+          $product_variants[$key]['option_value_id5']=isset($variants->option_value_id5)?$variants->option_value_id5:'';
+          $product_variants[$key]['option_value5'] = isset($variants->optionValue5->option_value)?$variants->optionValue5->option_value:'';
+        }
+
+        $product_variants[$key]['base_price'] = $variant_details->base_price;
+        $product_variants[$key]['retail_price'] = $variant_details->retail_price;
+        $product_variants[$key]['minimum_selling_price'] = $variant_details->minimum_selling_price;
+        $product_variants[$key]['display_order'] = $variant_details->display_order;
+        $product_variants[$key]['stock_quantity'] = $variant_details->stock_quantity;
+        $product_variants[$key]['display_variant'] = $variant_details->display_variant;
+        $product_variants[$key]['vendor_id'] = $variant_details->vendor_id;
+        $product_variants[$key]['vendor_name'] = $variant_details->vendorName->name;
+      }
+      return $product_variants;
+    }
+    public function Options($id)
+    {
+        $variant = ProductVariant::where('product_id',$id)->where('disabled',0)->where('is_deleted',0)->first();
+
+        $options = array();
+        
+        if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+            $options[] = $variant->optionName1->option_name;
+            $option_count = 1;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+            $options[] = $variant->optionName1->option_name;
+            $options[] = $variant->optionName2->option_name;
+            $option_count = 2;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+            $options[] = $variant->optionName1->option_name;
+            $options[] = $variant->optionName2->option_name;
+            $options[] = $variant->optionName3->option_name;
+            $option_count = 3;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5==NULL))
+        {
+            $options[] = $variant->optionName1->option_name;
+            $options[] = $variant->optionName2->option_name;
+            $options[] = $variant->optionName3->option_name;
+            $options[] = $variant->optionName4->option_name;
+            $option_count = 4;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5!=NULL))
+        {
+            $options[] = $variant->optionName1->option_name;
+            $options[] = $variant->optionName2->option_name;
+            $options[] = $variant->optionName3->option_name;
+            $options[] = $variant->optionName4->option_name;
+            $option_count = 5;
+        }
+
+        return ['options'=>$options,'option_count'=>$option_count];
+    }
+
 }

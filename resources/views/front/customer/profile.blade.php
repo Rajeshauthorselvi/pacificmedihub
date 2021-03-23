@@ -20,16 +20,16 @@
 		  <div class="col-sm-9">
 		    <ul class="nav nav-tabs flex-nowrap" role="tablist">
           <li role="presentation" class="nav-item">
-            <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Profile Details </a>
+            <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Profile"> Profile Details </a>
           </li>
           <li role="presentation" class="nav-item">
-            <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> Company Details </a>
+            <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Company"> Company Details </a>
           </li>
           <li role="presentation" class="nav-item">
-            <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Bank Accounts</a>
+            <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Bank">Bank Accounts</a>
           </li>
           <li role="presentation" class="nav-item">
-            <a href="#step4" class="nav-link password" data-toggle="tab" aria-controls="step4" role="tab customer-link"  tab-count="4" title="Step 4">Change Password</a>
+            <a href="#step4" class="nav-link password" data-toggle="tab" aria-controls="step4" role="tab customer-link"  tab-count="4" title="Password">Change Password</a>
           </li>
         </ul>
 

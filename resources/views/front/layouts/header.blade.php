@@ -211,7 +211,7 @@
         	</div>
         	<ul class="shopping__btn">
             	<li><a href="{{ route('cart.index') }}">View Cart</a></li>
-            	<li class="shp__checkout"><a href="javascript:void(0);">RFQ</a></li>
+            	<li class="shp__checkout"><a href="{{ route('request.rfq') }}">RFQ</a></li>
         	</ul>
     	</div>
     @else
