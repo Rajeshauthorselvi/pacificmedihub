@@ -129,7 +129,7 @@
                                   <i class="fa fa-check-circle"></i>&nbsp;&nbsp;Verify Stock
                                 </li>
                                 </a>
-                                <a href="{{ route('verify-stock.index',['order_id'=>$order->id]) }}" target="_blank" style="{{$disabled_stock_notify}}">
+                                <a href="{{ route('verify-stock.index',['order_id'=>$order->id]) }}" style="{{$disabled_stock_notify}}">
                                   <li class="dropdown-item" >
                                   <i class="fa fa-user"></i>&nbsp;&nbsp;Notify Admin
                                 </li>
@@ -161,7 +161,7 @@
   @push('custom-scripts')
   <script type="text/javascript">
 
-  var oTable = $('#data-table').dataTable();
+  var oTable = $('#data-table').dataTable({"ordering": false});
   var allPages = oTable.fnGetNodes();
     $('body').on('click', '.select-all', function () {
         if ($(this).hasClass('allChecked')) {

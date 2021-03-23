@@ -394,7 +394,7 @@ class OrderController extends Controller
 
         $low_stock=$request->low_stock;
         $data=$this->RouteLinks();
-        $data['order']          = Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
+        $data['order'] =$order= Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
                                         ->first();
         $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
                                         ->where('role_id',7)->pluck('first_name','id')->toArray();
@@ -446,7 +446,12 @@ class OrderController extends Controller
            $order_status->whereIn('id',[16,17]);
         }                     
         elseif ($currenct_route[0]=="assign-shippment") {
-           $order_status->whereIn('id',[14,15,18,16,17]);
+            if($order->order_status==18){
+              $order_status->whereIn('id',[14,18]);   
+            }
+            else{
+               $order_status->whereIn('id',[14,15,18,16,17]);
+            }
         }
         elseif($currenct_route[0]=="new-orders"){
           if ($low_stock=="yes") {
@@ -455,6 +460,9 @@ class OrderController extends Controller
           else{
             $order_status->whereIn('id',[19,20,21,18]);
           }
+        }
+        elseif ($currenct_route[0]=="cancelled-orders") {
+          $order_status->whereIn('id',[17,18,19,20]);
         }
 
         $order_status=$order_status->pluck('status_name','id')->toArray();
@@ -548,14 +556,35 @@ class OrderController extends Controller
          $this->ReduceQuantityToVendor($id);
        }
        elseif ($request->order_status==17) {
-          // $this->UpdateQuantity*
+          $this->UpdateQuantityToStock($id);
        }
 
        $route=$this->RouteLinks();
        return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
 
     }
+    public function UpdateQuantityToStock($order_id)
+    {
+        $stock_quantity=Orders::where('id',$order_id)->value('quantity_deducted');
+        $stock_quantitys=unserialize($stock_quantity);
+        foreach ($stock_quantitys as $key => $values) {
+            foreach ($values as $vendor_id => $products) {
+                foreach ($products as $product_id => $product) {
+                      foreach ($product as $variant_id => $quantity) {
+                        $existing_quantity=ProductVariantVendor::where('product_id',$product_id)
+                        ->where('product_variant_id',$variant_id)
+                        ->where('vendor_id',$vendor_id)
+                        ->value('stock_quantity');
 
+                        ProductVariantVendor::where('product_id',$product_id)
+                        ->where('product_variant_id',$variant_id)
+                        ->where('vendor_id',$vendor_id)
+                        ->update(['stock_quantity'=>($existing_quantity+$quantity)]);
+                      }
+                }
+            }
+        }
+    }
     public function ReduceQuantityToVendor($order_id='')
     {
         $order_products=OrderProducts::where('order_id',$order_id)
@@ -568,23 +597,31 @@ class OrderController extends Controller
                                   // ->orderBy('minimum_selling_price','DESC')
                                   ->orderBy('stock_quantity','DESC')
                                   ->pluck('stock_quantity','vendor_id')->toArray();
+          $total_quantity_detucted=array();
           foreach ($variant_vendor_details as $vendor_id => $stock_quantity) {
             if($products->quantity >= $stock_quantity){
                 $products->quantity -=  $stock_quantity; 
                 $stock_quantity=0;
+
                 ProductVariantVendor::where('vendor_id',$vendor_id)
                 ->where('product_id',$products->product_id)
                 ->where('product_variant_id',$products->product_variation_id)
                 ->where('vendor_id',$vendor_id)
                 ->update(['stock_quantity'=>$stock_quantity]);
+
+                $this->CheckQuantityAndUpdate($order_id,$vendor_id,$products->product_id,$products->product_variation_id,$products->quantity);
             }
             elseif ($products->quantity <= $stock_quantity) {
+             
                 $balance_quantity=($stock_quantity-$products->quantity);
+              
                 ProductVariantVendor::where('vendor_id',$vendor_id)
                 ->where('product_id',$products->product_id)
                 ->where('product_variant_id',$products->product_variation_id)
                 ->where('vendor_id',$vendor_id)
                 ->update(['stock_quantity'=>$balance_quantity]);
+
+              $this->CheckQuantityAndUpdate($order_id,$vendor_id,$products->product_id,$products->product_variation_id,$products->quantity);
 
              break;
             }
@@ -596,15 +633,44 @@ class OrderController extends Controller
                 ->where('product_variant_id',$products->product_variation_id)
                 ->where('vendor_id',$vendor_id)
                 ->update(['stock_quantity'=>$stock_quantity]);
+
+                $this->CheckQuantityAndUpdate($order_id,$vendor_id,$products->product_id,$products->product_variation_id,$stock_quantity);
             }
+
 
             if ($products->quantity==0)  break;
           }
 
         }
-
+      
     }
+    public function CheckQuantityAndUpdate($order_id,$vendor_id,$product_id,$variant_id,$stock_quantity)
+    {
+      $order_quantity=Orders::where('id',$order_id)->value('quantity_deducted');
+      if (isset($order_quantity)) {
+          $unse_quantity=unserialize($order_quantity);
+          $data[$vendor_id]=[
+            $vendor_id=>[
+                $product_id=>[
+                  $variant_id=>$stock_quantity
+                ]
+            ],
+          ];
+          $unse_quantit=array_merge($unse_quantity,$data);
+          Orders::where('id',$order_id)->update(['quantity_deducted'=>serialize($unse_quantit)]);
+      }
+      else{
 
+          $data[$vendor_id]=[
+            $vendor_id=>[
+                $product_id=>[
+                  $variant_id=>$stock_quantity
+                ]
+            ],
+          ];
+          Orders::where('id',$order_id)->update(['quantity_deducted'=>serialize($data)]);
+      }
+    }
     /**
      * Remove the specified resource from storage.
      *
