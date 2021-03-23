@@ -49,7 +49,7 @@ class OrderController extends Controller
         }*/
         $data=array();
         
-        $orders=Orders::with('customer','salesrep','statusName','deliveryStatus');
+        $orders=Orders::with('customer','salesrep','statusName','deliveryStatus','address');
         if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
             $orders->where('sales_rep_id',Auth::guard('employee')->user()->id);
         }
@@ -75,11 +75,11 @@ class OrderController extends Controller
         }
         elseif($currenct_route[0]=="assign-shippment"){
           $orders->whereIn('order_status',[18,15,14]);
-          $data['data_title']='Assigned for Shipment Orders';
+          $data['data_title']='Assign for Delivery';
         }
         elseif($currenct_route[0]=="assign-delivery"){
-          $orders->whereIn('order_status',[14,15,16]);
-          $data['data_title']='Assigned for Delivery Orders';
+          $orders->where('order_status',15);
+          $data['data_title']='Delivery  In Progress';
         }
         elseif($currenct_route[0]=="completed-orders"){
           $orders->where('order_status',13);
@@ -89,10 +89,32 @@ class OrderController extends Controller
           $orders->whereIn('order_status',[21,17,11]);
           $data['data_title']='Cancelled/Missed Orders';
         }
-        
-        $orders=$orders->orderBy('orders.id','desc')->get();
 
-        $data['orders']=$orders;
+      $orders=$orders->orderBy('orders.id','desc')->get();
+      $data['orders']=$orders;
+
+
+      if($currenct_route[0]=="assign-delivery"){
+
+        $base_location=UserCompanyDetails::where('id',1)->first();
+        $base_location = array('lat'=>$base_location->latitude,'lng' => $base_location->longitude);
+        $total_orders = array();
+
+        foreach ($orders as $key => $order)
+        {
+          $a = $base_location['lat'] - $order->address->latitude;
+          $b = $base_location['lng'] - $order->address->longitude;
+          $distance = sqrt(($a**2) + ($b**2));
+
+          $total_orders[$order->id] = [
+              'distance'=>$distance,
+              'orders'  => $order
+
+          ];
+        }
+        asort($total_orders);
+        $data['orders']=$total_orders;
+      }
 
         return view($view,$data);
     }
@@ -943,6 +965,7 @@ $productVariants=ProductVariant::select('product_variants.*')
           $data['type']="new";
           
           $data['view']='admin.orders.assign_shippment_delivery.index';
+          // $data['view']='admin.orders.assign_shippment_delivery.delivery_index';
         }
         elseif($currenct_route[0]=="assign-delivery"){
           $data['back_route']='assign-delivery.index';
@@ -953,7 +976,7 @@ $productVariants=ProductVariant::select('product_variants.*')
           $data['store_route']='assign-delivery.store';
           $data['update_route']='assign-delivery.update';
           
-          $data['view']='admin.orders.assign_shippment_delivery.index';
+          $data['view']='admin.orders.assign_shippment_delivery.delivery_index';
         }
         elseif($currenct_route[0]=="completed-orders"){
           $data['back_route']='completed-orders.index';
@@ -1224,8 +1247,7 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
       ->groupBy('product_id','product_variation_id')->get();
 
       foreach ($order_ids as $key => $order_id) {
-  $order=Orders::where('orders.id',$order_id)
-                    ->where('delivery_person_id',0)->first(); 
+  $order=Orders::where('orders.id',$order_id)->first(); 
         $product_data = $product_variant = array();
         foreach ($products as $key => $product) {
 

@@ -239,11 +239,11 @@
           }
       }); 
       var $datepicker = $('.date-picker').datepicker({ minDate: 0});
-
       $(document).on('change', '#order_status', function(event) {
        var currenct_val=$(this).val();
           if (currenct_val==15 || currenct_val==16) {
               $('.delivery-date').css('display','block');
+              $('.date-picker').val('');
           }
           else{
             $('.delivery-date').css('display','none');

@@ -48,9 +48,7 @@
 		  		<td style="text-align: center;">{{ $data['total_quantity'] }}</td>
 		  		<td style="text-align: center;">
 		  			
-		  			<span style="padding: 12px 15px;border: 2px solid #000;border-radius:5px">
 		  				<img src="http://selvisoftware.in/pacificmedihub/public/theme/images/uncheck.png" width="30px">
-		  			</span>
 		  			{{--  --}}
 		  		
 		  		</td>
