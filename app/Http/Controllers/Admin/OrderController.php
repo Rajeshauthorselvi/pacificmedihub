@@ -75,11 +75,11 @@ class OrderController extends Controller
         }
         elseif($currenct_route[0]=="assign-shippment"){
           $orders->whereIn('order_status',[18,15,14]);
-          $data['data_title']='Assigned for Shipment Orders';
+          $data['data_title']='Assign for Delivery';
         }
         elseif($currenct_route[0]=="assign-delivery"){
-          $orders->whereIn('order_status',[14,15,16]);
-          $data['data_title']='Assigned for Delivery Orders';
+          $orders->where('order_status',15);
+          $data['data_title']='Delivery  In Progress';
         }
         elseif($currenct_route[0]=="completed-orders"){
           $orders->where('order_status',13);
