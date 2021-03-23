@@ -217,3 +217,15 @@ tr.hide-table-padding>td {padding: 0;}
 
 .rfq-info li {float: left; width: 22%; font-size: 23px; text-align: center; }
 .rfq-info ul {list-style: none; }
+
+
+/* Map Style */
+#myMap {height: 350px;width: 100%;}  
+#myMap #map {height: 100%;}
+#myMap .pac-card {margin: 10px 10px 0 0;border-radius: 2px 0 0 2px;box-sizing: border-box;-moz-box-sizing: border-box;outline: none;box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);background-color: #fff;font-family: Roboto;}
+#myMap #pac-container {padding-bottom: 12px;margin-right: 12px;}
+#myMap .pac-controls {display: inline-block;padding: 5px 11px;}
+#myMap .pac-controls label {font-family: Roboto;font-size: 13px;font-weight: 300;}
+#myMap #pac-input {background-color: #fff;font-family: Roboto;font-size: 15px;font-weight: 300;margin-left: 12px;padding: 0 11px 0 13px;text-overflow: ellipsis;width: 400px;}
+#myMap #pac-input:focus {border-color: #4d90fe;}
+#myMap #title {color: #fff;background-color: #4d90fe;font-size: 22px;font-weight: 500;padding: 5px;}

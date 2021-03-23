@@ -20,16 +20,19 @@
 		  <div class="col-sm-9">
 		    <ul class="nav nav-tabs flex-nowrap" role="tablist">
           <li role="presentation" class="nav-item">
-            <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Profile Details </a>
+            <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Profile"> Profile Details </a>
           </li>
           <li role="presentation" class="nav-item">
-            <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> Company Details </a>
+            <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Company"> Company Details </a>
           </li>
           <li role="presentation" class="nav-item">
-            <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Bank Accounts</a>
+            <a href="#step3" class="nav-link customer-link" data-toggle="tab" aria-controls="step3" role="tab"  tab-count="3" title="POC"> POC Details </a>
           </li>
           <li role="presentation" class="nav-item">
-            <a href="#step4" class="nav-link password" data-toggle="tab" aria-controls="step4" role="tab customer-link"  tab-count="4" title="Step 4">Change Password</a>
+            <a href="#step4" class="nav-link" data-toggle="tab" aria-controls="step4" role="tab customer-link"  tab-count="4" title="Bank">Bank Accounts</a>
+          </li>
+          <li role="presentation" class="nav-item">
+            <a href="#step5" class="nav-link password" data-toggle="tab" aria-controls="step5" role="tab customer-link"  tab-count="5" title="Password">Change Password</a>
           </li>
         </ul>
 
@@ -37,13 +40,9 @@
 
           <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
             <div class="form-group">
-              <div class="col-sm-5">
+              <div class="col-sm-10">
                 <label for="">Name</label>
                 {!! Form::text('customer[first_name]',$customer->first_name,['class'=>'form-control','readonly']) !!}
-              </div>
-              <div class="col-sm-5">
-                <label for="">Company UEN</label>
-                {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control','readonly']) !!}
               </div>
               <div class="col-sm-2">
                 <div class="edit-customer">
@@ -139,7 +138,37 @@
             </div>
           </div>
 
-          <div class="tab-pane bank-tabs" tab-count="3" role="tabpanel" id="step3">
+          <div class="tab-pane customer-tabs" tab-count="3" role="tabpanel" id="step3">
+            <div class="form-group">
+              <div class="col-sm-5">
+                <label for="">Name</label>
+                {!! Form::text('customer[first_name]',$customer->poc->name,['class'=>'form-control','readonly']) !!}
+              </div>
+              <div class="col-sm-5">
+                <label for="">Company UEN</label>
+                {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control','readonly']) !!}
+              </div>
+              <div class="col-sm-2">
+                <div class="edit-customer">
+                  <a class="btn btn-primary" href="{{route('my-profile.edit',$customer->id)}}">
+                    <i class="far fa-edit"></i> Edit
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-5">
+                <label for="">Email</label>
+                {!! Form::email('customer[email]',  $customer->poc->email,['class'=>'form-control','readonly']) !!}
+              </div>
+              <div class="col-sm-5">
+                <label for="">Contact No</label>
+                {!! Form::text('customer[contact_number]', $customer->poc->contact_number,['class'=>'form-control','readonly']) !!}
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane bank-tabs" tab-count="4" role="tabpanel" id="step4">
             <div class="col-sm-12">
               <div class="form-group">
                 <div class="col-sm-5">
@@ -181,7 +210,7 @@
             </div>
           </div>
 
-          <div class="tab-pane password-tabs " tab-count="4" role="tabpanel" id="step4">
+          <div class="tab-pane password-tabs" tab-count="5" role="tabpanel" id="step5">
             <form action="{{ route('change.cuspwd') }}" method="post" id="pwdForm">
               @csrf
               <div class="password-block">

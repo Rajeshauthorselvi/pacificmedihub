@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
+use App\Models\UserPoc;
 use App\Models\Countries;
 use App\Models\UserCompanyDetails;
 use App\Models\Prefix;
@@ -31,7 +32,7 @@ class ProfileController extends Controller
         }
         $data=array();
         $id = $data['user_id']  = Auth::id();
-        $data['customer'] = User::with('alladdress','company','bank')
+        $data['customer'] = User::with('alladdress','company','bank','poc')
                             ->where('users.role_id',7)
                             ->where('id',$id)
                             ->first();
@@ -83,7 +84,7 @@ class ProfileController extends Controller
         }
         $data=array();
         $data['user_id']  = Auth::id();
-        $data['customer'] = User::with('alladdress','company','bank')
+        $data['customer'] = User::with('alladdress','company','bank','poc')
                             ->where('users.role_id',7)
                             ->where('id',$id)
                             ->first();
@@ -108,11 +109,16 @@ class ProfileController extends Controller
         Arr::forget($bank_details,['account_id']);
         $bank->update($bank_details);
 
-        $company_details=$request->company;
+        /* Update POC details */
+        $poc_details = $request->poc;
+        $poc = UserPoc::find($poc_details['poc_id']);
+        $poc->timestamps = false;
+        Arr::forget($poc_details,['poc_id']);
+        $poc->update($poc_details);
 
+        $company_details=$request->company;
         $company = UserCompanyDetails::find($company_details['company_id']);
         Arr::forget($company_details,['company_id']);
-        $company['country_id'] = ($request->country)?1:0;
         $company->update($company_details);
 
         $logo_image = isset($request->company['logo'])?$request->company['logo']:null;
@@ -128,7 +134,7 @@ class ProfileController extends Controller
             $request->company['logo']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $logo_image_name);
             UserCompanyDetails::where('id',$company_id)->update(['logo'=>$logo_image_name]);
         }
-       return Redirect::route('my-profile.index',$id)->with('success','Your details updated successfully...!');
+       return Redirect::route('my-profile.index')->with('success','Your details updated successfully...!');
     }
 
     /**

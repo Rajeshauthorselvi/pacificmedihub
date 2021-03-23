@@ -30,21 +30,19 @@
               <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Company"> Company Details </a>
             </li>
             <li role="presentation" class="nav-item">
-              <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Bank">Bank Accounts</a>
+              <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab"  tab-count="3" title="POC"> POC Details </a>
+            </li>
+            <li role="presentation" class="nav-item">
+              <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step4" role="tab customer-link"  tab-count="4" title="Bank">Bank Accounts</a>
             </li>
           </ul>
         	<div class="tab-content py-2"> 
             <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
               <div class="form-group">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                   <label for="">Name *</label>
                   {!! Form::text('customer[first_name]',$customer->first_name,['class'=>'form-control name']) !!}
                   <span class="text-danger name" style="display:none">Name is required</span>
-                </div>
-                <div class="col-sm-6">
-                  <label for="">Company UEN *</label>
-                  {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control uen']) !!}
-                  <span class="text-danger uen" style="display:none">Company UEN is required</span>
                 </div>
               </div>
               <div class="form-group">
@@ -143,9 +141,39 @@
 
             </div>
 
-            
+            <div class="tab-pane poc-tabs" tab-count="3" role="tabpanel" id="step3">
+              <div class="form-group">
+                <div class="col-sm-6">
+                  {!! Form::hidden('poc[poc_id]',$customer->poc->id) !!}
+                  <label for="">POC Name *</label>
+                  {!! Form::text('poc[name]',$customer->poc->name,['class'=>'form-control poc_name']) !!}
+                  <span class="text-danger poc_name" style="display:none">Name is required</span>
+                </div>
+                <div class="col-sm-6">
+                  <label for="">Company UEN *</label>
+                  {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control company_uen']) !!}
+                  <span class="text-danger company_uen" style="display:none">Company UEN is required</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-6">
+                  <label for="">Contact No *</label>
+                  {!! Form::text('poc[contact_number]', $customer->poc->contact_number,['class'=>'form-control poc_contact','onkeyup'=>"validateNum(event,this);"]) !!}
+                  <span class="text-danger poc_contact" style="display:none">Contact is required</span>
+                </div>
+                <div class="col-sm-6">
+                  <label for="">Email *</label>
+                  {!! Form::email('poc[email]',  $customer->poc->email,['class'=>'form-control poc_email']) !!}
+                  <span class="text-danger poc_email" style="display:none">Email is required</span>
+                  <span class="text-danger poc_email_validate" style="display:none">Please enter valid Email Address</span>
+                </div>
+              </div>
+              <button type="button" class="btn reset-btn prev-step">Previous</button>
+              <button type="button" id="validateStep3" class="btn save-btn next-step">Next</button>
+            </div>
 
-            <div class="tab-pane bank-tabs" tab-count="3" role="tabpanel" id="step3">
+
+            <div class="tab-pane bank-tabs" tab-count="4" role="tabpanel" id="step4">
               <div class="col-sm-12">
                 <div class="form-group">
                   <div class="col-sm-6">
@@ -180,11 +208,7 @@
                 </div>
               </div>
               <button type="button" class="btn reset-btn prev-step">Previous</button>
-              <button type="button" id="validateStep3" class="btn save-btn next-step">Submit</button>
-            </div>
-            <div>
-              {{-- <a class="btn reset-btn" href="{{ route('my-profile.index') }}">Cancel</a>
-              <button class="btn save-btn save-change">Save</button> --}}
+              <button type="button" id="validateStep4" class="btn save-btn next-step">Submit</button>
             </div>
           </div>
         </form>
@@ -197,7 +221,6 @@
   <script type="text/javascript">
     $(document).ready(function () {
       $('.nav-tabs > li a[title]').tooltip();
-        //Wizard
         $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
           var $target = $(e.target);
           if ($target.parent().hasClass('disabled')) {
@@ -247,6 +270,42 @@
         }
         function validateStep3(e){
           var valid=true;
+
+          if($(".poc_name").val()=="") {
+            $(".poc_name").closest('.form-group').find('span.text-danger.poc_name').show();
+            valid=false;
+          }else{
+            $(".poc_name").closest('.form-group').find('span.text-danger.poc_name').hide();
+          }
+          if($(".company_uen").val()=="") {
+            $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').show();
+            valid=false;
+          }else{
+            $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').hide();
+          }
+          if($(".poc_contact").val()=="") {
+            $(".poc_contact").closest('.form-group').find('span.text-danger.poc_contact').show();
+            valid=false;
+          }else{
+            $(".poc_contact").closest('.form-group').find('span.text-danger.poc_contact').hide();
+          }
+          if($(".poc_email").val()=="") {
+            $(".poc_email").closest('.form-group').find('span.text-danger.poc_email').show();
+            valid=false;
+          }else{
+            $(".poc_email").closest('.form-group').find('span.text-danger.poc_email').hide();
+          }
+          if(!validateEmail($('.poc_email').val())){
+            $(".poc_email").closest('.form-group').find('span.text-danger.poc_email_validate').show();
+            valid=false;
+          }else{
+            $(".poc_email").closest('.form-group').find('span.text-danger.poc_email_validate').hide();
+          }
+          return valid;
+        }
+
+        function validateStep4(e){
+          var valid=true;
           return valid;
         }
   
@@ -255,8 +314,8 @@
           var stepID = $(e.target).attr('id');
           var formFields=$(e.target).closest('.tab-pane.active').find('input,select');
           var fieldsToValidate=[];
-          if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) ){
-            if(stepID=="validateStep3"){
+          if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) || (stepID=="validateStep4" && validateStep4(e)) ){
+            if(stepID=="validateStep4"){
               $(e.target).closest('form').submit();
               return;
             }
@@ -276,6 +335,11 @@
       }
       function prevTab(elem) {
         $(elem).parent().prev().find('a[data-toggle="tab"]').click();
+      }
+
+      function validateEmail($email) {
+        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+        return emailReg.test( $email );
       }
 
     $(function ($) {

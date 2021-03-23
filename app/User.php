@@ -7,9 +7,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
+use App\Models\UserPoc;
 use App\Models\UserCompanyDetails;
 use DB;
 use Auth;
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -58,6 +60,11 @@ class User extends Authenticatable
     public function alladdress()
     {
         return $this->hasMany(UserAddress::class,'customer_id','id');
+    }
+
+    public function poc()
+    {
+        return $this->belongsTo(UserPoc::class,'poc_id');
     }
 
 }

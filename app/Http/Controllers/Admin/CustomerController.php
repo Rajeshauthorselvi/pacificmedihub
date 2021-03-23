@@ -7,15 +7,20 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
+use App\Models\UserPoc;
 use App\Models\Countries;
 use App\Models\UserCompanyDetails;
 use App\Models\Prefix;
 use App\Models\Employee;
+use App\Mail\NewRegister;
 use Redirect;
 use Arr;
 use Session;
 use File;
 use Auth;
+use Hash;
+use Mail;
+use Str;
 
 class CustomerController extends Controller
 {
@@ -39,6 +44,7 @@ class CustomerController extends Controller
                                ->orderBy('id','desc')
                                ->get();
         return view('admin.customer.index',$data);
+
     }
 
     /**
@@ -102,68 +108,81 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
+
         $this->validate(request(),[
             '*.email' => 'unique:users'
         ],[
             '*.email.unique'=>'This email already taken'
         ]);
 
-        /*Insert Customer Details*/
-        $users=$request->customer;
-        $users['role_id']=7;
-        $users['status']=($request->customer['status']=='on')?1:0;
-        $users['created_at']=date('Y-m-d H:i:s');
-        $customer_id=User::insertGetId($users);
-        /*Insert Customer Details*/
+        if(isset($request->customer['status']) && $request->customer['status']=='on') $status = 1 ;
+        else $status = 0;
 
-        /*Insert Bank details*/
-        $bank=$request->bank;
-        $bank['customer_id']=$customer_id;
-        $bacnk_account_id=UserBankAcccount::insertGetId($bank);
-        /*Insert Bank details*/
+        /* Insert Customer Details */
+        $users = $request->customer;
+        $users['role_id']    = 7;
+        $users['status']     = $status;
+        $users['created_at'] = date('Y-m-d H:i:s');
+        $customer_id         = User::insertGetId($users);
+        
+        /* Insert Bank details */
+        $bank = $request->bank;
+        $bank['customer_id'] = $customer_id;
+        $bacnk_account_id    = UserBankAcccount::insertGetId($bank);
+        
+        /* Insert Poc details */
+        $poc = $request->poc;
+        $poc['customer_id'] = $customer_id;
+        $poc_id             = UserPoc::insertGetId($poc);
 
-        /*Insert Address Details*/
-        $address=$request->address;
-        $address['customer_id']=$customer_id;
-        $address_id=UserAddress::insertGetId($address);
-        /*Insert Address Details*/
+        /* Insert Address Details */
+        $address = $request->address;
+        $address['customer_id'] = $customer_id;
+        $address_id             = UserAddress::insertGetId($address);
 
         /*Insert Company Details*/
-        $company=$request->company;
-        $company['parent_company']=isset($company['parent_company'])?$company['parent_company']:0;
-        $company['customer_id']=$customer_id;
-        $company['created_at']=date('Y-m-d H:i:s');
+        $company = $request->company;
+        $company['parent_company'] = isset($company['parent_company'])?$company['parent_company']:0;
+        $company['customer_id']    = $customer_id;
+        $company['created_at']     = date('Y-m-d H:i:s');
         Arr::forget($company,['logo']);
-        $company_id=UserCompanyDetails::insertGetId($company);
+        $company_id                = UserCompanyDetails::insertGetId($company);
         
         if(isset($request->company['logo'])){
-            $photo          = $request->company['logo'];     
-            $filename       = $photo->getClientOriginalName();            
-            $file_extension = $request->company['logo']->getClientOriginalExtension();
+            $photo           = $request->company['logo'];     
+            $filename        = $photo->getClientOriginalName();            
+            $file_extension  = $request->company['logo']->getClientOriginalExtension();
             $logo_image_name = strtotime("now").".".$file_extension;
             $request->company['logo']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $logo_image_name);
             UserCompanyDetails::where('id',$company_id)->update(['logo'=>$logo_image_name]);
         }
         if(isset($request->company['company_gst_certificate'])){
-            $gst_file          = $request->company['company_gst_certificate'];     
+            $gst_file           = $request->company['company_gst_certificate'];     
             $gst_filename       = $gst_file->getClientOriginalName();            
             $gst_file_extension = $request->company['company_gst_certificate']->getClientOriginalExtension();
-            $gst_file_name = strtotime("now").".".$gst_file_extension;
+            $gst_file_name      = strtotime("now").".".$gst_file_extension;
             $request->company['company_gst_certificate']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $gst_file_name);
             UserCompanyDetails::where('id',$company_id)->update(['company_gst_certificate'=>$gst_file_name]);
         }
-        /*Insert Company Details*/
 
-        /*Update Company , Address,Bank to users table*/
-        $update_details=User::find($customer_id);
-        $update_details->company_id=$company_id;
-        $update_details->address_id=$address_id;
-        $update_details->bank_account_id=$bacnk_account_id;
+        /*Update [Company, POC, Address, Bank] to users table*/
+        $update_details = User::find($customer_id);
+        $update_details->company_id      = $company_id;
+        $update_details->address_id      = $address_id;
+        $update_details->bank_account_id = $bacnk_account_id;
+        $update_details->poc_id          = $poc_id;
         $update_details->save();
-        /*Update Company , address,bank to users table*/
 
+        if($status==1){
+            $password = Str::random(6);
+            $customer = User::find($customer_id);
+            $customer->password = Hash::make($password);
+            $customer->mail_sent_status = 1;
+            $customer->save();
+            Mail::to($customer->email)->send(new NewRegister($customer->first_name, $customer->email,$password));
+        }
         return Redirect::route('customers.index')->with('success','Customer added successfully...!');
-
     }   
 
     /**
@@ -181,7 +200,7 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['customer'] = User::with('alladdress','company','bank')
+        $data['customer'] = User::with('alladdress','company','bank','poc')
                             ->where('users.role_id',7)
                             ->where('id',$id)
                             ->first();
@@ -204,18 +223,18 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['customer']=$customer=User::with('alladdress','company','bank')
+        $data['customer']=$customer=User::with('alladdress','company','bank','poc')
                                ->where('users.role_id',7)
                                ->where('id',$id)
                                ->first();
         $data['all_company']=[''=>'Please Select']+UserCompanyDetails::where('parent_company',0)
-        ->where('id','<>',$customer->company_id)
-        ->pluck('company_name','id')
-        ->toArray();
+            ->where('id','<>',$customer->company_id)
+            ->pluck('company_name','id')
+            ->toArray();
         $data['sales_rep']= [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
-        //dd($data);
+        
         return view('admin.customer.edit',$data);
     }
 
@@ -227,24 +246,35 @@ class CustomerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {   
         $this->validate(request(),[
             '*.email' => 'unique:users,email,'.$id
         ],[
             '*.email.unique'=>'This email already taken'
         ]);
 
-        $users=$request->customer;
-        $users['status']=($request->customer['status']=='on')?1:0;
-        $customer=User::where('id',$id)->update($users);
-
-        $bank_details=$request->bank;
-        $bank=UserBankAcccount::find($bank_details['account_id']);
+        /* Update Customer details */
+        if(isset($request->customer['status']) && $request->customer['status']=='on') $status = 1 ;
+        else $status = 0;
+        $users = $request->customer;
+        $users['status'] = $status;
+        $customer        = User::where('id',$id)->update($users);
+        
+        /* Update Bank details */
+        $bank_details = $request->bank;
+        $bank = UserBankAcccount::find($bank_details['account_id']);
         Arr::forget($bank_details,['account_id']);
         $bank->update($bank_details);
 
-        $company_details=$request->company;
+        /* Update POC details */
+        $poc_details = $request->poc;
+        $poc = UserPoc::find($poc_details['poc_id']);
+        $poc->timestamps = false;
+        Arr::forget($poc_details,['poc_id']);
+        $poc->update($poc_details);
 
+        /* Update Company details */
+        $company_details=$request->company;
         $company=UserCompanyDetails::find($company_details['company_id']);
         Arr::forget($company_details,['company_id']);
         $company->update($company_details);
@@ -261,9 +291,16 @@ class CustomerController extends Controller
             $logo_image_name = strtotime("now").".".$file_extension;
             $request->company['logo']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $logo_image_name);
             UserCompanyDetails::where('id',$company_id)->update(['logo'=>$logo_image_name]);
-        
         }
-       
+
+        $user_details = User::find($id);
+        if(($status==1) && ($user_details->mail_sent_status!=1)){
+            $password = Str::random(6);
+            $user_details->password = Hash::make($password);
+            $user_details->mail_sent_status = 1;
+            $user_details->save();
+            Mail::to($user_details->email)->send(new NewRegister($user_details->first_name, $user_details->email,$password));
+        }
        return Redirect::route('customers.index')->with('success','Customer details updated successfully...!');
 
 
@@ -282,8 +319,10 @@ class CustomerController extends Controller
             $check_cus->is_deleted = 1;
             $check_cus->deleted_at = date('Y-m-d H:i:s');
             $check_cus->update();
-            //$cus_cpy = UserCompanyDetails::where('customer_id',$id)->delete();
-            //$cus_bank = UserBankAcccount::where('customer_id',$id)->delete();
+            /*$cus_cpy = UserCompanyDetails::where('customer_id',$id)->delete();
+            $cus_bank = UserBankAcccount::where('customer_id',$id)->delete();
+            $cus_poc = UserPoc::where('customer_id',$id)->delete();
+            $cus_address = UserAddress::where('customer_id',$id)->delete();*/
         }
         if ($request->ajax())  return ['status'=>true];
         else return redirect()->route('customers.index')->with('error','customer deleted successfully...!');

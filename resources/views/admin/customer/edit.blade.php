@@ -51,36 +51,78 @@
               <div class="card-body">
                 <ul class="nav nav-tabs flex-nowrap" role="tablist">
                   <li role="presentation" class="nav-item">
-                    <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Step 1"> Company Details </a>
+                    <a href="#step1" class="nav-link active" data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Customer"> Customer Details </a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
+                    <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab"  tab-count="2" title="Company"> Company Details </a>
+                  </li>
+                  
+                  <li role="presentation" class="nav-item">
+                    <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab" tab-count="3" title="POC"> POC Details </a>
+                  </li>
+
+                  <li role="presentation" class="nav-item">
+                    <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step4" role="tab"  tab-count="4" title="Delivery">Delivery Address</a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Delivery Address</a>
+                    <a href="#step5" class="nav-link disabled" data-toggle="tab" aria-controls="step5" role="tab"  tab-count="5" title="Bank">Bank Accounts</a>
                   </li>
-                  <li role="presentation" class="nav-item">
-                    <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
-                  </li>
-{{--                   <li role="presentation" class="nav-item">
-                    <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Step 2"> POC Details </a>
-                  </li>
-                  <li role="presentation" class="nav-item">
-                    <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Step 3">Delivery Address</a>
-                  </li>
-                  <li role="presentation" class="nav-item">
-                    <a href="#step4" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="4" title="Step 3">Bank Accounts</a>
-                  </li> --}}
                 </ul>
+
+                
                 <div class="tab-content py-2">
-                  <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
+
+                  <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Customer Code *</label>
+                          {!! Form::text('customer[customer_no]',$customer->customer_no,['class'=>'form-control required','readonly']) !!}
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Name *</label>
+                          {!! Form::text('customer[first_name]', $customer->first_name,['class'=>'form-control cus_name']) !!}
+                          <span class="text-danger cus_name" style="display:none">Name is required</span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <label for="">Contact No *</label>
+                          {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control cus_contact', 'onkeyup'=>"validateNum(event,this);"]) !!}
+                          <span class="text-danger cus_contact" style="display:none">Contact is required</span>
+                        </div>
+                        <div class="col-sm-6">
+                          <label for="">Email *</label>
+                          {!! Form::email('customer[email]', $customer->email,['class'=>'form-control cus_email']) !!}
+                          <span class="text-danger cus_email" style="display:none">Email is required</span>
+                          <span class="text-danger cus_email_validate" style="display:none">Please enter valid Email Address</span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <div class="icheck-info d-inline">
+                            <input type="checkbox" name="customer[status]" id="Status" @if($customer->status==1) checked @endif>
+                            <label for="Status">Published</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-6">
+                        <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancle</a>
+                        <button type="button" id="validateStep1" class="btn save-btn next-step">Next</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="tab-pane company-tabs" tab-count="2" role="tabpanel" id="step2">
                     <div class="col-sm-12">
                       <div class="form-group">
                         {!! Form::hidden('company[company_id]',$customer->company->id) !!}
                         <div class="col-sm-6">
                           <label for="">Company Name *</label>
-                          {!! Form::text('company[company_name]', null,['class'=>'form-control company_name required']) !!}
-                          <span class="text-danger"></span>
+                          {!! Form::text('company[company_name]', null,['class'=>'form-control company_name']) !!}
+                          <span class="text-danger company_name" style="display:none">Company Name is required</span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Parent Company</label>
@@ -90,20 +132,21 @@
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Company Email *</label>
-                          {!! Form::text('company[company_email]', null,['class'=>'form-control required']) !!}
-                          <span class="text-danger"></span>
+                          {!! Form::text('company[company_email]', null,['class'=>'form-control company_email']) !!}
+                           <span class="text-danger company_email" style="display:none">Company Email is required</span>
+                          <span class="text-danger company_email_validate" style="display:none">Please enter valid Email Address</span>
                         </div>
                         <div class="col-sm-6">
-                          <label for="">Telephone No *</label>
-                          {!! Form::text('company[telephone]', null,['class'=>'form-control required']) !!}
-                          <span class="text-danger"></span>
+                          <label for="">Contact No *</label>
+                          {!! Form::text('company[telephone]', null,['class'=>'form-control company_contact']) !!}
+                          <span class="text-danger company_contact" style="display:none">Company Contact is required</span>
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Address Line1 *</label>
-                          {!! Form::text('company[address_1]', null,['class'=>'form-control required']) !!}
-                          <span class="text-danger"></span>
+                          {!! Form::text('company[address_1]', null,['class'=>'form-control company_add1']) !!}
+                          <span class="text-danger company_add1" style="display:none">Address Line 1 is required</span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Address Line2</label>
@@ -113,8 +156,8 @@
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Country *</label>
-                          {!! Form::select('company[country_id]',$countries,$customer->company->country_id,['class'=>'form-control select2bs4 required', 'id'=>'company_country' ]) !!}
-                          <span class="text-danger"></span>
+                          {!! Form::select('company[country_id]',$countries,$customer->company->country_id,['class'=>'form-control select2bs4 country_id', 'id'=>'company_country' ]) !!}
+                          <span class="text-danger country_id" style="display:none">Country is required</span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">State</label>
@@ -133,8 +176,9 @@
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="">Sales Rep</label>
-                          {!! Form::select('company[sales_rep]',$sales_rep,$customer->company->sales_rep,['class'=>'form-control select2bs4']) !!}
+                          <label for="">Sales Rep *</label>
+                          {!! Form::select('company[sales_rep]',$sales_rep,$customer->company->sales_rep,['class'=>'form-control select2bs4 sales_rep']) !!}
+                          <span class="text-danger sales_rep" style="display:none">Sales Rep is required</span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Company GST No</label>
@@ -167,51 +211,52 @@
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="customer[status]" id="Status" @if($customer->status==1) checked @endif>
-                            <label for="Status">Published</label>
-                          </div>
+                          <button type="button" class="btn reset-btn prev-step">Previous</button>
+                          <button type="button" id="validateStep2" class="btn save-btn next-step">Next</button>
                         </div>
                       </div>
+
                     </div>
                   </div>
 
-                  <div class="tab-pane customer-tabs" tab-count="2" role="tabpanel" id="step2">
+                  <div class="tab-pane customer-tabs" tab-count="3" role="tabpanel" id="step3">
                     <div class="col-sm-12">
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="vendorName">Customer Code *</label>
-                          {!! Form::text('customer[customer_no]',$customer->customer_no,['class'=>'form-control required','readonly']) !!}
-                          <span class="text-danger"></span>
+                          {!! Form::hidden('poc[poc_id]',$customer->poc->id) !!}
+                          <label for="">POC Name *</label>
+                          {!! Form::text('poc[name]',$customer->poc->name,['class'=>'form-control poc_name']) !!}
+                          <span class="text-danger poc_name" style="display:none">Name is required</span>
                         </div>
                         <div class="col-sm-6">
-                          <label for="">POC Name *</label>
-                          {!! Form::text('customer[first_name]',$customer->first_name,['class'=>'form-control required']) !!}
+                          <label for="">Company UEN *</label>
+                          {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control company_uen']) !!}
+                          <span class="text-danger company_uen" style="display:none">Company UEN is required</span>
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Contact No *</label>
-                          {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control required','onkeyup'=>"validateNum(event,this);"]) !!}
-                          <span class="text-danger"></span>
+                          {!! Form::text('poc[contact_number]', $customer->poc->contact_number,['class'=>'form-control poc_contact','onkeyup'=>"validateNum(event,this);"]) !!}
+                          <span class="text-danger poc_contact" style="display:none">Contact is required</span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Email *</label>
-                          {!! Form::email('customer[email]',  $customer->email,['class'=>'form-control required']) !!}
-                          <span class="text-danger"></span>
+                          {!! Form::email('poc[email]',  $customer->poc->email,['class'=>'form-control poc_email']) !!}
+                          <span class="text-danger poc_email" style="display:none">Email is required</span>
+                          <span class="text-danger poc_email_validate" style="display:none">Please enter valid Email Address</span>
                         </div>
                       </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="">Company UEN *</label>
-                          {!! Form::text('company[company_uen]', null,['class'=>'form-control required']) !!}
-                          <span class="text-danger"></span>
-                        </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-6">
+                        <button type="button" class="btn reset-btn prev-step">Previous</button>
+                        <button type="button" id="validateStep3" class="btn save-btn next-step">Next</button>
                       </div>
                     </div>
                   </div>
                    
-                  <div class="tab-pane address-tabs " tab-count="3" role="tabpanel" id="step3">
+                  <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
                     <div class="add-new-address">
                       <button type="button" class="btn btn-info add" address-id="{{$customer['id']}}" data-toggle="modal" data-target="#add-address">Add New Address</button>
                     </div>
@@ -247,9 +292,15 @@
                         <br>
                       @endforeach
                     </div>
+                    <div class="form-group">
+                      <div class="col-sm-6">
+                        <button type="button" class="btn reset-btn prev-step">Previous</button>
+                        <button type="button" id="validateStep4" class="btn save-btn next-step">Next</button>
+                      </div>
+                    </div>
                   </div>
 
-                  <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
+                  <div class="tab-pane address-tabs " tab-count="5" role="tabpanel" id="step5">
                     <div class="col-sm-12" style="display:flow-root">
                       {!! Form::hidden('bank[account_id]',$customer->bank->id) !!}
                       <div class="form-group">
@@ -287,11 +338,13 @@
                         </div>                          
                       </div>
                     </div>
+                    <div class="form-group">
+                    <div class="col-sm-6">
+                      <button type="button" class="btn reset-btn prev-step">Previous</button>
+                      <button type="button" id="validateStep5" class="btn save-btn next-step">Submit</button>
+                    </div>
                   </div>
-                </div>
-                <div class="submit-sec">
-                  <a href="javascript:void(0)" class="btn reset-btn prev">Previous</a>
-                  <a href="javascript:void(0)" class="btn save-btn next">Next</a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -418,163 +471,92 @@
     <!-- /.modal-dialog -->
   </div>
 
-<style>
-      #myMap {
-         height: 350px;
-         width: 100%;
-      }  
-      #map {
-        height: 100%;
-      }
-
-      .pac-card {
-        margin: 10px 10px 0 0;
-        border-radius: 2px 0 0 2px;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        outline: none;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        background-color: #fff;
-        font-family: Roboto;
-      }
-
-      #pac-container {
-        padding-bottom: 12px;
-        margin-right: 12px;
-      }
-    .pac-container {
-        z-index: 10000 !important;
-    }
-      .pac-controls {
-        display: inline-block;
-        padding: 5px 11px;
-      }
-
-      .pac-controls label {
-        font-family: Roboto;
-        font-size: 13px;
-        font-weight: 300;
-      }
-
-      #pac-input {
-        background-color: #fff;
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        margin-left: 12px;
-        padding: 0 11px 0 13px;
-        text-overflow: ellipsis;
-        width: 400px;
-      }
-
-      #pac-input:focus {
-        border-color: #4d90fe;
-      }
-      #title {
-        color: #fff;
-        background-color: #4d90fe;
-        font-size: 22px;
-        font-weight: 500;
-        padding: 5px;
-      }
-
-</style>
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDNi6888yh6v93KRXKYeHfMv59kQHw-XPQ&libraries=places&v=weekly">
-</script>
-<script type="text/javascript"> 
-var lat='';
-var lng='';
-var map;
-var marker;
-var myLatlng = new google.maps.LatLng(lat,lng);
-var geocoder = new google.maps.Geocoder();
-var infowindow = new google.maps.InfoWindow();
-function initialize(){
-  var mapOptions = {
-    zoom: 15,
-    center: myLatlng,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-
-  map = new google.maps.Map(document.getElementById("myMap"), mapOptions);
-
-  marker = new google.maps.Marker({
-    map: map,
-    position: myLatlng,
-    draggable: true 
-  }); 
-
-  geocoder.geocode({'latLng': myLatlng }, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK) {
-      if (results[0]) {
-        $('#latitude,#longitude').show();
-        $('.add_line_1').val(results[0].formatted_address);
-        $('#latitude').val(marker.getPosition().lat());
-        $('#longitude').val(marker.getPosition().lng());
-        infowindow.setContent(results[0].formatted_address);
-        infowindow.open(map, marker);
-      }
-    }
-  });
-
-  google.maps.event.addListener(marker, 'dragend', function() {
-
-    geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        if (results[0]) {
-          $('.add_line_1').val(results[0].formatted_address);
-          $('#latitude').val(marker.getPosition().lat());
-          $('#longitude').val(marker.getPosition().lng());
-          infowindow.setContent(results[0].formatted_address);
-          infowindow.open(map, marker);
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDNi6888yh6v93KRXKYeHfMv59kQHw-XPQ&libraries=places&v=weekly">
+  </script>
+  <script type="text/javascript"> 
+    var lat='1.3604544084905643';
+    var lng='103.90657638821588';
+    var map;
+    var marker;
+    var myLatlng = new google.maps.LatLng(lat,lng);
+    var geocoder = new google.maps.Geocoder();
+    var infowindow = new google.maps.InfoWindow();
+    function initialize(){
+      var mapOptions = {
+        zoom: 15,
+        center: myLatlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      map = new google.maps.Map(document.getElementById("myMap"), mapOptions);
+      marker = new google.maps.Marker({
+        map: map,
+        position: myLatlng,
+        draggable: true 
+      }); 
+      geocoder.geocode({'latLng': myLatlng }, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          if (results[0]) {
+            $('#latitude,#longitude').show();
+            $('.add_line_1').val(results[0].formatted_address);
+            $('#latitude').val(marker.getPosition().lat());
+            $('#longitude').val(marker.getPosition().lng());
+            infowindow.setContent(results[0].formatted_address);
+            infowindow.open(map, marker);
+          }
         }
-      }
-    });
-
-  });
-        const card = document.getElementById("pac-card");
-        const input = document.getElementById("pac-input");
-        const options = {
-          fields: ["formatted_address", "geometry", "name"],
-          origin: map.getCenter(),
-          strictBounds: false,
-          types: ["establishment"],
-        };
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
-        const autocomplete = new google.maps.places.Autocomplete(
-          input,
-          options
-        );
-        autocomplete.bindTo("bounds", map);
-  
-        autocomplete.addListener("place_changed", () => {
-          marker.setVisible(false);
-          const place = autocomplete.getPlace();
-          if (!place.geometry || !place.geometry.location) {
-            window.alert(
-              "No details available for input: '" + place.name + "'"
-            );
-            return;
+      });
+      google.maps.event.addListener(marker, 'dragend', function() {
+        geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            if (results[0]) {
+              $('.add_line_1').val(results[0].formatted_address);
+              $('#latitude').val(marker.getPosition().lat());
+              $('#longitude').val(marker.getPosition().lng());
+              infowindow.setContent(results[0].formatted_address);
+              infowindow.open(map, marker);
+            }
           }
-          
-          if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-          } else {
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);
-          }
-          marker.setPosition(place.geometry.location);
-          marker.setVisible(true);
-          infowindowContent.children["place-name"].textContent = place.name;
-          infowindowContent.children["place-address"].textContent =
-            place.formatted_address;
-          infowindow.open(map, marker);
         });
-}
-google.maps.event.addDomListener(window, 'load', initialize);
-
-
-</script>
+      });
+      const card = document.getElementById("pac-card");
+      const input = document.getElementById("pac-input");
+      const options = {
+        fields: ["formatted_address", "geometry", "name"],
+        origin: map.getCenter(),
+        strictBounds: false,
+        types: ["establishment"],
+      };
+      map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
+      const autocomplete = new google.maps.places.Autocomplete(
+        input,
+        options
+      );
+      autocomplete.bindTo("bounds", map);
+      autocomplete.addListener("place_changed", () => {
+        marker.setVisible(false);
+        const place = autocomplete.getPlace();
+        if (!place.geometry || !place.geometry.location) {
+          window.alert(
+            "No details available for input: '" + place.name + "'"
+          );
+          return;
+        }
+        if (place.geometry.viewport) {
+          map.fitBounds(place.geometry.viewport);
+        } else {
+          map.setCenter(place.geometry.location);
+          map.setZoom(17);
+        }
+        marker.setPosition(place.geometry.location);
+        marker.setVisible(true);
+        infowindowContent.children["place-name"].textContent = place.name;
+        infowindowContent.children["place-address"].textContent =
+          place.formatted_address;
+        infowindow.open(map, marker);
+      });
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+  </script>
 
 <style type="text/css">
   .address-tabs .form-group{
@@ -817,92 +799,193 @@ google.maps.event.addDomListener(window, 'load', initialize);
         }      
       }
 
- 
-  $(".prev").click(function (e) {
-       var active = $('.nav-tabs li>.active');
-        console.log(active);
-        prevTab(active);
-  });
-      function prevTab(elem) {
-       $(elem).parent().prev().find('a[data-toggle="tab"]').click();
-      }
-  $(document).on('click', '.next', function(event) {
-    
-    var check_active_tab=$('.tab-pane.active').attr('id');
+      $(document).ready(function () {
+      $('.nav-tabs > li a[title]').tooltip();
+      $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+        var $target = $(e.target);
+        if ($target.parent().hasClass('disabled')) {
+          return false;
+        }
+      });
 
-    var length_empty=$('.tab-pane.active .required').filter(function(){return !$(this).val(); }).length;
+      function validateStep1(e){
+        var valid=true;
+        if($(".cus_name").val()=="") {
+          $(".cus_name").closest('.form-group').find('span.text-danger.cus_name').show();
+          valid=false;
+        }else{
+          $(".cus_name").closest('.form-group').find('span.text-danger.cus_name').hide();
+        }
+        if($(".cus_contact").val()=="") {
+          $(".cus_contact").closest('.form-group').find('span.text-danger.cus_contact').show();
+          valid=false;
+        }else{
+          $(".cus_contact").closest('.form-group').find('span.text-danger.cus_contact').hide();
+        }
+        if($(".cus_email").val()=="") {
+          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email').show();
+          valid=false;
+        }else{
+          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email').hide();
+        }
+        if(!validateEmail($('.cus_email').val())){
+          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email_validate').show();
+          valid=false;
+        }else{
+          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email_validate').hide();
+        }
+        return valid;
+      }
 
-    var active = $('.nav-tabs li>.active');
-    var stepID = $(active).attr('tab-count');
+      function validateStep2(e){
+        var valid=true;
+        if($(".company_name").val()=="") {
+          $(".company_name").closest('.form-group').find('span.text-danger.company_name').show();
+          valid=false;
+        }else{
+          $(".company_name").closest('.form-group').find('span.text-danger.company_name').hide();
+        }
+        if($(".company_email").val()=="") {
+          $(".company_email").closest('.form-group').find('span.text-danger.company_email').show();
+          valid=false;
+        }else{
+          $(".company_email").closest('.form-group').find('span.text-danger.company_email').hide();
+        }
+        if(!validateEmail($('.company_email').val())){
+          $(".company_email").closest('.form-group').find('span.text-danger.company_email_validate').show();
+          valid=false;
+        }else{
+          $(".company_email").closest('.form-group').find('span.text-danger.company_email_validate').hide();
+        }
+        if($(".company_contact").val()=="") {
+          $(".company_contact").closest('.form-group').find('span.text-danger.company_contact').show();
+          valid=false;
+        }else{
+          $(".company_contact").closest('.form-group').find('span.text-danger.company_contact').hide();
+        }
+        if($(".company_add1").val()=="") {
+          $(".company_add1").closest('.form-group').find('span.text-danger.company_add1').show();
+          valid=false;
+        }else{
+          $(".company_add1").closest('.form-group').find('span.text-danger.company_add1').hide();
+        }
+        if($(".country_id").val()=="") {
+          $(".country_id").closest('.form-group').find('span.text-danger.country_id').show();
+          valid=false;
+        }else{
+          $(".country_id").closest('.form-group').find('span.text-danger.country_id').hide();
+        }
+        if($(".sales_rep").val()=="") {
+          $(".sales_rep").closest('.form-group').find('span.text-danger.sales_rep').show();
+          valid=false;
+        }else{
+          $(".sales_rep").closest('.form-group').find('span.text-danger.sales_rep').hide();
+        }
+        return valid;
+      }
 
-    var next_node=parseInt(stepID)+1;
-    if (next_node==4) {
-        $('.save-btn').text('Submit');
-    }
-    if (stepID!=3) {
-      var error_count=0;
-      $('#'+check_active_tab+' .required').each(function(index, el) {
-      var type=$(this).attr('type');
-      var current_val=$(this).val();
-      if (current_val=="" && type=="text") {
-        $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
-          error_count += 1;
+      function validateStep3(e){
+        var valid=true;
+        if($(".poc_name").val()=="") {
+          $(".poc_name").closest('.form-group').find('span.text-danger.poc_name').show();
+          valid=false;
+        }else{
+          $(".poc_name").closest('.form-group').find('span.text-danger.poc_name').hide();
+        }
+        if($(".company_uen").val()=="") {
+          $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').show();
+          valid=false;
+        }else{
+          $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').hide();
+        }
+        if($(".poc_contact").val()=="") {
+          $(".poc_contact").closest('.form-group').find('span.text-danger.poc_contact').show();
+          valid=false;
+        }else{
+          $(".poc_contact").closest('.form-group').find('span.text-danger.poc_contact').hide();
+        }
+        if($(".poc_email").val()=="") {
+          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email').show();
+          valid=false;
+        }else{
+          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email').hide();
+        }
+        if(!validateEmail($('.poc_email').val())){
+          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email_validate').show();
+          valid=false;
+        }else{
+          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email_validate').hide();
+        }
+        return valid;
       }
-      else if(current_val=="" && type=="email"){
-          $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
-          error_count += 1;
+
+      function validateStep4(e){
+        var valid=true;
+        return valid;
       }
-      else if (current_val=="" && type=="select") {
-          $(this).next('.text-danger').html('<span class="text-danger">This field is required</span>');
-          error_count += 1;
+
+      function validateStep5(e){
+        var valid=true;
+        return valid;
       }
-      else if(current_val!=""  && type=="email" && !validateEmail(current_val)){
-          $(this).next('.text-danger').html('<span class="text-danger">This email is not valid</span>');
-          error_count += 1;
-      }
-      else if (current_val==null && type==undefined) {
-        $(this).parents('.csc-sec').find('.text-danger').html('<span class="text-danger">This field is required</span>');
-      }
-      else if (current_val=="" && type==undefined) {
-        $(this).parents('.csc-sec').find('.text-danger').html('<span class="text-danger">This field is required</span>');
-      }
-      else if (current_val!=null && type==undefined) {
-         $(this).parents('.csc-sec').find('.text-danger').html('');
-      }
-      else{
-        $(this).next('.text-danger').html('');
-      }
+
+      $(".next-step").click(function (e) {
+        var company_name = $('.company_name').val();
+        var company_add1 = $('.company_add1').val();
+        var company_add2 = $('.company_add2').val();
+        var company_contact = $('.company_contact').val();
+        var country = $('#company_country option:selected').text();
+        var country_id = $('#company_country').val();
+        var state = $('#company_state option:selected').text();
+        var state_id = $('#company_state').val();
+        var city = $('#company_city option:selected').text();
+        var city_id = $('#company_city').val();
+        var postcode = $('#company_postcode').val();
+
+        $('.del_add_name').val(company_name);
+        $('.del_add_1').val(company_add1);
+        $('.del_add_2').val(company_add2);
+        $('.del_add_contact').val(company_contact);      
+        $('.address_country').val(country);
+        $('.address_country_id').val(country_id);
+        $('.address_state').val(state);
+        $('.address_state_id').val(state_id);
+        $('.address_city').val(city);
+        $('.address_city_id').val(city_id);
+        $('.address_postcode').val(postcode);
+
+        var $active = $('.nav-tabs li>.active');
+        var stepID = $(e.target).attr('id');
+        var formFields=$(e.target).closest('.tab-pane.active').find('input,select');
+        if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) || (stepID=="validateStep4" && validateStep4(e)) || (stepID=="validateStep5" && validateStep5(e)) ){
+          if(stepID=="validateStep5"){
+            $(e.target).closest('form').submit();
+            return;
+          }
+          $active.parent().next().find('.nav-link').removeClass('disabled');
+          nextTab($active);
+        }
+      });
+        
+      $(".prev-step").click(function (e) {
+        var $active = $('.nav-tabs li>a.active');
+        prevTab($active);
+      });
 
     });
 
-      if (length_empty==0 && error_count==0) {
-        if (stepID!=4) {
-          active.parent().next().find('.nav-link').removeClass('disabled');
-          nextTab(active);
-        }
-        else if(stepID==4) {
-          $('#form').submit();
-        }
-      }
+    function nextTab(elem) {
+      $(elem).parent().next().find('a[data-toggle="tab"]').click();
     }
-    else{
-          active.parent().next().find('.nav-link').removeClass('disabled');
-          nextTab(active);
+    function prevTab(elem) {
+      $(elem).parent().prev().find('a[data-toggle="tab"]').click();
     }
 
-     function nextTab(elem) {
-        $(elem).parent().next().find('a[data-toggle="tab"]').click();
-      }
-      function prevTab(elem) {
-        $(elem).parent().prev().find('a[data-toggle="tab"]').click();
-      }
- function validateEmail($email) {
-  var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-  return emailReg.test( $email );
-}
+    function validateEmail($email) {
+      var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+      return emailReg.test( $email );
+    }
 
-
-  });
 </script>
 @endpush
 <style type="text/css">
