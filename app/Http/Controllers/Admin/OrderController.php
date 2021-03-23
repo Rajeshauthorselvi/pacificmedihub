@@ -1247,8 +1247,7 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
       ->groupBy('product_id','product_variation_id')->get();
 
       foreach ($order_ids as $key => $order_id) {
-  $order=Orders::where('orders.id',$order_id)
-                    ->where('delivery_person_id',0)->first(); 
+  $order=Orders::where('orders.id',$order_id)->first(); 
         $product_data = $product_variant = array();
         foreach ($products as $key => $product) {
 
