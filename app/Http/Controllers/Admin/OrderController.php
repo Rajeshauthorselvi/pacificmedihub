@@ -394,7 +394,7 @@ class OrderController extends Controller
 
         $low_stock=$request->low_stock;
         $data=$this->RouteLinks();
-        $data['order']          = Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
+        $data['order'] =$order= Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
                                         ->first();
         $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
                                         ->where('role_id',7)->pluck('first_name','id')->toArray();
@@ -446,7 +446,12 @@ class OrderController extends Controller
            $order_status->whereIn('id',[16,17]);
         }                     
         elseif ($currenct_route[0]=="assign-shippment") {
-           $order_status->whereIn('id',[14,15,18,16,17]);
+            if($order->order_status==18){
+              $order_status->whereIn('id',[14,18]);   
+            }
+            else{
+               $order_status->whereIn('id',[14,15,18,16,17]);
+            }
         }
         elseif($currenct_route[0]=="new-orders"){
           if ($low_stock=="yes") {
@@ -567,7 +572,7 @@ class OrderController extends Controller
                         ->where('product_variant_id',$variant_id)
                         ->where('vendor_id',$vendor_id)
                         ->value('stock_quantity');
-                        
+
                         ProductVariantVendor::where('product_id',$product_id)
                         ->where('product_variant_id',$variant_id)
                         ->where('vendor_id',$vendor_id)
