@@ -129,7 +129,7 @@
                                   <i class="fa fa-check-circle"></i>&nbsp;&nbsp;Verify Stock
                                 </li>
                                 </a>
-                                <a href="{{ route('verify-stock.index',['order_id'=>$order->id]) }}" target="_blank" style="{{$disabled_stock_notify}}">
+                                <a href="{{ route('verify-stock.index',['order_id'=>$order->id]) }}" style="{{$disabled_stock_notify}}">
                                   <li class="dropdown-item" >
                                   <i class="fa fa-user"></i>&nbsp;&nbsp;Notify Admin
                                 </li>
