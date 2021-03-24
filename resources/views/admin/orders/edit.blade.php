@@ -156,8 +156,8 @@
                                             <th>Base Price</th>
                                             <th>Retail Price</th>
                                             <th>Minimum Selling Price</th>
-                                            <th>Quantity</th>
                                             <th>Final Price</th>
+                                            <th>Quantity</th>
                                             <th>Subtotal</th>
                                           </tr>
                                         </thead>
@@ -195,16 +195,17 @@
                                                 <input type="hidden" name="variant[minimum_selling_price][]" value="{{$variant['minimum_selling_price']}}">
                                                 {{$variant['minimum_selling_price']}}
                                               </td>
+                                           <td>
+                                                 <?php $high_value=$variation_details['final_price']; ?>
+                                                <input type="text" name="variant[final_price][]" value="{{ $high_value }}" autocomplete="off" class="form-control final_price">
+                                                <input type="hidden" class="max_price" value="{{ $high_value }}">
+                                              </td>
                                               <td>
                                                 <div class="form-group">
                                                   <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" autocomplete="off" value="{{ $variation_details['quantity'] }}">
                                                 </div>
                                               </td>
-                                              <td>
-                                                 <?php $high_value=$variation_details['final_price']; ?>
-                                                <input type="text" name="variant[final_price][]" value="{{ $high_value }}" autocomplete="off" class="form-control final_price">
-                                                <input type="hidden" class="max_price" value="{{ $high_value }}">
-                                              </td>
+   
                                               <td>
                                                 <div class="form-group">
                                                   <span class="sub_total">
@@ -220,8 +221,8 @@
                                           @endforeach
                                           <tr>
                                             <td colspan="{{count($product['options'])+3}}" class="text-right">Total:</td>
+                                            <td class="all_final_price">{{ $final_price }}</td>
                                             <td class="total_quantity">{{ $total_quantity }}</td>
-                                            <td class="final_price">{{ $final_price }}</td>
                                             <td class="total_amount">{{ $total_amount }}</td>
                                           </tr>
                                         </tbody>
@@ -362,7 +363,7 @@
         event.preventDefault();
         var curr_tr_quantity=$(this).closest('tr').find('.total_quantity').text();
         var curr_tr_total=$(this).closest('tr').find('.total').text();
-        
+
         $(this).closest('tr').next('tr').remove();
         $(this).closest('tr').remove();
 

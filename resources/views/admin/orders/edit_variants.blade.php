@@ -21,8 +21,8 @@
               <th>Base Price</th>
               <th>Retail Price</th>
               <th>Minimum Selling Price</th>
-              <th>Quantity</th>
               <th>Final Price</th>
+              <th>Quantity</th>
               <th>Subtotal</th>
             </tr>
           </thead>
@@ -94,16 +94,16 @@
                 </td>
                 <?php $high_value=max($variant['minimum_selling_price'],$variant['base_price'],$variant['retail_price']) ?>
                 <input type="hidden" class="max_price" value="{{ $high_value }}">
+
+                <td>
+                  <input type="text" name="new_variant[final_price][]" value="{{ $high_value }}" autocomplete="off" class="form-control final_price">
+                </td>
                 <td>
                   <div class="form-group">
                     <?php $quantity=0 ?>
                     <input type="text" class="form-control stock_qty" name="new_variant[stock_qty][]" autocomplete="off" value="{{ $quantity }}">
                   </div>
                 </td>
-                <td>
-                  <input type="text" name="new_variant[final_price][]" value="{{ $high_value }}" autocomplete="off" class="form-control final_price">
-                </td>
-
                 <td>
                   <div class="form-group">
                     <span class="sub_total">0</span>

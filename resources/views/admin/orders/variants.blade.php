@@ -20,8 +20,8 @@
               <th>Base Price</th>
               <th>Retail Price</th>
               <th>Minimum Selling Price</th>
-              <th>Quantity</th>
               <th>Final Price</th>
+              <th>Quantity</th>
               <th>Subtotal</th>
             </tr>
           </thead>
