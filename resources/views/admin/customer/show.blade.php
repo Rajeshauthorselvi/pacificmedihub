@@ -197,7 +197,7 @@
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">POC Name *</label>
-                          {!! Form::text('customer[first_name]',$customer->poc->name,['class'=>'form-control','readonly']) !!}
+                          {!! Form::text('customer[first_name]',isset($customer->poc->name)?$customer->poc->name:'',['class'=>'form-control','readonly']) !!}
                         </div>
                         <div class="col-sm-6">
                           <label for="">Company UEN *</label>
@@ -207,11 +207,11 @@
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Contact No *</label>
-                          {!! Form::text('customer[contact_number]', $customer->poc->contact_number,['class'=>'form-control','readonly']) !!}
+                          {!! Form::text('customer[contact_number]', isset($customer->poc->contact_number)?$customer->poc->contact_number:'',['class'=>'form-control','readonly']) !!}
                         </div>
                         <div class="col-sm-6">
                           <label for="">Email *</label>
-                          {!! Form::email('customer[email]',$customer->poc->email,['class'=>'form-control','readonly']) !!}
+                          {!! Form::email('customer[email]',isset($customer->poc->email)?$customer->poc->email:'',['class'=>'form-control','readonly']) !!}
                         </div>
                       </div>
                     </div>
@@ -219,6 +219,7 @@
                    
                   <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
                     <div class="address-list-sec col-sm-10">
+                      @if(count($customer->alladdress)!=0)
                       @foreach ($customer->alladdress as $address)
                         <div class="col-sm-12">
                           <div class="list">
@@ -238,15 +239,17 @@
                         </div>
                         <br>
                       @endforeach
+                      @else
+                        <span>No Address.</span>
+                      @endif
                     </div>
                   </div>
 
                   <div class="tab-pane " tab-count="5" role="tabpanel" id="step5">
-                    {!! Form::hidden('bank[account_id]',$customer->bank->id) !!}
                     <div class="form-group">
                       <div class="col-sm-6">
                         <label for="accountName">Account Name</label>
-                        {!! Form::text('bank[account_name]',$customer->bank->account_name,['class'=>'form-control','readonly']) !!}
+                        {!! Form::text('bank[account_name]',isset($customer->bank->account_name)?$customer->bank->account_name:'',['class'=>'form-control','readonly']) !!}
                         <span class="text-danger"></span>
                       </div>
                       <div class="col-sm-6">

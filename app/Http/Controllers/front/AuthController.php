@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\PasswordReset;
 use App\Mail\ResetPassword;
 use App\Models\Countries;
+use App\Models\Prefix;
+use App\Models\UserCompanyDetails;
+use App\Models\UserBankAcccount;
+use App\Models\UserPoc;
 use App\User;
 use Auth;
 use Redirect;
@@ -142,6 +146,67 @@ class AuthController extends Controller
 
     public function newCustomerStore(Request $request)
     {
-        //dd($request->all());
+        $this->validate(request(), ['email' => 'required|email|max:255|unique:users']);
+
+        $customer_code = Prefix::where('key','prefix')->where('code','customer')->value('content');
+        if (isset($customer_code)) {
+            $value = unserialize($customer_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = User::where('role_id',7)->count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+        }
+
+        $add_user = new User;
+        $add_user->role_id = 7;
+        $add_user->first_name = $request->name;
+        $add_user->email = $request->email;
+        $add_user->contact_number = $request->contact;
+        $add_user->customer_no = $replace_number;
+        $add_user->save();
+
+        if($add_user){
+            $add_company = new UserCompanyDetails;
+            $add_company->customer_id  = $add_user->id;
+            $add_company->company_name = $request->company_name;
+            $add_company->address_1    = $request->company_address;
+            $add_company->country_id   = $request->country_id;
+            $add_company->state_id     = isset($request->state_id)?$request->state_id:null;
+            $add_company->city_id      = isset($request->city_id)?$request->city_id:null;
+            $add_company->post_code    = $request->post_code;
+            $add_company->save();
+            if($add_company){
+                User::where('id',$add_user->id)->update(['company_id'=>$add_company->id]);
+            }
+            $add_bank = new UserBankAcccount;
+            $add_bank->customer_id = $add_user->id;
+            $add_bank->save();
+            if($add_bank){
+                User::where('id',$add_user->id)->update(['bank_account_id'=>$add_bank->id]);
+            }
+            $add_poc = new UserPoc;
+            $add_poc->customer_id = $add_user->id;
+            $add_poc->timestamps = false;
+            $add_poc->save();
+            if($add_poc){
+                User::where('id',$add_user->id)->update(['poc_id'=>$add_poc->id]);
+            }
+        }
+        
+        return view('front/customer/new_register_success');
     }
 }
