@@ -72,7 +72,14 @@
                       <div class="form-group">
                         <div class="col-sm-4">
                           <label for="customer_id">Customer *</label>
-                          {!! Form::select('customer_id',$customers,  null,['class'=>'form-control select2bs4','id'=>'customer',]) !!}
+                          <select class="form-control select2bs4 customer_id" name="customer_id">
+                              <option value="">Please Select</option>
+                              @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}" sales-rep="{{ $customer->sales_rep }}">
+                                  {{ $customer->first_name }}
+                                </option>
+                              @endforeach
+                          </select>
                           <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
                         </div>
                         <div class="col-sm-4">
@@ -192,6 +199,18 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
+      $(document).on('change', '.customer_id', function(event) {
+        event.preventDefault();
+        var sales_rep=$('.customer_id option:selected').attr('sales-rep');
+        if (sales_rep) {
+          $('#sales_rep_id').val(sales_rep).change();
+        }
+        else{
+          $('#sales_rep_id').val('').change();
+        }
+
+      }); 
+
       $(function ($) {
         $('.no-search.select2bs4').select2({
           minimumResultsForSearch: -1

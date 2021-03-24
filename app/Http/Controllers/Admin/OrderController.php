@@ -42,23 +42,30 @@ class OrderController extends Controller
     public function index()
     {
 
-/*        if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('order','read')) {
-                abort(404);
-            }
-        }*/
+
+        $currenct_route=Route::currentRouteName();
+        $currenct_route=explode('.',$currenct_route);
         $data=array();
-        
+        $data=$this->RouteLinks();
+        $data['edit_permission']=$data['delete_permission']="yes";
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+          $this->CheckPermission('read',$currenct_route[0]);
+          $data['edit_permission']=$this->CheckPermission('update',$currenct_route[0],'yes')['status'];
+          $data['delete_permission']=$this->CheckPermission('delete',$currenct_route[0],'yes')['status'];
+        }
+
+
+
         $orders=Orders::with('customer','salesrep','statusName','deliveryStatus','address');
         if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
             $orders->where('sales_rep_id',Auth::guard('employee')->user()->id);
         }
-        $data=$this->RouteLinks();
+        
+        
         $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
                                   ->pluck('payment_method','id')
                                   ->toArray();
-        $currenct_route=Route::currentRouteName();
-        $currenct_route=explode('.',$currenct_route);
+
         $data['type']=$currenct_route[0];
 
         if (isset($data['view'])) {
@@ -126,23 +133,32 @@ class OrderController extends Controller
      */
     public function create(Request $request)
     {
+
+        $currenct_route=Route::currentRouteName();
+        $currenct_route=explode('.',$currenct_route);
+
         if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('order','create')) {
-                abort(404);
-            }
+          $this->CheckPermission('create',$currenct_route[0]);
         }
+
         $rfq_id=$request->rfq_id;
         $data=array();
         $data=$this->RouteLinks();
         $data['rfqs']           = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();     
         $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
-        $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
-                                        ->where('role_id',7)->pluck('first_name','id')->toArray();
+
+        $customer_details=DB::table('users as u')
+        ->select('u.first_name','u.id','ucd.sales_rep')
+        ->leftjoin('user_company_details as ucd','ucd.customer_id','u.id')
+        ->where('is_deleted',0)->where('status',1)
+        ->where('role_id',7)->get()
+        ->toArray();
+        $data['customers']      = $customer_details;
                                         
         $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
 
-        $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[19,18,15,20,21])->pluck('status_name','id')
+        $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[19,18,20,21])->pluck('status_name','id')
                                         ->toArray();
         $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
         $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
@@ -235,7 +251,7 @@ class OrderController extends Controller
         $quantites             = $request->quantity;
         $variant               = $request->variant;
         $product_ids           = $variant['product_id'];
-        $variant_id            = $variant['idvariant_id'];
+        $variant_id            = $variant['id'];
         $base_price            = $variant['base_price'];
         $retail_price          = $variant['retail_price'];
         $minimum_selling_price = $variant['minimum_selling_price'];
@@ -385,12 +401,13 @@ class OrderController extends Controller
      */
     public function edit(Orders $orders,$order_id,Request $request)
     {
+        $currenct_route=Route::currentRouteName();
+        $currenct_route=explode('.',$currenct_route);
 
         if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('order','update')) {
-                abort(404);
-            }
+          $this->CheckPermission('update',$currenct_route[0]);
         }
+
 
         $low_stock=$request->low_stock;
         $data=$this->RouteLinks();
@@ -400,9 +417,7 @@ class OrderController extends Controller
                                         ->where('role_id',7)->pluck('first_name','id')->toArray();
         $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
-        /*$data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[19,18,15,20,21])
-                                  ->pluck('status_name','id')
-                                  ->toArray();*/
+   
         $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
         $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
         $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
@@ -484,6 +499,12 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+      
+      $variant=$request->variant;
+      $new_variant=$request->new_variant;
+
+
         $currenct_route=Route::currentRouteName();
         $route=explode('.',$currenct_route);
         $data['type']=$currenct_route[0];
@@ -534,8 +555,70 @@ class OrderController extends Controller
           ];
         }
 
+      Orders::where('id',$id)->update($order_data);
 
-       Orders::where('id',$id)->update($order_data);
+      if ($request->order_status==19) {
+        $existing_product_id=$new_product_variant=array();
+        if (isset($variant['product_id'])) {
+          $existing_product_id=array_unique($variant['product_id']);
+        }
+        if (isset($new_variant['product_id'])) {
+          $new_product_variant=array_unique($new_variant['product_id']);
+        }
+
+        $active_product_ids=array_merge($existing_product_id,$new_product_variant);
+        $deleted_products=OrderProducts::where('order_id',$id)->whereNotIn('product_id',$active_product_ids)
+                          ->pluck('product_id')->toArray();
+
+        if(isset($deleted_products)) {
+          OrderProducts::where('order_id',$id)->whereIn('product_id',array_unique($deleted_products))->delete();
+        }
+
+
+        $variant               = $request->variant;
+        $row_ids               = $variant['row_id'];
+        $stock_qty             = $variant['stock_qty'];
+        $final_price             = $variant['final_price'];
+        $sub_total             = $variant['sub_total'];
+        foreach ($row_ids as $key => $row_id) {
+          $data=[
+            'quantity'   => $stock_qty[$key],
+            'final_price'  => $final_price[$key],
+            'sub_total'  => $sub_total[$key],
+          ];
+          OrderProducts::where('id',$row_id)->update($data);
+        }
+        if ($request->has('new_variant')) {
+
+            $variant               = $request->new_variant;
+            $product_ids           = $variant['product_id'];
+            $variant_id            = $variant['id'];
+            $base_price            = $variant['base_price'];
+            $retail_price          = $variant['retail_price'];
+            $minimum_selling_price = $variant['minimum_selling_price'];
+            $stock_qty             = $variant['stock_qty'];
+            $final_price             = $variant['final_price'];
+            $sub_total             = $variant['sub_total'];
+
+          foreach ($product_ids as $key => $product_id) {
+            if ($stock_qty[$key]!=0 && $stock_qty[$key]!="") {
+              $data=[
+                      'order_id'                  => $id,
+                      'product_id'                => $product_id,
+                      'product_variation_id'      => $variant_id[$key],
+                      'base_price'                => $base_price[$key],
+                      'retail_price'              => $retail_price[$key],
+                      'minimum_selling_price'     => $minimum_selling_price[$key],
+                      'quantity'                  => $stock_qty[$key],
+                      'sub_total'                 => $sub_total[$key],
+                      'final_price'               => $final_price[$key]
+                  ];
+              OrderProducts::insert($data);
+            }
+          }
+        }
+      }
+
        if (!Auth::check() && Auth::guard('employee')->check()) {
           $updated_by=Auth::guard('employee')->user()->id;
           $user_type=2;
@@ -544,6 +627,8 @@ class OrderController extends Controller
           $updated_by=Auth::id();
           $user_type=1;
        }
+
+
        $order_history=[
           'order_id'    => $id,
           'order_status_id' => $order_data['order_status'],
@@ -679,6 +764,12 @@ class OrderController extends Controller
      */
     public function destroy(Request $request,$id)
     {
+        $currenct_route=Route::currentRouteName();
+        $currenct_route=explode('.',$currenct_route);
+
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+          $this->CheckPermission('delete',$currenct_route[0]);
+        }
 
         OrderHistory::where('order_id',$id)->delete();
         $delete_order = Orders::where('id',$id)->delete();
@@ -799,6 +890,7 @@ class OrderController extends Controller
     {
 
         $search_type=$request->product_search_type;
+        $from=$request->from;
         if ($search_type=="product") {
 
             $product_names=Product::where("name","LIKE","%".$request->input('name')."%")
@@ -836,7 +928,14 @@ class OrderController extends Controller
             $data['product_id'] = $product_id;
             $data['product_name']=Product::where('id',$product_id)->value('name');
             $data['product_variant']=$this->Variants($product_id);
-            $view=view('admin.orders.variants',$data)->render();
+
+            if ($from=="edit") {
+              $view=view('admin.orders.edit_variants',$data)->render();
+            }
+            else{
+              $view=view('admin.orders.variants',$data)->render();
+            }
+
             return $view;
         }
 
@@ -1077,7 +1176,36 @@ $productVariants=ProductVariant::select('product_variants.*')
 
         return $data;
     }
-
+    public function CheckPermission($action='',$page,$check_permission='no')
+    {
+        if ($page=="new-orders") {
+          $route="new_order";
+        }
+        elseif($page=="assign-shippment"){
+          $route="assign_order";
+        }
+        elseif($page=="assign-delivery"){
+          $route="delivery_order";
+        }
+        elseif($page=="completed-orders"){
+          $route="completed_orders";
+        }
+        elseif($page=="cancelled-orders"){
+          $route="cancelled_order";
+        }
+        else{
+          $route="order";
+        }
+        if ($check_permission=="yes") {
+          $status=Auth::guard('employee')->user()->isAuthorized($route,$action);
+            return ['status'=>$status];
+        }
+        else{
+          if (!Auth::guard('employee')->user()->isAuthorized($route,$action)) {
+             abort(404);
+          }
+        }
+    }
     public function COEmployeePrint($order_id)
     {
 

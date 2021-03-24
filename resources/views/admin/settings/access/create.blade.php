@@ -611,42 +611,145 @@
                       <tbody>
                         <tr>
                           <td>1</td>
-                          <td class="name">Orders</td>
+                          <td class="name">New Orders</td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-                                <input type="checkbox" name="order[order][read]" class="orders-read" id="ordersRead">
-                                <label for="ordersRead"></label>
+                                <input type="checkbox" name="order[new_order][read]" class="orders-read" id="newOrdersRead">
+                                <label for="newOrdersRead"></label>
                               </div>
                             </div>
                           </td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-                                <input type="checkbox" name="order[order][create]" class="orders-create" id="ordersCreate">
-                                <label for="ordersCreate"></label>
+                                <input type="checkbox" name="order[new_order][create]" class="orders-create" id="newOrdersCreate">
+                                <label for="newOrdersCreate"></label>
                               </div>
                             </div>
                           </td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-                                <input type="checkbox" name="order[order][update]" class="orders-update" id="ordersUpdate">
-                                <label for="ordersUpdate"></label>
+                                <input type="checkbox" name="order[new_order][update]" class="orders-update" id="newOrdersUpdate">
+                                <label for="newOrdersUpdate"></label>
                               </div>
                             </div>
                           </td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-                                <input type="checkbox" name="order[order][delete]" class="orders-delete" id="ordersDelete">
-                                <label for="ordersDelete"></label>
+                                <input type="checkbox" name="order[new_order][delete]" class="orders-delete" id="newOrdersDelete">
+                                <label for="newOrdersDelete"></label>
                               </div>
                             </div>
                           </td>
                         </tr>
                         <tr>
                           <td>2</td>
+                          <td class="name">Assign for Delivery</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[assign_order][read]" class="orders-read" id="assignOrdersRead">
+                                <label for="assignOrdersRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[assign_order][update]" class="orders-update" id="assignOrdersUpdate">
+                                <label for="assignOrdersUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[assign_order][delete]" class="orders-delete" id="assignOrdersDelete">
+                                <label for="assignOrdersDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td class="name">Delivery In Progress</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[delivery_order][read]" class="orders-read" id="deliveryOrdersRead">
+                                <label for="deliveryOrdersRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[delivery_order][update]" class="orders-update" id="deliveryOrdersUpdate">
+                                <label for="deliveryOrdersUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                        </tr>
+                        <tr>
+                          <td>4</td>
+                          <td class="name">Completed Orders</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[completed_orders][read]" class="orders-read" id="completedOrdersRead">
+                                <label for="completedOrdersRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[completed_orders][delete]" class="orders-delete" id="completedOrdersDelete">
+                                <label for="completedOrdersDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>5</td>
+                          <td class="name">Cancelled/Missed Orders</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[cancelled_order][read]" class="orders-read" id="cancelledordersRead">
+                                <label for="cancelledordersRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[cancelled_order][update]" class="orders-update" id="cancelledordersUpdate">
+                                <label for="cancelledordersUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="order[cancelled_order][delete]" class="orders-delete" id="cancelledordersDelete">
+                                <label for="cancelledordersDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        
+                        <tr>
+                          <td>6</td>
                           <td class="name">Order Payment</td>
                           <td>
                             <div class="form-group clearfix">
@@ -681,39 +784,10 @@
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td>3</td>
-                          <td class="name">Completed Orders</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="order[completed_orders][read]" class="orders-read" id="completedOrdersRead">
-                                <label for="completedOrdersRead"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="order[completed_orders][create]" class="orders-create" id="completedOrdersCreate">
-                                <label for="completedOrdersCreate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="order[completed_orders][update]" class="orders-update" id="completedOrdersUpdate">
-                                <label for="completedOrdersUpdate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>-</td>
-                        </tr>
+
                       </tbody>
                     </table>
                   </div>
-
                   <h4>Customers</h4>
                   <div class="form-group"> 
                     <table id="customerTable" class="role-table">
