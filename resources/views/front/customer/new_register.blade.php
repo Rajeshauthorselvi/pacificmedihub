@@ -14,33 +14,36 @@
 
 			        <div class="form-group mb-3">
 			        	<label>Name *</label>
-			          	<input type="text" class="form-control" name="name">
+			          	<input type="text" class="form-control" name="name" value="{{ old('name') }}">
 			          	<span class="text-danger name" style="display:none">Name is required</span>
 			        </div>
 
 			        <div class="form-group mb-3">
 				        <div class="left-column">
 				        	<label>Email *</label>
-				          	<input type="email" class="form-control" name="email">
+				          	<input type="email" class="form-control" name="email" value="{{ old('email') }}">
 				          	<span class="text-danger email" style="display:none">Email is required</span>
 				          	<span class="text-danger email_validate" style="display:none">Please enter valid Email Address</span>
+				          	@if($errors->has('email'))
+                      			<span class="text-danger">{{ $errors->first('email') }}</span>
+                    		@endif
 				        </div>
 				        <div class="right-column">
 				        	<label>Contact Number *</label>
-				          	<input type="text" class="form-control" name="contact" onkeyup="validateNum(event,this);">
+				          	<input type="text" class="form-control" name="contact" onkeyup="validateNum(event,this);" value="{{ old('contact') }}">
 				          	<span class="text-danger contact" style="display:none">Contact is required</span>
 				        </div>
 			        </div>
 
 			        <div class="form-group mb-3">
 				        <label>Company Name *</label>
-				        <input type="text" class="form-control" name="company_name">
+				        <input type="text" class="form-control" name="company_name" value="{{ old('company_name') }}">
 				        <span class="text-danger company_name" style="display:none">Company Name is required</span>
 			        </div>
 
 			        <div class="form-group mb-3">
 			        	<label>Address *</label>
-			          	<textarea class="form-control" row="3" name="company_address" style="height:auto;"></textarea>
+			          	<textarea class="form-control" row="3" name="company_address" style="height:auto;">{{ old('company_address') }}</textarea>
 			          	<span class="text-danger company_address" style="display:none">Address is required</span>
 			        </div>
 
@@ -62,7 +65,7 @@
 			        	</div>
 			        	<div class="right-column">
 				        	<label>Post Code </label>
-				        	<input type="text" class="form-control" name="company_name">	
+				        	<input type="text" class="form-control" name="post_code" onkeyup="validateNum(event,this);" value="{{ old('post_code') }}">	
 				        </div>
 			        </div>
 

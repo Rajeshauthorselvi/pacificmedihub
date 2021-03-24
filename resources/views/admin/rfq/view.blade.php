@@ -162,9 +162,7 @@
                       <div class="table-responsive">
                         <table class="table">
                           <thead class="heading-top">
-                            <?php
-                              $total_products=\App\Models\RFQProducts::TotalDatas($rfq_id);
-                            ?>
+                           <?php $total_products=\App\Models\RFQProducts::TotalDatas($rfqs->id); ?>
                             <tr>
                               <th scope="col">#</th>
                               <th scope="col">Product Name</th>
@@ -187,13 +185,15 @@
                             @foreach ($product_datas as $product)
                               <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
                                 <td class="expand-button"></td>
-                                  <?php
-                                    $total_based_products=\App\Models\RFQProducts::TotalDatas($rfq_id,$product['product_id']);
-                                  ?>
+                                <?php
+                                  $total_based_products=\App\Models\RFQProducts::TotalDatas($rfqs->id,$product['product_id']);
+                                  $sum_of_retail_qty=$total_based_products->retail_price*$total_based_products->quantity;
+                                ?>
                                 <td>{{ $product['product_name'] }}</td>
                                 <th>Quantity: {{ $total_based_products->quantity }}</th>
                                 <th>RFQ Price: {{ $total_based_products->rfq_price }}</th>
-                                <th class="total-head">Total: {{ $total_based_products->sub_total }}</th>
+                                <th class="total-head">Total: <span class="get-total">@if($total_based_products->sub_total!=0) {{$total_based_products->sub_total}}
+                                    @else {{$sum_of_retail_qty}} @endif</span></th>
                               </tr>
                               <tr class="hide-table-padding">
                                 <td></td>
@@ -217,7 +217,7 @@
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        <?php $total_amount=$total_quantity=0 ?>
+                                        <?php $rfq_price=$total_amount=$total_quantity=0 ?>
                                         @foreach($product['product_variant'] as $key=>$variant)
                                           <?php 
                                             $option_count=$product['option_count'];
@@ -249,15 +249,17 @@
                                             </td>
                                             @endif
                                             <td>
-                                              <?php $high_value=$variation_details['rfq_price']; ?>
+                                              <?php $high_value = isset($variation_details['rfq_price'])?$variation_details['rfq_price']:$variant['retail_price']; ?>
                                               {{ $high_value }}
                                             </td>
                                             <td>
-                                              <div class="form-group">{{ $variation_details['sub_total'] }}</div>
+                                              <?php $sub_total = $variation_details['quantity']*$high_value; ?>
+                                              <div class="form-group">{{ $sub_total }}</div>
                                             </td>
                                           </tr>
-                                          <?php $total_amount +=$variation_details['sub_total']; ?>
+                                          <?php $total_amount +=$sub_total; ?>
                                           <?php $total_quantity +=$variation_details['quantity']; ?>
+                                          <?php $rfq_price +=$high_value; ?>
                                         @endforeach
                                         <tr>
                                           <td colspan="{{ count($product['options'])+4 }}" class="text-right">Total:</td>
@@ -276,24 +278,24 @@
                             </tr>
                             <tr class="total-calculation">
                               <td colspan="4" class="title">Order Discount</td>
-                              <td><span class="order-discount">{{$rfqs->order_discount}}</span></td>
+                              <td><span class="order-discount">{{isset($rfqs->order_discount)?$rfqs->order_discount:'0.00'}}</span></td>
                             </tr>
                             <tr class="total-calculation">
-                              <td colspan="4" class="title">Order Tax ({{$rfqs->oderTax->name}} @ {{round($rfqs->oderTax->rate,0)}}%)</td>
-                              <td id="orderTax">{{$rfqs->order_tax_amount}}</td>
+                              <td colspan="4" class="title">Order Tax ({{isset($rfqs->oderTax->name)?$rfqs->oderTax->name:'No  Tax'}} @ {{isset($rfqs->oderTax->rate)?$rfqs->oderTax->rate:0.00}}%)</td>
+                              <td id="orderTax">{{isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:0.00}}</td>
                             </tr>
                             <tr class="total-calculation">
                               <th colspan="4" class="title">Total Amount(SGD)</th>
                               <th id="total_amount_sgd">{{$rfqs->sgd_total_amount}}</th>
                             </tr>
-                            @if($rfqs->currencyCode->currency_code!='SGD')
+                            @if(isset($rfqs->currencyCode->currency_code) && $rfqs->currencyCode->currency_code!='SGD')
                               @php $currency = 'contents'; @endphp 
                             @else
                               @php $currency = 'none'; @endphp
                             @endif
                             <tr class="total-calculation" style="display:{{$currency}}">
                               <th colspan="4" class="title">
-                                Total Amount (<span class="exchange-code">{{$rfqs->currencyCode->currency_code}}</span>)
+                                Total Amount (<span class="exchange-code">{{isset($rfqs->currencyCode->currency_code)?$rfqs->currencyCode->currency_code:'SGD'}}</span>)
                               </th>
                               <th colspan="4" id="toatl_exchange_rate">{{$rfqs->exchange_total_amount}}</th>
                             </tr>
@@ -324,4 +326,19 @@
       </div>
     </section>
   </div>
+  @push('custom-scripts')
+    <script type="text/javascript">
+      $(document).ready(function($) {
+        var sum = 0;
+        $('.get-total').each(function() {
+          sum += Number($(this).text());
+        });
+        $('.all_amount').text(sum.toFixed(2));
+        var orderDiscount = $('.order-discount').text();
+        var orderTax = $('#orderTax').text();
+        var totalSGD = parseFloat(sum)+parseFloat(orderDiscount)+parseFloat(orderTax);
+        $('#total_amount_sgd').text(totalSGD.toFixed(2));
+      });
+    </script>
+  @endpush
 @endsection
