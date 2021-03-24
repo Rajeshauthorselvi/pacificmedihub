@@ -92,7 +92,7 @@
                       <div class="form-group">
                         <div class="col-sm-12">
                           <label for="product">Products *</label>
-                          {!! Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec','readonly']) !!}
+                          {!! Form::text('product',null, ['class'=>'form-control product-sec','id'=>'prodct-add-sec']) !!}
                         </div>
                       </div>
                     </div>
@@ -119,25 +119,29 @@
                                     Total Amount:&nbsp;
                                     <span class="all_amount" id="allAmount">{{ $total_products->sub_total }}</span>
                                 </th>
+                                <th></th>
+
                               </tr>
                             </thead>
                             <tbody>
                               @foreach ($product_datas as $product)
-                                <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
-                                  <td class="expand-button"></td>
                                   <?php
                                     $total_based_products=\App\Models\OrderProducts::TotalDatas($order->id,$product['product_id']);
                                   ?>
+                                <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
+                                  <td class="expand-button"></td>
                                   <td>{{ $product['product_name'] }}</td>
-                                  <th>
+                                  <td>
                                     Quantity: &nbsp;
                                     <span class="total_quantity">{{ $total_based_products->quantity }}</span>
-                                  </th>
-                                  {{-- <th>Price: {{ $total_based_products->final_price }}</th> --}}
-                                  <th></th>
-                                  <th class="total-head">
+                                  </td>
+                                  <td></td>
+                                  <td class="total-head">
                                     Total: &nbsp;<span class="total">{{ $total_based_products->sub_total }}</span>
-                                  </th>
+                                  </td>
+                                  <td>
+                                    <a href="javascript:void(0)" class="btn btn-danger remove-product-row"><i class="fa fa-trash"></i></a>
+                                  </td>
                                 </tr>
                                 <tr class="hide-table-padding">
                                   <td></td>
@@ -153,7 +157,7 @@
                                             <th>Retail Price</th>
                                             <th>Minimum Selling Price</th>
                                             <th>Quantity</th>
-                                            <th>Price</th>
+                                            <th>Final Price</th>
                                             <th>Subtotal</th>
                                           </tr>
                                         </thead>
@@ -165,6 +169,9 @@
                                               $variation_details=\App\Models\OrderProducts::VariationPrice($product['product_id'],$variant['variant_id'],$order->id);
                                             ?>
                                             <tr class="parent_tr">
+                                              <input type="hidden" name="variant[row_id][]" value="{{$variation_details->id}}">
+                                              <input type="hidden" name="variant[product_id][]" value="{{ $product['product_id'] }}" class="product_id">
+                                              <input type="hidden" name="variant[id][]" value="{{$variant['variant_id']}}" class="variant_id">
                                               <td>{{$variant['option_value1']}}</td>
                                               @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
                                                 <td>{{$variant['option_value2']}}</td>
@@ -179,17 +186,32 @@
                                                 <td> {{$variant['option_value5']}} </td>
                                               @endif
                                               <td class="base_price"> {{$variant['base_price']}} </td>
-                                              <td> {{$variant['retail_price']}}</td>
-                                              <td> {{$variant['minimum_selling_price']}} </td>
                                               <td>
-                                                <div class="form-group">{{ $variation_details['quantity'] }}</div>
+                                                <input type="hidden" name="variant[base_price][]" value="{{$variant['base_price']}}">
+                                                <input type="hidden" name="variant[retail_price][]" value="{{$variant['retail_price']}}">
+                                                {{$variant['retail_price']}}
                                               </td>
                                               <td>
-                                                <?php $high_value=$variation_details['final_price']; ?>
-                                                {{ $high_value }}
+                                                <input type="hidden" name="variant[minimum_selling_price][]" value="{{$variant['minimum_selling_price']}}">
+                                                {{$variant['minimum_selling_price']}}
                                               </td>
                                               <td>
-                                                <div class="form-group">{{ $variation_details['sub_total'] }}</div>
+                                                <div class="form-group">
+                                                  <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" autocomplete="off" value="{{ $variation_details['quantity'] }}">
+                                                </div>
+                                              </td>
+                                              <td>
+                                                 <?php $high_value=$variation_details['final_price']; ?>
+                                                <input type="text" name="variant[final_price][]" value="{{ $high_value }}" autocomplete="off" class="form-control final_price">
+                                                <input type="hidden" class="max_price" value="{{ $high_value }}">
+                                              </td>
+                                              <td>
+                                                <div class="form-group">
+                                                  <span class="sub_total">
+                                                    {{ $variation_details['sub_total'] }}
+                                                  </span>
+                                                </div>
+                                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $variation_details['sub_total'] }}">
                                               </td>
                                             </tr>
                                             <?php $total_amount +=$variation_details['sub_total']; ?>
@@ -338,8 +360,23 @@
 
       $(document).on('click', '.remove-product-row', function(event) {
         event.preventDefault();
+        var curr_tr_quantity=$(this).closest('tr').find('.total_quantity').text();
+        var curr_tr_total=$(this).closest('tr').find('.total').text();
+        
         $(this).closest('tr').next('tr').remove();
         $(this).closest('tr').remove();
+
+        var all_amount = $('#allAmount').text();
+        var all_quantity = $('.all_quantity').text();
+        var balance_amount=parseInt(all_amount)-parseInt(curr_tr_total);
+        var balance_quantity=parseInt(all_quantity)-parseInt(curr_tr_quantity);
+
+        $('.all_amount').text(balance_amount);
+        $('.all_quantity').text(balance_quantity);
+        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        overallCalculation(balance_amount,tax_rate);
+
+
       });
   
       $(document).on('click', '.remove-item', function(event) {
@@ -372,7 +409,8 @@
             url: "{{ url('admin/orders-product') }}",
             data: {
               product_search_type: 'product_options',
-              product_id:ui.item.value
+              product_id:ui.item.value,
+              from:'edit'
             },
           })
           .done(function(response) {
@@ -386,7 +424,8 @@
                 $('#total_exchange').show();
               }
             } 
-            $('.parent_tbody').append(response);
+            // $('.parent_tbody').append(response);
+            $('.total-calculation:first').before(response);
           });
            $(this).val('');
           return false;
@@ -415,8 +454,7 @@
           var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
           var attr=$(this).parents('tbody').find('.collapse.show');
           var total_quantity=SumTotal('.collapse.show .stock_qty');
-          console.log(total_quantity);
-          
+
           $('.collapse.show').find('.total_quantity').text(total_quantity);
           $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);
           var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
@@ -449,7 +487,6 @@
           var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
           var attr=$(this).parents('tbody').find('.collapse.show');
           var total_quantity=SumTotal('.collapse.show .stock_qty');
-          console.log(total_quantity);
 
           $('.collapse.show').find('.total_quantity').text(total_quantity);
           $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);

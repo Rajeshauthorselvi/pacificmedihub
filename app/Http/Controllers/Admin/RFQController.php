@@ -368,11 +368,6 @@ class RFQController extends Controller
 
       $variant               = $request->variant;
       $row_ids               = $variant['row_id'];
-      $product_ids           = $variant['product_id'];
-      $variant_id            = $variant['id'];
-      $base_price            = $variant['base_price'];
-      $retail_price          = $variant['retail_price'];
-      $minimum_selling_price = $variant['minimum_selling_price'];
       $stock_qty             = $variant['stock_qty'];
       $rfq_price             = $variant['rfq_price'];
       $sub_total             = $variant['sub_total'];
