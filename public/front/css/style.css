@@ -1806,7 +1806,12 @@ color: #fff;
     padding: 25px 15px;
 }
   .conversation-block .direct-chat-messages {
-    scrollbar-width: thin;
+       scrollbar-width: thin;
+        transition: transform .5s ease-in-out;
+        transform: translate(0,0);
+        height: 500px;
+        overflow: auto;
+        padding: 10px;
   }
   .conversation-block .form-control{
     border-radius: 0;
