@@ -48,7 +48,7 @@
                   </div>
                   <div class="col-sm-4 text-right">
                     <?php $rfq_id = base64_encode($rfq['id']);?>
-                    <a href="javascript:void(0);" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>&nbsp;&nbsp;
+                    <a href="{{ route('my.rfq.comments',$rfq_id) }}" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>&nbsp;&nbsp;
                     <a href="{{ route('my-rfq.show',$rfq_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
                   </div>
                 </div>

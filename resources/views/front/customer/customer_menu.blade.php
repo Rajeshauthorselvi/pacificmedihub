@@ -7,7 +7,7 @@
       </a>
     </li>
     <li>
-  		<a class="link @if($current_route=='my-rfq.index'||$current_route=='my-rfq.show'||$current_route=='my-rfq.edit') active @endif" href="@if($current_route=='my-rfq.index') javascript:void(0); @else {{ route('my-rfq.index') }} @endif">
+  		<a class="link @if($current_route=='my-rfq.index'||$current_route=='my-rfq.show'||$current_route=='my-rfq.edit'||$current_route=='my.rfq.comments') active @endif" href="@if($current_route=='my-rfq.index') javascript:void(0); @else {{ route('my-rfq.index') }} @endif">
       	<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
       </a>
     </li>

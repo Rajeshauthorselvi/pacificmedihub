@@ -55,7 +55,7 @@
                       <li>
                  <?php 
                       $disabled="";
-                      if ($rfq_details->status==10) {
+                      if ($rfq_details->status==13) {
                           $disabled="pointer-events:none;opacity:0.5";
                       }
                       ?>
@@ -216,8 +216,13 @@
 				scrollTop: $('.direct-chat-messages').get(0).scrollHeight
 			}, 2000);
 			$('.add-more').click(function(event) {
-				$('.append-sec').append('<div class="form-group"> <input type="file" name="attachment[]" class="form-control" style="width: 80%;float:left;"> <div style="width: 20%;float: right;" class="text-right"> <a href="javascript:void(0)" class="btn btn-danger remove=item"><i class="fa fa-minus"></i></a></div> </div><div class="clearfix"></div><br>');
-			});
+        $('.append-sec').append('<div class="form-group"> <input type="file" name="attachment[]" class="form-control" style="width: 90%;float:left;"> <div style="width: 10%;float: right;" class="text-right"> <a href="javascript:void(0);" class="btn btn-danger remove-item"><i class="fa fa-minus"></i></a></div></div>');
+      });
+
+      $(document).on('click','.remove-item',function(event) {
+        $(this).parents('.form-group').remove();
+      });
+
 
 			$(document).on('click', '.view-attchment', function(event) {
 				event.preventDefault();

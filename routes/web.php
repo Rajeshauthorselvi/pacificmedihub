@@ -227,13 +227,18 @@ Route::group(['middleware' => 'customer'], function () {
 	Route::resource('wishlist', 'front\WishlistController');
 
 	//My RFQ
-	Route::resource('my-rfq','front\MyRFQController');
 	Route::get('request-rfq','front\MyRFQController@request')->name('request.rfq');
 	Route::get('rfq-status','front\MyRFQController@status')->name('rfq.status');
 	Route::post('change-address','front\MyRFQController@changeAddress')->name('change.address');
 	Route::put('updaterfqitem', 'front\MyRFQController@updateItem');
 	//RFQ PDF
-	Route::get('my-rfq-pdf/{rfq_id}','front\MyRFQController@RFQPDF');
+	Route::get('my-rfq-pdf/{rfq_id}','front\MyRFQController@RFQPDF')->name('my.rfq.pdf');
+	//RFQ Comments
+	Route::get('my-rfq-comments/{rfq_id}','front\MyRFQController@RFQComments')->name('my.rfq.comments');
+	Route::post('my-rfq-comments-post','front\MyRFQController@RFQCommentsPost')->name('my.rfq.comments.post');
+	Route::post('view-my-rfq-comments-attachment','front\MyRFQController@ViewRFQCommentAttachments')->name('view.my.rfq.comments.attachment');
+	Route::get('download-my-rfq-comments-attachment/{attach_id}','front\MyRFQController@DownloadRFQCommentAttachments');
+	Route::resource('my-rfq','front\MyRFQController');
 
 	//Direct RFQ
 	Route::post('proceed-rfq','front\MyRFQController@proceedRFQ')->name('proceed.rfq');	
