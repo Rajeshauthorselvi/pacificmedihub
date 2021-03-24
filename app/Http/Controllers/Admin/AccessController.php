@@ -117,7 +117,12 @@ class AccessController extends Controller
             $this->EntireOrderSec($role_id,$total_opration,$product_data);
         }
         else{
-           RoleAccessPermission::where('object','order')->update(['allow_access'=>'no']);
+            
+           RoleAccessPermission::where('object','new_order')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','assign_order')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','delivery_order')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','completed_orders')->update(['allow_access'=>'no']);
+           RoleAccessPermission::where('object','cancelled_order')->update(['allow_access'=>'no']);
            RoleAccessPermission::where('object','order_payment')->update(['allow_access'=>'no']);
         }
         /*Order*/
@@ -425,14 +430,51 @@ class AccessController extends Controller
 
     public function EntireOrderSec($role_id,$total_opration,$product_data)
     {
-            /*Order*/
-            if (isset($product_data['order'])) {
-                $this->DataLoop(4,$total_opration,'order',$product_data['order'],$role_id);
+            /*New Order*/
+            if (isset($product_data['new_order'])) {
+                $this->DataLoop(4,$total_opration,'new_order',$product_data['new_order'],$role_id);
             }
             else{
-                RoleAccessPermission::where('object','order')->update(['allow_access'=>'no']);
+                RoleAccessPermission::where('object','new_order')->update(['allow_access'=>'no']);
             }
-            /*Order*/
+            /*New Order*/
+
+            /*Assign for Delivery*/
+            if (isset($product_data['assign_order'])) {
+                $this->DataLoop(4,$total_opration,'assign_order',$product_data['assign_order'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','assign_order')->update(['allow_access'=>'no']);
+            }
+            /*Assign for Delivery*/
+
+            /*Delivery In Progress*/
+            if (isset($product_data['delivery_order'])) {
+                $this->DataLoop(4,$total_opration,'delivery_order',$product_data['delivery_order'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','delivery_order')->update(['allow_access'=>'no']);
+            }
+            /*Delivery In Progress*/
+
+            /*Completed Orders*/
+            if (isset($product_data['completed_orders'])) {
+                $this->DataLoop(4,$total_opration,'completed_orders',$product_data['completed_orders'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','completed_orders')->update(['allow_access'=>'no']);
+            }
+            /*Completed Orders*/
+
+            /*Cancelled/Missed Orders*/
+            if (isset($product_data['cancelled_order'])) {
+                $this->DataLoop(4,$total_opration,'cancelled_order',$product_data['cancelled_order'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','cancelled_order')->update(['allow_access'=>'no']);
+            }
+            /*Cancelled/Missed Orders*/
+
             /*Order Payment*/
             if (isset($product_data['order_payment'])) {
                 $this->DataLoop(4,$total_opration,'order_payment',$product_data['order_payment'],$role_id);
@@ -442,14 +484,6 @@ class AccessController extends Controller
             }
             /*Order Payment*/
 
-            /*Completed Orders*/
-            if (isset($product_data['completed_orders'])) {
-                $this->DataLoop(3,$total_opration,'completed_orders',$product_data['completed_orders'],$role_id);
-            }
-            else{
-                RoleAccessPermission::where('object','completed_orders')->update(['allow_access'=>'no']);
-            }
-            /*Completed Orders*/
     }
 
     public function EntireRFQSec($role_id,$total_opration,$product_data)

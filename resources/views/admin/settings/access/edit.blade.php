@@ -648,44 +648,157 @@
                       <tbody>
                         <tr>
                           <td>1</td>
-                          <td class="name">Orders</td>
+                          <td class="name">New Orders</td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-<?php $read=(isset($permissions['order']) && $permissions['order']['read']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="order[order][read]" class="orders-read" id="ordersRead" {{ $read }}>
-                                <label for="ordersRead"></label>
+<?php $read=(isset($permissions['new_order']) && $permissions['new_order']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[new_order][read]" class="orders-read" id="newOrdersRead" {{ $read }}>
+                                <label for="newOrdersRead"></label>
                               </div>
                             </div>
                           </td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-<?php $create=(isset($permissions['order']) && $permissions['order']['create']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="order[order][create]" class="orders-create" id="ordersCreate" {{ $create }}>
-                                <label for="ordersCreate"></label>
+<?php $create=(isset($permissions['new_order']) && $permissions['new_order']['create']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[new_order][create]" class="orders-create" id="newOrdersCreate" {{ $create }}>
+                                <label for="newOrdersCreate"></label>
                               </div>
                             </div>
                           </td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-<?php $update=(isset($permissions['order']) && $permissions['order']['update']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="order[order][update]" class="orders-update" id="ordersUpdate" {{ $update }}>
-                                <label for="ordersUpdate"></label>
+<?php $update=(isset($permissions['new_order']) && $permissions['new_order']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[new_order][update]" class="orders-update" id="newOrdersUpdate" {{ $update }}>
+                                <label for="newOrdersUpdate"></label>
                               </div>
                             </div>
                           </td>
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-<?php $delete=(isset($permissions['order']) && $permissions['order']['delete']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="order[order][delete]" class="orders-delete" id="ordersDelete" {{ $delete }}>
-                                <label for="ordersDelete"></label>
+<?php $delete=(isset($permissions['new_order']) && $permissions['new_order']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[new_order][delete]" class="orders-delete" id="newOrdersDelete" {{ $delete }}>
+                                <label for="newOrdersDelete"></label>
                               </div>
                             </div>
                           </td>
                         </tr>
+                        <tr>
+                          <td>2</td>
+                          <td class="name">Assign for Delivery</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['assign_order']) && $permissions['assign_order']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[assign_order][read]" class="orders-read" id="assignOrdersRead" {{ $read }}>
+                                <label for="assignOrdersRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['assign_order']) && $permissions['assign_order']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[assign_order][update]" class="orders-update" id="assignOrdersUpdate" {{ $update }}>
+                                <label for="assignOrdersUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['assign_order']) && $permissions['assign_order']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[assign_order][delete]" class="orders-delete" id="assignOrdersDelete" {{ $delete }}>
+                                <label for="assignOrdersDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td class="name">Delivery In Progress</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['delivery_order']) && $permissions['delivery_order']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[delivery_order][read]" class="orders-read" id="deliveryOrdersRead" {{ $read }}>
+                                <label for="deliveryOrdersRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['delivery_order']) && $permissions['delivery_order']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[delivery_order][update]" class="orders-update" id="deliveryOrdersUpdate" {{ $update }}>
+                                <label for="deliveryOrdersUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                        </tr>
+                        <tr>
+                          <td>4</td>
+                          <td class="name">Completed Orders</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['completed_orders']) && $permissions['completed_orders']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[completed_orders][read]" class="orders-read" id="completedOrdersRead" {{ $read }}>
+                                <label for="completedOrdersRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['completed_orders']) && $permissions['completed_orders']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[completed_orders][delete]" class="orders-delete" id="completedOrdersDelete" {{ $delete }}>
+                                <label for="completedOrdersDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>5</td>
+                          <td class="name">Cancelled/Missed Orders</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $read=(isset($permissions['cancelled_order']) && $permissions['cancelled_order']['read']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[cancelled_order][read]" class="orders-read" id="cancelledordersRead" {{ $read }}>
+                                <label for="cancelledordersRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $update=(isset($permissions['cancelled_order']) && $permissions['cancelled_order']['update']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[cancelled_order][update]" class="orders-update" id="cancelledordersUpdate" {{ $update }}>
+                                <label for="cancelledordersUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+<?php $delete=(isset($permissions['cancelled_order']) && $permissions['cancelled_order']['delete']=='yes')?'checked':'' ?>
+                                <input type="checkbox" name="order[cancelled_order][delete]" class="orders-delete" id="cancelledordersDelete" {{ $delete }}>
+                                <label for="cancelledordersDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        
                         <tr>
                           <td>2</td>
                           <td class="name">Order Payment</td>
@@ -727,40 +840,7 @@
                           </td>
                         
                         </tr>
-                        <tr>
 
-                          <td>3</td>
-                          <td class="name">Completed Orders</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $read=(isset($permissions['completed_orders']) && $permissions['completed_orders']['read']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="order[completed_orders][read]" class="orders-read" id="completedOrdersRead" {{ $read }}>
-                                <label for="completedOrdersRead"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $create=(isset($permissions['completed_orders']) && $permissions['completed_orders']['create']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="order[completed_orders][create]" class="orders-create" id="completedOrdersCreate" {{ $create }}>
-                                <label for="completedOrdersCreate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-<?php $update=(isset($permissions['completed_orders']) && $permissions['completed_orders']['update']=='yes')?'checked':'' ?>
-                                <input type="checkbox" name="order[completed_orders][update]" class="orders-update" id="completedOrdersUpdate" {{ $update }}>
-                                <label for="completedOrdersUpdate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>-</td>
-                        
-                        </tr>
                       </tbody>
                     </table>
                   </div>

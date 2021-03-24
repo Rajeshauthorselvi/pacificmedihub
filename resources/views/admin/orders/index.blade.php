@@ -134,7 +134,7 @@
                                 </a>
                                 @endif
                               
-                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','update'))
+                                @if ($edit_permission=="yes")
                                 @if ($order->order_status!=13)
                                 <a href="{{route($edit_route,[$order->id,'low_stock'=>$low_stock])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                 @endif
@@ -161,7 +161,7 @@
                                     <i class="fas fa-print"></i>&nbsp;&nbsp;Print
                                   </li>
                                 </a>
-                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','delete'))
+                                @if ($delete_permission=="yes")
                                 <a href="javascript:void(0)"><li class="dropdown-item">
                                   <form method="POST" action="{{ route($delete_route,$order->id) }}">@csrf 
                                     <input name="_method" type="hidden" value="DELETE">

@@ -31,8 +31,17 @@ if(Auth::guard('employee')->user()->isAuthorized('wastage','read')){
 if(Auth::guard('employee')->user()->isAuthorized('rfq','read')){
   $rfq="yes";
 }
-if(Auth::guard('employee')->user()->isAuthorized('order','read')){
-  $order="yes";
+if(Auth::guard('employee')->user()->isAuthorized('new_order','read')){
+  $new_order="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('assign_order','read')){
+  $assign_order="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('delivery_order','read')){
+  $delivery_order="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('cancelled_order','read')){
+  $cancelled_order="yes";
 }
 if(Auth::guard('employee')->user()->isAuthorized('completed_orders','read')){
   $completed_order="yes";
@@ -231,47 +240,47 @@ if(Auth::guard('employee')->user()->isAuthorized('payment_setting','read')){
             </li>
           @endif
           {{-- Ordesr Menu --}}
-          @if ($order!="" || isset($completed_order))
+          @if (isset($new_order) || isset($assign_order) || isset($delivery_order) || isset($completed_order) || isset($cancelled_order))
           <li class="nav-item">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-dolly-flatbed"></i> <p>Orders <i class="fas fa-angle-left right"></i></p>
             </a>
             <ul class="nav nav-treeview">
-{{--               <li class="nav-item">
-                <a href="{{ route('new-orders.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>New Orders</p>
-                </a>
-              </li> --}}
-              <li class="nav-item">
-                <a href="{{ route('assign-shippment.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Assigned for Delivery</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('assign-delivery.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Delivery In Progress</p>
-                </a>
-              </li>
-{{--               <li class="nav-item">
-                <a href="{{ route('completed-orders.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Orders Completed</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('cancelled-orders.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Cancelled/Missed Orders</p>
-                </a>
-              </li> --}}
-{{--               <li class="nav-item">
-                <a href="{{ route('orders.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>List Orders</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('delivery-assign.index') }}" class="nav-link">
-                  <i class="fas fa-angle-double-right"></i> <p>Delivery Assign</p>
-                </a>
-              </li> --}}
+                @if (isset($new_order))
+                  <li class="nav-item">
+                    <a href="{{ route('new-orders.index') }}" class="nav-link">
+                      <i class="fas fa-angle-double-right"></i> <p>New Orders</p>
+                    </a>
+                  </li>
+                @endif
+                @if (isset($assign_order))
+                  <li class="nav-item">
+                    <a href="{{ route('assign-shippment.index') }}" class="nav-link">
+                      <i class="fas fa-angle-double-right"></i> <p>Assigned for Delivery</p>
+                    </a>
+                  </li>
+                @endif
+                @if (isset($delivery_order))
+                  <li class="nav-item">
+                    <a href="{{ route('assign-delivery.index') }}" class="nav-link">
+                      <i class="fas fa-angle-double-right"></i> <p>Delivery In Progress</p>
+                    </a>
+                  </li>
+                @endif
+                @if (isset($completed_order))
+                  <li class="nav-item">
+                    <a href="{{ route('completed-orders.index') }}" class="nav-link">
+                      <i class="fas fa-angle-double-right"></i> <p>Orders Completed</p>
+                    </a>
+                  </li>
+                @endif
+                @if (isset($cancelled_order))
+                  <li class="nav-item">
+                    <a href="{{ route('cancelled-orders.index') }}" class="nav-link">
+                      <i class="fas fa-angle-double-right"></i> <p>Cancelled/Missed Orders</p>
+                    </a>
+                  </li>
+                @endif
             </ul>
           </li>
           @endif
