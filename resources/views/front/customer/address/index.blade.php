@@ -22,20 +22,22 @@
         <h2>Manage Addresses</h2>
         <div class="add-new"><a href="{{ route('my-address.create') }}"> <i class="fas fa-plus"></i> ADD NEW ADDRESS </a></div>
         <div class="address-container">
-          <div class="address-block primary">
-            <h4>{{ $primary->name }}</h4>
-            <div class="address-box">
-              <div class="show-address">{{ $primary->address_line1 }} <br> {{ $primary->address_line2 }}</div>
+          @if(isset($primary->name))
+            <div class="address-block primary">
+              <h4>{{ $primary->name }}</h4>
+              <div class="address-box">
+                <div class="show-address">{{ $primary->address_line1 }} <br> {{ $primary->address_line2 }}</div>
+              </div>
+              <div class="contact">
+                <span>Contact Number </span>: {{ $primary->mobile }}
+              </div>
+              <div class="action-block">
+                <a href="{{ route('my-address.edit',$primary->id) }}"><i class="fas fa-edit"></i> Edit</a>
+                <span class="space-break"></span>
+                <a><i class="fas fa-check-circle"></i> Primary</a>
+              </div>
             </div>
-            <div class="contact">
-              <span>Contact Number </span>: {{ $primary->mobile }}
-            </div>
-            <div class="action-block">
-              <a href="{{ route('my-address.edit',$primary->id) }}"><i class="fas fa-edit"></i> Edit</a>
-              <span class="space-break"></span>
-              <a><i class="fas fa-check-circle"></i> Primary</a>
-            </div>
-          </div>
+          @endif
 
           @foreach($all_address as $address)
             <div class="address-block">
