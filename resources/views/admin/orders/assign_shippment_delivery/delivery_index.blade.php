@@ -53,7 +53,6 @@
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
                         <th>Ordered Date</th>
-                        <th>Delivered Date</th>
                         <th>Order Code</th>
                         <th>Customer</th>
                         <th>Order Status</th>
@@ -84,9 +83,6 @@
                         <tr style="{{ $class_bg }}">
                           <td><input type="checkbox" class="orders_ids" value="{{$order->id}}"></td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
-                          <td>
-                            {{ isset($order->delivered_at)?date('m/d/Y',strtotime($order->delivered_at)):'-' }}
-                          </td>
                           <td><a href="{{route($show_route,$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->first_name }}</td>
 
@@ -129,6 +125,11 @@
                                 </li>
                                 </a>
                                 @endif
+                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ $order->address->latitude.','.$order->address->longitude }}&dir_action=navigate" target="_blank">
+                                   <li class="dropdown-item">
+                                     <i class="fa fa-map-marker"></i>&nbsp;&nbsp;View On Map
+                                   </li>
+                                 </a>
                                   </ul>
                                 </div>
                               </td>

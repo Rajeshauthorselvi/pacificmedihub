@@ -95,6 +95,7 @@ class OrderController extends Controller
         elseif($currenct_route[0]=="cancelled-orders"){
           $orders->whereIn('order_status',[21,17,11]);
           $data['data_title']='Cancelled/Missed Orders';
+
         }
 
       $orders=$orders->orderBy('orders.id','desc')->get();
@@ -116,11 +117,11 @@ class OrderController extends Controller
           $total_orders[$order->id] = [
               'distance'=>$distance,
               'orders'  => $order
-
           ];
         }
         asort($total_orders);
         $data['orders']=$total_orders;
+
       }
 
         return view($view,$data);
@@ -520,8 +521,11 @@ class OrderController extends Controller
         }
 
         if ($route[0]=="assign-shippment" || $route[0]=="assign-delivery") {
+
           $order_data['delivery_person_id']=$request->delivery_person_id;
-          $order_data['approximate_delivery_date']=date('Y-m-d',strtotime($request->delivery_date));
+          if ($request->order_status==15) {
+            $order_data['approximate_delivery_date']=date('Y-m-d');
+          }
           $order_data['logistic_instruction']=$request->notes;
           // $order_data['delivery_status']=$request->delivery_status;
           $order_data['order_status']=$request->order_status;

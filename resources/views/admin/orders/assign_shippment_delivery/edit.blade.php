@@ -94,12 +94,12 @@
                     </div>
                     <div class="delivery-date" style="display: none;">
                       <div class="form-group">
-                      <?php $approximate_delivery_date=isset($order->approximate_delivery_date)?date('d/m/Y',strtotime($order->approximate_delivery_date)):''; ?>
+                      <?php $approximate_delivery_date=isset($order->approximate_delivery_date)?date('d/m/Y',strtotime($order->approximate_delivery_date)):date('d/m/Y'); ?>
                         <div class="col-sm-4">
                           <label for="sales_rep_id">Delivery Person</label>
                           {!! Form::select('delivery_person_id',$delivery_persons,null,['class'=>'form-control','id'=>'delivery_person_id']) !!}
                         </div>
-                          <div class="col-sm-4">
+                          <div class="col-sm-4" style="visibility:hidden;">
                             {!! Form::label('doj', 'Delivery Date') !!}
                             <input type="text" name="delivery_date" class="form-control date-picker" value="{{ $approximate_delivery_date }}" />
                             </div>
@@ -243,7 +243,7 @@
        var currenct_val=$(this).val();
           if (currenct_val==15 || currenct_val==16) {
               $('.delivery-date').css('display','block');
-              $('.date-picker').val('');
+              $('.date-picker').val(<?php date('d-m-Y'); ?>);
           }
           else{
             $('.delivery-date').css('display','none');
