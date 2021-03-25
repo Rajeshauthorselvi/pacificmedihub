@@ -13,6 +13,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('front/css/bootstrap.min.css') }}" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{{ asset('theme/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('theme/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('theme/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
   <!-- iCheck -->
   <link rel="stylesheet" href="{{ asset('theme/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{asset('theme/plugins/image_viewer/jquery.magnify.css')}}">
@@ -44,6 +48,19 @@
 <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- Select2 -->
 <script src="{{ asset('theme/plugins/select2/js/select2.full.min.js') }}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{{ asset('theme/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/jszip/jszip.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/pdfmake/vfs_fonts.js') }}"></script>
+<script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <!-- Owl Carousel - 2.3.4 -->
 <script src="{{ asset('front/js/owl.carousel.min.js') }}"></script>
 <!-- Toast -->

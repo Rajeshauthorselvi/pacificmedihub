@@ -18,7 +18,9 @@
 		   	@include('front.customer.customer_menu')
       </div>
 		  <div class="col-sm-9">
-        <a href="{{ url()->previous() }}" class="go-back"><i class="fas fa-angle-left"></i> Back</a>
+        <div class="go-back">
+          <a href="{{ url()->previous() }}"><i class="fas fa-angle-left"></i> Back</a>
+        </div>
         <div class="order rfq view-block">
           <div class="action_sec">
             @if($order->order_status!=21)

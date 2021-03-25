@@ -22,6 +22,7 @@
           <li role="presentation" class="nav-item">
             <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Profile"> Profile Details </a>
           </li>
+          @if($customer->role_id!=1)
           <li role="presentation" class="nav-item">
             <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Company"> Company Details </a>
           </li>
@@ -34,6 +35,7 @@
           <li role="presentation" class="nav-item">
             <a href="#step5" class="nav-link password" data-toggle="tab" aria-controls="step5" role="tab customer-link"  tab-count="5" title="Password">Change Password</a>
           </li>
+          @endif
         </ul>
 
       	<div class="tab-content py-2">
@@ -64,6 +66,7 @@
             </div>
           </div>
 
+          @if($customer->role_id!=1)
           <div class="tab-pane company-tabs" tab-count="2" role="tabpanel" id="step2">
             <?php 
               if(!empty($customer->company->logo)){$image = 'theme/images/customer/company/'.$customer->company->id.'/'.$customer->company->logo;}
@@ -142,7 +145,7 @@
             <div class="form-group">
               <div class="col-sm-5">
                 <label for="">Name</label>
-                {!! Form::text('customer[first_name]',$customer->poc->name,['class'=>'form-control','readonly']) !!}
+                {!! Form::text('customer[first_name]',isset($customer->poc->name)?$customer->poc->name:'',['class'=>'form-control','readonly']) !!}
               </div>
               <div class="col-sm-5">
                 <label for="">Company UEN</label>
@@ -159,11 +162,11 @@
             <div class="form-group">
               <div class="col-sm-5">
                 <label for="">Email</label>
-                {!! Form::email('customer[email]',  $customer->poc->email,['class'=>'form-control','readonly']) !!}
+                {!! Form::email('customer[email]',  isset($customer->poc->email)?$customer->poc->email:'',['class'=>'form-control','readonly']) !!}
               </div>
               <div class="col-sm-5">
                 <label for="">Contact No</label>
-                {!! Form::text('customer[contact_number]', $customer->poc->contact_number,['class'=>'form-control','readonly']) !!}
+                {!! Form::text('customer[contact_number]', isset($customer->poc->contact_number)?$customer->poc->contact_number:'',['class'=>'form-control','readonly']) !!}
               </div>
             </div>
           </div>
@@ -239,7 +242,7 @@
               </div>
             </form>
           </div>
-
+          @endif
         </div>
       </div>
     </div>

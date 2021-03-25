@@ -33,9 +33,10 @@ class ProfileController extends Controller
         $data=array();
         $id = $data['user_id']  = Auth::id();
         $data['customer'] = User::with('alladdress','company','bank','poc')
-                            ->where('users.role_id',7)
+                            ->whereIn('users.role_id',[1,7])
                             ->where('id',$id)
                             ->first();
+        //dd($data);
         return view('front/customer/profile',$data);
     }
 

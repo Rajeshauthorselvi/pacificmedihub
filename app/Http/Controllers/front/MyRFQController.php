@@ -10,6 +10,8 @@ use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
 use App\Models\UserAddress;
 use App\Models\UserCompanyDetails;
+use App\Models\RFQComments;
+use App\Models\RFQCommentsAttachments;
 use App\Models\Countries;
 use App\Models\RFQ;
 use App\Models\RFQProducts;
@@ -17,6 +19,7 @@ use App\Models\Prefix;
 use App\Models\PaymentTerm;
 use App\Models\Currency;
 use App\Models\Tax;
+use App\Models\Notification;
 use App\User;
 use Auth;
 use Str;
@@ -499,11 +502,14 @@ class MyRFQController extends Controller
 
     public function RFQPDF($id)
     {
+        if(!Auth::check()){
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
 
-          $data = array();
-          $products = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
-          $product_data = $product_variant = array();
-          foreach ($products as $key => $product) {
+        $data = array();
+        $products = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
+        $product_data = $product_variant = array();
+        foreach ($products as $key => $product) {
             $product_name    = Product::where('id',$product->product_id)->value('name');
             $all_variants    = RFQProducts::where('rfq_id',$id)->where('product_id',$product->product_id)
                                 ->pluck('product_variant_id')->toArray();
@@ -518,39 +524,108 @@ class MyRFQController extends Controller
               'option_count'    => $options['option_count'],
               'product_variant' => $product_variant
             ];
-          }
-          $rfq = RFQ::where('id',$id)->first();
+        }
+        $rfq = RFQ::where('id',$id)->first();
 
-          if ($rfq->created_user_type==2) {
+        if ($rfq->created_user_type==2) {
             $creater_name=Employee::where('id',$rfq->user_id)->first();
             $creater_name=$creater_name->emp_name;
-          }
-          else{
+        }
+        else{
             $creater_name=User::where('id',$rfq->user_id)->first();
             $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
-          }
-          $data['creater_name']=$creater_name;
+        }
+        $data['creater_name']=$creater_name;
 
-
-          $data['rfqs']             = $rfq;
-          $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
-          $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
-          $data['product_datas']    = $product_data;
-          $data['rfq_id']           = $id;
-          $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
-          $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+        $data['rfqs']             = $rfq;
+        $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+        $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
+        $data['product_datas']    = $product_data;
+        $data['rfq_id']           = $id;
+        $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
+        $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                         ->pluck('name','id')->toArray();  
-          $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
+        $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
 
-          return view('front/customer/rfq/rfq_pdf',$data);
+        //return view('front/customer/rfq/rfq_pdf',$data);
 
-          /*$layout = View::make('admin.rfq.rfq_pdf',$data);
-          $pdf = App::make('dompdf.wrapper');
-          $pdf->loadHTML($layout->render());
-          return $pdf->download('RFQ-'.$rfq->order_no.'.pdf');*/
-
+        $layout = View::make('front.customer.rfq.rfq_pdf',$data);
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($layout->render());
+        return $pdf->download('RFQ-'.$rfq->order_no.'.pdf');
     }
 
+
+    public function RFQComments(Request $request,$rfq_id)
+    {
+        if(!Auth::check()){
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+
+        $id = base64_decode($rfq_id);
+        $data=array();
+        $data['rfq_details'] = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
+        $data['rfq_id']      = $id;
+        $data['comments']    = RFQComments::where('rfq_id',$id)->get();
+        return view('front.customer.rfq.rfq_comments',$data);  
+    }
+
+    public function RFQCommentsPost(Request $request)
+    {
+        //dd($request->all());
+        if(!Auth::check()){
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+        $created_user_type = 3;
+        $auth_id = Auth::id();
+        $creater_name = Auth::user()->first_name;
+        
+        $data=[
+            'rfq_id'                  => $request->rfq_id,
+            'comment'                 => $request->comment,
+            'commented_by'            => $auth_id,
+            'commented_by_user_type'  => $created_user_type
+        ];
+
+        $rfq_commene_id = RFQComments::insertGetId($data);
+
+        $attachments=$request->file('attachment');
+        if ($request->hasFile('attachment')) {
+            $attachments=$request->file('attachment');
+            foreach ($attachments as $key => $attachment) {
+                $image = $attachment;
+                $image_name = Str::random(8).'.'.$image->getClientOriginalExtension();
+                $destinationPath = public_path('/theme/images/rfq_comment_attachment');
+                $image->move($destinationPath, $image_name);
+                RFQCommentsAttachments::insert([
+                    'rfq_comment_id'  => $rfq_commene_id,
+                    'attachment'      => $image_name
+                ]);
+            }
+        } 
+        $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$request->rfq_id)->first();
+        Notification::insert([
+            'content'             => $creater_name.' added new comment to '.$rfq_details->order_no,
+            'url'                 => url('admin/rfq-comments/'.$request->rfq_id),
+            'created_at'          => date('Y-m-d H:i:s'),
+            'created_by'          => $auth_id,
+            'created_user_type'   => $created_user_type,
+        ]);
+        return Redirect::back();
+    }
+
+    public function ViewRFQCommentAttachments(Request $request)
+    {
+        $all_attachments=RFQCommentsAttachments::where('rfq_comment_id',$request->comment_id)->pluck('attachment','id');
+        return view('front.customer.rfq.rfq_show_attachments',['attachments'=>$all_attachments]);
+    }
+
+    public function DownloadRFQCommentAttachments($attachment_id)
+    {
+        $attachment=RFQCommentsAttachments::where('id',$attachment_id)->value('attachment');
+        $path=public_path('/theme/images/rfq_comment_attachment/').$attachment;
+        return Response::download($path, $attachment);
+    }
 
     public function Variants($product_id,$variation_id=0)
     {

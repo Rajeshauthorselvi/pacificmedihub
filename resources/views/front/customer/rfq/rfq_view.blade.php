@@ -19,10 +19,13 @@
       </div>
 
 		  <div class="col-sm-9">
-        <a href="{{ url()->previous() }}" class="go-back"><i class="fas fa-angle-left"></i> Back</a>
+        <div class="go-back">
+          <a href="{{ url()->previous() }}"><i class="fas fa-angle-left"></i> Back</a>
+        </div>
         <div class="rfq view-block">
           <div class="action_sec">
             @if($rfq->status!=21)
+            <?php $rfq_id = base64_encode($rfq->id); ?>
               <ul class="list-unstyled">
                 <li style="background-color: #216ea7;border-right: 1px solid #227bbb;">
                   <a href="javascript:void(0);" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
@@ -30,7 +33,7 @@
                   </a>
                 </li>
                 <li style="background-color: #216ea7">
-                  <a href="javascript:void(0);" class="pdf">
+                  <a href="{{ route('my.rfq.pdf',$rfq->id) }}" class="pdf">
                     <i class="fa fa-download"></i>&nbsp; PDF
                   </a>
                 </li>
@@ -40,12 +43,12 @@
                   </a>
                 </li>
                 <li style="background-color: #23bf79">
-                  <a href="javascript:void(0);" class="comment">
+                  <a href="{{ route('my.rfq.comments',$rfq_id) }}" class="comment">
                     <i class="fa fa-comment"></i>&nbsp; Comment
                   </a>
                 </li>
                 <li style="background-color: #f6ac50;@if($rfq->status==13) display:none; @endif">
-                  <?php $rfq_id = base64_encode($rfq->id); ?>
+                  
                   <a href="{{ route('my-rfq.edit',$rfq_id) }}" class="edit">
                     <i class="fa fa-edit"></i>&nbsp; Edit
                   </a>

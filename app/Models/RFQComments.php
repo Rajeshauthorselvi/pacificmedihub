@@ -13,10 +13,11 @@ class RFQComments extends Model
     {
     	if ($user_type==1) {
     		$user_details=User::find($user_id);
-    	}
-    	else{
+    	}elseif($user_type==2){
     		$user_details=Employee::find($user_id);
-    	}
+    	}elseif($user_type==3){
+            $user_details=User::find($user_id);
+        }
 
     	return $user_details;
     }
