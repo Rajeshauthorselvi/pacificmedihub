@@ -114,7 +114,9 @@
                         {!! Form::text('postcode', $company->post_code,['class'=>'form-control','readonly']) !!}
                       </div>
                     </div>
-                    <div class="form-group">
+                    {!! Form::hidden('latitude', $company->latitude,['id'=>'latitude']) !!}
+                    {!! Form::hidden('longitude', $company->latitude,['id'=>'longitude']) !!}
+{{--                     <div class="form-group">
                       <div class="col-sm-6">
                         <label for="city">Warehouse Latitude</label>
                         {!! Form::text('latitude', $company->latitude,['class'=>'form-control','id'=>'latitude']) !!}
@@ -123,7 +125,7 @@
                         <label for="postCode">Warehouse Longitude</label>
                         {!! Form::text('longitude', $company->longitude,['class'=>'form-control','id'=>'longitude']) !!}
                       </div>
-                    </div>
+                    </div> --}}
                     <div class="col-sm-12">
                       <div id="myMap"></div>
                       <div class="pac-card" id="pac-card">
