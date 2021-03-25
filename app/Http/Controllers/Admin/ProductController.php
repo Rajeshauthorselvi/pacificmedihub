@@ -423,7 +423,7 @@ class ProductController extends Controller
         $data['commissions']     = CommissionValue::where('commission_id',2)->where('published',1)
                                         ->where('is_deleted',0)->get();
         $data['order_exists']    = PurchaseProducts::where('product_id',$id)->exists();
-        // dd($data);
+        //dd($data);
         return view('admin/products/edit',$data);
     }
 

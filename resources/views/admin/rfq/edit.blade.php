@@ -80,6 +80,7 @@
                       <div class="col-sm-4">
                         <label for="currency_rate">Currency</label>
                         <select class="form-control no-search select2bs4" name="currency" id="currency_rate">
+                          <option currency-rate="0" currency-code="" value="">Please Select</option>
                           @foreach($currencies as $currency)
                             <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($rfqs->currency==$currency->id)  selected="selected" @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
                               {{$currency->currency_code}} - {{$currency->currency_name}}
@@ -290,20 +291,19 @@
                               <th id="total_amount_sgd" colspan="2">{{$rfqs->sgd_total_amount}}</th>
                               <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$rfqs->sgd_total_amount}}">
                             </tr>
-                            @if(isset($rfqs->currencyCode->currency_code) && $rfqs->currencyCode->currency_code!='SGD')
-                              @php $currency = 'contents'; @endphp 
+                            @if(isset($rfqs->currency))
+                              <?php $currency='content'; ?>
                             @else
-                              @php $currency = 'none'; @endphp
+                              <?php $currency='none'; ?>
                             @endif
-                              <tr class="total-calculation" id="total_exchange" style="display:{{$currency}}">
-                                <th colspan="3" class="title">
-                                  Total Amount (<span class="exchange-code">{{isset($rfqs->currencyCode->currency_code)?$rfqs->currencyCode->currency_code:'SGD'}}</span>)
-                                </th>
-                                <th>
-                                  <input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="{{$rfqs->exchange_total_amount}}" onkeyup="validateNum(event,this);" autocomplete="off">
-                                </th>
-                              </tr>
-                            
+                            <tr class="total-calculation" id="total_exchange" style="display:{{$currency}}">
+                              <th colspan="3" class="title">
+                                Total Amount (<span class="exchange-code">{{isset($rfqs->currencyCode->currency_code)?$rfqs->currencyCode->currency_code:''}}</span>)
+                              </th>
+                              <th>
+                                <input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="{{$rfqs->exchange_total_amount}}" onkeyup="validateNum(event,this);" autocomplete="off">
+                              </th>
+                            </tr>
                             <tr><td colspan="5"></td></tr>
 						              </tbody>
 						            </table>
@@ -593,9 +593,12 @@
       $(document).on('change', '#currency_rate', function() {
         var currency = $('option:selected', this).attr("currency-rate");
         var currencyCode = $('option:selected', this).attr("currency-code");
-        if(currencyCode!='SGD'){
+        if(currency!=0){
           $('#total_exchange').show();
-        }else if(currencyCode=='SGD'){
+        }else{
+          $('#total_exchange').hide();
+        }
+        if(currencyCode=='SGD'){
           $('#total_exchange').hide();
         }
         var all_amount = $('#allAmount').text();
@@ -608,6 +611,7 @@
         var allAmount = all_amount;
         var taxRate = tax_rate;
         var currencyRate = currency_rate;
+        
         var tax = taxRate/100;
         var calculatTax = tax*allAmount;
         var taxAmount = calculatTax.toFixed(2);
@@ -616,9 +620,13 @@
         var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount);
         var totalSGD = parseFloat(calculateSGD)-parseFloat(discount);
         $('#total_amount_sgd').text(totalSGD.toFixed(2));
-        var totalExchangeRate = totalSGD*currencyRate;
-        $('#toatl_exchange_rate').val(totalExchangeRate.toFixed(2));
 
+        if(currencyRate!=0){
+          var totalExchangeRate = totalSGD*currencyRate;
+          $('#toatl_exchange_rate').val(totalExchangeRate.toFixed(2));
+        }else{
+          $('#total_exchange').hide();
+        }
         $('#total_amount_hidden').val(allAmount);
         $('#order_tax_amount_hidden').val(taxAmount);
         $('#sgd_total_amount_hidden').val(totalSGD);
