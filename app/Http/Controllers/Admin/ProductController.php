@@ -647,7 +647,7 @@ class ProductController extends Controller
         $data['commissions']     = CommissionValue::where('commission_id',2)->where('published',1)
                                         ->where('is_deleted',0)->get();
         $data['order_exists']    = PurchaseProducts::where('product_id',$id)->exists();
-        // dd($data);
+        //dd($data);
         return view('admin/products/edit',$data);
     }
 
@@ -1288,7 +1288,7 @@ class ProductController extends Controller
                 $product_variants[$key]['option_value_id5'] = $variants->option_value_id5;
                 $product_variants[$key]['option_value5'] = $variants->optionValue5->option_value;
             }
-            $product_variants[$key]['sku'] = isset($variants->sku)?$variants->sku:'';
+            $product_variants[$key]['sku'] = isset($variant_vendor->sku)?$variant_vendor->sku:'';
 
                 $product_variants[$key]['base_price'] = isset($variant_vendor->base_price)?$variant_vendor->base_price:'';
                 $product_variants[$key]['retail_price'] = isset($variant_vendor->retail_price)?$variant_vendor->retail_price:'';

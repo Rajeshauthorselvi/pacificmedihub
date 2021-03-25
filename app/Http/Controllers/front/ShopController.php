@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Categories;
 use App\Models\Product;
+use App\Models\ProductVariantVendor;
 use App\Models\Option;
 use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
 use DB;
@@ -71,8 +72,8 @@ class ShopController extends Controller
 
 
         $id = base64_decode($product_id);
-        $product = Product::with('product_images','sorted_product_image','product_variant')->where('id',$id)
-                                  ->where('is_deleted',0)->first();
+        $product = Product::with('product_images','product_variant','product_variant_vendors')
+                          ->where('id',$id)->where('is_deleted',0)->first();
 
        $allowed_options=[]; 
        $default_variant_id=0; 
@@ -81,12 +82,16 @@ class ShopController extends Controller
        $data['default_variant_id'] = 0;
        $data['options'] = null;
        $data['allowed_options'] = [];
-    
-       //dd($product->product_variant);
+
         if(isset($product->product_variant) && ($product->product_variant->count()!=0 )){
 
             foreach($product->product_variant as $key=> $variant){
-                
+
+                $get_high_value = DB::table('product_variant_vendors')
+                                    ->select(DB::raw('max(retail_price) as price'),'id as variant_vendor_id','sku as vairant_sku')
+                                    ->where('product_id',$variant->product_id)
+                                    ->first();
+
                 if($key=="0") {
                     $default_variant_id = $variant->id;
                     $default_sku = $variant->sku;
@@ -107,44 +112,6 @@ class ShopController extends Controller
                 if($variant->option_id5){
                     $allowed_options[$variant->option_id5][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id5];
                 }
-
-
-
-               /* if($allowed_options[$variant->option_id]){
-                    array_push($allowed_options[$variant->option_id],['var_id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id]);
-                }
-                
-                else $allowed_options[$variant->option_id] = [$variant->option_value_id];
-
-                if(isset($allowed_options[$variant->option_id2])){
-                    array_push($allowed_options[$variant->option_id2],['var_id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id2]);
-                }
-                else $allowed_options[$variant->option_id2] = [$variant->option_value_id2];*/
-
-                /*if(isset($allowed_options[$variant->option_id])){
-                    array_push($allowed_options[$variant->option_id],[$variant->option_value_id,]);
-                }
-                else $allowed_options[$variant->option_id] = [$variant->option_value_id];
-
-                if(isset($allowed_options[$variant->option_id2])){
-                    array_push($allowed_options[$variant->option_id2],$variant->option_value_id2);
-                }
-                else $allowed_options[$variant->option_id2] = [$variant->option_value_id2];
-
-                if(isset($allowed_options[$variant->option_id3])){
-                    array_push($allowed_options[$variant->option_id3],$variant->option_value_id3);
-                }
-                else $allowed_options[$variant->option_id3] = [$variant->option_value_id3];
-
-                if(isset($allowed_options[$variant->option_id4])){
-                    array_push($allowed_options[$variant->option_id4],$variant->option_value_id4);
-                }
-                else $allowed_options[$variant->option_id4] = [$variant->option_value_id4];
-
-                if(isset($allowed_options[$variant->option_id5])){
-                    array_push($allowed_options[$variant->option_id5],$variant->option_value_id5);
-                }
-                else $allowed_options[$variant->option_id5] = [$variant->option_value_id5];*/
             }
             
             $required_options = array_filter(array_keys($allowed_options));
