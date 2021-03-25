@@ -292,15 +292,18 @@
                               <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$rfqs->sgd_total_amount}}">
                             </tr>
                             @if(isset($rfqs->currency))
-                              <tr class="total-calculation" id="total_exchange" style="display:{{$currency}}">
-                                <th colspan="3" class="title">
-                                  Total Amount (<span class="exchange-code">{{isset($rfqs->currencyCode->currency_code)?$rfqs->currencyCode->currency_code:''}}</span>)
-                                </th>
-                                <th>
-                                  <input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="{{$rfqs->exchange_total_amount}}" onkeyup="validateNum(event,this);" autocomplete="off">
-                                </th>
-                              </tr>
-                             @endif
+                              <?php $currency='content'; ?>
+                            @else
+                              <?php $currency='none'; ?>
+                            @endif
+                            <tr class="total-calculation" id="total_exchange" style="display:{{$currency}}">
+                              <th colspan="3" class="title">
+                                Total Amount (<span class="exchange-code">{{isset($rfqs->currencyCode->currency_code)?$rfqs->currencyCode->currency_code:''}}</span>)
+                              </th>
+                              <th>
+                                <input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="{{$rfqs->exchange_total_amount}}" onkeyup="validateNum(event,this);" autocomplete="off">
+                              </th>
+                            </tr>
                             <tr><td colspan="5"></td></tr>
 						              </tbody>
 						            </table>
