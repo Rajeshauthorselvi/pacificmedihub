@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\User;
 use DB;
 use App\Models\Employee;
+use App\Models\UserCompanyDetails;
 use App\Models\OrderStatus;
 use App\Models\OrderProducts;
 use App\Models\ProductVariantVendor;
@@ -64,7 +65,7 @@ class Orders extends Model
     }
     public function address()
     {
-        return $this->belongsTo(UserAddress::class,'address_id');
+        return $this->belongsTo(UserCompanyDetails::class,'address_id');
     }
 
     static function CheckQuantity($order_id)
