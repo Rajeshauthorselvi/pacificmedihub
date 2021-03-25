@@ -77,7 +77,13 @@
 
 					<div class="variants-config">
 		                @foreach($product->product_variant as $key=> $variant)
-		                <div class="variant-config" data-optionID1="{{$variant->option_id}}" data-optionVID1="{{$variant->option_value_id}}" data-optionID2="{{$variant->option_id2}}" data-optionVID2="{{$variant->option_value_id2}}" data-optionID3="{{$variant->option_id3}}" data-optionVID3="{{$variant->option_value_id3}}" data-optionID4="{{$variant->option_id4}}" data-optionVID4="{{$variant->option_value_id4}}" data-optionID5="{{$variant->option_id5}}" data-optionVID5="{{$variant->option_value_id5}}" data-variantID="{{$variant->id}}" data-sku="{{$variant->sku}}"></div>
+		                <?php $get_sku = DB::table('product_variant_vendors')
+                                    ->where('product_id',$variant->product_id)
+                                    ->where('product_variant_id',$variant->id)
+                                    ->orderBy('retail_price','desc')
+                                    ->first();
+                        ?>
+		                <div class="variant-config" data-optionID1="{{$variant->option_id}}" data-optionVID1="{{$variant->option_value_id}}" data-optionID2="{{$variant->option_id2}}" data-optionVID2="{{$variant->option_value_id2}}" data-optionID3="{{$variant->option_id3}}" data-optionVID3="{{$variant->option_value_id3}}" data-optionID4="{{$variant->option_id4}}" data-optionVID4="{{$variant->option_value_id4}}" data-optionID5="{{$variant->option_id5}}" data-optionVID5="{{$variant->option_value_id5}}" data-variantID="{{$variant->id}}" data-sku="{{$get_sku->sku}}"></div>
 		                @endforeach
               		</div>
 
@@ -154,7 +160,7 @@
                     			@if(isset($product->long_description))
                       				<p>{!! $product->long_description !!}</p>
                       			@else
-                      				<p>{!! isset($product->name)?$product->name:'' !!}</p>
+                      				<p>{!! isset($product->short_description)?$product->short_description:$product->name !!}</p>
                       			@endif
                     		</div>
                     		<div class="tab-pane fade" id="Information">

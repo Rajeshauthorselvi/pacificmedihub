@@ -27,7 +27,7 @@
             @if($rfq->status!=21)
             <?php $rfq_id = base64_encode($rfq->id); ?>
               <ul class="list-unstyled">
-                <li style="background-color: #216ea7;border-right: 1px solid #227bbb;">
+                <li style="background-color: #216ea7;border-right: 1px solid #227bbb;@if($rfq->status!=13) display:none; @endif">
                   <a href="javascript:void(0);" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
                     <i class="fa fa-plus-circle"></i>&nbsp; Place Order
                   </a>
@@ -48,7 +48,6 @@
                   </a>
                 </li>
                 <li style="background-color: #f6ac50;@if($rfq->status==13) display:none; @endif">
-                  
                   <a href="{{ route('my-rfq.edit',$rfq_id) }}" class="edit">
                     <i class="fa fa-edit"></i>&nbsp; Edit
                   </a>
@@ -132,7 +131,12 @@
             <div class="table-responsive">
               <table class="table">
                 <thead>
-                  <tr><th>No.</th><th>Product Name</th><th>Quantity</th><th>RFQ Price</th><th>Sub Total</th></tr>
+                  <tr>
+                    <th>No.</th>
+                    <th style="width:50%">Product Name</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-center">Sub Total</th></tr>
                 </thead>
                 <tbody>
                   @php $s_no = 1 @endphp
@@ -164,24 +168,34 @@
                         </div>
                       </div>
                     </td>
-                    <td>{{ $products['quantity'] }}</td>
-                    <td>{{ $products['rfq_price'] }}</td>
-                    <td>{{ number_format($products['sub_total'],2,'.','') }}</td>
+                    <td class="text-center">{{ $products['quantity'] }}</td>
+                    <td class="text-center">{{ number_format($products['rfq_price'],2,'.','') }}</td>
+                    <td class="text-center">{{ number_format($products['sub_total'],2,'.','') }}</td>
                   </tr>
                   @php $s_no++ @endphp
                   @endforeach
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Total</td><td>{{ $rfq_data['total'] }}</td>
+                    <td colspan="4" class="text-right">Total</td>
+                    <td class="text-center">{{ number_format($rfq_data['total'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Order Discount</td><td>{{ $rfq_data['discount'] }}</td>
+                    <td colspan="4" class="text-right">Order Discount</td>
+                    <td class="text-center">{{ number_format($rfq_data['discount'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Order Tax</td><td>{{ $rfq_data['tax'] }}</td>
+                    <td colspan="4" class="text-right">Order Tax</td>
+                    <td class="text-center">{{ number_format($rfq_data['tax'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer grand">
-                    <th colspan="4" class="text-right">Total Amount (SGD)</th><th>{{ $rfq_data['grand_total'] }}</th>
+                    <th colspan="4" class="text-right">Total Amount (SGD)</th>
+                    <th class="text-center">{{ number_format($rfq_data['grand_total'],2,'.','') }}</th>
                   </tr>
+                  @if(($rfq_data['currency_code']!='') && ($rfq_data['exchange_amount']!=''))
+                    <tr class="outer grand">
+                      <th colspan="4" class="text-right">Total Amount ({{$rfq_data['currency_code']}})</th>
+                      <th colspan="4" class="text-center">{{$rfq_data['exchange_amount']}}</th>
+                    </tr>
+                  @endif
                 </tbody>
               </table>
             </div>

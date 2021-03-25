@@ -52,9 +52,11 @@
 							<div class="wrap"><label>Free Helpline:</label>(+100) 123 456 7890</div>
 							</div>
 						</li>
+						@if(!Auth::check())
 						<li>
 							<a href="{{ route('register.new.customer') }}"><label>New Customer?</label><br />Click Here</a>
 						</li>
+						@endif
 					</ul>
 				</div>
 			</div>

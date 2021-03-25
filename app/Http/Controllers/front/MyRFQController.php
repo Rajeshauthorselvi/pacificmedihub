@@ -217,6 +217,13 @@ class MyRFQController extends Controller
         $rfq_data['tax']         = isset($rfq->order_tax_amount)?(float)$rfq->order_tax_amount:'0.00';
         $rfq_data['grand_total'] = isset($rfq->sgd_total_amount)?(float)$rfq->sgd_total_amount:'0.00';
         $rfq_data['notes']       = isset($rfq->notes)?$rfq->notes:'';
+        if(isset($rfq->currency)){
+            $rfq_data['currency_code']   = $rfq->currencyCode->currency_code;
+            $rfq_data['exchange_amount'] = $rfq->exchange_total_amount;
+        }else{
+            $rfq_data['currency_code']   = '';
+            $rfq_data['exchange_amount'] = '';
+        }
 
         $data['rfq_data']     = $rfq_data;
         $data['rfq_products'] = $rfq_items;

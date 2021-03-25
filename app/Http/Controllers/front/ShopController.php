@@ -72,7 +72,7 @@ class ShopController extends Controller
 
 
         $id = base64_decode($product_id);
-        $product = Product::with('product_images','product_variant','product_variant_vendors')
+        $product = Product::with('product_images','product_variant')
                           ->where('id',$id)->where('is_deleted',0)->first();
 
        $allowed_options=[]; 
@@ -87,30 +87,32 @@ class ShopController extends Controller
 
             foreach($product->product_variant as $key=> $variant){
 
-                $get_high_value = DB::table('product_variant_vendors')
-                                    ->select(DB::raw('max(retail_price) as price'),'id as variant_vendor_id','sku as vairant_sku')
-                                    ->where('product_id',$variant->product_id)
-                                    ->first();
 
+                $get_sku = DB::table('product_variant_vendors')
+                                    ->where('product_id',$variant->product_id)
+                                    ->where('product_variant_id',$variant->id)
+                                    ->orderBy('retail_price','desc')
+                                    ->first();
+                
                 if($key=="0") {
                     $default_variant_id = $variant->id;
-                    $default_sku = $variant->sku;
+                    $default_sku = $get_sku->sku;
                 }
 
                 if($variant->option_id){
-                    $allowed_options[$variant->option_id][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id];
+                    $allowed_options[$variant->option_id][] = ['id'=>$variant->id,'sku'=>$get_sku->sku,'value'=>$variant->option_value_id];
                 }
                 if($variant->option_id2){
-                    $allowed_options[$variant->option_id2][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id2];
+                    $allowed_options[$variant->option_id2][] = ['id'=>$variant->id,'sku'=>$get_sku->sku,'value'=>$variant->option_value_id2];
                 }
                 if($variant->option_id3){
-                    $allowed_options[$variant->option_id3][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id3];
+                    $allowed_options[$variant->option_id3][] = ['id'=>$variant->id,'sku'=>$get_sku->sku,'value'=>$variant->option_value_id3];
                 }
                 if($variant->option_id4){
-                    $allowed_options[$variant->option_id4][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id4];
+                    $allowed_options[$variant->option_id4][] = ['id'=>$variant->id,'sku'=>$get_sku->sku,'value'=>$variant->option_value_id4];
                 }
                 if($variant->option_id5){
-                    $allowed_options[$variant->option_id5][] = ['id'=>$variant->id,'sku'=>$variant->sku,'value'=>$variant->option_value_id5];
+                    $allowed_options[$variant->option_id5][] = ['id'=>$variant->id,'sku'=>$get_sku->sku,'value'=>$variant->option_value_id5];
                 }
             }
             
