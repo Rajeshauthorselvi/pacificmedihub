@@ -37,7 +37,7 @@
       </div>
 		  <div class="col-sm-9">
         <div class="go-back">
-          <a href="{{ route('child.rfq.index') }}"><i class="fas fa-angle-left"></i> Back</a>
+          <a href="@if($data_from=='child'){{ route('child.rfq.index') }}@else {{ route('my-rfq.index') }} @endif"><i class="fas fa-angle-left"></i> Back</a>
         </div>
         <div class="rfq view-block">
           <div class="action_sec">
