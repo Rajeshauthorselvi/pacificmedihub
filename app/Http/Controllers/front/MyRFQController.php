@@ -52,7 +52,7 @@ class MyRFQController extends Controller
             $toatl_qty   = RFQProducts::where('rfq_id',$rfq->id)->sum('quantity');
             $rfq_data[$key]['id'] = $rfq->id;
             $rfq_data[$key]['create_date'] = date('d/m/Y',strtotime($rfq->created_at));
-            $rfq_data[$key]['status'] = $rfq->statusName->status_name;
+            $rfq_data[$key]['status'] = $rfq->status;
             $rfq_data[$key]['code'] = $rfq->order_no;
             $rfq_data[$key]['item_count'] = $item_count;
             $rfq_data[$key]['toatl_qty'] = $toatl_qty;
@@ -174,7 +174,7 @@ class MyRFQController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request,$id)
     {
         if(!Auth::check()){
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
@@ -191,7 +191,6 @@ class MyRFQController extends Controller
         $data['cus_email']        = $user->email;
         $data['delivery_address'] = UserAddress::find($del_add_id);
         $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
-        
         $rfq_products = RFQProducts::with('product','variant')->where('rfq_id',$id)->orderBy('id','desc')->get();
         $rfq_data = $rfq_items = array();
         foreach ($rfq_products as $key => $item) {
@@ -224,10 +223,14 @@ class MyRFQController extends Controller
             $rfq_data['currency_code']   = '';
             $rfq_data['exchange_amount'] = '';
         }
-
+        $data['check_parent'] = UserCompanyDetails::where('customer_id',Auth::id())->first();
         $data['rfq_data']     = $rfq_data;
         $data['rfq_products'] = $rfq_items;
-        //dd($data);
+        $data['data_from']    = '';
+
+        if($request->has('child')){
+            $data['data_from'] = 'child';
+        }
         return view('front/customer/rfq/rfq_view',$data);
     }
 
@@ -632,6 +635,62 @@ class MyRFQController extends Controller
         $attachment=RFQCommentsAttachments::where('id',$attachment_id)->value('attachment');
         $path=public_path('/theme/images/rfq_comment_attachment/').$attachment;
         return Response::download($path, $attachment);
+    }
+
+    public function sendRFQApproval($rfq_id)
+    {
+        $id = base64_decode($rfq_id);
+        $rfq = RFQ::find($id);
+        $rfq->send_approval = 1;
+        $rfq->save();
+        Session::flash('approval', 'Your Request Sent successfully for Approval.!');
+        return Redirect::back();
+    }
+
+    public function childRFQIndex()
+    {
+        if(!Auth::check()){
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+
+        $user_id = Auth::id();
+        $parent_id = UserCompanyDetails::where('customer_id',$user_id)->value('id');
+        $all_child_id  = UserCompanyDetails::where('parent_company',$parent_id)->pluck('id')->toArray();
+
+
+        $data = array();
+        $user_id = Auth::id();
+        $all_rfq_data = RFQ::whereIn('customer_id',$all_child_id)->where('send_approval',1)->orderBy('id','desc')->get();
+        
+        $rfq_data = array();
+        foreach ($all_rfq_data as $key => $rfq) {
+            $company = UserCompanyDetails::where('customer_id',$rfq->customer_id)->first();
+            $item_count  = RFQProducts::where('rfq_id',$rfq->id)->count();
+            $toatl_qty   = RFQProducts::where('rfq_id',$rfq->id)->sum('quantity');
+            $rfq_data[$key]['id'] = $rfq->id;
+            $rfq_data[$key]['create_date'] = date('d/m/Y',strtotime($rfq->created_at));
+            $rfq_data[$key]['company'] = $company->company_name;
+            $rfq_data[$key]['status'] = $rfq->approval_status;
+            $rfq_data[$key]['code'] = $rfq->order_no;
+            $rfq_data[$key]['item_count'] = $item_count;
+            $rfq_data[$key]['toatl_qty'] = $toatl_qty;
+        }
+        $data['rfq_datas'] = $rfq_data;
+
+        return view('front/customer/rfq/child_rfq_index',$data);
+    }
+
+    public function responseChild(Request $request)
+    {
+        $rfq = RFQ::find($request->rfq_id);
+        $rfq->approval_status = $request->rfq_status;
+        $rfq->save();
+        if($request->rfq_status==1){
+           Session::flash('approved', 'RFQ Approved successfully.!');
+        }elseif($request->rfq_status==2){
+            Session::flash('disapproved', 'RFQ Disapproved successfully.!');
+        }
+        return true;
     }
 
     public function Variants($product_id,$variation_id=0)

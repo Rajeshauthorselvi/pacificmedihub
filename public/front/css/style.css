@@ -1738,14 +1738,31 @@ color: #fff;
     padding: 10px 1rem 1rem;
     width: 60%;
 }
-.rfq-block .header.cancelled {
-    background-color: #ff3c3c;
+.rfq.view-block .address-sec .action-btns {
+    width: 100%;
+    float: right;
+}
+.rfq.view-block .address-sec .action-btns .left, .rfq.view-block .address-sec .action-btns .right {
+    width: 48%;
+    float: left;
+    margin: 5px 5px 0 0;
+}
+.rfq.view-block .address-sec .action-btns a{
+    text-align: center;
+    cursor: pointer;
+    padding:5px;
+    width: 100%;
+    float: left;
+}
+.rfq.view-block .address-sec .action-btns a.approved{
+    background: #00a65a;
     color: #fff;
-    border-color: #ff3c3c;
 }
-.rfq-block .body.cancelled {
-    border-color: #ff3c3c;
+.rfq.view-block .address-sec .action-btns a.disapproved{
+    background: #dd4b39;
+    color: #fff;
 }
+
 .go-back {
     margin-bottom: .5rem;
     display: block;

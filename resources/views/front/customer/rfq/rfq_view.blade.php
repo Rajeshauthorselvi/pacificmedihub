@@ -4,33 +4,60 @@
 	<div class="container">
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
-      <li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
 			<li><a href="{{ route('my-rfq.index') }}" title="My RFQ">My RFQ</a></li>
+      @if($data_from=='child')<li><a href="{{ route('child.rfq.index') }}" title="My RFQ">Child RFQ</a></li>@endif
       <li><a title="RFQ View">View</a></li>
 		</ul>
 	</div>
 </div>
 @include('flash-message')
+@if(Session::has('approval'))
+  <div class="alert alert-info alert-block">
+    <button type="button" class="close" data-dismiss="alert">×</button> 
+    <strong>Your Request Sent successfully for Approval.!</strong>
+  </div>
+@endif
+@if(Session::has('approved'))
+  <div class="alert alert-success alert-block">
+    <button type="button" class="close" data-dismiss="alert">×</button> 
+    <strong>RFQ Approved successfully.!</strong>
+  </div>
+@endif
+@if(Session::has('disapproved'))
+  <div class="alert alert-danger alert-block">
+    <button type="button" class="close" data-dismiss="alert">×</button> 
+    <strong>RFQ Disapproved successfully.!</strong>
+  </div>
+@endif
 <div class="main">
 	<div class="container">
 		<div class="row">
 		  <div id="column-left" class="col-sm-3 hidden-xs column-left">
 		   	@include('front.customer.customer_menu')
       </div>
-
 		  <div class="col-sm-9">
         <div class="go-back">
-          <a href="{{ url()->previous() }}"><i class="fas fa-angle-left"></i> Back</a>
+          <a href="{{ route('child.rfq.index') }}"><i class="fas fa-angle-left"></i> Back</a>
         </div>
         <div class="rfq view-block">
           <div class="action_sec">
-            @if($rfq->status!=21)
+            @if($rfq->status!=21 && $data_from!='child')
             <?php $rfq_id = base64_encode($rfq->id); ?>
               <ul class="list-unstyled">
-                <li style="background-color: #216ea7;border-right: 1px solid #227bbb;@if($rfq->status!=13) display:none; @endif">
-                  <a href="javascript:void(0);" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
+                <li style="background-color: #216ea7;border-right: 1px solid #227bbb;@if($rfq->status!=13||($rfq->send_approval!=0 && $rfq->approval_status!=1)) display:none; @endif">
+                  @if(($check_parent->parent_company!=0)&&($rfq->send_approval==0))
+                    <a href="{{ route('send.rfq.approval',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Send Approval?')">
+                    <i class="fa fa-plus-circle"></i>&nbsp; Send Approval
+                    </a>
+                  @elseif(($check_parent->parent_company!=0)&&($rfq->send_approval!=0)&&($rfq->approval_status==1))
+                    <a href="{{ route('send.rfq.approval',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Send Approval?')">
                     <i class="fa fa-plus-circle"></i>&nbsp; Place Order
-                  </a>
+                    </a>
+                  @else
+                    <a href="javascript:void(0);" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
+                      <i class="fa fa-plus-circle"></i>&nbsp; Place Order
+                    </a>
+                  @endif
                 </li>
                 <li style="background-color: #216ea7">
                   <a href="{{ route('my.rfq.pdf',$rfq->id) }}" class="pdf">
@@ -55,15 +82,39 @@
               </ul>
             @endif
           </div>
-
           <div class="col-sm-12 address-sec">
             <div class="rfq-detail col-sm-4">
               <ul class="list-unstyled">
                 <li><strong>RFQ Code : #{{ $rfq->order_no }}</strong></li>
                 <li><span>Date: </span>{{ date('d/m/Y - H:i a',strtotime($rfq->created_at)) }}</li>
-                <li><span>Status: </span>{{ $rfq->statusName->status_name }}</li>
                 <li><span>Sales Rep: </span>{{ isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'' }}</li>
+                <?php 
+                  if($rfq->status==1) { $status = 'Pending'; $color_code = '#f0ad4e'; }
+                  elseif($rfq->status==13) { $status = 'Completed'; $color_code = '#00a65a'; }
+                  elseif($rfq->status==20) { $status = 'InProcess'; $color_code = '#f0ad4e'; }
+                  elseif($rfq->status==21) { $status = 'Rejected'; $color_code = '#dd4b39'; }
+                ?>
+
+                <li><span>Status</span>: <span class="badge" style="background:{{$color_code}};color:#fff;padding: 5px">{{ $status }}</span></li>
+                <?php 
+                  if($rfq->approval_status==0) { $approvalStatus = 'Pending'; $color_code = '#f0ad4e'; }
+                  elseif($rfq->approval_status==1) { $approvalStatus = 'Approved'; $color_code = '#00a65a'; }
+                  elseif($rfq->approval_status==2) { $approvalStatus = 'Disapproved'; $color_code = '#ef4156'; }
+                ?>
+                @if($check_parent->parent_company!=0 && $rfq->send_approval !=0)
+                  <br>
+                  <li><span>Approval Status:</span> <span class="badge" style="background:{{$color_code}};color:#fff;padding: 5px">{{ $approvalStatus }}</span></li>
+                @elseif($check_parent->parent_company==0 && $rfq->send_approval !=0 && $data_from=='child' && $rfq->approval_status!=0)
+                <br>
+                  <li><span>Approval Status:</span> <span class="badge" style="background:{{$color_code}};color:#fff;padding: 5px">{{ $approvalStatus }}</span></li>
+                @endif
               </ul>
+              @if($data_from=='child'&& $rfq->send_approval !=0 && $rfq->approval_status==0)
+                <div class="action-btns">
+                  <div class="left"><a class="approved" state="1" id={{ $rfq->id }}>Approve</a></div>
+                  <div class="right"><a class="disapproved" state="2" id={{ $rfq->id }}>Disapprove</a></div>
+                </div>
+              @endif
             </div>
             <div class="address-block col-sm-8">
            
@@ -211,4 +262,32 @@
     </div>
   </div>
 </div>
+
+@push('custom-scripts')
+  <script type="text/javascript">
+    $('.approved,.disapproved').on('click',function(){
+      var status = $(this).attr('state');
+      var RFQID = $(this).attr('id');
+      if(!confirm('Are you sure.?')) {return false};
+      console.log(status,RFQID);
+      $.ajax({
+        url:"{{ route('response.child.rfq') }}",
+        type:"POST",
+        data:{
+          "_token": "{{ csrf_token() }}",
+          rfq_id:RFQID,
+          rfq_status: status,
+        },
+      })
+      .done(function() {
+        console.log("success");
+        location.reload();
+      })
+      .fail(function() {
+        console.log("error");
+      })
+    });
+    
+  </script>
+@endpush
 @endsection

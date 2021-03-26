@@ -231,6 +231,10 @@ Route::group(['middleware' => 'customer'], function () {
 	Route::get('rfq-status','front\MyRFQController@status')->name('rfq.status');
 	Route::post('change-address','front\MyRFQController@changeAddress')->name('change.address');
 	Route::put('updaterfqitem', 'front\MyRFQController@updateItem');
+	Route::get('send-rfq-approval/{rfq_id}', 'front\MyRFQController@sendRFQApproval')->name('send.rfq.approval');
+	Route::get('child-rfq', 'front\MyRFQController@childRFQIndex')->name('child.rfq.index');
+	Route::get('child-rfq-view/{rfq_id}', 'front\MyRFQController@show')->name('child.rfq.show');
+	Route::post('response-child-rfq', 'front\MyRFQController@responseChild')->name('response.child.rfq');
 	//RFQ PDF
 	Route::get('my-rfq-pdf/{rfq_id}','front\MyRFQController@RFQPDF')->name('my.rfq.pdf');
 	//RFQ Comments

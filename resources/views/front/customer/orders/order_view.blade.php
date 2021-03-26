@@ -4,7 +4,6 @@
 	<div class="container">
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
-      <li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
 			<li><a href="{{ route('my-orders.index') }}" title="My RFQ">My Orders</a></li>
       <li><a title="Orders View">View</a></li>
 		</ul>
@@ -19,7 +18,7 @@
       </div>
 		  <div class="col-sm-9">
         <div class="go-back">
-          <a href="{{ url()->previous() }}"><i class="fas fa-angle-left"></i> Back</a>
+          <a href="{{ route('my-orders.index') }}"><i class="fas fa-angle-left"></i> Back</a>
         </div>
         <div class="order rfq view-block">
           <div class="action_sec">

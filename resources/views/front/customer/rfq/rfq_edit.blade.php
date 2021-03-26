@@ -4,7 +4,6 @@
 	<div class="container">
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
-      <li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
 			<li><a href="{{ route('my-rfq.index') }}" title="My RFQ">My RFQ</a></li>
       <li><a title="RFQ Edit">Edit</a></li>
 		</ul>
@@ -149,7 +148,7 @@
               </div>
 
               <div class="action-box">
-                <a href="{{ url()->previous() }}" class="btn reset-btn"> Cancel</a>
+                <a href="{{ route('my-rfq.index') }}" class="btn reset-btn"> Cancel</a>
                 <button type="submit" class="btn save-btn"> Save</button>
               </div>
             </form>
