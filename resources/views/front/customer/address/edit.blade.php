@@ -4,8 +4,8 @@
 	<div class="container">
 		<ul class="items">
 			<li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
-			<li><a href="{{ route('my-profile.index') }}" title="My Profile Page">My Profile</a></li>
-      <li><a title="My Address">My Address</a></li>
+      <li><a href="{{ route('my-address.index') }}" title="My Address">My Address</a></li>
+      <li><a title="Edit Address">Edit</a></li>
 		</ul>
 	</div>
 </div>

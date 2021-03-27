@@ -604,7 +604,8 @@
     $(document).ready(function() {
       $('a[href="#step2"]').removeClass('disabled');
       $('a[href="#step3"]').removeClass('disabled');
-      $('a[href="#step3"]').trigger('click');
+      $('a[href="#step4"]').removeClass('disabled');
+      $('a[href="#step4"]').trigger('click');
     });
   </script>
 @endif
@@ -720,7 +721,9 @@
             'country_id':$('.add_country_id').val(),
             'state_id':$('.add_state_id').val(),
             'city_id':$('.add_city_id').val(),
-            'customer_id':{{ $customer->id }}
+            'customer_id':{{ $customer->id }},
+            'latitude':$('#latitude').val(),
+            'longitude':$('#longitude').val()
           },
         })
         .done(function() {

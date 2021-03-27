@@ -158,7 +158,7 @@
                       <div class="form-group">
                         <div class="col-sm-6 csc-sec">
                           <label for="">Country *</label>
-                          {!! Form::select('company[country_id]',$countries,null,['class'=>'form-control select2bs4 country_id', 'id'=>'company_country']) !!}
+                          {!! Form::select('company[country_id]',$countries,196,['class'=>'form-control select2bs4 country_id', 'id'=>'company_country']) !!}
                           <span class="text-danger country_id" style="display:none">Country is required</span>
                         </div>
                         <div class="col-sm-6 csc-sec">
@@ -280,20 +280,18 @@
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Country</label>
-                          {!! Form::text('null',null,['class'=>'form-control address_country']) !!}
-                          {!! Form::hidden('address[country_id]',null,['class'=>'form-control address_country_id']) !!}
+                          {!! Form::select('address[country_id]',$countries,196,['class'=>'form-control select2bs4 address_country']) !!}
+                          
                         </div>
                         <div class="col-sm-6">
                           <label for="">State</label>
-                          {!! Form::text('null',null,['class'=>'form-control address_state']) !!}
-                          {!! Form::hidden('address[state_id]',null,['class'=>'form-control address_state_id']) !!}
+                          <select name="address[state_id]" class="form-control select2bs4 address_state"></select>
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">City</label>
-                          {!! Form::text('null',null,['class'=>'form-control address_city']) !!}
-                          {!! Form::hidden('address[city_id]',null,['class'=>'form-control address_city_id']) !!}
+                          <select name="address[city_id]" class="form-control select2bs4 address_city"></select>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Post Code</label>
@@ -484,6 +482,16 @@
 
   @push('custom-scripts')
   <script type="text/javascript">
+    $(document).ready(function() {
+      var country_id = 196;
+      getState(country_id,'#company_state');
+    });
+
+    $(document).ready(function() {
+      var state_id = 3186;
+      getCity(state_id,'#company_city');
+    });
+
     $(document).ready(function () {
       $('.nav-tabs > li a[title]').tooltip();
       $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
@@ -632,31 +640,26 @@
         return valid;
       }
 
-      $(".next-step").click(function (e) {
+      $('#validateStep2').on('click',function (e) {
         var company_name = $('.company_name').val();
         var company_add1 = $('.company_add1').val();
         var company_add2 = $('.company_add2').val();
         var company_contact = $('.company_contact').val();
-        var country = $('#company_country option:selected').text();
         var country_id = $('#company_country').val();
-        var state = $('#company_state option:selected').text();
         var state_id = $('#company_state').val();
-        var city = $('#company_city option:selected').text();
         var city_id = $('#company_city').val();
         var postcode = $('#company_postcode').val();
-
+        console.log(country_id,state_id,city_id);
         $('.del_add_name').val(company_name);
         $('.del_add_1').val(company_add1);
         $('.del_add_2').val(company_add2);
-        $('.del_add_contact').val(company_contact);      
-        $('.address_country').val(country);
-        $('.address_country_id').val(country_id);
-        $('.address_state').val(state);
-        $('.address_state_id').val(state_id);
-        $('.address_city').val(city);
-        $('.address_city_id').val(city_id);
+        $('.del_add_contact').val(company_contact);
+        getState(country_id,'.address_state');
+        getCity(state_id,'.address_city');
         $('.address_postcode').val(postcode);
+      });
 
+      $(".next-step").click(function (e) {
         var $active = $('.nav-tabs li>.active');
         var stepID = $(e.target).attr('id');
         var formFields=$(e.target).closest('.tab-pane.active').find('input,select');
@@ -692,11 +695,13 @@
     /* address_city */
     $(document).on('change', '#company_country', function(event) {
         var country_id = $(this).val();
+        $('#company_state').val('').trigger('change');
         getState(country_id,'#company_state');
     });
 
     $(document).on('change', '.address_country', function(event) {
         var country_id = $(this).val();
+        $('.address_state').val('').trigger('change');
         getState(country_id,'.address_state');
     });
 
@@ -729,11 +734,13 @@
     //Get City
     $('#company_state').change(function() {
       var state_id = $(this).val();
+      $('#company_city').val('').trigger('change');
       getCity(state_id,'#company_city');
     })
     //Get City
     $('.address_state').change(function() {
       var state_id = $(this).val();
+      $('.address_city').val('').trigger('change');
       getCity(state_id,'.address_city');
     })
     function getCity(stateID,append_id){

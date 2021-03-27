@@ -330,9 +330,14 @@ class CustomerController extends Controller
 
     public function AddNewAddressController(Request $request)
     {
-        //dd($request->all());
+        $check_data = UserAddress::where('customer_id',$request->customer_id)->count();
         $address=$request->except(['_token']);
         $address_id=UserAddress::insertGetId($address);
+        if($check_data==0){
+            $update_address = User::find($request->customer_id);
+            $update_address->address_id = $address_id;
+            $update_address->save();
+        }
         $address['address_id']=$address_id;
         Session::flash('from', 'address');
         return ['status'=>true];
