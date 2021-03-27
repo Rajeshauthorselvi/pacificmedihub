@@ -25,6 +25,7 @@ use App\Models\UserAddress;
 use App\Models\OrderHistory;
 use App\Models\Purchase;
 use App\User;
+use App\Models\DeliveryMethod;
 use Auth;
 use DB;
 use Redirect;
@@ -165,6 +166,8 @@ class OrderController extends Controller
         $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
         $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                         ->pluck('name','id')->toArray();
+                                        
+        $data['delivery_methods'] = DeliveryMethod::all();
 
         $data['order_code']= '';
         $order_code = Prefix::where('key','prefix')->where('code','order_no')->value('content');

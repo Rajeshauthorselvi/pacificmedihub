@@ -96,7 +96,7 @@
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
                                 <a href="{{route($show_route,$order->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','update'))
+                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('delivery_order','update'))
                                   @if ($low_stock!="yes")
                                   <a href="{{route($edit_route,$order->id)}}"  style="{{ $disabled_edit }}">
                                     <li class="dropdown-item">

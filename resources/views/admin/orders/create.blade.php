@@ -111,6 +111,19 @@
                     <div class="tax-sec">
                       <div class="form-group">
                         <div class="col-sm-3">
+                          <label for="purchase_date">Delivery Methods</label>
+                          <select class="form-control no-search select2bs4" name="order_tax" id="order_tax">
+                            @foreach($delivery_methods as $method)
+                              <option tax-rate="{{$tax->rate}}" value="{{$tax->id}}">
+                                {{$method->name}} 
+                                @if($tax->name=='No Tax') 
+                                @else @  {{round($tax->rate,2)}}% 
+                                @endif
+                              </option>
+                            @endforeach
+                          </select>
+                        </div>
+                        <div class="col-sm-3">
                           <label for="purchase_date">Order Tax</label>
                           <select class="form-control no-search select2bs4" name="order_tax" id="order_tax">
                             @foreach($taxes as $tax)
@@ -122,7 +135,6 @@
                               </option>
                             @endforeach
                           </select>
-
                         </div>
                         <div class="col-sm-3">
                           <label for="purchase_date">Order Discount</label>
