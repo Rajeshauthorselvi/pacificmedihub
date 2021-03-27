@@ -114,12 +114,6 @@
                           <label for="purchase_date">Delivery Methods</label>
                           <select class="form-control no-search select2bs4" name="order_tax" id="order_tax">
                             @foreach($delivery_methods as $method)
-                              <option tax-rate="{{$tax->rate}}" value="{{$tax->id}}">
-                                {{$method->name}} 
-                                @if($tax->name=='No Tax') 
-                                @else @  {{round($tax->rate,2)}}% 
-                                @endif
-                              </option>
                             @endforeach
                           </select>
                         </div>
