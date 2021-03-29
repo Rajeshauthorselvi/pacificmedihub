@@ -241,6 +241,12 @@
                 </a>
               </li>
 
+               <li class="nav-item @if($current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create') active @endif">
+                <a href="{{route('delivery-methods.index')}}" class="nav-link">
+                  <i class="fas fa-angle-double-right"></i><p>Delivery Methods</p>
+                </a>
+              </li>
+
               <li class="nav-item @if($current_route=='settings-prefix.index') active @endif">
                 <a href="{{ route('settings-prefix.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i><p>Prefix</p>
