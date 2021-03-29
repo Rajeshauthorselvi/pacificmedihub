@@ -277,7 +277,7 @@
                     <div class="tax-sec">
                       <div class="form-group">
                         <div class="col-sm-3">
-                          <label for="purchase_date">Delivery Methods</label>
+                          <label for="purchase_date">Delivery Methods *</label>
                           {!! Form::hidden('free_delivery_amount',$free_delivery,['class'=>'free_delivery_amount']) !!}
                           {!! Form::hidden('delivery_charge',$free_delivery,['class'=>'del_charge_hidden']) !!}
                           <select class="form-control no-search " id="delivery-methods" name="delivery_method_id">
