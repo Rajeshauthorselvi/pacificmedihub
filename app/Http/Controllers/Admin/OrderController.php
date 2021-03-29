@@ -61,6 +61,9 @@ class OrderController extends Controller
         if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
             $orders->where('sales_rep_id',Auth::guard('employee')->user()->id);
         }
+        if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==3) {
+            $orders->where('delivery_person_id',Auth::guard('employee')->user()->id);
+        }
         
         
         $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
