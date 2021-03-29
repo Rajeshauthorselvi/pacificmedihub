@@ -350,6 +350,7 @@ class RFQController extends Controller
 
       $rfq_details=[
         'order_no'              => $request->order_no,
+        'status'                => $request->status,
         'customer_id'           => $request->customer_id,
         'sales_rep_id'          => $request->sales_rep_id,
         'currency'              => $request->currency,
@@ -363,7 +364,6 @@ class RFQController extends Controller
         'notes'                 => $request->notes,
         'updated_at'            => date('Y-m-d H:i:s')
       ];
-
       RFQ::where('id',$id)->update($rfq_details);
 
       $variant               = $request->variant;
