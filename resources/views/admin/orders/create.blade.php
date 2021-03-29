@@ -111,7 +111,7 @@
                     <div class="tax-sec">
                       <div class="form-group">
                         <div class="col-sm-3">
-                          <label for="purchase_date">Delivery Methods</label>
+                          <label for="purchase_date">Delivery Methods *</label>
                           {!! Form::hidden('free_delivery_amount',$free_delivery,['class'=>'free_delivery_amount']) !!}
                           {!! Form::hidden('delivery_charge',$free_delivery,['class'=>'del_charge_hidden']) !!}
                           <select class="form-control no-search " id="delivery-methods" name="delivery_method_id">
@@ -122,6 +122,7 @@
                               </option>
                             @endforeach
                           </select>
+                          <span class="text-danger delivery_method" style="display:none;">Delivery Method is required. Please Select</span>
                         </div>
                         <div class="col-sm-3">
                           <label for="purchase_date">Order Tax</label>
@@ -217,7 +218,6 @@
         $('#delivery-methods option[value="3"]').hide();
       });
       $(document).on('change','#delivery-methods', function(event) {
-
           var currency = $('option:selected', '#currency_rate').attr("currency-rate");
           var all_amount = $('#allAmount').text();
           var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
@@ -579,6 +579,14 @@
         }else{
           $("#orderStatus").closest('.form-group').find('span.text-danger.order').hide();
         }
+
+        if ($("#delivery-methods").val()=="") {
+          $("#delivery_method").show();
+          valid = false;
+        }else{
+          $("#delivery_method").hide();
+        }
+
         if($('#total_amount_hidden').val()==""||$('#total_amount_hidden').val()==0)
         {
           alert('Please enter minimum Quantity');

@@ -19,6 +19,7 @@ use App\Models\PaymentTerm;
 use App\Models\UserCompanyDetails;
 use App\Models\PurchaseStockHistory;
 use App\Models\PurchseAttachments;
+use App\Models\Orders;
 use App\User;
 use App\Models\Employee;
 use Session;
@@ -51,8 +52,14 @@ class LowStockPurchaseController extends Controller
       $data=array();
 
           $product_id=$request->product_id;
-          $variant_id=$request->product_variant_id;
           $vendor_id=$request->vendor_id;
+
+
+          $variant_vendors=ProductVariantVendor::where('product_id',$product_id)
+                           ->groupBy('vendor_id')
+                           ->pluck('vendor_id')
+                           ->toArray();
+
 
           $data['order_status']   = [''=>'Please Select']+OrderStatus::where('status',1)->whereIn('id',[1,2,8])
                                         ->pluck('status_name','id')->toArray();
@@ -84,10 +91,12 @@ class LowStockPurchaseController extends Controller
             $replace_number = str_replace('[Start No]', $start_number, $replace_year);
             $data['purchase_code']=$replace_number;
           }
-           
+          $variant_ids=Orders::LowStockQuantity('variants',$product_id);
+          
            $data['product_name']=$product_name    = Product::where('id',$product_id)->value('name');
            $options         = $this->Options($product_id);
-           $all_variants    = [$variant_id];
+           $all_variants    = array_keys($variant_ids['stock_details']);
+
            $product_variant = $this->Variants($product_id,$all_variants);
            $product_data[$product_id] = [
               'row_id'          => $product_id,
@@ -100,7 +109,7 @@ class LowStockPurchaseController extends Controller
             $data['purchase_products'] = $product_data;
         $all_vendors=DB::table('vendors')
                    ->where('status',1)
-                   ->where('id',$vendor_id)
+                   ->whereIn('id',$variant_vendors)
                    ->pluck('name','id')->toArray();
 
         $data['vendors'] = [''=>'Please Select']+$all_vendors;

@@ -68,10 +68,23 @@
                   <div class="product-sec">
                     <div class="form-group">
                       <div class="col-sm-4">
-                        <label for="customer_id">Customer *</label>
-                        {!! Form::select('customer_id',$customers, null,['class'=>'form-control select2bs4','id'=>'customer']) !!}
-                        <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
-                      </div>
+                          <label for="customer_id">Customer *</label>
+                          <select class="form-control select2bs4 customer_id" name="customer_id">
+                              <option value="">Please Select</option>
+                              @foreach ($customers as $customer)
+                              @if ($customer->id==$rfqs->customer_id)
+                                <option value="{{ $customer->id }}" sales-rep="{{ $customer->sales_rep }}" selected="selected">
+                                  {{ $customer->first_name }}
+                                </option>
+                              @else
+                                <option value="{{ $customer->id }}" sales-rep="{{ $customer->sales_rep }}" selected="selected">
+                                  {{ $customer->first_name }}
+                                </option>
+                              @endif
+                              @endforeach
+                          </select>
+                          <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
+                        </div>
                       <div class="col-sm-4">                        
                         <label for="sales_rep_id">Sales Rep *</label>
                         {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4']) !!}

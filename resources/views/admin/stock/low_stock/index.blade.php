@@ -42,32 +42,22 @@
                   <table id="data-table" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th><input type="checkbox" class="select-all select-check" disabled></th>
+                        <th>S.No</th>
                       	<th>Product name</th>
-                        <th>SKU</th>
-                        <th>Stock Quantity</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                        @foreach ($stock_details as $product_name=>$low_stocks)
-                          @foreach ($low_stocks as $low_stock)
-                          <?php $vendor_name=\App\Models\Vendor::find($low_stock->vendor_id); ?>
+                        @foreach ($stock_details as $product_name=>$low_stock)
                             <tr>
-                              <td>
-                                <input type="checkbox" class="select-check" value="{{ $low_stock->id }}" disabled>
-                                <span class='hidden' style="display: none;" >{{ $vendor_name->name }}</span>
-                              </td>
+                              <td>{{ $loop->iteration }}</td>
                               <td>{{ $product_name }}</td>
-                              <td>{{ $low_stock->sku }}</td>
-                              <td>{{ $low_stock->stock_quantity }}</td>
                               <td>
-                                <a href="{{ route('low-stock-purchase.create',['product_id'=>$low_stock->product_id,'product_variant_id'=>$low_stock->product_variant_id,'vendor_id'=>$low_stock->vendor_id]) }}" class="btn btn-primary">
+                                <a href="{{ route('low-stock-purchase.create',['product_id'=>$low_stock->id]) }}" class="btn btn-primary">
                                   <i class="fa fa-plus"></i> Create Purchase Order
                                 </a>
                               </td>
                             </tr>
-                          @endforeach
                         @endforeach
                     </tbody>
                   </table>
