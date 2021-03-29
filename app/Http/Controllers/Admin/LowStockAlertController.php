@@ -25,7 +25,7 @@ class LowStockAlertController extends Controller
 
         $data['stock_details']=$stock_details;
         $data['all_vendors']=[''=>'Please Select']+Vendor::where('is_deleted',0)->where('status',1)->pluck('name','id')->toArray();
-        $low_stock=Orders::LowStockQuantity();
+        $low_stock=Orders::LowStockQuantity('products');
         $data['stock_details']=$low_stock['stock_details'];
 
         return view('admin.stock.low_stock.index',$data);

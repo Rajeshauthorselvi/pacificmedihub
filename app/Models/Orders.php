@@ -107,24 +107,32 @@ class Orders extends Model
             $query=DB::table('product_variant_vendors as pvv')
                    ->leftjoin('product_variants as pv','pv.id','pvv.product_variant_id')
                    ->where('pv.product_id',$product->id)
-                   ->where('pvv.stock_quantity','<=',$product->alert_quantity)
+                   ->where('pvv.stock_quantity','<',$product->alert_quantity)
                    ->where('pv.disabled',0)
                    ->where('pv.is_deleted',0)
                    ->pluck('stock_quantity','pvv.id')
                    ->toArray();
 
                    if ($type=="products") {
+                    $query_exists=DB::table('product_variant_vendors as pvv')
+                           ->leftjoin('product_variants as pv','pv.id','pvv.product_variant_id')
+                           ->where('pv.product_id',$product->id)
+                           ->where('pvv.stock_quantity','<',$product->alert_quantity)
+                           ->where('pv.disabled',0)
+                           ->where('pv.is_deleted',0)
+                           ->exists();
 
+                      if ($query_exists) {
                         $check_purchase_exists=DB::table('purchase as p')
                                               ->leftjoin('purchase_products as pp','p.id','pp.purchase_id')
                                               ->where('pp.product_id',$product->id)
                                               ->where('p.purchase_status','<>',2)
                                               ->exists();
                         if (!$check_purchase_exists) {
-                             // array_push($avalivle_low_quantity, $product);
                              $stock_details[$product->name]=$product;
                              $count +=1;
                         }
+                      }
                    }
                    else{
 
