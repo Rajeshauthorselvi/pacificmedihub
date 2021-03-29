@@ -309,6 +309,9 @@ class RFQController extends Controller
         ];
       }
       $data['product_datas']=$product_data;
+        $data['delivery_methods'] = DeliveryMethod::all();
+        $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
+
       return view('admin.rfq.edit',$data);
     }
 
