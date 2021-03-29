@@ -1592,6 +1592,9 @@ color: #fff;
 .request-rfq .select2-container, .request-rfq .select2-results__option{
     font-size: 14px;
 }
+.request-rfq .delivery-method {
+    margin-top: 2rem;
+}
 .request-rfq .rfq.customer-notes {
     width: 90%;
     margin-top: 2rem;

@@ -20,6 +20,7 @@ use App\Models\PaymentTerm;
 use App\Models\Currency;
 use App\Models\Tax;
 use App\Models\Notification;
+use App\Models\DeliveryMethod;
 use App\User;
 use Auth;
 use Str;
@@ -115,6 +116,7 @@ class MyRFQController extends Controller
             'status'              => 1,
             'customer_id'         => $user_id,
             'sales_rep_id'        => isset($sales_rep_id)?$sales_rep_id:0,
+            'delivery_method_id'  => $request->delevery_method,
             'notes'               => $request->notes,
             'user_id'             => $user_id,
             'delivery_address_id' => $request->delivery_address,
@@ -373,7 +375,7 @@ class MyRFQController extends Controller
                                                   ->where('is_deleted',0)->get();
 
             $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
-
+            $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->get();
             Cart::instance('cart')->restore('userID_'.$user_id);
 
             $cart_data = [];
@@ -431,7 +433,7 @@ class MyRFQController extends Controller
                                                   ->where('is_deleted',0)->get();
 
             $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
-
+            $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->get();
             Cart::instance('cart')->restore('userID_'.$user_id);
 
             $cart_data = [];
@@ -455,7 +457,6 @@ class MyRFQController extends Controller
             $data['user_id']    = $user_id;
             $data['cart_count'] = Cart::count();
             $data['cart_data'] = $items;
-
             return view('front/customer/rfq/proceed_rfq',$data);
         }else{
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
@@ -472,7 +473,7 @@ class MyRFQController extends Controller
         
         $user_id = Auth::id();
         Cart::instance('cart')->restore('userID_'.$user_id);
-        
+        $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->get();
         if(isset($user_id)){
             $cartItem = Cart::instance('cart')->add($product->id, $product->name, $price, $qty,[
                 'product_img' => $request->product_img,

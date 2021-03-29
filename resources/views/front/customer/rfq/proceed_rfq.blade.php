@@ -63,6 +63,17 @@
             <a class="btn reset-btn" id="cancelChangeBilling">Cancel</a>
           </div>
 
+          <div class="delivery-method">
+            <h5>Delivery Method</h5>
+            <div class="form-group clearfix">
+              @foreach($delivery_method as $method)
+                <div class="icheck-info d-inline">
+                  <input type="radio" name="delevery_method" @if($method->id==1)  checked @endif id="radioInfo{{$method->id}}" value="{{$method->id}}">
+                  <label for="radioInfo{{$method->id}}">{{$method->delivery_method}}</label>
+                </div>
+              @endforeach
+            </div>
+          </div>
           <div class="rfq customer-notes">
             <div class="form-group">
               <h5>Notes</h5>
@@ -110,7 +121,7 @@
                           <input type="hidden" name="direct_rfq" value="{{$items['uniqueId']}}">
                           <span>{{ $items['qty'] }}</span>
                         @else
-												  <span class="minus">-</span><input type="text" class="qty-count" value="{{ $items['qty'] }}"/><span class="plus">+</span>
+												  <span class="minus">-</span><input type="text" class="qty-count" value="{{ $items['qty'] }}" readonly/><span class="plus">+</span>
                         @endif
 											</div>
 										</td>

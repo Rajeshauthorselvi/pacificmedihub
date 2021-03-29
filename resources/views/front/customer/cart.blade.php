@@ -41,7 +41,7 @@
 										<td><span>{{ str_replace(':', '', $items['sku']) }}</span></td>
 										<td>
 											<div class="number">
-												<span class="minus">-</span><input type="text" class="qty-count" value="{{ $items['qty'] }}"/><span class="plus">+</span>
+												<span class="minus">-</span><input type="text" class="qty-count" value="{{ $items['qty'] }}" readonly/><span class="plus">+</span>
 											</div>
 										</td>
 										<td style="text-align:center;">
