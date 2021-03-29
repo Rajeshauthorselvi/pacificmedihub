@@ -28,6 +28,7 @@ class LowStockAlertController extends Controller
         $low_stock=Orders::LowStockQuantity('products');
         $data['stock_details']=$low_stock['stock_details'];
 
+
         return view('admin.stock.low_stock.index',$data);
     }
 

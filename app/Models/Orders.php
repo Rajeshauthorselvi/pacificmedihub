@@ -101,10 +101,11 @@ class Orders extends Model
         $products=Product::select('id','name','alert_quantity')->where('id',$product_id)->get();
       }
 
+
         $avalivle_low_quantity=$stock_details=array();
         $count=0;
         foreach ($products as $key => $product) {
-            $query=DB::table('product_variant_vendors as pvv')
+ /*           $query=DB::table('product_variant_vendors as pvv')
                    ->leftjoin('product_variants as pv','pv.id','pvv.product_variant_id')
                    ->where('pv.product_id',$product->id)
                    ->where('pvv.stock_quantity','<',$product->alert_quantity)
@@ -113,18 +114,17 @@ class Orders extends Model
                    ->orderBy('id','ASC')
                    ->groupBy('pvv.product_variant_id')
                    ->pluck('stock_quantity','pvv.id')
-                   ->toArray();
+                   ->toArray();*/
 
+                    $query_total=DB::select("SELECT SUM(`stock_quantity`) as total,product_variant_id FROM `product_variant_vendors` WHERE `product_id`='".$product->id."' GROUP BY product_variant_id");
+
+                    $query_exists=json_decode(json_encode($query_total), true);
                    if ($type=="products") {
-                    $query_exists=DB::table('product_variant_vendors as pvv')
-                           ->leftjoin('product_variants as pv','pv.id','pvv.product_variant_id')
-                           ->where('pv.product_id',$product->id)
-                           ->where('pvv.stock_quantity','<',$product->alert_quantity)
-                           ->where('pv.disabled',0)
-                           ->where('pv.is_deleted',0)
-                           ->exists();
 
-                      if ($query_exists) {
+
+                      $data_check=self::CheckValue($query_exists,$product->alert_quantity);
+
+                      if (!$data_check) {
                         $check_purchase_exists=DB::table('purchase as p')
                                               ->leftjoin('purchase_products as pp','p.id','pp.purchase_id')
                                               ->where('pp.product_id',$product->id)
@@ -137,24 +137,42 @@ class Orders extends Model
                       }
                    }
                    else{
+                      $variant_ids=self::VariantsId($query_exists,$product->alert_quantity);
+                         $check_purchase_exists=DB::table('purchase as p')
+                                                ->leftjoin('purchase_products as pp','p.id','pp.purchase_id')
+                                                ->where('pp.product_id',$product->id)
+                                                ->where('p.purchase_status','<>',2)
+                                                ->exists();
+                          if (!$check_purchase_exists) {
+                              $stock_details=$variant_ids;
+                               $count +=1;
+                          }
 
-                       $check_purchase_exists=DB::table('purchase as p')
-                                              ->leftjoin('purchase_products as pp','p.id','pp.purchase_id')
-                                              ->where('pp.product_id',$product->id)
-                                              ->where('p.purchase_status','<>',2)
-                                              ->exists();
-                        if (!$check_purchase_exists) {
-                            $stock_details=$query;
-                             $count +=1;
-                        }
 
                    }
                   
         }
-
         return ['low_stock_count'=>$count,'stock_details'=>$stock_details];
     }
-
+    static function VariantsId($total_Data,$alert_quantity)
+    {
+      $vids=array();
+        foreach ($total_Data as $key => $ids) {
+          if ($ids['total'] < $alert_quantity) {
+            $vids[]=$ids['product_variant_id'];
+          }
+        }
+      return $vids;
+    }
+  static function CheckValue($numbers,$alert_quantity)
+      { 
+         for ($i = 0; $i < sizeof($numbers) - 1; $i++)
+            {
+               if ($numbers[$i + 1]['total'] < $alert_quantity) 
+               return false;
+            }
+          return true;
+      }
     static function AllProductVariantIds($product_id,$product_variation_id)
     {
               $check_variant_vendors=DB::table('product_variant_vendors')

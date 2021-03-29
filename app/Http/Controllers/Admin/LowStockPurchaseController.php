@@ -92,13 +92,14 @@ class LowStockPurchaseController extends Controller
             $data['purchase_code']=$replace_number;
           }
           $variant_ids=Orders::LowStockQuantity('variants',$product_id);
-          $all_variants    = array_keys($variant_ids['stock_details']);
-          $variant_ids=ProductVariantVendor::where('product_id',$product_id)
+          $all_variants    = $variant_ids['stock_details'];
+
+   /*       $variant_ids=ProductVariantVendor::where('product_id',$product_id)
                        ->whereIn('id',$all_variants)
                        ->pluck('product_variant_id')
-                       ->toArray();
-          $all_variants=$variant_ids;
-          
+                       ->toArray();*/
+          // $all_variants=$variant_ids;
+          // dd($all_variants);
            $data['product_name']=$product_name    = Product::where('id',$product_id)->value('name');
            $options         = $this->Options($product_id);
            
