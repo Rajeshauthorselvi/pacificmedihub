@@ -140,6 +140,17 @@
             <form action="{{ route('my-rfq.update',$rfq->id) }}" method="post">
               @csrf
               <input name="_method" type="hidden" value="PATCH">
+              <div class="delivery-method">
+                <h5>Delivery Method</h5>
+                <div class="form-group clearfix">
+                  @foreach($delivery_method as $method)
+                    <div class="icheck-info d-inline">
+                      <input type="radio" name="delevery_method" @if($rfq->delivery_method_id==$method->id||$method->id==1)  checked @endif id="radioInfo{{$method->id}}" value="{{$method->id}}">
+                      <label for="radioInfo{{$method->id}}">{{$method->delivery_method}}</label>
+                    </div>
+                  @endforeach
+                </div>
+              </div>
               <div class="footer-sec">
                 <label>Note:</label>
                 <div class="notes">

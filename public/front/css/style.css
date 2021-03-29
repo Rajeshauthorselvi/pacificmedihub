@@ -1784,10 +1784,13 @@ color: #fff;
   width: 50px;
   font-size: 18px;
 }
-.rfq.edit.view-block .address-sec .footer-sec {
+.rfq.edit.view-block .address-sec .footer-sec, .rfq.edit.view-block .address-sec .delivery-method {
     width: 100%;
     float: left;
-    margin-bottom:1rem;
+    margin:1rem 0;
+}
+.rfq.edit.view-block .address-sec .delivery-method{
+    margin-bottom: 0;
 }
   .rfq.edit.view-block .address-sec .address-block {
     padding: 1rem;
