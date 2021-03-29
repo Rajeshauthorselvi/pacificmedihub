@@ -47,7 +47,7 @@
                 <h3 class="card-title">Edit RFQ</h3>
               </div>
               <div class="card-body">
-              	{!! Form::model($rfqs,['method' => 'PATCH','class'=>'rfq-form','route' =>['rfq.update',$rfqs->id]]) !!}
+                {!! Form::model($rfqs,['method' => 'PATCH','class'=>'rfq-form','route' =>['rfq.update',$rfqs->id]]) !!}
                   <div class="date-sec">
                     <div class="form-group">
                       <div class="col-sm-4">
@@ -68,23 +68,10 @@
                   <div class="product-sec">
                     <div class="form-group">
                       <div class="col-sm-4">
-                          <label for="customer_id">Customer *</label>
-                          <select class="form-control select2bs4 customer_id" name="customer_id">
-                              <option value="">Please Select</option>
-                              @foreach ($customers as $customer)
-                              @if ($customer->id==$rfqs->customer_id)
-                                <option value="{{ $customer->id }}" sales-rep="{{ $customer->sales_rep }}" selected="selected">
-                                  {{ $customer->first_name }}
-                                </option>
-                              @else
-                                <option value="{{ $customer->id }}" sales-rep="{{ $customer->sales_rep }}" selected="selected">
-                                  {{ $customer->first_name }}
-                                </option>
-                              @endif
-                              @endforeach
-                          </select>
-                          <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
-                        </div>
+                        <label for="customer_id">Customer *</label>
+                        {!! Form::select('customer_id',$customers, null,['class'=>'form-control select2bs4','id'=>'customer']) !!}
+                        <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
+                      </div>
                       <div class="col-sm-4">                        
                         <label for="sales_rep_id">Sales Rep *</label>
                         {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4']) !!}
@@ -112,19 +99,19 @@
                   <div class="clearfix"></div>
 
                   <div class="product-append-sec">
-						        <div class="container my-4">
-						          <div class="table-responsive">
-						            <table class="table">
-  						            <thead class="heading-top">
+                    <div class="container my-4">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead class="heading-top">
                             <?php $total_products=\App\Models\RFQProducts::TotalDatas($rfqs->id); ?>
-  						              <tr>
-          						        <th scope="col">#</th>
-          						        <th scope="col">Product Name</th>
-          						        <th scope="col">
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Product Name</th>
+                              <th scope="col">
                                   Total Quantity:&nbsp;
                                   <span class="all_quantity">{{ $total_products->quantity }}</span>   
                               </th>
-          						       {{--  <th scope="col">
+                             {{--  <th scope="col">
                                   Total Price:&nbsp;
                                   <span class="all_rfq_price">{{ $total_products->rfq_price }}</span>  
                               </th> --}}
@@ -133,22 +120,22 @@
                                   <span class="all_amount" id="allAmount">{{ $total_products->sub_total }}</span>
                               </th>
                               <th></th>
-  						              </tr>
-  						            </thead>
-						              <tbody>
+                            </tr>
+                          </thead>
+                          <tbody>
                             @foreach ($product_datas as $product)
-            						      <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
-              								  <td class="expand-button"></td>
+                              <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
+                                <td class="expand-button"></td>
                                 <?php
                                 $total_based_products=\App\Models\RFQProducts::TotalDatas($rfqs->id,$product['product_id']);
                                   $sum_of_retail_qty=$total_based_products->retail_price*$total_based_products->quantity;
                                  ?>
-                								<td>{{ $product['product_name'] }}</td>
-                								<th>
+                                <td>{{ $product['product_name'] }}</td>
+                                <th>
                                   Quantity: &nbsp;
                                   <span class="total_quantity">{{ $total_based_products->quantity }}</span>
                                 </th>
-                								{{-- <th>Price: {{ $total_based_products->rfq_price }}</th> --}}
+                                {{-- <th>Price: {{ $total_based_products->rfq_price }}</th> --}}
                                 <th class="total-head">
                                   <input type="hidden" value="@if($total_based_products->sub_total!=0) {{$total_based_products->sub_total}}
                                     @else {{$sum_of_retail_qty}} @endif" class="get-total">
@@ -161,9 +148,9 @@
                                       <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
-              							  </tr>
-            								  <tr class="hide-table-padding">
-								                <td colspan="5">
+                              </tr>
+                              <tr class="hide-table-padding">
+                                <td colspan="5">
                                   <div id="collapse{{ $product['product_id'] }}" class="collapse in p-3">
                                     <table class="table table-bordered" style="width: 100%">
                                       <thead>
@@ -282,9 +269,9 @@
                                         </tr>
                                       </tbody>
                                     </table>
-            								      </div>
+                                  </div>
                                 </td>
-								              </tr>
+                              </tr>
                             @endforeach
                             <tr class="total-calculation">
                               <td colspan="3" class="title">Total</td>
@@ -318,10 +305,10 @@
                               </th>
                             </tr>
                             <tr><td colspan="5"></td></tr>
-						              </tbody>
-						            </table>
-						          </div>
-						        </div>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 
                   <div class="clearfix"></div>
