@@ -14,7 +14,6 @@ class AddDeliveryInfoToRfqTable extends Migration
     public function up()
     {
         Schema::table('rfq', function (Blueprint $table) {
-            $table->integer('delivery_method_id')->nullable()->after('order_discount');
             $table->double('delivery_charge',10,2)->nullable()->after('delivery_method_id');
         });
     }
