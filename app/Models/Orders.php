@@ -110,6 +110,8 @@ class Orders extends Model
                    ->where('pvv.stock_quantity','<',$product->alert_quantity)
                    ->where('pv.disabled',0)
                    ->where('pv.is_deleted',0)
+                   ->orderBy('id','ASC')
+                   ->groupBy('pvv.product_variant_id')
                    ->pluck('stock_quantity','pvv.id')
                    ->toArray();
 
@@ -149,6 +151,7 @@ class Orders extends Model
                    }
                   
         }
+
         return ['low_stock_count'=>$count,'stock_details'=>$stock_details];
     }
 
