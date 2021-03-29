@@ -47,7 +47,7 @@
                 <h3 class="card-title">Edit RFQ</h3>
               </div>
               <div class="card-body">
-              	{!! Form::model($rfqs,['method' => 'PATCH','class'=>'rfq-form','route' =>['rfq.update',$rfqs->id]]) !!}
+                {!! Form::model($rfqs,['method' => 'PATCH','class'=>'rfq-form','route' =>['rfq.update',$rfqs->id]]) !!}
                   <div class="date-sec">
                     <div class="form-group">
                       <div class="col-sm-4">
@@ -68,23 +68,10 @@
                   <div class="product-sec">
                     <div class="form-group">
                       <div class="col-sm-4">
-                          <label for="customer_id">Customer *</label>
-                          <select class="form-control select2bs4 customer_id" name="customer_id">
-                              <option value="">Please Select</option>
-                              @foreach ($customers as $customer)
-                              @if ($customer->id==$rfqs->customer_id)
-                                <option value="{{ $customer->id }}" sales-rep="{{ $customer->sales_rep }}" selected="selected">
-                                  {{ $customer->first_name }}
-                                </option>
-                              @else
-                                <option value="{{ $customer->id }}" sales-rep="{{ $customer->sales_rep }}" selected="selected">
-                                  {{ $customer->first_name }}
-                                </option>
-                              @endif
-                              @endforeach
-                          </select>
-                          <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
-                        </div>
+                        <label for="customer_id">Customer *</label>
+                        {!! Form::select('customer_id',$customers, null,['class'=>'form-control select2bs4','id'=>'customer']) !!}
+                        <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
+                      </div>
                       <div class="col-sm-4">                        
                         <label for="sales_rep_id">Sales Rep *</label>
                         {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4']) !!}
@@ -112,19 +99,19 @@
                   <div class="clearfix"></div>
 
                   <div class="product-append-sec">
-						        <div class="container my-4">
-						          <div class="table-responsive">
-						            <table class="table">
-  						            <thead class="heading-top">
+                    <div class="container my-4">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead class="heading-top">
                             <?php $total_products=\App\Models\RFQProducts::TotalDatas($rfqs->id); ?>
-  						              <tr>
-          						        <th scope="col">#</th>
-          						        <th scope="col">Product Name</th>
-          						        <th scope="col">
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Product Name</th>
+                              <th scope="col">
                                   Total Quantity:&nbsp;
                                   <span class="all_quantity">{{ $total_products->quantity }}</span>   
                               </th>
-          						       {{--  <th scope="col">
+                             {{--  <th scope="col">
                                   Total Price:&nbsp;
                                   <span class="all_rfq_price">{{ $total_products->rfq_price }}</span>  
                               </th> --}}
@@ -133,22 +120,22 @@
                                   <span class="all_amount" id="allAmount">{{ $total_products->sub_total }}</span>
                               </th>
                               <th></th>
-  						              </tr>
-  						            </thead>
-						              <tbody>
+                            </tr>
+                          </thead>
+                          <tbody>
                             @foreach ($product_datas as $product)
-            						      <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
-              								  <td class="expand-button"></td>
+                              <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
+                                <td class="expand-button"></td>
                                 <?php
                                 $total_based_products=\App\Models\RFQProducts::TotalDatas($rfqs->id,$product['product_id']);
                                   $sum_of_retail_qty=$total_based_products->retail_price*$total_based_products->quantity;
                                  ?>
-                								<td>{{ $product['product_name'] }}</td>
-                								<th>
+                                <td>{{ $product['product_name'] }}</td>
+                                <th>
                                   Quantity: &nbsp;
                                   <span class="total_quantity">{{ $total_based_products->quantity }}</span>
                                 </th>
-                								{{-- <th>Price: {{ $total_based_products->rfq_price }}</th> --}}
+                                {{-- <th>Price: {{ $total_based_products->rfq_price }}</th> --}}
                                 <th class="total-head">
                                   <input type="hidden" value="@if($total_based_products->sub_total!=0) {{$total_based_products->sub_total}}
                                     @else {{$sum_of_retail_qty}} @endif" class="get-total">
@@ -161,9 +148,9 @@
                                       <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
-              							  </tr>
-            								  <tr class="hide-table-padding">
-								                <td colspan="5">
+                              </tr>
+                              <tr class="hide-table-padding">
+                                <td colspan="5">
                                   <div id="collapse{{ $product['product_id'] }}" class="collapse in p-3">
                                     <table class="table table-bordered" style="width: 100%">
                                       <thead>
@@ -282,9 +269,9 @@
                                         </tr>
                                       </tbody>
                                     </table>
-            								      </div>
+                                  </div>
                                 </td>
-								              </tr>
+                              </tr>
                             @endforeach
                             <tr class="total-calculation">
                               <td colspan="3" class="title">Total</td>
@@ -299,10 +286,6 @@
                               <td id="orderTax" colspan="2">{{isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:'0.00'}}</td>
                               <input type="hidden" name="order_tax_amount" id="order_tax_amount_hidden" value="{{isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:0.00}}">
                             </tr>
-                              <tr class="total-calculation">
-                                <td colspan="3" class="title">Delivery Charge</td>
-                                <td id="deliveryCharge">{{isset($rfqs->delivery_charge)?$rfqs->delivery_charge:'0.00'}}</td>
-                              </tr>
                             <tr class="total-calculation">
                               <th colspan="3" class="title">Total Amount(SGD)</th>
                               <th id="total_amount_sgd" colspan="2">{{$rfqs->sgd_total_amount}}</th>
@@ -322,35 +305,16 @@
                               </th>
                             </tr>
                             <tr><td colspan="5"></td></tr>
-						              </tbody>
-						            </table>
-						          </div>
-						        </div>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 
                   <div class="clearfix"></div>
                   <div class="tax-sec">
                     <div class="form-group">
-                        <div class="col-sm-3">
-                          <label for="purchase_date">Delivery Methods *</label>
-                          {!! Form::hidden('free_delivery_amount',$free_delivery,['class'=>'free_delivery_amount']) !!}
-                          {!! Form::hidden('delivery_charge',$free_delivery,['class'=>'del_charge_hidden']) !!}
-                          <select class="form-control no-search " id="delivery-methods" name="delivery_method_id">
-                            <option value="">Please Select</option>
-                            @foreach($delivery_methods as $method)
-                              @if ($rfqs->delivery_method_id==$method->id)
-                                <option value="{{ $method->id }}" attr-fee="{{ $method->amount }}" selected="selected">
-                                  {{ $method->delivery_method }}
-                                </option>
-                              @else
-                                <option value="{{ $method->id }}" attr-fee="{{ $method->amount }}">
-                                  {{ $method->delivery_method }}
-                                </option>
-                              @endif
-                            @endforeach
-                          </select>
-                        </div>
-                      <div class="col-sm-3">
+                      <div class="col-sm-4">
                         <label for="purchase_date">Order Tax</label>
                         <select class="form-control no-search select2bs4" name="order_tax" id="order_tax">
                           @foreach($taxes as $tax)
@@ -362,12 +326,13 @@
                             </option>
                           @endforeach
                         </select>
+
                       </div>
-                      <div class="col-sm-3">
+                      <div class="col-sm-4">
                         <label for="purchase_date">Order Discount</label>
                         {!! Form::text('order_discount', isset($rfqs->order_discount)?$rfqs->order_discount:0,['class'=>'form-control','id'=>'order-discount']) !!}
                       </div>
-                      <div class="col-sm-3">
+                      <div class="col-sm-4">
                         <label for="purchase_date">Payment Term</label>
                         {!! Form::select('payment_term',$payment_terms,$rfqs->payment_term,['class'=>'form-control no-search select2bs4']) !!}
                       </div>
@@ -397,46 +362,6 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
-      $(document).ready(function() {
-
-        var all_amount = $('#allAmount').text();
-        var free_del_amount=$('.free_delivery_amount').val();
-          if ( parseInt(all_amount) >= parseInt(free_del_amount)) {
-              $('#delivery-methods option[value="3"]').show();
-          }
-          else{
-              $('#delivery-methods option[value="3"]').hide();
-          }
-          
-      });   
-      $(document).on('change','#delivery-methods', function(event) {
-
-          var currency = $('option:selected', '#currency_rate').attr("currency-rate");
-          var all_amount = $('#allAmount').text();
-          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
-          var free_delivery=$('.free_delivery_amount').val();
-          var free_del_amount=$('.free_delivery_amount').val();
-          var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
-          var del_type = $('#delivery-methods option:selected').val();
-
-          if (del_fees!="undefined") {
-            if (del_type==1 || del_type==2) {
-                var all_amount=parseInt(all_amount)+parseInt(del_fees);
-            }
-            else{
-              var all_amount=parseInt(all_amount);
-              var del_fees='0.00';
-            }
-            
-          }
-          else{
-              var all_amount=all_amount;
-          }
-          $('.del_charge_hidden').val(del_fees);
-          $('#deliveryCharge').text(del_fees);
-          overallCalculation(all_amount,tax_rate,currency);
-
-      });
 
       $(document).ready(function($) {
         var sum = 0;
@@ -599,33 +524,6 @@
           var currency = $('option:selected', '#currency_rate').attr("currency-rate");
           var all_amount = $('#allAmount').text();
           var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
-
-          var free_delivery=$('.free_delivery_amount').val();
-          var free_del_amount=$('.free_delivery_amount').val();
-          var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
-          var del_type = $('#delivery-methods option:selected').val();
-
-          if ( parseInt(all_amount) >= parseInt(free_del_amount)) {
-              $('#delivery-methods option[value="3"]').show();
-          }
-          else{
-              $('#delivery-methods option[value="3"]').hide();
-          }
-
-          if (del_fees!="undefined") {
-            if (del_type==1 || del_type==2) {
-                var all_amount=parseInt(all_amount)+parseInt(del_fees);
-            }
-            else{
-              var all_amount=parseInt(all_amount);
-              var del_fees='0.00';
-            }
-            
-          }
-          else{
-              var all_amount=all_amount;
-          }
-          $('#deliveryCharge').text(del_fees);
           overallCalculation(all_amount,tax_rate,currency);
         }
       });
@@ -729,16 +627,6 @@
         }else{
           $('#total_exchange').hide();
         }
-
-          var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
-          var del_type = $('#delivery-methods option:selected').val();
-
-          if (del_fees!="undefined") {
-            if (del_type==1 || del_type==2) {
-                var allAmount=parseInt(allAmount)-parseInt(del_fees);
-            }
-          }
-
         $('#total_amount_hidden').val(allAmount);
         $('#order_tax_amount_hidden').val(taxAmount);
         $('#sgd_total_amount_hidden').val(totalSGD);

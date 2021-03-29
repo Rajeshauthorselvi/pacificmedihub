@@ -24,7 +24,6 @@ use App\Models\RFQComments;
 use App\Models\RFQCommentsAttachments;
 use App\Models\Orders;
 use App\Models\Notification;
-use App\Models\DeliveryMethod;
 use Auth;
 use Redirect;
 use Session;
@@ -76,16 +75,10 @@ class RFQController extends Controller
             }
         }
       $data=array();
-        $customer_details=DB::table('users as u')
-        ->select('u.first_name','u.id','ucd.sales_rep')
-        ->leftjoin('user_company_details as ucd','ucd.customer_id','u.id')
-        ->where('is_deleted',0)->where('status',1)
-        ->where('role_id',7)->get()
-        ->toArray();
-        $data['customers']      = $customer_details;
+      $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
+                                ->where('role_id',7)->pluck('first_name','id')->toArray();
 
-
-        $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+      $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
 
       $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[20,1])->pluck('status_name','id')->toArray();
@@ -122,8 +115,6 @@ class RFQController extends Controller
         $replace_number = str_replace('[Start No]', $start_number, $replace_year);
         $data['rfq_id']=$replace_number;
       }
-        $data['delivery_methods'] = DeliveryMethod::all();
-        $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
 
       return view('admin.rfq.create',$data);
     }
@@ -158,8 +149,6 @@ class RFQController extends Controller
         'currency'              => $request->currency,
         'order_tax'             => $request->order_tax,
         'order_discount'        => $request->order_discount,
-        'delivery_method_id'    => $request->delivery_method_id,
-        'delivery_charge'       => $request->delivery_charge,
         'payment_term'          => $request->payment_term,
         'order_tax_amount'      => $request->order_tax_amount,
         'total_amount'          => $request->total_amount,
@@ -285,17 +274,10 @@ class RFQController extends Controller
                                     ->pluck('status_name','id')->toArray();
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
                                     ->pluck('payment_method','id')->toArray();
-        $customer_details=DB::table('users as u')
-        ->select('u.first_name','u.id','ucd.sales_rep')
-        ->leftjoin('user_company_details as ucd','ucd.customer_id','u.id')
-        ->where('is_deleted',0)->where('status',1)
-        ->where('role_id',7)->get()
-        ->toArray();
-        $data['customers']      = $customer_details;
-
-        $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
-                                  ->where('emp_department',1)->pluck('emp_name','id')->toArray();
-
+      $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)->where('role_id',7)
+                                    ->pluck('first_name','id')->toArray();
+      $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                    ->where('role_id',4)->pluck('emp_name','id')->toArray();
       $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
       $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                     ->pluck('name','id')->toArray();
@@ -327,9 +309,6 @@ class RFQController extends Controller
         ];
       }
       $data['product_datas']=$product_data;
-        $data['delivery_methods'] = DeliveryMethod::all();
-        $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
-
       return view('admin.rfq.edit',$data);
     }
 
@@ -375,8 +354,6 @@ class RFQController extends Controller
         'sales_rep_id'          => $request->sales_rep_id,
         'currency'              => $request->currency,
         'order_tax'             => $request->order_tax,
-        'order_discount'        => $request->order_discount,
-        'delivery_method_id'    => $request->delivery_method_id,
         'order_discount'        => $request->order_discount,
         'payment_term'          => $request->payment_term,
         'order_tax_amount'      => $request->order_tax_amount,
