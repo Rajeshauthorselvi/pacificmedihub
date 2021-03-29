@@ -88,13 +88,15 @@
                 <li><strong>RFQ Code : #{{ $rfq->order_no }}</strong></li>
                 <li><span>Date: </span>{{ date('d/m/Y - H:i a',strtotime($rfq->created_at)) }}</li>
                 <li><span>Sales Rep: </span>{{ isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'' }}</li>
+                @if(isset($rfq->delivery_method_id))
+                  <li><span>Delivery Method</span>: {{ $rfq->deliveryMethodName->delivery_method }}</li>
+                @endif
                 <?php 
                   if($rfq->status==1) { $status = 'Pending'; $color_code = '#f0ad4e'; }
                   elseif($rfq->status==13) { $status = 'Completed'; $color_code = '#00a65a'; }
                   elseif($rfq->status==20) { $status = 'InProcess'; $color_code = '#f0ad4e'; }
                   elseif($rfq->status==21) { $status = 'Rejected'; $color_code = '#dd4b39'; }
                 ?>
-
                 <li><span>Status</span>: <span class="badge" style="background:{{$color_code}};color:#fff;padding: 5px">{{ $status }}</span></li>
                 <?php 
                   if($rfq->approval_status==0) { $approvalStatus = 'Pending'; $color_code = '#f0ad4e'; }

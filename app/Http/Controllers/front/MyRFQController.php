@@ -193,6 +193,7 @@ class MyRFQController extends Controller
         $data['cus_email']        = $user->email;
         $data['delivery_address'] = UserAddress::find($del_add_id);
         $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+        $data['delivery_method']  = DeliveryMethod::where('is_free_delivery','no')->get();
         $rfq_products = RFQProducts::with('product','variant')->where('rfq_id',$id)->orderBy('id','desc')->get();
         $rfq_data = $rfq_items = array();
         foreach ($rfq_products as $key => $item) {
@@ -273,7 +274,7 @@ class MyRFQController extends Controller
         $data['billing']     = UserAddress::find($bill_add_id);
 
         $data['all_address'] = UserAddress::where('customer_id',$user_id)->where('is_deleted',0)->get();
-
+        $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->get();
         $rfq_products = RFQProducts::with('product','variant')->where('rfq_id',$id)->orderBy('id','desc')->get();
         $rfq_data = $rfq_items = array();
         foreach ($rfq_products as $key => $item) {
@@ -320,7 +321,7 @@ class MyRFQController extends Controller
         if(!Auth::check()){
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
         }
-        RFQ::where('id',$id)->update(['notes'=>$request->notes]);
+        RFQ::where('id',$id)->update(['notes'=>$request->notes,'delivery_method_id'=>$request->delevery_method]);
         return redirect()->route('my-rfq.index')->with('info', 'Your RFQ data updated successfully!');
     }
 
