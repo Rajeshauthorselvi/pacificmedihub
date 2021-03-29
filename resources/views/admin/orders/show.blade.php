@@ -261,6 +261,10 @@
                               <td colspan="4" class="title">Order Tax</td>
                               <td id="orderTax">{{$order->order_tax_amount}}</td>
                             </tr>
+                              <tr class="total-calculation">
+                                <td colspan="4" class="title">Delivery Charge</td>
+                                <td id="deliveryCharge">{{$order->delivery_charge}}</td>
+                              </tr>
                             <tr class="total-calculation">
                               <th colspan="4" class="title">Total Amount(SGD)</th>
                               <th id="total_amount_sgd">{{$order->sgd_total_amount}}</th>

@@ -92,32 +92,64 @@ class Orders extends Model
         return array_unique($check_quantity);
     }
 
-    static function LowStockQuantity()
+    static function LowStockQuantity($type="products",$product_id=0)
     {
+      if ($product_id==0) {
         $products=Product::select('id','name','alert_quantity')->whereNotNull('alert_quantity')->get();
+      }
+      else{
+        $products=Product::select('id','name','alert_quantity')->where('id',$product_id)->get();
+      }
+
         $avalivle_low_quantity=$stock_details=array();
         $count=0;
         foreach ($products as $key => $product) {
             $query=DB::table('product_variant_vendors as pvv')
                    ->leftjoin('product_variants as pv','pv.id','pvv.product_variant_id')
                    ->where('pv.product_id',$product->id)
-                   ->where('pvv.stock_quantity','<=',$product->alert_quantity)
+                   ->where('pvv.stock_quantity','<',$product->alert_quantity)
                    ->where('pv.disabled',0)
                    ->where('pv.is_deleted',0)
-                   ->get();
-                   foreach ($query as $key => $qq) {
-                       $check_purchase_exists=DB::table('purchase as p')
+                   ->orderBy('id','ASC')
+                   ->groupBy('pvv.product_variant_id')
+                   ->pluck('stock_quantity','pvv.id')
+                   ->toArray();
+
+                   if ($type=="products") {
+                    $query_exists=DB::table('product_variant_vendors as pvv')
+                           ->leftjoin('product_variants as pv','pv.id','pvv.product_variant_id')
+                           ->where('pv.product_id',$product->id)
+                           ->where('pvv.stock_quantity','<',$product->alert_quantity)
+                           ->where('pv.disabled',0)
+                           ->where('pv.is_deleted',0)
+                           ->exists();
+
+                      if ($query_exists) {
+                        $check_purchase_exists=DB::table('purchase as p')
                                               ->leftjoin('purchase_products as pp','p.id','pp.purchase_id')
                                               ->where('pp.product_id',$product->id)
-                                              ->where('pp.product_variation_id',$qq->id)
                                               ->where('p.purchase_status','<>',2)
                                               ->exists();
                         if (!$check_purchase_exists) {
-                             array_push($avalivle_low_quantity, $qq);
-                             $stock_details[$product->name]=$avalivle_low_quantity;
+                             $stock_details[$product->name]=$product;
                              $count +=1;
                         }
+                      }
                    }
+                   else{
+
+                       $check_purchase_exists=DB::table('purchase as p')
+                                              ->leftjoin('purchase_products as pp','p.id','pp.purchase_id')
+                                              ->where('pp.product_id',$product->id)
+                                              ->where('p.purchase_status','<>',2)
+                                              ->exists();
+                        if (!$check_purchase_exists) {
+                            $stock_details=$query;
+                             $count +=1;
+                        }
+
+                   }
+                  
         }
 
         return ['low_stock_count'=>$count,'stock_details'=>$stock_details];

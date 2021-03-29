@@ -250,7 +250,7 @@ class PurchaseController extends Controller
       if (!$request->has('from')) {
         return Redirect::route('purchase.index')->with('success','Purchase order created successfully...!');  
       }
-      return Redirect::route('low-stock.index')->with('success','Purchase order created successfully...!');
+      return Redirect::route('low-stocks.index')->with('success','Purchase order created successfully...!');
     }
 
     /**

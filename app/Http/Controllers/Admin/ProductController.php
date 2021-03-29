@@ -1388,7 +1388,6 @@ class ProductController extends Controller
                 abort(404);
             }
         }
-        dd(Auth::guard('employee')->user()->isAuthorized('import','create'),Auth::guard('employee')->user());
 
         $this->validate(request(),[
             'product_sheet' => 'required'
