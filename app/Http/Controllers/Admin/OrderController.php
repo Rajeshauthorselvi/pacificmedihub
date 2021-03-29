@@ -168,6 +168,7 @@ class OrderController extends Controller
                                         ->pluck('name','id')->toArray();
                                         
         $data['delivery_methods'] = DeliveryMethod::all();
+        $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
 
         $data['order_code']= '';
         $order_code = Prefix::where('key','prefix')->where('code','order_no')->value('content');
@@ -204,6 +205,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+
         $this->validate(request(),[
             'order_status'   => 'required',
             'payment_status' => 'required'
@@ -233,6 +235,8 @@ class OrderController extends Controller
             'order_status'          => $request->order_status,
             'order_tax'             => $request->order_tax,
             'order_discount'        => $request->order_discount,
+            'delivery_method_id'    => $request->delivery_method_id,
+            'delivery_charge'       => $request->delivery_charge,
             'currency'              => $request->currency,
             'payment_term'          => $request->payment_term,
             'payment_status'        => $request->payment_status,
@@ -451,6 +455,8 @@ class OrderController extends Controller
      
         $data['check_quantity']=Orders::CheckQuantity($order_id);
         $data['product_datas']=$product_data;
+        $data['delivery_methods'] = DeliveryMethod::all();
+        $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
 
         $currenct_route=Route::currentRouteName();
         $currenct_route=explode('.',$currenct_route);
@@ -545,6 +551,8 @@ class OrderController extends Controller
               'order_status'          => $request->order_status,
               'order_tax'             => $request->order_tax,
               'order_discount'        => $request->order_discount,
+              'delivery_method_id'    => $request->delivery_method_id,
+              'delivery_charge'       => $request->delivery_charge,
               'payment_term'          => $request->payment_term,
               'payment_status'        => $request->payment_status,
               'payment_ref_no'        => $request->payment_ref_no,
