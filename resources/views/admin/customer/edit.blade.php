@@ -264,7 +264,7 @@
                       @foreach ($customer->alladdress as $address)
                         <div class="col-sm-12">
                           <div class="list">
-                            <table class="table">
+                            <table class="table del-address">
                               <tr>
                                 <td rowspan="2" style="vertical-align: middle; border:none;">
                                   @if ($customer->address_id==$address->id)
@@ -927,6 +927,13 @@
 
       function validateStep4(e){
         var valid=true;
+        var addCount = $('.del-address').length;
+        if(addCount==0){
+          alert('Please Add Delivery Address');
+          valid=false;
+        }else{
+          valid=true;
+        }
         return valid;
       }
 
