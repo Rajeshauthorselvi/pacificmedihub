@@ -1296,7 +1296,7 @@ div.customer-menu a:hover {
     margin: 2rem 0;
 }
 
-  .address-block .map-block{width: 100%;}
+ /* .address-block .map-block{width: 100%;}
   .address-block #myMap {height: 450px;width: 100%;}
   .address-block .pac-card {
     -moz-box-sizing: border-box;
@@ -1328,7 +1328,7 @@ div.customer-menu a:hover {
 
   .address-block #pac-input:focus {
     border-color: #3e72b1;
-  }
+  }*/
   
 
 .select2-container--default .select2-selection--single {
