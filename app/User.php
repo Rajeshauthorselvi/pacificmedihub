@@ -67,4 +67,28 @@ class User extends Authenticatable
         return $this->belongsTo(UserPoc::class,'poc_id');
     }
 
+    public function getCountry()
+    {
+        return $this->belongsTo('App\Models\Countries','country_id');
+    }
+
+    public function getState()
+    {
+        return $this->belongsTo('App\Models\State','state_id');
+    }
+
+    public function getCity()
+    {
+        return $this->belongsTo('App\Models\City','city_id');
+    }
+
+    public function getSalesRep()
+    {
+        return $this->belongsTo('App\Models\Employee','sales_rep'); 
+    }
+
+    static function ParentCompany($parent_id)
+    {
+        return self::where('id',$parent_id)->where('role_id',7)->value('name');
+    }
 }

@@ -21,12 +21,12 @@
     </ul>
     <?php 
     if (Auth::guard('employee')->check()) {
-      $profile_image = Auth::guard('employee')->user()->profile_image;
+      $profile_image = Auth::guard('employee')->user()->logo;
       $name = Auth::guard('employee')->user()->emp_name;
     }
     else{
-      $profile_image = Auth::user()->profile_image;
-      $name = Auth::user()->first_name.' '.Auth::user()->last_name;
+      $profile_image = Auth::user()->logo;
+      $name = Auth::user()->name;
     }
     ?>
     <!-- Right navbar links -->

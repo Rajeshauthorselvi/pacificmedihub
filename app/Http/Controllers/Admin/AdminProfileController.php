@@ -18,7 +18,6 @@ class AdminProfileController extends Controller
     {
         $data=array();
         $data['admin'] = User::where('role_id',1)->first();
-        $data['company'] = UserCompanyDetails::where('customer_id',1)->first();
         return view('admin.profile.form',$data);
     }
 
@@ -74,25 +73,20 @@ class AdminProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $this->validate(request(),[
-            'contact_number'     => 'required',
-            'gst'     => 'required'
+            'contact_number' => 'required',
+            'gst'            => 'required'
         ]);
 
-
-       $address_details=UserCompanyDetails::find($id);
-       $address_details->latitude=$request->latitude;
-       $address_details->longitude=$request->longitude;
-       $address_details->address_1=$request->address_1;
-       $address_details->address_2=$request->address2;
-       $address_details->telephone=$request->contact_number;
-       // $address_details->last_name=$request->last_name;
-       $address_details->company_gst=$request->gst;
-       $address_details->save();
-
-       User::where('id',1)->update(['contact_number'=>$request->contact_number]);
-
+       $update_details=User::find($id);
+       $update_details->latitude       = $request->latitude;
+       $update_details->longitude      = $request->longitude;
+       $update_details->address_1      = $request->address1;
+       $update_details->address_2      = $request->address2;
+       $update_details->contact_number = $request->contact_number;
+       $update_details->company_gst    = $request->gst;
+       $update_details->save();
+       
        return Redirect::back()->with('success','Profile details updated successfully...!');
     }
 

@@ -24,15 +24,15 @@
     <!-- /.content-header -->
     <span class="hr"></span>
     @include('flash-message')
-@if ($errors->any())
-    <div class="alert alert-danger">
+    @if ($errors->any())
+      <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
-    </div>
-@endif
+      </div>
+    @endif
     <!-- Main content -->
     <section class="content">
       <ol class="breadcrumb float-sm-right">
@@ -51,112 +51,76 @@
               <div class="card-body">
                 <ul class="nav nav-tabs flex-nowrap" role="tablist">
                   <li role="presentation" class="nav-item">
-                    <a href="#step1" class="nav-link active" data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Customer"> Customer Details </a>
-                  </li>
-                  <li role="presentation" class="nav-item">
-                    <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab"  tab-count="2" title="Company"> Company Details </a>
+                    <a href="#step1" class="nav-link active" data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Company"> Company Details </a>
                   </li>
                   
                   <li role="presentation" class="nav-item">
-                    <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab" tab-count="3" title="POC"> POC Details </a>
+                    <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab" tab-count="2" title="POC"> POC Details </a>
                   </li>
 
                   <li role="presentation" class="nav-item">
-                    <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step4" role="tab"  tab-count="4" title="Delivery">Delivery Address</a>
+                    <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab"  tab-count="3" title="Delivery">Delivery Address</a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step5" class="nav-link disabled" data-toggle="tab" aria-controls="step5" role="tab"  tab-count="5" title="Bank">Bank Accounts</a>
+                    <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step4" role="tab"  tab-count="4" title="Bank">Bank Accounts</a>
                   </li>
                 </ul>
 
                 
                 <div class="tab-content py-2">
-
-                  <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
+                  <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
                     <div class="col-sm-12">
                       <div class="form-group">
+                        {!! Form::hidden('company[company_id]',$customer->id) !!}
                         <div class="col-sm-6">
                           <label for="">Customer Code *</label>
-                          {!! Form::text('customer[customer_no]',$customer->customer_no,['class'=>'form-control required','readonly']) !!}
+                          {!! Form::text('company[customer_no]',$customer->customer_no,['class'=>'form-control required','readonly']) !!}
                         </div>
                         <div class="col-sm-6">
-                          <label for="">Name *</label>
-                          {!! Form::text('customer[first_name]', $customer->first_name,['class'=>'form-control cus_name']) !!}
-                          <span class="text-danger cus_name" style="display:none">Name is required</span>
+                          <label for="">Company UEN *</label>
+                          {!! Form::text('company[company_uen]', $customer->company_uen,['class'=>'form-control company_uen']) !!}
+                          <span class="text-danger company_uen" style="display:none">Company UEN is required</span>
                         </div>
                       </div>
                       <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="">Contact No *</label>
-                          {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control cus_contact', 'onkeyup'=>"validateNum(event,this);"]) !!}
-                          <span class="text-danger cus_contact" style="display:none">Contact is required</span>
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="">Email *</label>
-                          {!! Form::email('customer[email]', $customer->email,['class'=>'form-control cus_email']) !!}
-                          <span class="text-danger cus_email" style="display:none">Email is required</span>
-                          <span class="text-danger cus_email_validate" style="display:none">Please enter valid Email Address</span>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="customer[status]" id="Status" @if($customer->status==1) checked @endif>
-                            <label for="Status">Published</label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-sm-6">
-                        <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancle</a>
-                        <button type="button" id="validateStep1" class="btn save-btn next-step">Next</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="tab-pane company-tabs" tab-count="2" role="tabpanel" id="step2">
-                    <div class="col-sm-12">
-                      <div class="form-group">
-                        {!! Form::hidden('company[company_id]',$customer->company->id) !!}
                         <div class="col-sm-6">
                           <label for="">Company Name *</label>
-                          {!! Form::text('company[company_name]', null,['class'=>'form-control company_name']) !!}
+                          {!! Form::text('company[name]', $customer->name,['class'=>'form-control company_name']) !!}
                           <span class="text-danger company_name" style="display:none">Company Name is required</span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Parent Company</label>
-                          {!! Form::select('company[parent_company]', $all_company,$customer->company->parent_company,['class'=>'form-control select2bs4']) !!}
+                          {!! Form::select('company[parent_company]', $all_company,$customer->parent_company,['class'=>'form-control select2bs4']) !!}
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Company Email *</label>
-                          {!! Form::text('company[company_email]', null,['class'=>'form-control company_email']) !!}
+                          {!! Form::text('company[email]', $customer->email,['class'=>'form-control company_email']) !!}
                            <span class="text-danger company_email" style="display:none">Company Email is required</span>
                           <span class="text-danger company_email_validate" style="display:none">Please enter valid Email Address</span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Contact No *</label>
-                          {!! Form::text('company[telephone]', null,['class'=>'form-control company_contact']) !!}
+                          {!! Form::text('company[contact_number]', $customer->contact_number,['class'=>'form-control company_contact']) !!}
                           <span class="text-danger company_contact" style="display:none">Company Contact is required</span>
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Address Line1 *</label>
-                          {!! Form::text('company[address_1]', null,['class'=>'form-control company_add1']) !!}
+                          {!! Form::text('company[address_1]', $customer->address_1,['class'=>'form-control company_add1']) !!}
                           <span class="text-danger company_add1" style="display:none">Address Line 1 is required</span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Address Line2</label>
-                          {!! Form::text('company[address_2]', null,['class'=>'form-control']) !!}
+                          {!! Form::text('company[address_2]', $customer->address_2,['class'=>'form-control']) !!}
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Country *</label>
-                          {!! Form::select('company[country_id]',$countries,$customer->company->country_id,['class'=>'form-control select2bs4 country_id', 'id'=>'company_country' ]) !!}
+                          {!! Form::select('company[country_id]',$countries,$customer->country_id,['class'=>'form-control select2bs4 country_id', 'id'=>'company_country' ]) !!}
                           <span class="text-danger country_id" style="display:none">Country is required</span>
                         </div>
                         <div class="col-sm-6">
@@ -177,7 +141,7 @@
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Sales Rep *</label>
-                          {!! Form::select('company[sales_rep]',$sales_rep,$customer->company->sales_rep,['class'=>'form-control select2bs4 sales_rep']) !!}
+                          {!! Form::select('company[sales_rep]',$sales_rep,$customer->sales_rep,['class'=>'form-control select2bs4 sales_rep']) !!}
                           <span class="text-danger sales_rep" style="display:none">Sales Rep is required</span>
                         </div>
                         <div class="col-sm-6">
@@ -192,9 +156,9 @@
                             <input type="file" class="custom-file-input" name="company[logo]" id="companyLogo" accept="image/*">
                             <label class="custom-file-label" for="companyLogo">Choose file</label>
                           </div>
-                          @if (isset($customer->company->logo))
+                          @if (isset($customer->logo))
                           <br><br>
-                          <img src="{{asset('theme/images/customer/company/'.$customer->company->id.'/' .$customer->company->logo)}}" width="100px" height="100px">
+                          <img src="{{asset('theme/images/customer/company/'.$customer->id.'/' .$customer->logo)}}" width="100px" height="100px">
                           @endif
                         </div>
                         <div class="col-sm-6">
@@ -203,60 +167,75 @@
                             <input type="file" class="custom-file-input" name="company[company_gst_certificate]" id="companyGst" accept="image/*">
                             <label class="custom-file-label" for="companyGst">Choose file</label>
                           </div>
-                          @if (isset($customer->company->company_gst_certificate))
+                          @if (isset($customer->company_gst_certificate))
                           <br><br>
-                          <img src="{{asset('theme/images/customer/company/'.$customer->company->id.'/' .$customer->company->company_gst_certificate)}}" width="100px" height="100px">
+                          <img src="{{asset('theme/images/customer/company/'.$customer->id.'/' .$customer->company_gst_certificate)}}" width="100px" height="100px">
                           @endif
                         </div>
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <button type="button" class="btn reset-btn prev-step">Previous</button>
-                          <button type="button" id="validateStep2" class="btn save-btn next-step">Next</button>
+                          <div class="icheck-info d-inline">
+                            <input type="checkbox" name="company[status]" id="Status" @if($customer->status==1) checked @endif>
+                            <label for="Status">Published</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancle</a>
+                          <button type="button" id="validateStep1" class="btn save-btn next-step">Next</button>
                         </div>
                       </div>
 
                     </div>
                   </div>
 
-                  <div class="tab-pane customer-tabs" tab-count="3" role="tabpanel" id="step3">
+                  <div class="tab-pane customer-tabs" tab-count="2" role="tabpanel" id="step2">
                     <div class="col-sm-12">
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          {!! Form::hidden('poc[poc_id]',$customer->poc->id) !!}
-                          <label for="">POC Name *</label>
-                          {!! Form::text('poc[name]',$customer->poc->name,['class'=>'form-control poc_name']) !!}
-                          <span class="text-danger poc_name" style="display:none">Name is required</span>
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="">Company UEN *</label>
-                          {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control company_uen']) !!}
-                          <span class="text-danger company_uen" style="display:none">Company UEN is required</span>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="">Contact No *</label>
-                          {!! Form::text('poc[contact_number]', $customer->poc->contact_number,['class'=>'form-control poc_contact','onkeyup'=>"validateNum(event,this);"]) !!}
-                          <span class="text-danger poc_contact" style="display:none">Contact is required</span>
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="">Email *</label>
-                          {!! Form::email('poc[email]',  $customer->poc->email,['class'=>'form-control poc_email']) !!}
-                          <span class="text-danger poc_email" style="display:none">Email is required</span>
-                          <span class="text-danger poc_email_validate" style="display:none">Please enter valid Email Address</span>
-                        </div>
-                      </div>
+                      <table class="list" id="pocList">
+                          <thead>
+                            <tr>
+                              <th></th><th>Name</th><th>Email</th><th>Phone No</th>
+                            </tr>
+                          </thead>
+                          <?php $count=1; ?>
+                          @foreach($customer_poc as $poc)
+                            <tbody>
+                              <tr>
+                                <td><span class="counts">{{$count}}</span></td>
+                                <td>
+                                  <div class="form-group">
+                                    <input type="hidden" name="poc[id][]" value="{{ $poc->id }}">
+                                    <input type="text" class="form-control" name="poc[name][]" value="{{old('name',$poc->name)}}">
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <input type="text" class="form-control validate-email1" name="poc[email][]" value="{{old('email',$poc->email)}}">
+                                    <span class="email-error1" style="display:none;color:red;">Invalid email</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="form-group">
+                                    <input type="text" class="form-control" name="poc[contact][]" id="contact1" value="{{old('contact',$poc->contact_number)}}" onkeyup="validateNum(event,this);">
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                            <input type="hidden" value="{{$count++}}">
+                          @endforeach
+                        </table>
                     </div>
                     <div class="form-group">
                       <div class="col-sm-6">
                         <button type="button" class="btn reset-btn prev-step">Previous</button>
-                        <button type="button" id="validateStep3" class="btn save-btn next-step">Next</button>
+                        <button type="button" id="validateStep2" class="btn save-btn next-step">Next</button>
                       </div>
                     </div>
                   </div>
                    
-                  <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
+                  <div class="tab-pane address-tabs " tab-count="3" role="tabpanel" id="step3">
                     <div class="add-new-address">
                       <button type="button" class="btn btn-info add" address-id="{{$customer['id']}}" data-toggle="modal" data-target="#add-address">Add New Address</button>
                     </div>
@@ -268,9 +247,9 @@
                               <tr>
                                 <td rowspan="2" style="vertical-align: middle; border:none;">
                                   @if ($customer->address_id==$address->id)
-                                    <input type="radio" name="customer[address_id]" checked value="{{$address->id}}">
+                                    <input type="radio" name="company[address_id]" checked value="{{$address->id}}">
                                   @else
-                                    <input type="radio" name="customer[address_id]" value="{{$address->id}}">
+                                    <input type="radio" name="company[address_id]" value="{{$address->id}}">
                                   @endif
                                 </td>
                                 <td>
@@ -295,12 +274,12 @@
                     <div class="form-group">
                       <div class="col-sm-6">
                         <button type="button" class="btn reset-btn prev-step">Previous</button>
-                        <button type="button" id="validateStep4" class="btn save-btn next-step">Next</button>
+                        <button type="button" id="validateStep3" class="btn save-btn next-step">Next</button>
                       </div>
                     </div>
                   </div>
 
-                  <div class="tab-pane address-tabs " tab-count="5" role="tabpanel" id="step5">
+                  <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
                     <div class="col-sm-12" style="display:flow-root">
                       {!! Form::hidden('bank[account_id]',$customer->bank->id) !!}
                       <div class="form-group">
@@ -341,7 +320,7 @@
                     <div class="form-group">
                     <div class="col-sm-6">
                       <button type="button" class="btn reset-btn prev-step">Previous</button>
-                      <button type="button" id="validateStep5" class="btn save-btn next-step">Submit</button>
+                      <button type="button" id="validateStep4" class="btn save-btn next-step">Submit</button>
                     </div>
                   </div>
                   </div>
@@ -682,14 +661,14 @@ google.maps.event.addDomListener(window, 'load', initialize);
 <script type="text/javascript">
 
       $(document).ready(function(){
-        var country_id = "<?php echo json_decode($customer->company->country_id); ?>";
-        var state_id = "<?php echo json_decode($customer->company->state_id); ?>";
+        var country_id = "<?php echo json_decode($customer->country_id); ?>";
+        var state_id = "<?php echo json_decode($customer->state_id); ?>";
         getState(country_id,'#company_state',state_id);
       });
       //Get City
       $(document).ready(function(){
-        var state_id = "<?php echo json_decode($customer->company->state_id); ?>";
-        var city_id = "<?php echo json_decode($customer->company->city_id); ?>";
+        var state_id = "<?php echo json_decode($customer->state_id); ?>";
+        var city_id = "<?php echo json_decode($customer->city_id); ?>";
         getCity(state_id,'#company_city',city_id);
       });
 
@@ -886,35 +865,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
       function validateStep1(e){
         var valid=true;
-        if($(".cus_name").val()=="") {
-          $(".cus_name").closest('.form-group').find('span.text-danger.cus_name').show();
-          valid=false;
-        }else{
-          $(".cus_name").closest('.form-group').find('span.text-danger.cus_name').hide();
-        }
-        if($(".cus_contact").val()=="") {
-          $(".cus_contact").closest('.form-group').find('span.text-danger.cus_contact').show();
-          valid=false;
-        }else{
-          $(".cus_contact").closest('.form-group').find('span.text-danger.cus_contact').hide();
-        }
-        if($(".cus_email").val()=="") {
-          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email').show();
-          valid=false;
-        }else{
-          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email').hide();
-        }
-        if(!validateEmail($('.cus_email').val())){
-          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email_validate').show();
-          valid=false;
-        }else{
-          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email_validate').hide();
-        }
-        return valid;
-      }
-
-      function validateStep2(e){
-        var valid=true;
         if($(".company_name").val()=="") {
           $(".company_name").closest('.form-group').find('span.text-danger.company_name').show();
           valid=false;
@@ -957,46 +907,22 @@ google.maps.event.addDomListener(window, 'load', initialize);
         }else{
           $(".sales_rep").closest('.form-group').find('span.text-danger.sales_rep').hide();
         }
-        return valid;
-      }
-
-      function validateStep3(e){
-        var valid=true;
-        if($(".poc_name").val()=="") {
-          $(".poc_name").closest('.form-group').find('span.text-danger.poc_name').show();
-          valid=false;
-        }else{
-          $(".poc_name").closest('.form-group').find('span.text-danger.poc_name').hide();
-        }
         if($(".company_uen").val()=="") {
           $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').show();
           valid=false;
         }else{
           $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').hide();
         }
-        if($(".poc_contact").val()=="") {
-          $(".poc_contact").closest('.form-group').find('span.text-danger.poc_contact').show();
-          valid=false;
-        }else{
-          $(".poc_contact").closest('.form-group').find('span.text-danger.poc_contact').hide();
-        }
-        if($(".poc_email").val()=="") {
-          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email').show();
-          valid=false;
-        }else{
-          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email').hide();
-        }
-        if(!validateEmail($('.poc_email').val())){
-          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email_validate').show();
-          valid=false;
-        }else{
-          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email_validate').hide();
-        }
         return valid;
       }
 
-      function validateStep4(e){
+      function validateStep2(e){
         var valid=true;
+        return valid;
+      }
+
+      function validateStep3(e){
+       var valid=true;
         var addCount = $('.del-address').length;
         if(addCount==0){
           alert('Please Add Delivery Address');
@@ -1007,41 +933,41 @@ google.maps.event.addDomListener(window, 'load', initialize);
         return valid;
       }
 
-      function validateStep5(e){
+      function validateStep4(e){
         var valid=true;
         return valid;
       }
 
-      $(".next-step").click(function (e) {
-        var company_name = $('.company_name').val();
-        var company_add1 = $('.company_add1').val();
+      $('#validateStep1').on('click',function (e) {
+        var company_name  = $('.company_name').val();
+        var company_email = $('.company_email').val();
+        var company_add1  = $('.company_add1').val();
         var company_add2 = $('.company_add2').val();
         var company_contact = $('.company_contact').val();
-        var country = $('#company_country option:selected').text();
         var country_id = $('#company_country').val();
-        var state = $('#company_state option:selected').text();
         var state_id = $('#company_state').val();
-        var city = $('#company_city option:selected').text();
         var city_id = $('#company_city').val();
         var postcode = $('#company_postcode').val();
-
+        console.log(country_id,state_id,city_id);
         $('.del_add_name').val(company_name);
         $('.del_add_1').val(company_add1);
         $('.del_add_2').val(company_add2);
-        $('.del_add_contact').val(company_contact);      
-        $('.address_country').val(country);
-        $('.address_country_id').val(country_id);
-        $('.address_state').val(state);
-        $('.address_state_id').val(state_id);
-        $('.address_city').val(city);
-        $('.address_city_id').val(city_id);
+        $('.del_add_contact').val(company_contact);
+        getState(country_id,'.address_state');
+        getCity(state_id,'.address_city');
         $('.address_postcode').val(postcode);
 
+        $('.poc_name1').val(company_name);
+        $('.poc_email1').val(company_email);
+        $('.poc_contact1').val(company_contact);
+      });
+
+      $(".next-step").click(function (e) {
         var $active = $('.nav-tabs li>.active');
         var stepID = $(e.target).attr('id');
         var formFields=$(e.target).closest('.tab-pane.active').find('input,select');
-        if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) || (stepID=="validateStep4" && validateStep4(e)) || (stepID=="validateStep5" && validateStep5(e)) ){
-          if(stepID=="validateStep5"){
+        if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) || (stepID=="validateStep4" && validateStep4(e))){
+          if(stepID=="validateStep4"){
             $(e.target).closest('form').submit();
             return;
           }

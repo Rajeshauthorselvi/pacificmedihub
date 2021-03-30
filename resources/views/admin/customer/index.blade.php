@@ -54,7 +54,6 @@
                       <tr>
                       	<th><input type="checkbox" class="select-all"></th>
                         <th>Customer Code</th>
-                        <th>Customer Name</th>
                         <th>Company Name</th>
                         <th>Parent Company</th>
                         <th>Email</th>
@@ -72,15 +71,13 @@
                     				<input type="checkbox" name="customer_ids" value="{{ $customer->id }}">
                     			</td>
                           <th><a href="{{route('customers.show',$customer->id)}}">{{$customer->customer_no}}</a></th>
-                    			<td> {{ $customer->first_name.' '.$customer->last_name }} </td>
-                    			<td>{{ isset($customer->company->company_name)?$customer->company->company_name:'' }}</td>
+                    			<td>{{$customer->name}}</td>
                     			<td>
                             <?php
-                              if($customer->company->parent_company==0){
+                              if($customer->parent_company==0){
                                 $parent = '-';
-                              }elseif($customer->company->parent_company!=0){
-                                $get_parent = App\Models\UserCompanyDetails::where('id',$customer->company->parent_company)->first();
-                                $parent = $get_parent->company_name;
+                              }else{
+                                $parent = $customer->ParentCompany($customer->parent_company);
                               }
                              ?>
                             {{ isset($parent)?$parent:'-' }}

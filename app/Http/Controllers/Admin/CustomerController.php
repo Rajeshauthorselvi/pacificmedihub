@@ -38,11 +38,7 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['all_customers']=User::with('company')
-                               ->where('users.role_id',7)
-                               ->where('is_deleted',0)
-                               ->orderBy('id','desc')
-                               ->get();
+        $data['all_customers'] = User::where('users.role_id',7)->where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.customer.index',$data);
 
     }
@@ -61,17 +57,11 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
-
-        $data['all_company']=[''=>'Please Select']+UserCompanyDetails::where('parent_company',0)
-                             ->pluck('company_name','id')->toArray();
-
-        $data['sales_rep']= [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
-                                  ->where('emp_department',1)->pluck('emp_name','id')->toArray();
-
-        $data['customer_code']='';
-
-        $data['customer_code']= '';
+        $data['countries']     = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        $data['sales_rep']     = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                                     ->where('emp_department',1)->pluck('emp_name','id')->toArray();
+        $data['all_company']   = [''=>'Please Select']+User::where('parent_company',0)->where('role_id',7)->pluck('name','id')->toArray();
+        $data['customer_code'] = '';
         $customer_code = Prefix::where('key','prefix')->where('code','customer')->value('content');
         if (isset($customer_code)) {
             $value = unserialize($customer_code);
@@ -93,10 +83,8 @@ class CustomerController extends Controller
             }
             $replace_year = str_replace('[yyyy]', $year, $char_val);
             $replace_number = str_replace('[Start No]', $start_number, $replace_year);
-            $data['customer_code']=$replace_number;
+            $data['customer_code'] = $replace_number;
         }
-
-
         return view('admin.customer.create',$data);
     }
 
@@ -108,70 +96,94 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
-
         $this->validate(request(),[
             '*.email' => 'unique:users'
         ],[
             '*.email.unique'=>'This email already taken'
         ]);
 
-        if(isset($request->customer['status']) && $request->customer['status']=='on') $status = 1 ;
+        if(isset($request->company['status']) && $request->company['status']=='on') $status = 1;
         else $status = 0;
 
+        if(isset($request->company['parent_company']) && $request->company['parent_company']!=null){
+            $parent_company = $request->company['parent_company'];
+        }
+        else{
+            $parent_company=0;
+        }
+
         /* Insert Customer Details */
-        $users = $request->customer;
-        $users['role_id']    = 7;
-        $users['status']     = $status;
-        $users['created_at'] = date('Y-m-d H:i:s');
-        $customer_id         = User::insertGetId($users);
+        $users = $request->company;
+        $users['role_id']        = 7;
+        $users['status']         = $status;
+        $users['parent_company'] = $parent_company;
+        $users['created_at']     = date('Y-m-d H:i:s');
+        $customer_id             = User::insertGetId($users);
         
+        /* Insert Poc details */
+        $poc = $request->poc;
+        if($request->poc){
+            $poc_data = [];
+            $i = 0;
+            foreach ($request->poc['name'] as $name) {
+                $poc_data[$i]['name'] = $name;
+                $i = $i + 1;
+            }
+            $i = 0;
+            foreach ($request->poc['email'] as $email) {
+                $poc_data[$i]['email'] = $email;
+                $i = $i + 1;
+            }
+            $i = 0;
+            foreach ($request->poc['contact'] as $contact) {
+                $poc_data[$i]['contact'] = $contact;
+                $i = $i + 1;
+            }
+            foreach ($poc_data as $key => $value) {
+                if($value['name']!=null){
+                    $add_poc = new UserPoc;
+                    $add_poc->customer_id    = $customer_id;
+                    $add_poc->name           = $value['name'];
+                    $add_poc->email          = $value['email'];
+                    $add_poc->contact_number = $value['contact'];
+                    $add_poc->timestamps     = false;
+                    $add_poc->save();
+                }
+            }
+        }
+
         /* Insert Bank details */
         $bank = $request->bank;
         $bank['customer_id'] = $customer_id;
         $bacnk_account_id    = UserBankAcccount::insertGetId($bank);
-        
-        /* Insert Poc details */
-        $poc = $request->poc;
-        $poc['customer_id'] = $customer_id;
-        $poc_id             = UserPoc::insertGetId($poc);
 
         /* Insert Address Details */
         $address = $request->address;
         $address['customer_id'] = $customer_id;
         $address_id             = UserAddress::insertGetId($address);
 
-        /*Insert Company Details*/
-        $company = $request->company;
-        $company['parent_company'] = isset($company['parent_company'])?$company['parent_company']:0;
-        $company['customer_id']    = $customer_id;
-        $company['created_at']     = date('Y-m-d H:i:s');
-        Arr::forget($company,['logo']);
-        $company_id                = UserCompanyDetails::insertGetId($company);
-        
         if(isset($request->company['logo'])){
             $photo           = $request->company['logo'];     
             $filename        = $photo->getClientOriginalName();            
             $file_extension  = $request->company['logo']->getClientOriginalExtension();
             $logo_image_name = strtotime("now").".".$file_extension;
-            $request->company['logo']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $logo_image_name);
-            UserCompanyDetails::where('id',$company_id)->update(['logo'=>$logo_image_name]);
+            $request->company['logo']->move(public_path('theme/images/customer/company/'.$customer_id.'/'), $logo_image_name);
+            User::where('id',$customer_id)->update(['logo'=>$logo_image_name]);
         }
+
         if(isset($request->company['company_gst_certificate'])){
             $gst_file           = $request->company['company_gst_certificate'];     
             $gst_filename       = $gst_file->getClientOriginalName();            
             $gst_file_extension = $request->company['company_gst_certificate']->getClientOriginalExtension();
             $gst_file_name      = strtotime("now").".".$gst_file_extension;
-            $request->company['company_gst_certificate']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $gst_file_name);
-            UserCompanyDetails::where('id',$company_id)->update(['company_gst_certificate'=>$gst_file_name]);
+            $request->company['company_gst_certificate']->move(public_path('theme/images/customer/company/'.$customer_id.'/'), $gst_file_name);
+            User::where('id',$customer_id)->update(['company_gst_certificate'=>$gst_file_name]);
         }
 
-        /*Update [Company, POC, Address, Bank] to users table*/
+        /*Update [Address, Bank] to users table*/
         $update_details = User::find($customer_id);
-        $update_details->company_id      = $company_id;
         $update_details->address_id      = $address_id;
         $update_details->bank_account_id = $bacnk_account_id;
-        $update_details->poc_id          = $poc_id;
         $update_details->save();
 
         if($status==1){
@@ -200,11 +212,11 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['customer'] = User::with('alladdress','company','bank','poc')
+        $data['customer'] = User::with('alladdress','bank')
                             ->where('users.role_id',7)
                             ->where('id',$id)
                             ->first();
-        // dd($data);
+        $data['customer_poc'] = UserPoc::where('customer_id',$id)->get();
         return view('admin/customer/show',$data);
     }
 
@@ -223,17 +235,17 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['customer']=$customer=User::with('alladdress','company','bank','poc')
-                               ->where('users.role_id',7)
-                               ->where('id',$id)
-                               ->first();
-        $data['all_company']=[''=>'Please Select']+UserCompanyDetails::where('parent_company',0)
-            ->where('id','<>',$customer->company_id)
-            ->pluck('company_name','id')
-            ->toArray();
-        $data['sales_rep']= [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+        $data['customer'] = $customer = User::with('alladdress','bank')->where('users.role_id',7)->where('id',$id)
+                                            ->first();
+        $data['customer_poc'] = UserPoc::where('customer_id',$id)->get();
+        
+        $data['all_company']  = [''=>'Please Select']+User::where('parent_company',0)->where('role_id',7)
+                                            ->pluck('name','id')->toArray();
+        $data['all_company']  = [''=>'Please Select']+User::where('parent_company',0)->where('role_id',7)
+                                            ->pluck('name','id')->toArray();
+        $data['sales_rep']    = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
-        $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        $data['countries']    = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
         
         return view('admin.customer.edit',$data);
     }
@@ -254,11 +266,21 @@ class CustomerController extends Controller
         ]);
 
         /* Update Customer details */
-        if(isset($request->customer['status']) && $request->customer['status']=='on') $status = 1 ;
+        if(isset($request->company['status']) && $request->company['status']=='on') $status = 1 ;
         else $status = 0;
-        $users = $request->customer;
-        $users['status'] = $status;
-        $customer        = User::where('id',$id)->update($users);
+
+        if(isset($request->company['parent_company']) && $request->company['parent_company']!=null){
+            $parent_company = $request->company['parent_company'];
+        }
+        else{
+            $parent_company=0;
+        }
+
+        $users = $request->company;
+        $users['status']         = $status;
+        $users['parent_company'] = $parent_company;
+        Arr::forget($users,['company_id']);
+        $customer = User::where('id',$id)->update($users);
         
         /* Update Bank details */
         $bank_details = $request->bank;
@@ -267,22 +289,52 @@ class CustomerController extends Controller
         $bank->update($bank_details);
 
         /* Update POC details */
-        $poc_details = $request->poc;
-        $poc = UserPoc::find($poc_details['poc_id']);
-        $poc->timestamps = false;
-        Arr::forget($poc_details,['poc_id']);
-        $poc->update($poc_details);
-
-        /* Update Company details */
-        $company_details=$request->company;
-        $company=UserCompanyDetails::find($company_details['company_id']);
-        Arr::forget($company_details,['company_id']);
-        $company->update($company_details);
+        if($request->poc){
+            $poc_data = [];
+            $i = 0;
+            foreach ($request->poc['id'] as $poc_id) {
+                $poc_data[$i]['id'] = $poc_id;
+                $i = $i + 1;
+            }
+            $i = 0;
+            foreach ($request->poc['name'] as $name) {
+                $poc_data[$i]['name'] = $name;
+                $i = $i + 1;
+            }
+            $i = 0;
+            foreach ($request->poc['email'] as $email) {
+                $poc_data[$i]['email'] = $email;
+                $i = $i + 1;
+            }
+            $i = 0;
+            foreach ($request->poc['contact'] as $contact) {
+                $poc_data[$i]['contact'] = $contact;
+                $i = $i + 1;
+            }
+            foreach ($poc_data as $key => $value) {
+                if($value['id']!=null){
+                    $update_poc = UserPoc::where('id',$value['id'])->first();
+                    $update_poc->name           = $value['name'];
+                    $update_poc->email          = $value['email'];
+                    $update_poc->contact_number = $value['contact'];
+                    $update_poc->timestamps     = false;
+                    $update_poc->save();
+                }else{
+                    $add_poc = new UserPoc;
+                    $add_poc->customer_id    = $id;
+                    $add_poc->name           = $value['name'];
+                    $add_poc->email          = $value['email'];
+                    $add_poc->contact_number = $value['contact'];
+                    $add_poc->timestamps     = false;
+                    $add_poc->save();
+                }
+            }
+        }
 
         $logo_image=isset($request->company['logo'])?$request->company['logo']:null;
         if($logo_image!=null){
             $company_id=$request->company['company_id'];
-            $check_image=UserCompanyDetails::where('id',$company_id)->value('logo');
+            $check_image=User::where('id',$company_id)->value('logo');
             File::delete(public_path('theme/images/customer/company/'.$company_id.'/'.$check_image));
 
             $photo          = $request->company['logo'];     
@@ -290,10 +342,11 @@ class CustomerController extends Controller
             $file_extension = $request->company['logo']->getClientOriginalExtension();
             $logo_image_name = strtotime("now").".".$file_extension;
             $request->company['logo']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $logo_image_name);
-            UserCompanyDetails::where('id',$company_id)->update(['logo'=>$logo_image_name]);
+            User::where('id',$company_id)->update(['logo'=>$logo_image_name]);
         }
 
         $user_details = User::find($id);
+        
         if(($status==1) && ($user_details->mail_sent_status!=1)){
             $password = Str::random(6);
             $user_details->password = Hash::make($password);
@@ -302,8 +355,6 @@ class CustomerController extends Controller
             Mail::to($user_details->email)->send(new NewRegister($user_details->first_name, $user_details->email,$password));
         }
        return Redirect::route('customers.index')->with('success','Customer details updated successfully...!');
-
-
     }
 
     /**

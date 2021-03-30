@@ -22,15 +22,15 @@
     <!-- /.content-header -->
     <span class="hr"></span>
     @include('flash-message')
-@if ($errors->any())
-    <div class="alert alert-danger">
+    @if ($errors->any())
+      <div class="alert alert-danger">
         <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
+          @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
         </ul>
-    </div>
-@endif
+      </div>
+    @endif
     <!-- Main content -->
     <section class="content">
       <ol class="breadcrumb float-sm-right">
@@ -50,97 +50,57 @@
                 
                 <ul class="nav nav-tabs flex-nowrap" role="tablist">
                   <li role="presentation" class="nav-item">
-                    <a href="#step1" class="nav-link active" data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Customer"> Customer Details </a>
-                  </li>
-                  <li role="presentation" class="nav-item">
-                    <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab"  tab-count="2" title="Company"> Company Details </a>
+                    <a href="#step1" class="nav-link active" data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Company"> Company Details </a>
                   </li>
                   
                   <li role="presentation" class="nav-item">
-                    <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab" tab-count="3" title="POC"> POC Details </a>
+                    <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab" tab-count="2" title="POC"> POC Details </a>
                   </li>
 
                   <li role="presentation" class="nav-item">
-                    <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step4" role="tab"  tab-count="4" title="Delivery">Delivery Address</a>
+                    <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab"  tab-count="3" title="Delivery">Delivery Address</a>
                   </li>
                   <li role="presentation" class="nav-item">
-                    <a href="#step5" class="nav-link disabled" data-toggle="tab" aria-controls="step5" role="tab"  tab-count="5" title="Bank">Bank Accounts</a>
+                    <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step4" role="tab"  tab-count="4" title="Bank">Bank Accounts</a>
                   </li>
                 </ul>
 
                 <div class="tab-content py-2">
 
-                  <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
+                  <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
                     <div class="col-sm-12">
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Customer Code *</label>
-                          {!! Form::text('customer[customer_no]',$customer_code,['class'=>'form-control required','readonly']) !!}
+                          {!! Form::text('company[customer_no]',$customer_code,['class'=>'form-control required','readonly']) !!}
                         </div>
                         <div class="col-sm-6">
-                          <label for="">Name *</label>
-                          {!! Form::text('customer[first_name]', null,['class'=>'form-control cus_name']) !!}
-                          <span class="text-danger cus_name" style="display:none">Name is required</span>
+                          <label for="">Company UEN *</label>
+                          {!! Form::text('company[company_uen]', null,['class'=>'form-control company_uen']) !!}
+                          <span class="text-danger company_uen" style="display:none">Company UEN is required</span>
                         </div>
                       </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="">Contact No *</label>
-                          {!! Form::text('customer[contact_number]', null,['class'=>'form-control cus_contact', 'onkeyup'=>"validateNum(event,this);"]) !!}
-                          <span class="text-danger cus_contact" style="display:none">Contact is required</span>
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="">Email *</label>
-                          {!! Form::email('customer[email]', null,['class'=>'form-control cus_email']) !!}
-                          <span class="text-danger cus_email" style="display:none">Email is required</span>
-                          <span class="text-danger cus_email_validate" style="display:none">Please enter valid Email Address</span>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <div class="icheck-info d-inline">
-                            <input type="checkbox" name="customer[status]" id="Status" checked>
-                            <label for="Status">Published</label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-sm-6">
-                        <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancle</a>
-                        <button type="button" id="validateStep1" class="btn save-btn next-step">Next</button>
-                      </div>
-                    </div>
-                  </div>
-
-
-                  <div class="tab-pane company-tabs " tab-count="2" role="tabpanel" id="step2">
-                    <div class="col-sm-12">
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="">Company Name *</label>
-                          {!! Form::text('company[company_name]', null,['class'=>'form-control company_name']) !!}
+                          {!! Form::text('company[name]', null,['class'=>'form-control company_name']) !!}
                           <span class="text-danger company_name" style="display:none">Company Name is required</span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Parent Company</label>
-                          {!! Form::select('company[parent_company]', $all_company, null,['class'=>'form-control select2bs4']) !!}
+                          {!! Form::select('company[parent_company]', $all_company, 0,['class'=>'form-control select2bs4']) !!}
                         </div>
                       </div>
                       <div class="form-group">
-                        
-                        
-                      </div>
-                      <div class="form-group">
                         <div class="col-sm-6">
-                          <label for="">Company Email *</label>
-                          {!! Form::email('company[company_email]', null,['class'=>'form-control company_email']) !!}
-                          <span class="text-danger company_email" style="display:none">Company Email is required</span>
+                          <label for="">Company/Login Email *</label>
+                          {!! Form::email('company[email]', null,['class'=>'form-control company_email']) !!}
+                          <span class="text-danger company_email" style="display:none">Company/Login Email is required</span>
                           <span class="text-danger company_email_validate" style="display:none">Please enter valid Email Address</span>
                         </div>
                         <div class="col-sm-6">
                           <label for="">Contact No*</label>
-                          {!! Form::text('company[telephone]', null,['class'=>'form-control company_contact','onkeyup'=>"validateNum(event,this);"]) !!}
+                          {!! Form::text('company[contact_number]', null,['class'=>'form-control company_contact','onkeyup'=>"validateNum(event,this);"]) !!}
                           <span class="text-danger company_contact" style="display:none">Company Contact is required</span>
                         </div>
                       </div>
@@ -197,62 +157,104 @@
                           </div>
                         </div>
                         <div class="col-sm-6">
-                          <label for="companyGst">Upload Company GST Certificate Copy(JPEG,PNG,PDF)</label>
+                          <label for="companyGst">Company GST Certificate Copy(JPEG,PNG,PDF)</label>
                           <div class="custom-file">
                             <input type="file" class="custom-file-input" name="company[company_gst_certificate]" id="companyGst">
                             <label class="custom-file-label" for="companyGst">Choose file</label>
                           </div>
                         </div>
                       </div>
-                        
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <button type="button" class="btn reset-btn prev-step">Previous</button>
-                          <button type="button" id="validateStep2" class="btn save-btn next-step">Next</button>
+                          <div class="icheck-info d-inline">
+                            <input type="checkbox" name="company[status]" id="Status" checked>
+                            <label for="Status">Published</label>
+                          </div>
                         </div>
                       </div>
-                      
+
+                      <div class="form-group">
+                        <div class="col-sm-6">
+                          <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancle</a>
+                          <button type="button" id="validateStep1" class="btn save-btn next-step">Next</button>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="tab-pane poc-tabs" tab-count="3" role="tabpanel" id="step3">
+                  <div class="tab-pane poc-tabs" tab-count="2" role="tabpanel" id="step2">
                     <div class="col-sm-12">
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="">POC Name *</label>
-                          {!! Form::text('poc[name]', null,['class'=>'form-control poc_name']) !!}
-                          <span class="text-danger poc_name" style="display:none">Name is required</span>
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="">Company UEN *</label>
-                          {!! Form::text('company[company_uen]', null,['class'=>'form-control company_uen']) !!}
-                          <span class="text-danger company_uen" style="display:none">Company UEN is required</span>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-6">
-                          <label for="">Contact No *</label>
-                          {!! Form::text('poc[contact_number]', null,['class'=>'form-control poc_contact', 'onkeyup'=>"validateNum(event,this);"]) !!}
-                          <span class="text-danger poc_contact" style="display:none">Contact is required</span>
-                        </div>
-                        <div class="col-sm-6">
-                          <label for="">Email *</label>
-                          {!! Form::email('poc[email]', null,['class'=>'form-control poc_email']) !!}
-                          <span class="text-danger poc_email" style="display:none">Email is required</span>
-                          <span class="text-danger poc_email_validate" style="display:none">Please enter valid Email Address</span>
-                        </div>
-                      </div>
+                      <table class="list" id="pocList">
+                        <thead>
+                          <tr>
+                            <th></th><th>Name</th><th>Email</th><th>Phone No</th>
+                          </tr>
+                        </thead>
+                        <tr>
+                          <td><span class="counts">1</span></td>
+                          <td>
+                            <div class="form-group">
+                              <input type="text" class="form-control poc_name1" name="poc[name][]">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group">
+                              <input type="text" class="form-control poc_email1" name="poc[email][]">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group">
+                              <input type="text" class="form-control poc_contact1" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><span class="counts">2</span></td>
+                          <td>
+                            <div class="form-group">
+                              <input type="text" class="form-control" name="poc[name][]">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group">
+                              <input type="text" class="form-control validate-email2" name="poc[email][]">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group">
+                              <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><span class="counts">3</span></td>
+                          <td>
+                            <div class="form-group">
+                              <input type="text" class="form-control" name="poc[name][]">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group">
+                              <input type="text" class="form-control validate-email3" name="poc[email][]">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group">
+                              <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
                     </div>
-
                     <div class="form-group">
                       <div class="col-sm-6">
                         <button type="button" class="btn reset-btn prev-step">Previous</button>
-                        <button type="button" id="validateStep3" class="btn save-btn next-step">Next</button>
+                        <button type="button" id="validateStep2" class="btn save-btn next-step">Next</button>
                       </div>
                     </div>
                   </div>
 
-                  <div class="tab-pane address-tabs" tab-count="4" role="tabpanel" id="step4">
+                  <div class="tab-pane address-tabs" tab-count="3" role="tabpanel" id="step3">
                     <div class="col-sm-12">
                       <div class="form-group">
                         <div class="col-sm-6">
@@ -328,13 +330,13 @@
                       <div class="form-group">
                         <div class="col-sm-6">
                           <button type="button" class="btn reset-btn prev-step">Previous</button>
-                          <button type="button" id="validateStep4" class="btn save-btn next-step">Next</button>
+                          <button type="button" id="validateStep3" class="btn save-btn next-step">Next</button>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div class="tab-pane bank-tabs " tab-count="5" role="tabpanel" id="step5">
+                  <div class="tab-pane bank-tabs " tab-count="4" role="tabpanel" id="step4">
                     <div class="col-sm-12">
                       <div class="form-group">
                         <div class="col-sm-6">
@@ -374,7 +376,7 @@
                     <div class="form-group">
                       <div class="col-sm-6">
                         <button type="button" class="btn reset-btn prev-step">Previous</button>
-                        <button type="button" id="validateStep5" class="btn save-btn next-step">Submit</button>
+                        <button type="button" id="validateStep4" class="btn save-btn next-step">Submit</button>
                       </div>
                     </div>
                     
@@ -503,35 +505,6 @@
 
       function validateStep1(e){
         var valid=true;
-        if($(".cus_name").val()=="") {
-          $(".cus_name").closest('.form-group').find('span.text-danger.cus_name').show();
-          valid=false;
-        }else{
-          $(".cus_name").closest('.form-group').find('span.text-danger.cus_name').hide();
-        }
-        if($(".cus_contact").val()=="") {
-          $(".cus_contact").closest('.form-group').find('span.text-danger.cus_contact').show();
-          valid=false;
-        }else{
-          $(".cus_contact").closest('.form-group').find('span.text-danger.cus_contact').hide();
-        }
-        if($(".cus_email").val()=="") {
-          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email').show();
-          valid=false;
-        }else{
-          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email').hide();
-        }
-        if(!validateEmail($('.cus_email').val())){
-          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email_validate').show();
-          valid=false;
-        }else{
-          $(".cus_email").closest('.form-group').find('span.text-danger.cus_email_validate').hide();
-        }
-        return valid;
-      }
-
-      function validateStep2(e){
-        var valid=true;
         if($(".company_name").val()=="") {
           $(".company_name").closest('.form-group').find('span.text-danger.company_name').show();
           valid=false;
@@ -574,45 +547,21 @@
         }else{
           $(".sales_rep").closest('.form-group').find('span.text-danger.sales_rep').hide();
         }
-        return valid;
-      }
-
-      function validateStep3(e){
-        var valid=true;
-        if($(".poc_name").val()=="") {
-          $(".poc_name").closest('.form-group').find('span.text-danger.poc_name').show();
-          valid=false;
-        }else{
-          $(".poc_name").closest('.form-group').find('span.text-danger.poc_name').hide();
-        }
         if($(".company_uen").val()=="") {
           $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').show();
           valid=false;
         }else{
           $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').hide();
         }
-        if($(".poc_contact").val()=="") {
-          $(".poc_contact").closest('.form-group').find('span.text-danger.poc_contact').show();
-          valid=false;
-        }else{
-          $(".poc_contact").closest('.form-group').find('span.text-danger.poc_contact').hide();
-        }
-        if($(".poc_email").val()=="") {
-          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email').show();
-          valid=false;
-        }else{
-          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email').hide();
-        }
-        if(!validateEmail($('.poc_email').val())){
-          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email_validate').show();
-          valid=false;
-        }else{
-          $(".poc_email").closest('.form-group').find('span.text-danger.poc_email_validate').hide();
-        }
         return valid;
       }
 
-      function validateStep4(e){
+      function validateStep2(e){
+        var valid=true;
+        return valid;
+      }
+
+      function validateStep3(e){
         var valid=true;
         if($(".del_add_name").val()=="") {
           $(".del_add_name").closest('.form-group').find('span.text-danger.del_add_name').show();
@@ -635,14 +584,15 @@
         return valid;
       }
 
-      function validateStep5(e){
+      function validateStep4(e){
         var valid=true;
         return valid;
       }
 
-      $('#validateStep2').on('click',function (e) {
-        var company_name = $('.company_name').val();
-        var company_add1 = $('.company_add1').val();
+      $('#validateStep1').on('click',function (e) {
+        var company_name  = $('.company_name').val();
+        var company_email = $('.company_email').val();
+        var company_add1  = $('.company_add1').val();
         var company_add2 = $('.company_add2').val();
         var company_contact = $('.company_contact').val();
         var country_id = $('#company_country').val();
@@ -657,14 +607,18 @@
         getState(country_id,'.address_state');
         getCity(state_id,'.address_city');
         $('.address_postcode').val(postcode);
+
+        $('.poc_name1').val(company_name);
+        $('.poc_email1').val(company_email);
+        $('.poc_contact1').val(company_contact);
       });
 
       $(".next-step").click(function (e) {
         var $active = $('.nav-tabs li>.active');
         var stepID = $(e.target).attr('id');
         var formFields=$(e.target).closest('.tab-pane.active').find('input,select');
-        if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) || (stepID=="validateStep4" && validateStep4(e)) || (stepID=="validateStep5" && validateStep5(e)) ){
-          if(stepID=="validateStep5"){
+        if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) || (stepID=="validateStep4" && validateStep4(e))){
+          if(stepID=="validateStep4"){
             $(e.target).closest('form').submit();
             return;
           }
