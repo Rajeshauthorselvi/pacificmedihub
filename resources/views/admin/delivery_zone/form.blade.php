@@ -45,6 +45,15 @@
                 @else
                   {{ Form::model($zone,['method' => 'PATCH', 'route' =>['delivery_zone.update',$zone->id]]) }}
                 @endif
+                  <div class="form-group clearfix">
+                    <label for="post_code">Region</label><br>
+                    @foreach($region as $reg)
+                      <div class="icheck-info d-inline">
+                        <input type="radio" name="region" id="radioInfo{{$reg->id}}" value="{{$reg->id}}">&nbsp;
+                        <label for="radioInfo{{$reg->id}}">{{$reg->name}}</label>
+                      </div>
+                    @endforeach
+                  </div>
                   <div class="form-group">
                     <label for="post_code">Post Code</label>
                     {{ Form::text('post_code',null,['class'=>'form-control','id'=>'post_code']) }}
@@ -52,13 +61,13 @@
                       <span class="text-danger">{{ $errors->first('post_code') }}</span>
                     @endif
                   </div>
-                  <div class="form-group">
+                  {{-- <div class="form-group">
                     <label for="delivery_fee">Delivery Fee</label>
                     {{ Form::text('delivery_fee',null,['class'=>'form-control','id'=>'delivery_fee']) }}
                     @if($errors->has('delivery_fee'))
                       <span class="text-danger">{{ $errors->first('delivery_fee') }}</span>
                     @endif
-                  </div>
+                  </div> --}}
                   <div class="form-group">
                   <div class="form-group">
                     @if ($type=="edit")

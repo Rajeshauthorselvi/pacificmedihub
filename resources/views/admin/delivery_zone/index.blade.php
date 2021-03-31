@@ -52,20 +52,24 @@
                     <thead>
                       <tr>
                       	<th><input type="checkbox" class="select-all"></th>
+                        <th>Region Name</th>
                       	<th>Post Code</th>
-                      	<th>Delivery Fee</th>
                       	<th>Published</th>
                       	<th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                    	@foreach ($delivery_zones as $zone)
+                    	@foreach ($regions as $region)
                     		<tr>
-                    			<td><input type="checkbox" value="{{ $zone->id }}" name="zone-ids"></td>
-                    			<td>{{ $zone->post_code }}</td>
-                    			<td>{{ $zone->delivery_fee }}</td>
+                    			<td><input type="checkbox" value="{{ $region->id }}" name="region-ids"></td>
+                    			<td>{{ $region->name }}</td>
+                          <?php 
+                            $zone=\App\Models\Region::getPostcode($region->id); 
+                            $values = array_slice($zone,0,5);
+                          ?>
+                          <td>{{ implode(', ',$values) }}</td>
                           <?php
-                            if($zone->published==1){$published = "fa-check";}
+                            if($region->published==1){$published = "fa-check";}
                             else{$published = "fa-ban";}
                           ?>
                           <td><i class="fas {{$published}}"></i></td>
@@ -74,11 +78,11 @@
 		                              <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
 		                              <ul class="dropdown-menu">
                                     @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('delivery_zone','update'))
-		                                <a href="{{route('delivery_zone.edit',$zone->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+		                                <a href="{{route('delivery_zone.edit',$region->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                     @endif
                                     @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('delivery_zone','delete'))
 		                                <a href="#"><li class="dropdown-item">
-		                                  <form method="POST" action="{{ route('delivery_zone.destroy',$zone->id) }}">@csrf 
+		                                  <form method="POST" action="{{ route('delivery_zone.destroy',$region->id) }}">@csrf 
 		                                    <input name="_method" type="hidden" value="DELETE">
 		                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
 		                                  </form>
@@ -114,13 +118,13 @@
 
 
   		$('.delete-all').click(function(event) {
-  			var checkedNum = $('input[name="zone-ids"]:checked').length;
+  			var checkedNum = $('input[name="region-ids"]:checked').length;
   			if (checkedNum==0) {
   				alert('Please select zone');
   			}
   			else{
   				if (confirm('Are you sure want to delete?')) {
-	  				$('input[name="zone-ids"]:checked').each(function () {
+	  				$('input[name="region-ids"]:checked').each(function () {
 	  					var current_val=$(this).val();
 		  				$.ajax({
 		  					url: "{{ url('admin/delivery_zone/') }}/"+current_val,

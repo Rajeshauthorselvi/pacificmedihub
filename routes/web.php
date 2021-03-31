@@ -143,6 +143,9 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 
 	//Delivery Zone
 	Route::resource('delivery_zone','Admin\DeliveryZoneController');
+	Route::post('delete-post-code',[
+		'as'=>'delete.post.code','uses'=>'Admin\DeliveryZoneController@deletePostCode'
+	]);
 
 	//Static Page
 	Route::resource('static-page','Admin\StaticPageController');

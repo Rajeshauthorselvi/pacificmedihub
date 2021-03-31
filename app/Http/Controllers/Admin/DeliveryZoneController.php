@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DeliveryZone;
+use App\Models\Region;
 use Illuminate\Http\Request;
 use Session;
 use Redirect;
 use Arr;
 use Auth;
+
+
 class DeliveryZoneController extends Controller
 {
     /**
@@ -24,7 +27,7 @@ class DeliveryZoneController extends Controller
             }
         }
         $data=array();
-        $data['delivery_zones']=DeliveryZone::where('is_deleted',0)->orderBy('id','desc')->get();
+        $data['regions'] = Region::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.delivery_zone.index',$data);
     }
 
@@ -40,8 +43,7 @@ class DeliveryZoneController extends Controller
                 abort(404);
             }
         }
-        $data['type']='create';
-        return view('admin.delivery_zone.form',$data);
+        return view('admin.delivery_zone.create');
     }
 
     /**
@@ -52,14 +54,40 @@ class DeliveryZoneController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate(request(), ['region_name' => 'required']); 
+        
+        $status=($request->status=='on')?1:0;
+        $add_region = new Region;
+        $add_region->name       = $request->region_name;
+        $add_region->published  = $status;
+        $add_region->created_at = date('Y-m-d H:i:s');
+        $add_region->save();
 
-        $this->validate(request(), ['post_code' => 'required','delivery_fee' => 'required']); 
+        if($add_region){
+            if($request->post_code){
+                $values_data = [];
+                $i = 0;
+                foreach ($request->post_code['name'] as $name) {
+                    $values_data[$i]['name'] = $name;
+                    $i = $i+1;
+                }
 
-        $input=$request->all();
-        Arr::forget($input,['_token','status']);
-        $input['published']=($request->status=='on')?1:0;
-        $input['created_at'] = date('Y-m-d H:i:s');
-        DeliveryZone::insert($input);
+                $i = 0;
+                foreach ($request->post_code['published'] as $published) {
+                    $values_data[$i]['published'] = $published;
+                    $i = $i+1;
+                }
+            }
+
+            foreach ($values_data as $values) {
+                $add_zone = new DeliveryZone;
+                $add_zone->region_id  = $add_region->id;
+                $add_zone->post_code  = $values['name'];
+                $add_zone->published  = $values['published'];
+                $add_zone->timestamps = false;
+                $add_zone->save();
+            }
+        }
         return Redirect::route('delivery_zone.index')->with('success','Delivery Zone added successfully...!');
     }
 
@@ -80,16 +108,18 @@ class DeliveryZoneController extends Controller
      * @param  \App\Models\DeliveryZone  $deliveryZone
      * @return \Illuminate\Http\Response
      */
-    public function edit(DeliveryZone $deliveryZone)
+    public function edit($id)
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
             if (!Auth::guard('employee')->user()->isAuthorized('delivery_zone','update')) {
                 abort(404);
             }
         }
-        $data['zone']=DeliveryZone::find($deliveryZone->id);
-        $data['type']="edit";
-        return view('admin.delivery_zone.form',$data);
+
+        $data['region'] = Region::find($id);
+        $data['post_codes'] = $post_codes = DeliveryZone::where('region_id',$id)->get();
+        $data['values_count']  = count($post_codes);
+        return view('admin/delivery_zone/edit',$data);
     }
 
     /**
@@ -99,9 +129,8 @@ class DeliveryZoneController extends Controller
      * @param  \App\Models\DeliveryZone  $deliveryZone
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, DeliveryZone $deliveryZone)
+    public function update(Request $request, $id)
     {
-
        $this->validate(request(), ['post_code' => 'required','delivery_fee' => 'required']); 
 
        $status=($request->status=='on')?1:0;
@@ -120,15 +149,21 @@ class DeliveryZoneController extends Controller
      * @param  \App\Models\DeliveryZone  $deliveryZone
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,DeliveryZone $deliveryZone)
+    public function destroy(Request $request,$id)
     {
-       $zone=DeliveryZone::find($deliveryZone->id);
-       $zone->is_deleted=1;
-       $zone->deleted_at = date('Y-m-d H:i:s');
-       $zone->save();
+       $region = Region::find($id);
+       $region->is_deleted = 1;
+       $region->deleted_at = date('Y-m-d H:i:s');
+       $region->save();
 
         if ($request->ajax())  return ['status'=>true];
         else
-           return Redirect::route('delivery_zone.index')->with('success','DeliveryZone deleted successfully...!');
+        return Redirect::route('delivery_zone.index')->with('success','DeliveryZone deleted successfully...!');
+    }
+
+    public function deletePostCode(Request $request)
+    {
+        DeliveryZone::where('id',$request->id)->delete();
+        return ['status'=>true];
     }
 }
