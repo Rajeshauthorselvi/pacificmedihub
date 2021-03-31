@@ -134,8 +134,9 @@
                           <select name="company[city_id]" class="form-control select2bs4" id="company_city"></select>
                         </div>
                          <div class="col-sm-6">
-                          <label for="">Post Code</label>
-                          {!! Form::text('company[post_code]', null,['class'=>'form-control company_postcode']) !!}
+                          <label for="">Post Code *</label>
+                          {!! Form::text('company[post_code]', null,['class'=>'form-control company_postcode','onkeyup'=>"validateNum(event,this);"]) !!}
+                          <span class="text-danger post-code" style="display:none">Post Code is required</span>
                         </div>
                       </div>
                       <div class="form-group">
@@ -470,8 +471,9 @@
                 <select name="address[city_id]" class="form-control select2bs4 add_city_id" id="addresss_city"></select>
               </div>
               <div class="col-sm-6" style="padding:0">
-                {!! Form::label('postcode', 'Post Code') !!}
-                {!! Form::text('address[post_code]', '',['class'=>'form-control add_post_code']) !!}
+                {!! Form::label('postcode', 'Post Code *') !!}
+                {!! Form::text('address[post_code]', '',['class'=>'form-control add_post_code','onkeyup'=>"validateNum(event,this);"]) !!}
+                <span class="text-danger post_code" style="display:none">Post Code is required</span>
               </div>
             </div>
             {!! Form::hidden('address[latitude]', null,['id'=>'latitude']) !!}
@@ -812,6 +814,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
             $("#addresss_country").closest('.form-group').find('span.text-danger.country').show();
             valid = false;
         }
+        if($('.add_post_code').val()==""){
+          $(".add_post_code").closest('.form-group').find('span.text-danger.post_code').show();
+          valid = false;
+        }
         return valid;
       }
 
@@ -972,6 +978,12 @@ google.maps.event.addDomListener(window, 'load', initialize);
           valid=false;
         }else{
           $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').hide();
+        }
+        if($(".company_postcode").val()=="") {
+          $(".company_postcode").closest('.form-group').find('span.text-danger.post-code').show();
+          valid=false;
+        }else{
+          $(".company_postcode").closest('.form-group').find('span.text-danger.post-code').hide();
         }
         return valid;
       }

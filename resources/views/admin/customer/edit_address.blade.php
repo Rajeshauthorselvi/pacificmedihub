@@ -44,8 +44,9 @@
 			<select name="city_id" class="form-control select2bs4" id="city"></select>
 		</div>
         <div class="col-sm-6" style="padding:0">
-            {!! Form::label('postcode', 'Post Code') !!}
-            {!! Form::text('postcode',$post_code,['class'=>'form-control','id'=>'postcode']) !!}
+            {!! Form::label('postcode', 'Post Code *') !!}
+            {!! Form::text('postcode',$post_code,['class'=>'form-control','id'=>'postcode','onkeyup'=>"validateNum(event,this);"]) !!}
+            <span class="text-danger post_code" style="display:none">Post Code is required</span>
         </div>
 	</div>
     <div class="form-group" style="display:flex;">
@@ -159,6 +160,10 @@
         if ($("#Country").val()=="") {
             $("#Country").closest('.form-group').find('span.text-danger.country').show();
             valid = false;
+        }
+        if($('#postcode').val()==""){
+          $("#postcode").closest('.form-group').find('span.text-danger.post_code').show();
+          valid = false;
         }
         return valid;
 

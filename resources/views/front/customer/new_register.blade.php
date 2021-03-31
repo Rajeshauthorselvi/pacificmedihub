@@ -58,8 +58,9 @@
 				          	<select name="city_id" class="form-control select2bs4 add_city_id" id="address_city"></select>
 			        	</div>
 			        	<div class="right-column">
-				        	<label>Post Code </label>
-				        	<input type="text" class="form-control" name="post_code" onkeyup="validateNum(event,this);" value="{{ old('post_code') }}">	
+				        	<label>Post Code *</label>
+				        	<input type="text" class="form-control post-code" name="post_code" onkeyup="validateNum(event,this);" value="{{ old('post_code') }}">	
+				        	<span class="text-danger post-code" style="display:none">Post Code is required</span>
 				        </div>
 			        </div>
 
@@ -220,6 +221,12 @@
 		            valid = false;
 		        }else{
 		        	$("#address_country").closest('.form-group').find('span.text-danger.add_country_id').hide();
+		        }
+		        if ($("[name='post_code']").val()=="") {
+		            $("[name='post_code']").closest('.form-group').find('span.text-danger.post-code').show();
+		            valid = false;
+		        }else{
+		        	$("[name='post_code']").closest('.form-group').find('span.text-danger.post-code').hide();
 		        }
 		        return valid;
 		    }
