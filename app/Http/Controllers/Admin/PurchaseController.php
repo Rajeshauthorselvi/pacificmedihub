@@ -15,7 +15,6 @@ use App\Models\Prefix;
 use App\Models\PaymentHistory;
 use App\Models\Tax;
 use App\Models\PaymentTerm;
-use App\Models\UserCompanyDetails;
 use App\Models\PurchaseStockHistory;
 use App\Models\PurchseAttachments;
 use Illuminate\Http\Request;
@@ -269,7 +268,7 @@ class PurchaseController extends Controller
       $data=array();
       $purchase               = Purchase::find($purchase->id);
       $data['purchase']       = $purchase;
-      $data['admin_address']  = UserCompanyDetails::where('customer_id',1)->first();
+      $data['admin_address']  = User::where('id',1)->first();
       $data['vendor_address'] = Vendor::where('id',$purchase->vendor_id)->first();
       $data['customer_address'] = User::with('address')->where('id',$purchase->user_id)->first();
       $products = PurchaseProducts::where('purchase_id',$purchase->id)->groupBy('product_id')->get();
@@ -280,7 +279,7 @@ class PurchaseController extends Controller
       }
       else{
         $creater_name=User::where('id',$purchase->user_id)->first();
-        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+        $creater_name=$creater_name->name;
       }
 
       $data['creater_name']=$creater_name;
@@ -804,7 +803,7 @@ class PurchaseController extends Controller
       $data=array();
       $purchase               = Purchase::find($purchase_id);
       $purchase       = $purchase;
-      $admin_address  = UserCompanyDetails::where('customer_id',1)->first();
+      $admin_address  = User::where('id',1)->first();
       $vendor_address = Vendor::where('id',$purchase->vendor_id)->first();
       $customer_address = User::with('address')->where('id',$purchase->user_id)->first();
       $products = PurchaseProducts::where('purchase_id',$purchase_id)->groupBy('product_id')->get();
@@ -814,7 +813,7 @@ class PurchaseController extends Controller
       }
       else{
         $creater_name=User::where('id',$purchase->user_id)->first();
-        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+        $creater_name=$creater_name->name;
       }
       $product_data = $product_variant = array();
       foreach ($products as $key => $product) {
@@ -849,7 +848,7 @@ class PurchaseController extends Controller
       $data=array();
       $purchase               = Purchase::find($purchase_id);
       $purchase       = $purchase;
-      $admin_address  = UserCompanyDetails::where('customer_id',1)->first();
+      $admin_address  = User::where('id',1)->first();
       $vendor_address = Vendor::where('id',$purchase->vendor_id)->first();
       $customer_address = User::with('address')->where('id',$purchase->user_id)->first();
       $products = PurchaseProducts::where('purchase_id',$purchase_id)->groupBy('product_id')->get();
@@ -859,7 +858,7 @@ class PurchaseController extends Controller
       }
       else{
         $creater_name=User::where('id',$purchase->user_id)->first();
-        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+        $creater_name=$creater_name->name;
       }
 
       $product_data = $product_variant = array();

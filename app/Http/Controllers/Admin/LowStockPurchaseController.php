@@ -16,7 +16,6 @@ use App\Models\Prefix;
 use App\Models\PaymentHistory;
 use App\Models\Tax;
 use App\Models\PaymentTerm;
-use App\Models\UserCompanyDetails;
 use App\Models\PurchaseStockHistory;
 use App\Models\PurchseAttachments;
 use App\Models\Orders;

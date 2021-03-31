@@ -34,7 +34,7 @@
                        src="{{ asset('theme/images/profile/'.$admin->logo) }}"
                        alt="Profile picture">
                 </div>
-                <h3 class="profile-username text-center">{{ Auth::user()->first_name.' '.Auth::user()->last_name }}</h3>
+                <h3 class="profile-username text-center">{{ Auth::user()->name }}</h3>
                 <p class="text-muted text-center">Admin</p>
               </div>
               <!-- /.card-body -->

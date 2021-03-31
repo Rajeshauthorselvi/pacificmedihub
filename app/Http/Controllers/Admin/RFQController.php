@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\RFQ;
 use App\Models\RFQProducts;
 use App\User;
-use App\Models\UserCompanyDetails;
 use App\Models\UserAddress;
 use App\Models\OrderStatus;
 use App\Models\PaymentMethod;
@@ -76,7 +75,7 @@ class RFQController extends Controller
         }
       $data=array();
       $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
-                                ->where('role_id',7)->pluck('first_name','id')->toArray();
+                                ->where('role_id',7)->pluck('name','id')->toArray();
 
       $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
@@ -238,13 +237,13 @@ class RFQController extends Controller
       }
       else{
         $creater_name=User::where('id',$rfq->user_id)->first();
-        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+        $creater_name=$creater_name->name;
       }
       $data['creater_name']=$creater_name;
 
 
       $data['rfqs']             = $rfq;
-      $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+      $data['admin_address']    = User::where('id',1)->first();
       $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
       $data['product_datas']    = $product_data;
       $data['rfq_id']           = $id;
@@ -275,7 +274,7 @@ class RFQController extends Controller
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
                                     ->pluck('payment_method','id')->toArray();
       $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)->where('role_id',7)
-                                    ->pluck('first_name','id')->toArray();
+                                    ->pluck('name','id')->toArray();
       $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                     ->where('role_id',4)->pluck('emp_name','id')->toArray();
       $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
@@ -635,13 +634,13 @@ class RFQController extends Controller
       }
       else{
         $creater_name=User::where('id',$rfq->user_id)->first();
-        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+        $creater_name=$creater_name->name;
       }
       $data['creater_name']=$creater_name;
 
 
       $data['rfqs']             = $rfq;
-      $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+      $data['admin_address']    = User::where('id',1)->first();
       $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
       $data['product_datas']    = $product_data;
       $data['rfq_id']           = $id;
@@ -683,7 +682,7 @@ class RFQController extends Controller
        else{
           $created_user_type=1;
           $auth_id=Auth::id();
-          $creater_name=Auth::user()->first_name;
+          $creater_name=Auth::user()->name;
        }
 
       $data=[

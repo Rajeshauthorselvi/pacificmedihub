@@ -91,7 +91,7 @@
                             {{ isset($order->delivered_at)?date('m/d/Y',strtotime($order->delivered_at)):'-' }}
                           </td>
                           <td><a href="{{route($show_route,$order->id)}}">{{ $order->order_no }}</a></td>
-                          <td>{{ $order->customer->first_name }}</td>
+                          <td>{{ $order->customer->name }}</td>
                           <td>{{ $order->salesrep->emp_name }}</td>
                           <td>
                             <span class="badge" style="background: {{ $order->statusName->color_codes }};color: #fff">

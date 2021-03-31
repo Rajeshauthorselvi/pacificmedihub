@@ -130,7 +130,7 @@
                					<li><a class="nav-link" href="{{ route('customer.login') }}">Sign In</a></li>
                				@else
                					<?php 
-               						$name = Auth::user()->first_name.' '.Auth::user()->last_name;
+               						$name = Auth::user()->name;
                						$id = Auth::id();
                					?>
                					<li class="customer-dropdown">

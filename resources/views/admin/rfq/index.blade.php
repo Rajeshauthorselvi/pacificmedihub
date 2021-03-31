@@ -68,13 +68,12 @@
                       if ($rfq->status==10) {
                           $disabled="pointer-events:none;opacity:0.5";
                       }
-
                       ?>
                         <tr>
                           <td><input type="checkbox" name="rfq_ids" value="{{$rfq->id}}"></td>
                           <td>{{ date('m/d/Y',strtotime($rfq->created_at)) }}</td>
                           <td><a href="{{route('rfq.show',$rfq->id)}}">{{ $rfq->order_no }}</a></td>
-                          <td>{{ $rfq->customer->first_name }}</td>
+                          <td>{{ $rfq->customer->name }}</td>
                           <td>{{ isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'' }}</td>
                           <td>
                             <?php $total_quantity=\App\Models\RFQProducts::TotalDatas($rfq->id); ?>

@@ -44,7 +44,7 @@
             <div class="form-group">
               <div class="col-sm-10">
                 <label for="">Name</label>
-                {!! Form::text('customer[first_name]',$customer->first_name,['class'=>'form-control','readonly']) !!}
+                {!! Form::text('customer[name]',$customer->name,['class'=>'form-control','readonly']) !!}
               </div>
               <div class="col-sm-2">
                 <div class="edit-customer">
@@ -145,7 +145,7 @@
             <div class="form-group">
               <div class="col-sm-5">
                 <label for="">Name</label>
-                {!! Form::text('customer[first_name]',isset($customer->poc->name)?$customer->poc->name:'',['class'=>'form-control','readonly']) !!}
+                {!! Form::text('customer[name]',isset($customer->poc->name)?$customer->poc->name:'',['class'=>'form-control','readonly']) !!}
               </div>
               <div class="col-sm-5">
                 <label for="">Company UEN</label>

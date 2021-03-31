@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Settings;
-use App\Models\UserCompanyDetails;
+
 class GeneralSettingsController extends Controller
 {
     /**
@@ -61,7 +61,7 @@ class GeneralSettingsController extends Controller
     public function edit($slug)
     {
         if ($slug=="ware_house") {
-            $data['admin_address'] = UserCompanyDetails::where('customer_id',1)->first();
+            $data['admin_address'] = User::where('id',1)->first();
             $view='admin.general_settings.warehouse_address';
         }
         elseif ($slug=="invoice_logo") {

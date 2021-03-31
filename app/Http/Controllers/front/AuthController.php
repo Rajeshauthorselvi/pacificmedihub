@@ -173,7 +173,7 @@ class AuthController extends Controller
 
         $add_user = new User;
         $add_user->role_id = 7;
-        $add_user->first_name = $request->name;
+        $add_user->name = $request->name;
         $add_user->email = $request->email;
         $add_user->contact_number = $request->contact;
         $add_user->customer_no = $replace_number;

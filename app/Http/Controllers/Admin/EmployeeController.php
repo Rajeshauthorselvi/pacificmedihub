@@ -611,7 +611,7 @@ class EmployeeController extends Controller
         if($from=='view'){
             return view('admin.employees.view_salary',$data);
         }else if($from=='payslip'){
-            $data['address'] = UserCompanyDetails::where('customer_id',1)->first();
+            $data['address'] = User::where('id',1)->first();
             return view('admin.employees.payslip',$data);
         }
     }

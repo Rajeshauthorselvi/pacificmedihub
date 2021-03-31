@@ -76,7 +76,7 @@
                               <option value="">Please Select</option>
                               @foreach ($customers as $customer)
                                 <option value="{{ $customer->id }}" sales-rep="{{ $customer->sales_rep }}">
-                                  {{ $customer->first_name }}
+                                  {{ $customer->name }}
                                 </option>
                               @endforeach
                           </select>

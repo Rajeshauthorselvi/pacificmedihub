@@ -14,7 +14,7 @@
                       <div style="width: 70%;float: left; font-size: 14px">
                         @if(isset($admin_address))
                           <div class="customer address" style="width: 43%;float:left;padding-right: 7%;">
-                              <h4>{{$customer_address->first_name}} {{$customer_address->last_name}}</h4>
+                              <h4>{{$customer_address->name}}</h4>
                               <p>
                                 <span>
                                   {{$customer_address->address->address_line1}},&nbsp;{{isset($customer_address->address->address_line2)?$customer_address->address->address_line2:''}}

@@ -59,7 +59,7 @@
                       </div>
                       <div class="col-sm-4">
                         <label for="rfqStatus">Status *</label>
-                        {!! Form::select('status',$order_status, 20,['class'=>'form-control no-search select2bs4','id'=>'rfqStatus']) !!}
+                        {!! Form::select('status',$order_status, null,['class'=>'form-control no-search select2bs4','id'=>'rfqStatus']) !!}
                         <span class="text-danger rfq" style="display:none;">Status is required. Please Select</span>
                       </div>
                     </div>
@@ -133,10 +133,8 @@
                   </div>
 
                   <div class="col-sm-12">
-                    
-                      <label for="sales_rep_id">Notes</label>
-                      {!! Form::textarea('notes',null,['class'=>'form-control summernote']) !!}
-                    
+                    <label for="sales_rep_id">Notes</label>
+                    {!! Form::textarea('notes',null,['class'=>'form-control summernote']) !!}
                   </div>
                   <div class="clearfix"></div> 
                   <br>

@@ -59,7 +59,7 @@ class StockVerifyController extends Controller
         }
       if (Auth::check()) {
         // $creater_name=Employee::where('id',$order_details->customer_id)->first();
-        $creater_name=Auth::user()->first_name;
+        $creater_name=Auth::user()->name;
         $creater_id=Auth::id();
         $user_type=1;
       }
@@ -295,7 +295,7 @@ class StockVerifyController extends Controller
       }
       else{
         $creater_name=User::where('id',$order_details->customer_id)->first();
-        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+        $creater_name=$creater_name->name;
       }
 
       $data['creater_name']=$creater_name;

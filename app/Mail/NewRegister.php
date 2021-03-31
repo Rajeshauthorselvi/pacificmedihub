@@ -16,11 +16,11 @@ class NewRegister extends Mailable
      *
      * @return void
      */
-    public function __construct($first_name, $email, $password)
+    public function __construct($name, $email, $password)
     {
-        $this->first_name = $first_name;
-        $this->email      = $email;
-        $this->password   = $password;
+        $this->name     = $name;
+        $this->email    = $email;
+        $this->password = $password;
     }
 
     /**
@@ -30,6 +30,6 @@ class NewRegister extends Mailable
      */
     public function build()
     {
-        return $this->from('admin@authorselvi.com')->view('admin.emails.newAccount',['first_name'=>$this->first_name,'email'=>$this->email,'password'=>$this->password])->subject('Pacific Medihub - New Accout Register | '.date('d-m-Y'));
+        return $this->from('admin@authorselvi.com')->view('admin.emails.newAccount',['first_name'=>$this->name,'email'=>$this->email,'password'=>$this->password])->subject('Pacific Medihub - New Accout Register | '.date('d-m-Y'));
     }
 }

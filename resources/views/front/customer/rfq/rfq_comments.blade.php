@@ -73,7 +73,7 @@
   	                <!-- Message to the right -->
   	                <div class="direct-chat-msg right">
   	                  <div class="direct-chat-infos clearfix">
-  	                    <span class="direct-chat-name float-right">{{ $user_name->first_name }}</span>
+  	                    <span class="direct-chat-name float-right">{{ $user_name->name }}</span>
   	                    <span class="direct-chat-timestamp float-left">{{ date('d M y H:i:s',strtotime($comment->created_at)) }}</span>
   	                  </div>
   	                  <!-- /.direct-chat-infos -->
@@ -94,7 +94,7 @@
                     <!-- /.direct-chat-msg -->
   	                <div class="direct-chat-msg">
   	                  <div class="direct-chat-infos clearfix">
-  	                    <span class="direct-chat-name float-left">{{ $user_name->first_name }}</span>
+  	                    <span class="direct-chat-name float-left">{{ $user_name->name }}</span>
   	                    <span class="direct-chat-timestamp float-right">{{ date('d M y H:i:s',strtotime($comment->created_at)) }}</span>
   	                  </div>
   	                  <!-- /.direct-chat-infos -->

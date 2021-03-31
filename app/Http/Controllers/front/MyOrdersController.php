@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
 use App\Models\UserAddress;
-use App\Models\UserCompanyDetails;
 use App\Models\Countries;
 use App\Models\Orders;
 use App\Models\OrderProducts;
@@ -96,7 +95,7 @@ class MyOrdersController extends Controller
         }
         $data['cus_email']        = $user->email;
         $data['delivery_address'] = UserAddress::find($del_add_id);
-        $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+        $data['admin_address']    = User::where('id',1)->first();
         
         $order_products = OrderProducts::with('product','variant')->where('order_id',$id)->orderBy('id','desc')->get();
         $order_data = $order_items = array();

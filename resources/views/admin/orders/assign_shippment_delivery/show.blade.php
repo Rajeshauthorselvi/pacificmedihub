@@ -78,7 +78,7 @@
                               <span><i class="fas fa-user"></i></span>
                             </div>
                             <div class="col-sm-10">
-                              <h4>{{$customer_address->first_name}} {{$customer_address->last_name}}</h4>
+                              <h4>{{$customer_address->name}} {{$customer_address->last_name}}</h4>
                               <p>
                                 <span>
                                   {{$customer_address->address->address_line1}},&nbsp;{{isset($customer_address->address->address_line2)?$customer_address->address->address_line2:''}}

@@ -41,7 +41,7 @@
               <div class="form-group">
                 <div class="col-sm-12">
                   <label for="">Name *</label>
-                  {!! Form::text('customer[first_name]',$customer->first_name,['class'=>'form-control name']) !!}
+                  {!! Form::text('customer[name]',$customer->name,['class'=>'form-control name']) !!}
                   <span class="text-danger name" style="display:none">Name is required</span>
                 </div>
               </div>

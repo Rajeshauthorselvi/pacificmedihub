@@ -20,7 +20,6 @@ use App\Models\PaymentHistory;
 use App\Models\Currency;
 use App\Models\Tax;
 use App\Models\PaymentTerm;
-use App\Models\UserCompanyDetails;
 use App\Models\UserAddress;
 use App\Models\OrderHistory;
 use App\Models\Purchase;
@@ -108,7 +107,7 @@ class OrderController extends Controller
 
       if($currenct_route[0]=="assign-delivery"){
 
-        $base_location=UserCompanyDetails::where('id',1)->first();
+        $base_location=User::where('id',1)->first();
         $base_location = array('lat'=>$base_location->latitude,'lng' => $base_location->longitude);
         $total_orders = array();
 
@@ -153,8 +152,7 @@ class OrderController extends Controller
         $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
 
         $customer_details=DB::table('users as u')
-        ->select('u.first_name','u.id','ucd.sales_rep')
-        ->leftjoin('user_company_details as ucd','ucd.customer_id','u.id')
+        ->select('u.name','u.id','u.sales_rep')
         ->where('is_deleted',0)->where('status',1)
         ->where('role_id',7)->get()
         ->toArray();
@@ -352,7 +350,7 @@ class OrderController extends Controller
         $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                         ->pluck('name','id')->toArray();
         $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
-        $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+        $data['admin_address']    = User::where('id',1)->first();
         $data['customer_address'] = User::with('address')->where('id',$orders->customer_id)->first();
 
       if ($orders->created_user_type==2) {
@@ -361,7 +359,7 @@ class OrderController extends Controller
       }
       else{
         $creater_name=User::where('id',$orders->user_id)->first();
-        $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+        $creater_name=$creater_name->name;
       }
       $data['creater_name']=$creater_name;
 
@@ -389,7 +387,7 @@ class OrderController extends Controller
                                   ->whereIn('id',[3,13,11])
                                   ->pluck('status_name','id')->toArray();
         $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
-                                        ->where('role_id',7)->pluck('first_name','id')->toArray();
+                                        ->where('role_id',7)->pluck('name','id')->toArray();
         $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
         $data['delivery_status']=[''=>'Please Select']+OrderStatus::where('status',1)
@@ -425,7 +423,7 @@ class OrderController extends Controller
         $data['order'] =$order= Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)
                                         ->first();
         $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
-                                        ->where('role_id',7)->pluck('first_name','id')->toArray();
+                                        ->where('role_id',7)->pluck('name','id')->toArray();
         $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
    
@@ -1268,9 +1266,9 @@ $productVariants=ProductVariant::select('product_variants.*')
     {
         $data=array();
         $data['order']=$order = Orders::find($order_id);
-        $data['admin_address']  = UserCompanyDetails::where('customer_id',1)->first();
+        $data['admin_address']  = User::where('id',1)->first();
         $data['customer_address']  = UserAddress::where('id',$order->address_id)->first();
-        $data['customer_gst_number']=UserCompanyDetails::where('customer_id',$order->customer_id)
+        $data['customer_gst_number']=User::where('id',$order->customer_id)
                                      ->value('company_gst');
 
           if ($order->created_user_type==2) {
@@ -1279,7 +1277,7 @@ $productVariants=ProductVariant::select('product_variants.*')
           }
           else{
             $creater_name=User::where('id',$order->user_id)->first();
-            $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+            $creater_name=$creater_name->name;
           }
         $data['creater_name']=$creater_name;
         $products = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();

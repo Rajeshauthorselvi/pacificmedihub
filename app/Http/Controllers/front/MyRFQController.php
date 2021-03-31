@@ -9,7 +9,6 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
 use App\Models\UserAddress;
-use App\Models\UserCompanyDetails;
 use App\Models\RFQComments;
 use App\Models\RFQCommentsAttachments;
 use App\Models\Countries;
@@ -109,7 +108,7 @@ class MyRFQController extends Controller
         }
 
         $user_id = Auth::id();
-        $sales_rep_id = UserCompanyDetails::where('customer_id',$user_id)->value('sales_rep');
+        $sales_rep_id = User::where('id',$user_id)->value('sales_rep');
 
         $rfq_details=[
             'order_no'            => $rfq_code,
@@ -192,7 +191,7 @@ class MyRFQController extends Controller
         }
         $data['cus_email']        = $user->email;
         $data['delivery_address'] = UserAddress::find($del_add_id);
-        $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+        $data['admin_address']    = User::where('id',1)->first();
         $data['delivery_method']  = DeliveryMethod::where('is_free_delivery','no')->get();
         $rfq_products = RFQProducts::with('product','variant')->where('rfq_id',$id)->orderBy('id','desc')->get();
         $rfq_data = $rfq_items = array();
@@ -226,7 +225,7 @@ class MyRFQController extends Controller
             $rfq_data['currency_code']   = '';
             $rfq_data['exchange_amount'] = '';
         }
-        $data['check_parent'] = UserCompanyDetails::where('customer_id',Auth::id())->first();
+        $data['check_parent'] = User::where('id',Auth::id())->first();
         $data['rfq_data']     = $rfq_data;
         $data['rfq_products'] = $rfq_items;
         $data['data_from']    = '';
@@ -545,12 +544,12 @@ class MyRFQController extends Controller
         }
         else{
             $creater_name=User::where('id',$rfq->user_id)->first();
-            $creater_name=$creater_name->first_name.' '.$creater_name->last_name;
+            $creater_name=$creater_name->name;
         }
         $data['creater_name']=$creater_name;
 
         $data['rfqs']             = $rfq;
-        $data['admin_address']    = UserCompanyDetails::where('customer_id',1)->first();
+        $data['admin_address']    = User::where('id',1)->first();
         $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
         $data['product_datas']    = $product_data;
         $data['rfq_id']           = $id;
@@ -590,7 +589,7 @@ class MyRFQController extends Controller
         }
         $created_user_type = 3;
         $auth_id = Auth::id();
-        $creater_name = Auth::user()->first_name;
+        $creater_name = Auth::user()->name;
         
         $data=[
             'rfq_id'                  => $request->rfq_id,
@@ -656,8 +655,8 @@ class MyRFQController extends Controller
         }
 
         $user_id = Auth::id();
-        $parent_id = UserCompanyDetails::where('customer_id',$user_id)->value('id');
-        $all_child_id  = UserCompanyDetails::where('parent_company',$parent_id)->pluck('id')->toArray();
+        $parent_id = User::where('id',$user_id)->value('id');
+        $all_child_id  = User::where('parent_company',$parent_id)->pluck('id')->toArray();
 
 
         $data = array();
@@ -666,7 +665,7 @@ class MyRFQController extends Controller
         
         $rfq_data = array();
         foreach ($all_rfq_data as $key => $rfq) {
-            $company = UserCompanyDetails::where('customer_id',$rfq->customer_id)->first();
+            $company = User::where('id',$rfq->customer_id)->first();
             $item_count  = RFQProducts::where('rfq_id',$rfq->id)->count();
             $toatl_qty   = RFQProducts::where('rfq_id',$rfq->id)->sum('quantity');
             $rfq_data[$key]['id'] = $rfq->id;

@@ -9,7 +9,6 @@ use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
 use App\Models\UserPoc;
 use App\Models\Countries;
-use App\Models\UserCompanyDetails;
 use App\Models\Prefix;
 use App\Models\Employee;
 use App\Mail\NewRegister;
@@ -192,7 +191,7 @@ class CustomerController extends Controller
             $customer->password = Hash::make($password);
             $customer->mail_sent_status = 1;
             $customer->save();
-            Mail::to($customer->email)->send(new NewRegister($customer->first_name, $customer->email,$password));
+            Mail::to($customer->email)->send(new NewRegister($customer->name, $customer->email,$password));
         }
         return Redirect::route('customers.index')->with('success','Customer added successfully...!');
     }   
@@ -352,7 +351,7 @@ class CustomerController extends Controller
             $user_details->password = Hash::make($password);
             $user_details->mail_sent_status = 1;
             $user_details->save();
-            Mail::to($user_details->email)->send(new NewRegister($user_details->first_name, $user_details->email,$password));
+            Mail::to($user_details->email)->send(new NewRegister($user_details->name, $user_details->email,$password));
         }
        return Redirect::route('customers.index')->with('success','Customer details updated successfully...!');
     }
@@ -370,7 +369,7 @@ class CustomerController extends Controller
             $check_cus->is_deleted = 1;
             $check_cus->deleted_at = date('Y-m-d H:i:s');
             $check_cus->update();
-            /*$cus_cpy = UserCompanyDetails::where('customer_id',$id)->delete();
+            /*
             $cus_bank = UserBankAcccount::where('customer_id',$id)->delete();
             $cus_poc = UserPoc::where('customer_id',$id)->delete();
             $cus_address = UserAddress::where('customer_id',$id)->delete();*/
