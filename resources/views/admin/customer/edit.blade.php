@@ -194,38 +194,99 @@
                   <div class="tab-pane customer-tabs" tab-count="2" role="tabpanel" id="step2">
                     <div class="col-sm-12">
                       <table class="list" id="pocList">
-                          <thead>
-                            <tr>
-                              <th></th><th>Name</th><th>Email</th><th>Phone No</th>
-                            </tr>
-                          </thead>
-                          <?php $count=1; ?>
+                        <thead>
+                          <tr>
+                            <th></th><th>Name</th><th>Email</th><th>Phone No</th>
+                          </tr>
+                        </thead>
+                        <?php $count=1; ?>
+                        <tbody>
                           @foreach($customer_poc as $poc)
-                            <tbody>
-                              <tr>
-                                <td><span class="counts">{{$count}}</span></td>
-                                <td>
-                                  <div class="form-group">
-                                    <input type="hidden" name="poc[id][]" value="{{ $poc->id }}">
-                                    <input type="text" class="form-control" name="poc[name][]" value="{{old('name',$poc->name)}}">
-                                  </div>
-                                </td>
-                                <td>
-                                  <div class="form-group">
-                                    <input type="text" class="form-control validate-email1" name="poc[email][]" value="{{old('email',$poc->email)}}">
-                                    <span class="email-error1" style="display:none;color:red;">Invalid email</span>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div class="form-group">
-                                    <input type="text" class="form-control" name="poc[contact][]" id="contact1" value="{{old('contact',$poc->contact_number)}}" onkeyup="validateNum(event,this);">
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
-                            <input type="hidden" value="{{$count++}}">
+                            <tr>
+                              <td><span class="counts">{{$count}}</span></td>
+                              <td>
+                                <div class="form-group">
+                                  <input type="hidden" name="poc[id][]" value="{{ $poc->id }}">
+                                  <input type="text" class="form-control" name="poc[name][]" value="{{old('name',$poc->name)}}">
+                                </div>
+                              </td>
+                              <td>
+                                <div class="form-group">
+                                  <input type="text" class="form-control validate-email1" name="poc[email][]" value="{{old('email',$poc->email)}}">
+                                  <span class="email-error1" style="display:none;color:red;">Invalid email</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="form-group">
+                                  <input type="text" class="form-control" name="poc[contact][]" value="{{old('contact',$poc->contact_number)}}" onkeyup="validateNum(event,this);">
+                                </div>
+                              </td>
+                            </tr>
+                          <input type="hidden" value="{{$count++}}">
                           @endforeach
-                        </table>
+                        </tbody>
+                        @if(count($customer_poc)<3 && count($customer_poc)==1)
+                          <tr>
+                            <input type="hidden" name="poc[id][]" value="0">
+                            <td><span class="counts">2</span></td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[name][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[email][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <input type="hidden" name="poc[id][]" value="0">
+                            <td><span class="counts">3</span></td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[name][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[email][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                              </div>
+                            </td>
+                          </tr>
+                        @endif
+                        @if(count($customer_poc)<3 && count($customer_poc)==2)
+                          <tr>
+                            <input type="hidden" name="poc[id][]" value="0">
+                            <td><span class="counts">3</span></td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[name][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[email][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                              </div>
+                            </td>
+                          </tr>
+                        @endif
+                      </table>
                     </div>
                     <div class="form-group">
                       <div class="col-sm-6">
@@ -653,8 +714,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
     $(document).ready(function() {
       $('a[href="#step2"]').removeClass('disabled');
       $('a[href="#step3"]').removeClass('disabled');
-      $('a[href="#step4"]').removeClass('disabled');
-      $('a[href="#step4"]').trigger('click');
+      $('a[href="#step3"]').trigger('click');
     });
   </script>
 @endif

@@ -13,14 +13,14 @@
         			@include('flash-message')
 
 			        <div class="form-group mb-3">
-			        	<label>Name *</label>
+			        	<label>Company Name *</label>
 			          	<input type="text" class="form-control" name="name" value="{{ old('name') }}">
 			          	<span class="text-danger name" style="display:none">Name is required</span>
 			        </div>
 
 			        <div class="form-group mb-3">
 				        <div class="left-column">
-				        	<label>Email *</label>
+				        	<label>Company/Login Email *</label>
 				          	<input type="email" class="form-control" name="email" value="{{ old('email') }}">
 				          	<span class="text-danger email" style="display:none">Email is required</span>
 				          	<span class="text-danger email_validate" style="display:none">Please enter valid Email Address</span>
@@ -36,14 +36,8 @@
 			        </div>
 
 			        <div class="form-group mb-3">
-				        <label>Company Name *</label>
-				        <input type="text" class="form-control" name="company_name" value="{{ old('company_name') }}">
-				        <span class="text-danger company_name" style="display:none">Company Name is required</span>
-			        </div>
-
-			        <div class="form-group mb-3">
 			        	<label>Address *</label>
-			          	<textarea class="form-control" row="3" name="company_address" style="height:auto;">{{ old('company_address') }}</textarea>
+			          	<textarea class="form-control" row="3" name="company_address" id="autocomplete"  style="height:auto;">{{ old('company_address') }}</textarea>
 			          	<span class="text-danger company_address" style="display:none">Address is required</span>
 			        </div>
 
@@ -69,6 +63,11 @@
 				        </div>
 			        </div>
 
+			        <div class="form-group">
+				        <input type="hidden" class="form-control" name="latitude" id="latitude" value="{{old('latitude') }}">
+				        <input type="hidden" class="form-control" name="longitude" id="longitude" value="{{old('longitude') }}">	
+				    </div>
+
 			        <div class="form-group mb-4 condition">
 		        		<div class="icheck-info d-inline">
             				<input type="checkbox" id="TnC">
@@ -85,6 +84,23 @@
   		</div>
 	</div>
 </div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=places&language=en-AU&key=AIzaSyDcjnEF0OMP2a5UIqJol_WPtz2GgyTvH24"></script>
+
+<script type="text/javascript">
+  var autocomplete = new google.maps.places.Autocomplete($("#autocomplete")[0], {});
+
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    var place = autocomplete.getPlace();
+    var location = place.geometry.location;
+    console.log(place,location);
+    $('#latitude').val(location.lat()); 
+    $('#longitude').val(location.lng());
+  });
+
+  $('body').attr('onload','initialize()');
+</script>
 
 @push('custom-scripts')
 	<script type="text/javascript">
