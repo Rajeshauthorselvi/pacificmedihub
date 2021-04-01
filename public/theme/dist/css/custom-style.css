@@ -114,6 +114,20 @@ table .dropdown-menu .dropdown-item button{padding:0}
 /* End Currency */
 
 
+/* Orders Listing Page */
+.order-page .action_sec li {float: left;width: 20%;text-align: center;}
+
+.order-page li .active {background: #3287c7; color: #fff; }
+.order-page li a {float: left;width: 100%;padding: 8px;background-color: #ebeff5;}
+.order-page li {border: 1px solid #eee; }
+
+/*.new{background: #f0ad4e;}
+.assigned-del{background: #2c9bdb;}
+.assigned-del{background: #5bc0de;}
+.del-inprogress{background: #2c9bdb;}
+.order-completed{background: #00a65a;}
+.missed{background: #dd4b39;}*/
+
 /* Orders Page */
 .orders.show-page .action_sec li {float: left;width: 25%;text-align: center;}
 
@@ -143,8 +157,9 @@ tr.hide-table-padding>td {padding: 0;}
 .total-head {border-left: 1px solid #ddd;}
 
 .show-page .action_sec li {float: left;width: 16.6%;text-align: center;}
-.comment-page .action_sec li {float: left;width: 32.6%;text-align: center;}
-.show-page .action_sec li a,.comment-page .action_sec li a {float: left;width: 100%;color: #fff;padding: 8px;}
+.comment-page .action_sec li{float: left;width: 32.6%;text-align: center;}
+.order-page li {float: left;width: 20%;text-align: center;}
+.show-page .action_sec li a,.comment-page .action_sec li a{float: left;width: 100%;color: #fff;padding: 8px;}
 .show-page .place-order,.comment-page .place-order, .show-page .pdf{background-color:#3471a8;border-right: 1px solid #5cbfdd;}
 .show-page .email{background-color:#5cbfdd;}
 .show-page .comment{background-color:#48bb77;}
@@ -229,3 +244,4 @@ tr.hide-table-padding>td {padding: 0;}
 #myMap #pac-input {background-color: #fff;font-family: Roboto;font-size: 15px;font-weight: 300;margin-left: 12px;padding: 0 11px 0 13px;text-overflow: ellipsis;width: 400px;}
 #myMap #pac-input:focus {border-color: #4d90fe;}
 #myMap #title {color: #fff;background-color: #4d90fe;font-size: 22px;font-weight: 500;padding: 5px;}
+.hidden{display: none;}

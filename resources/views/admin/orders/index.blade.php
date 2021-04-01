@@ -25,16 +25,43 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
+                        <?php $active_menu=explode('.',$show_route);
+
+                        $new=$assign_delivery=$del_inpro=$completed=$cancelled="";
+                        if ($active_menu[0]=="new-orders") {
+                            $new="active";
+                        }
+                        elseif ($active_menu[0]=="assign-shippment") {
+                          $assign_delivery="active";
+                        }
+                        elseif ($active_menu[0]=="assign-delivery") {
+                          $del_inpro="active";
+                        }
+                        elseif ($active_menu[0]=="completed-orders") {
+                          $completed="active";
+                        }
+                         ?>
           <div class="col-md-12 action-controllers ">
             @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','delete'))
-            <div class="col-sm-6 text-left pull-left">
+            <div class="col-sm-8 text-left pull-left">
               <a href="javascript:void(0)" class="btn btn-danger delete-all">
                 <i class="fa fa-trash"></i> Delete (selected)
               </a>
+              @if ($active_menu[0]!="completed-orders")
+              <a href="javascript:void(0)" class="btn btn-default" id="assign-order" status-id="18">
+                <i class="fa fa-tasks" aria-hidden="true"></i> Assign to Shipment
+              </a>
+              <a href="javascript:void(0)" class="btn btn-default" id="assign-order" status-id="20">
+                <i class="fa fa-tasks" aria-hidden="true"></i> Assign to InProcess
+              </a>
+              <a href="javascript:void(0)" class="btn btn-default" id="assign-order" status-id="21">
+                <i class="fa fa-tasks" aria-hidden="true"></i> Move to Rejected
+              </a>
+              @endif
             </div>
             @endif
             @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','create'))
-            <div class="col-sm-6 text-right pull-right">
+            <div class="col-sm-4 text-right pull-right">
               <a class="btn add-new" href="{{route('orders.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
               </a>
@@ -54,7 +81,40 @@
                 @endif
               </div>
               <div class="card">
-                <div class="card-body">
+                <div class="card-body ">
+                  <div class="action_sec order-page">
+
+                         
+                            <ul class="list-unstyled">
+                              <li>
+                                <a href="{{ route('new-orders.index') }}" class="new {{ $new }}">
+                                  <i class="fab fa-first-order"></i>&nbsp; New Orders
+                                </a>
+                              </li>
+                              <li>
+                                <a href="{{ route('assign-shippment.index') }}" class="assigned-del {{ $assign_delivery }}">
+                                  <i class="fa fa-shipping-fast"></i>&nbsp; Assigned for Delivery
+                                </a>
+                              </li>
+                              <li>
+                                <a href="{{ route('assign-delivery.index') }}" class="del-inprogress {{ $del_inpro }}">
+                                  <i class="fa fa-spinner "></i>&nbsp; Delivery In Progress
+                                </a>
+                              </li>
+                              <li>
+                                <a href="{{ route('completed-orders.index') }}" class="order-completed {{ $completed }}">
+                                  <i class="fa fa-check "></i>&nbsp; Orders Completed
+                                </a>
+                              </li>
+                              <li>
+                                <a href="{{ route('cancelled-orders.index') }}" class="missed">
+                                   <i class="fa fa-window-close"></i>&nbsp; Cancelled/Missed Orders 
+                                </a>
+                              </li>
+                            </ul>
+                  </div>
+                  <div class="clearfix"></div>
+                  <br>
                   <table id="example2" class="table table-bordered">
                     <thead>
                       <tr>
@@ -85,7 +145,12 @@
                         }
                        ?>                      
                         <tr style="{{ $class_bg }}">
-                          <td><input type="checkbox" name="orders_ids" value="{{$order->id}}"></td>
+                          <td>
+                            <input type="hidden" class="low_stock_data" value="{{ $low_stock }}">
+                            <input type="checkbox" name="orders_ids" value="{{$order->id}}">
+                            <input type="hidden" class="order-no" value="{{ $order->order_no }}">
+
+                          </td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
                             {{ isset($order->delivered_at)?date('m/d/Y',strtotime($order->delivered_at)):'-' }}
@@ -264,6 +329,31 @@
     </div>
   </div>
 
+  <div class="modal fade" id="addign-status" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Assign Order</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @csrf
+        <div class="modal-body">
+            <div class="col-sm-12">
+              <div><h3>Selected Orders</h3></div>
+              <div class="col-sm-6 order_ids"></div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                    
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <style type="text/css">
     .form-group{display:flex;}
     .disabled{pointer-events: none;opacity: 0.5;}
@@ -271,6 +361,59 @@
 
   @push('custom-scripts')
   <script type="text/javascript">
+
+    $(document).on('click', '#assign-order', function(event) {
+        var checkedNum = $('input[name="orders_ids"]:checked').length;
+        var status_id=$(this).attr('status-id');
+        if (checkedNum==0) {
+          alert('Please select order');
+        }   
+        else{
+          $('#addign-status').modal('show');
+
+          return false;
+          var order_ids = [];
+          $('.order_ids').html('');
+          $('input[name="orders_ids"]:checked').each(function (index,val) {          
+              
+              var order_no=$(this).next('.order-no').val();
+
+              var check_low_stock=$(this).prev('.low_stock_data').val();
+              if (check_low_stock=="yes" && status_id=="18") {
+                if ($('.order_ids').text()=="") {
+                  $('.order_ids').append(order_no);
+                }
+                else{
+                  $('.order_ids').append(','+order_no);
+                }
+                $(this).prop('checked',false);
+              }
+              else{
+                 order_ids.push($(this).val());
+              }
+          });
+
+          var low_stock_orders=$('.order_ids').text();
+          if (low_stock_orders!="" && status_id=="18") {
+            alert(low_stock_orders+' Orders are low stock. That orders will not update status');
+          }
+
+            $.ajax({
+              url: "{{ url('admin/update-order-status') }}",
+              type: 'POST',
+              data: {
+                '_token':"{{ csrf_token() }}",
+                status_id: status_id,
+                order_ids:order_ids
+              },
+            })
+            .done(function() {
+              location.reload();
+            });
+          
+          // 
+        }
+    });
 
     $(function ($) {
       $('.no-search.select2bs4').select2({
