@@ -37,7 +37,7 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['all_customers'] = User::where('users.role_id',7)->where('is_deleted',0)->orderBy('id','desc')->get();
+        $data['all_customers'] = User::where('users.role_id',7)->whereIN('appoved_status',[1,3])->where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.customer.index',$data);
 
     }
@@ -225,7 +225,7 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
         if (!Auth::check() && Auth::guard('employee')->check()) {
             if (!Auth::guard('employee')->user()->isAuthorized('customer','update')) {
@@ -243,7 +243,7 @@ class CustomerController extends Controller
         $data['sales_rep']    = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
         $data['countries']    = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
-        
+        $data['from']         = isset($request->from)?$request->from:'';
         return view('admin.customer.edit',$data);
     }
 
@@ -343,13 +343,16 @@ class CustomerController extends Controller
         }
 
         $user_details = User::find($id);
-        
+        if(isset($request->approve_status)){
+            $user_details->appoved_status = 3;
+            $user_details->save();
+        }
         if(($status==1) && ($user_details->mail_sent_status!=1)){
             $password = Str::random(6);
             $user_details->password = Hash::make($password);
             $user_details->mail_sent_status = 1;
             $user_details->save();
-            Mail::to($user_details->email)->send(new NewRegister($user_details->name, $user_details->email,$password));
+            //Mail::to($user_details->email)->send(new NewRegister($user_details->name, $user_details->email,$password));
         }
        return Redirect::route('customers.index')->with('success','Customer details updated successfully...!');
     }
@@ -428,5 +431,28 @@ class CustomerController extends Controller
         $address->update();
         Session::flash('from', 'address');
         return redirect()->route('customers.edit',$request->cus_id)->with('info','Address Modified successfully.!');
+    }
+
+    public function rejectOrBlock(Request $request)
+    {
+        if($request->data=='reject'){
+            User::find($request->id)->update(['appoved_status'=>2]);
+        }elseif($request->data=='block'){
+            User::find($request->id)->update(['status'=>0]);
+        }
+        return redirect()->route('customers.index')->with('error','Customer status changed successfully...!');
+    }
+
+    public function  rejectCustomerList()
+    {
+         if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','read')) {
+                abort(404);
+            }
+        }
+
+        $data=array();
+        $data['all_customers'] = User::where('users.role_id',7)->where('appoved_status',2)->where('is_deleted',0)->orderBy('id','desc')->get();
+        return view('admin.customer.rejected_customer',$data);
     }
 }

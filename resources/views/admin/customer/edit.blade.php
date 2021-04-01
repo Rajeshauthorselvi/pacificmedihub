@@ -1,7 +1,5 @@
 @extends('admin.layouts.master')
 @section('main_container')
-
-
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -9,13 +7,21 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Edit Customer</h1>
+            @if($from!='approve')
+              <h1 class="m-0">Edit Customer</h1>
+            @else
+              <h1 class="m-0">Approve Customer</h1>
+              @endif
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
               <li class="breadcrumb-item"><a href="{{route('customers.index')}}">Customer</a></li>
-              <li class="breadcrumb-item">Edit Customer</li>
+              @if($from!='approve')
+                <li class="breadcrumb-item">Edit Customer</li>
+              @else
+                <li class="breadcrumb-item">Approve Customer</li>
+              @endif
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -71,6 +77,9 @@
                   <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
                     <div class="col-sm-12">
                       <div class="form-group">
+                        @if($from=='approve')
+                          {!! Form::hidden('approve_status',3) !!}  
+                        @endif
                         {!! Form::hidden('company[company_id]',$customer->id) !!}
                         <div class="col-sm-6">
                           <label for="">Customer Code *</label>
@@ -135,7 +144,7 @@
                         </div>
                          <div class="col-sm-6">
                           <label for="">Post Code *</label>
-                          {!! Form::text('company[post_code]', null,['class'=>'form-control company_postcode','onkeyup'=>"validateNum(event,this);"]) !!}
+                          {!! Form::text('company[post_code]', $customer->post_code,['class'=>'form-control company_postcode','onkeyup'=>"validateNum(event,this);"]) !!}
                           <span class="text-danger post-code" style="display:none">Post Code is required</span>
                         </div>
                       </div>
@@ -147,7 +156,7 @@
                         </div>
                         <div class="col-sm-6">
                           <label for="">Company GST No</label>
-                          {!! Form::text('company[company_gst]', null,['class'=>'form-control']) !!}
+                          {!! Form::text('company[company_gst]', $customer->company_gst,['class'=>'form-control']) !!}
                         </div>
                       </div>
                       <div class="form-group">
@@ -382,7 +391,11 @@
                     <div class="form-group">
                     <div class="col-sm-6">
                       <button type="button" class="btn reset-btn prev-step">Previous</button>
-                      <button type="button" id="validateStep4" class="btn save-btn next-step">Submit</button>
+                      @if($from!='approve')
+                        <button type="button" id="validateStep4" class="btn save-btn next-step">Save</button>
+                      @else
+                        <button type="button" id="validateStep4" class="btn save-btn next-step">Save & Approve</button>
+                      @endif
                     </div>
                   </div>
                   </div>

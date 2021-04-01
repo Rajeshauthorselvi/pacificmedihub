@@ -156,7 +156,7 @@
           </li>
           
           <!-- Customer Menu -->
-          <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit'||$current_route=='customers.show') active @endif">
+          <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit'||$current_route=='customers.show'||$current_route=='reject.customer') active @endif">
             <a href="{{ route('customers.index') }}" class="nav-link"><i class="fas fa-users"></i><p>Customers</p></a>
           </li>
           

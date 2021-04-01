@@ -32,6 +32,9 @@
               <a href="javascript:void(0)" class="btn btn-danger delete-all">
                 <i class="fa fa-trash"></i> Delete (selected)
               </a>
+              <a href="{{ route('reject.customer') }}" class="btn btn-primary">
+                <i class="fas fa-user-times"></i> Rejected Customers
+              </a>
             </div>
               @endif
             @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('customer','create'))
@@ -95,19 +98,30 @@
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
-                                <a href="{{route('customers.show',$customer->id)}}"><li class="dropdown-item">
-                                  <i class="fas fa-eye"></i>&nbsp;&nbsp;View</li>
-                                </a>
-                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('customer','update')) 
-                                <a href="{{route('customers.edit',$customer->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                @if($customer->appoved_status==1 && (Auth::check() || Auth::guard('employee')->user()->isAuthorized('customer','update')))
+                                  <a href="{{route('customers.edit',$customer->id)}}?from=approve"><li class="dropdown-item">
+                                    <i class="fas fa-user-check"></i>&nbsp;&nbsp;Approve</li>
+                                  </a>
+                                  <a href="{{ route('reject.block',['id'=>$customer->id,'data'=>'reject']) }}" onclick="return confirm('Are you sure you want to reject?');"><li class="dropdown-item">
+                                    <i class="fas fa-user-times"></i>&nbsp;&nbsp;Reject</li>
+                                  </a>
                                 @endif
-                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('customer','delete'))
-                                <a href="#"><li class="dropdown-item">
-                                  <form method="POST" action="{{ route('customers.destroy',$customer->id) }}">@csrf 
-                                    <input name="_method" type="hidden" value="DELETE">
-                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
-                                  </form>
-                                </li></a>
+                                @if ($customer->appoved_status==3)
+                                  <a href="{{route('customers.show',$customer->id)}}"><li class="dropdown-item">
+                                    <i class="fas fa-eye"></i>&nbsp;&nbsp;View</li>
+                                  </a>
+                                @endif
+                                @if ($customer->appoved_status==3 && (Auth::check() || Auth::guard('employee')->user()->isAuthorized('customer','update')))
+                                <a href="{{route('customers.edit',$customer->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                <a href="{{route('reject.block',['id'=>$customer->id,'data'=>'block'])}}" onclick="return confirm('Are you sure you want to block?');"><li class="dropdown-item"><i class="fas fa-lock"></i>&nbsp;&nbsp;Block</li></a>
+                                @endif
+                                @if ($customer->appoved_status==3 && (Auth::check() || Auth::guard('employee')->user()->isAuthorized('customer','delete')))
+                                  <a href="#"><li class="dropdown-item">
+                                    <form method="POST" action="{{ route('customers.destroy',$customer->id) }}">@csrf 
+                                      <input name="_method" type="hidden" value="DELETE">
+                                      <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
+                                    </form>
+                                  </li></a>
                                 @endif
                               </ul>
                             </div>
