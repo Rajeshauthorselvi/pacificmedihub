@@ -27,11 +27,24 @@
         <div class="row">
           @if ($type=="assign-shippment")
           <div class="col-md-12 action-controllers ">
-            <div class="col-sm-6 text-left pull-left">
               <a class="btn btn-primary download-summary" href="javascript:void(0)">
               <i class="fas fa-list-alt"></i>&nbsp;Generate Summary
               </a>
-            </div>
+              <a class="btn btn-default load-delivery assign-shippment" href="javascript:void(0)"  status-id="14">
+              <i class="fas fa-list-alt"></i>&nbsp; Load For Delivery
+              </a>
+              <a class="btn btn-default assign-delivery assign-shippment" href="javascript:void(0)" status-id="15">
+              <i class="fas fa-list-alt"></i>&nbsp; Assign to Delivery Person
+              </a>
+              <a class="btn btn-default delivered assign-shippment" href="javascript:void(0)"  status-id="16">
+              <i class="fas fa-list-alt"></i>&nbsp; Delivered
+              </a>
+              <a class="btn btn-default missed-delivered assign-shippment" href="javascript:void(0)"  status-id="17">
+              <i class="fas fa-list-alt"></i>&nbsp; Missed Delivery
+              </a>
+              <a class="btn btn-default assign-shippment assign-shippment" href="javascript:void(0)" status-id="18">
+              <i class="fas fa-list-alt"></i>&nbsp; Assign To Shipment
+              </a>
           </div>
           @endif
           <div class="col-md-12">
@@ -48,6 +61,60 @@
               </div>
               <div class="card">
                 <div class="card-body">
+                  @if (Auth::check())
+                    <div class="action_sec order-page">
+                        <?php $active_menu=explode('.',$show_route);
+
+                        $new=$assign_delivery=$del_inpro=$completed=$cancelled="";
+                        if ($active_menu[0]=="new-orders") {
+                            $new="active";
+                        }
+                        elseif ($active_menu[0]=="assign-shippment") {
+                          $assign_delivery="active";
+                        }
+                        elseif ($active_menu[0]=="assign-delivery") {
+                          $del_inpro="active";
+                        }
+                        elseif ($active_menu[0]=="completed-orders") {
+                          $completed="active";
+                        }
+                        elseif ($active_menu[0]=="cancelled-orders") {
+                          $cancelled="active";
+                        }
+
+
+                         ?>
+                        <ul class="list-unstyled">
+                          <li>
+                            <a href="{{ route('new-orders.index') }}" class="new">
+                              <i class="fab fa-first-order"></i>&nbsp; New Orders
+                            </a>
+                          </li>
+                          <li>
+                            <a href="{{ route('assign-shippment.index') }}" class="assigned-del {{ $assign_delivery }}">
+                              <i class="fa fa-shipping-fast"></i>&nbsp; Assigned for Delivery
+                            </a>
+                          </li>
+                          <li>
+                            <a href="{{ route('assign-delivery.index') }}" class="del-inprogress">
+                              <i class="fa fa-spinner "></i>&nbsp; Delivery In Progress
+                            </a>
+                          </li>
+                          <li>
+                            <a href="{{ route('completed-orders.index') }}" class="order-completed">
+                              <i class="fa fa-check "></i>&nbsp; Orders Completed
+                            </a>
+                          </li>
+                          <li>
+                            <a href="{{ route('cancelled-orders.index') }}" class="missed {{ $cancelled }}">
+                               <i class="fa fa-window-close"></i>&nbsp; Cancelled/Missed Orders 
+                            </a>
+                          </li>
+                        </ul>
+                    </div>
+                  @endif
+                  <div class="clearfix"></div>
+                  <br>
                   <table id="data-table" class="table table-bordered">
                     <thead>
                       <tr>
@@ -160,6 +227,19 @@
 
   @push('custom-scripts')
   <script type="text/javascript">
+
+    $(document).on('click', '.assign-shippment', function(event) {
+      event.preventDefault();
+        var checkedNum = $('input[name="orders_ids"]:checked').length;
+        var status_id=$(this).attr('status-id');
+        if (checkedNum==0) {
+          alert('Please select order');
+        }    
+        else{
+          
+        }     
+    });
+
 
   var oTable = $('#data-table').dataTable({"ordering": false});
   var allPages = oTable.fnGetNodes();

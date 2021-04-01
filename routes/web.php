@@ -115,6 +115,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('cop_admin_pdf/{order_id}','Admin\OrderController@COAdminPdf');
 
 	Route::get('order-purchase/{order_id}','Admin\OrderController@OrderPurchase');
+
+	Route::post('update-order-status','Admin\OrderController@UpdateOrderStatus');
 	Route::resource('orders','Admin\OrderController');
 	Route::resource('new-orders','Admin\OrderController');
 	Route::resource('assign-shippment','Admin\OrderController');

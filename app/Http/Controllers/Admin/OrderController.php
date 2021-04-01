@@ -1520,4 +1520,15 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
 
         return $total_quantity;
     }
+    public function UpdateOrderStatus(Request $request)
+    {
+    
+      $order_ids=$request->get('order_ids');
+      $status_id=$request->get('status_id');
+      foreach ($order_ids as $key => $order_id) {
+        Orders::where('id',$order_id)->update(['order_status'=>$status_id]);
+      }
+      Session::flash('success', 'Order status updated successfully');
+      return ['status'=>'success'];
+    }
 }

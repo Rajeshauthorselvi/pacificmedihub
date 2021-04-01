@@ -48,6 +48,59 @@
               </div>
               <div class="card">
                 <div class="card-body">
+                  @if (Auth::check())
+                    <div class="action_sec  order-page">
+                        <?php $active_menu=explode('.',$show_route);
+
+                        $new=$assign_delivery=$del_inpro=$completed=$cancelled="";
+                        if ($active_menu[0]=="new-orders") {
+                            $new="active";
+                        }
+                        elseif ($active_menu[0]=="assign-shippment") {
+                          $assign_delivery="active";
+                        }
+                        elseif ($active_menu[0]=="assign-delivery") {
+                          $del_inpro="active";
+                        }
+                        elseif ($active_menu[0]=="completed-orders") {
+                          $completed="active";
+                        }
+                        elseif ($active_menu[0]=="cancelled-orders") {
+                          $cancelled="active";
+                        }
+
+                         ?>
+                        <ul class="list-unstyled">
+                          <li>
+                            <a href="{{ route('new-orders.index') }}" class="new">
+                              <i class="fab fa-first-order"></i>&nbsp; New Orders
+                            </a>
+                          </li>
+                          <li>
+                            <a href="{{ route('assign-shippment.index') }}" class="assigned-del">
+                              <i class="fa fa-shipping-fast"></i>&nbsp; Assigned for Delivery
+                            </a>
+                          </li>
+                          <li>
+                            <a href="{{ route('assign-delivery.index') }}" class="del-inprogress {{ $del_inpro }}">
+                              <i class="fa fa-spinner "></i>&nbsp; Delivery In Progress
+                            </a>
+                          </li>
+                          <li>
+                            <a href="{{ route('completed-orders.index') }}" class="order-completed">
+                              <i class="fa fa-check "></i>&nbsp; Orders Completed
+                            </a>
+                          </li>
+                          <li>
+                            <a href="{{ route('cancelled-orders.index') }}" class="missed {{ $cancelled }}">
+                               <i class="fa fa-window-close"></i>&nbsp; Cancelled/Missed Orders 
+                            </a>
+                          </li>
+                        </ul>
+                    </div>
+                  @endif
+                  <div class="clearfix"></div>
+                  <br>
                   <table id="data-table" class="table table-bordered">
                     <thead>
                       <tr>
