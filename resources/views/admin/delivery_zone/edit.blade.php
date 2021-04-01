@@ -37,7 +37,7 @@
                 <h3 class="card-title">Edit Delivery Zone</h3>
               </div>
               <div class="card-body">
-                {!! Form::open(['route'=>'delivery_zone.store','method'=>'POST','id'=>'zoneForm']) !!}
+                {{ Form::model($region,['method' => 'PATCH', 'id'=>'zoneForm' , 'route' =>['delivery_zone.update',$region->id]]) }}
                   <div class="form-group clearfix">
                     <label for="region_name">Region Name *</label><br>
                     {{ Form::text('region_name',$region->name,['class'=>'form-control','id'=>'region_name']) }}
@@ -68,7 +68,7 @@
                             <?php $count=1; ?>
                             @foreach($post_codes as $values)
                               <tr id="R1" class="parent_tr"> 
-                                <input type="hidden" id="valueId" name="option_values[id][]" value="{{ $values->id }}">
+                                <input type="hidden" id="valueId" name="post_code[id][]" value="{{ $values->id }}">
                                 <td class="row-index text-center"> 
                                   <p id="count">{{ $count }}</p>
                                 </td>

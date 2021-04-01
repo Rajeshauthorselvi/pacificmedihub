@@ -131,15 +131,61 @@ class DeliveryZoneController extends Controller
      */
     public function update(Request $request, $id)
     {
-       $this->validate(request(), ['post_code' => 'required','delivery_fee' => 'required']); 
+       $this->validate(request(), ['region_name' => 'required']); 
+        
+        $status=($request->status=='on')?1:0;
+        $region = Region::find($id);
+        $region->name       = $request->region_name;
+        $region->published  = $status;
+        $region->update();
 
-       $status=($request->status=='on')?1:0;
-       $zone=DeliveryZone::find($deliveryZone->id);
-       $zone->post_code=$request->post_code;
-       $zone->delivery_fee=$request->delivery_fee;
-       $zone->published=$status;
-       $zone->save();
+        if($region){
+            if($request->post_code){
+                $values_data = [];
+                if(isset($request->post_code['id'])){
+                    $i = 0;
+                    foreach ($request->post_code['id'] as $id) {
+                        $values_data[$i]['id'] = $id;
+                        $i = $i + 1;
+                    }
+                }else{
+                    $i = 0;
+                    foreach ($request->post_code['name'] as $name) {
+                        $values_data[$i]['id'] = null;
+                        $i = $i + 1;
+                    }
+                }
 
+                $i = 0;
+                foreach ($request->post_code['name'] as $name) {
+                    $values_data[$i]['name'] = $name;
+                    $i = $i+1;
+                }
+
+                $i = 0;
+                foreach ($request->post_code['published'] as $published) {
+                    $values_data[$i]['published'] = $published;
+                    $i = $i+1;
+                }
+            }
+            foreach ($values_data as $values) {
+                if(isset($values['id'])&&$values['id']){
+                    $delivery_zone = DeliveryZone::find($values['id']);
+                    $delivery_zone->region_id  = $region->id;
+                    $delivery_zone->post_code  = $values['name'];
+                    $delivery_zone->published  = $values['published'];
+                    $delivery_zone->timestamps = false;
+                    $delivery_zone->save();
+                }else{
+                    $add_zone = new DeliveryZone;
+                    $add_zone->region_id  = $region->id;
+                    $add_zone->post_code  = $values['name'];
+                    $add_zone->published  = $values['published'];
+                    $add_zone->timestamps = false;
+                    $add_zone->save();
+                }
+            }
+        }
        return Redirect::route('delivery_zone.index')->with('success','Delivery Zone details updated successfully...!');
     }
 
