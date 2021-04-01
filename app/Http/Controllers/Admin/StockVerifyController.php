@@ -40,6 +40,69 @@ class StockVerifyController extends Controller
         foreach ($products as $key => $product) {
             $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
 
+           
+
+            if ( $check_product_quantity < $product->quantity) {
+                $product_name    = Product::where('id',$product->product_id)->value('name');
+                $options         = $this->Options($product->product_id);
+                $all_variants=$this->VariantIds($order_id);
+
+                $product_variant = $this->Variants($product->product_id,$all_variants);
+                $product_data[$product->product_id] = [
+                    'order_id'        => $order_id,
+                    'product_id'      => $product->product_id,
+                    'product_name'    => $product_name,
+                    'options'         => $options['options'],
+                    'option_count'    => $options['option_count'],
+                    'product_variant' => $product_variant,
+                    'order_quantity'        => $product->quantity,
+                    'total_avail_quantity'  => $check_product_quantity
+                ];
+            }
+
+        }
+      if (Auth::check()) {
+        // $creater_name=Employee::where('id',$order_details->customer_id)->first();
+        $creater_name=Auth::user()->name;
+        $creater_id=Auth::id();
+        $user_type=1;
+      }
+      else{
+        // $creater_name=User::where('id',$order_details->customer_id)->first();
+        $creater_name=Auth::guard('employee')->user()->emp_name;
+        $creater_id=Auth::guard('employee')->user();
+        $user_type=2;
+      }
+
+     // Orders::where('id',$request->order_id)->update(['order_status'=>19]);
+      Notification::insert([
+        'content'=> 'Stock Needed-'.$order_details->order_no,
+        'url'    => route('new-orders.show',$order_id),
+        'created_by' => $creater_id,
+        'created_user_type' => $user_type,
+        'created_at' =>date('Y-m-d H:i:s'),
+      ]);
+
+      $data['creater_name']=$creater_name;
+      $data['product_data']=$product_data;
+        Mail::send('admin.orders.assign_shippment_delivery.notification_email', $data, function ($m) use($order_details) {
+         $m->from('dhinesh@authorselvi.com');
+           $m->to('dhinesh@authorselvi.com', 'Notification')->subject($order_details->order_no.'-Need quantity');
+       });
+
+
+        return Redirect::back()->with('success','Notification sent successfully...!');
+    }
+    public function EmailFunction($order_id)
+    {
+       
+        $data['order']=$order_details=Orders::with('orderProducts')->where('orders.id',$order_id)->first();
+        $low_quantity_data=array();
+        $products = OrderProducts::where('order_id',$order_id)->get();
+        $product_data=array();
+        foreach ($products as $key => $product) {
+            $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
+
             if ($product->quantity > $check_product_quantity) {
                 $product_name    = Product::where('id',$product->product_id)->value('name');
                 $options         = $this->Options($product->product_id);
@@ -70,7 +133,7 @@ class StockVerifyController extends Controller
         $user_type=2;
       }
 
-      Orders::where('id',$request->order_id)->update(['order_status'=>19]);
+     // Orders::where('id',$order_id)->update(['order_status'=>19]);
       Notification::insert([
         'content'=> 'Stock Needed-'.$order_details->order_no,
         'url'    => route('new-orders.show',$order_id),
@@ -83,11 +146,9 @@ class StockVerifyController extends Controller
       $data['product_data']=$product_data;
         Mail::send('admin.orders.assign_shippment_delivery.notification_email', $data, function ($m) use($order_details) {
          $m->from('dhinesh@authorselvi.com');
-           $m->to('dhinesh@authorselvi.com', 'Notification')->subject($order_details->order_no.'-Need quantity');
+         $m->to('dhinesh@authorselvi.com', 'Notification')->subject($order_details->order_no.'-Need quantity');
        });
 
-
-        return Redirect::back()->with('success','Notification sent successfully...!');
     }
  public function Variants($product_id,$variation_id=0)
     {
@@ -422,12 +483,17 @@ class StockVerifyController extends Controller
     }
     public function VariantIds($order_id='')
     {
-        $product_variant=DB::select("SELECT op.product_variation_id FROM order_products as op where `quantity` > (SELECT stock_quantity from product_variant_vendors as pvv WHERE pvv.product_id=op.product_id and pvv.product_variant_id=op.product_variation_id) AND op.order_id='".$order_id."'");
+
+        // $products = OrderProducts::where('order_id',$order_id)->pluck('quantity','product_variation_id');
+
+        $product_variant=DB::select("SELECT op.product_variation_id FROM order_products as op where `quantity` < (SELECT stock_quantity from product_variant_vendors as pvv WHERE pvv.product_id=op.product_id and pvv.product_variant_id=op.product_variation_id) AND op.order_id='".$order_id."'");
 
             $all_variants=array();
             foreach ($product_variant as $key => $row) 
                 $all_variants[$key] = $row->product_variation_id;
 
+
+            // dd($all_variants);
         return $all_variants;
     }
 }
