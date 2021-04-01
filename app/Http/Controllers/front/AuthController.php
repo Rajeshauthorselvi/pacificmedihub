@@ -37,13 +37,19 @@ class AuthController extends Controller
             'password'  => 'required'
         ]);
 
-        $check_role = User::where('email',$request->email)->first();
-        if($check_role){
-	        $role_id = isset($check_role->role_id) ? $check_role->role_id : 0;
-	        if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'role_id'=>$role_id])) 
+        $user_data = User::where('email',$request->email)->first();
+        if($user_data){
+	        $role_id = isset($user_data->role_id) ? $user_data->role_id : 0;
+            $status = isset($user_data->status) ? $user_data->status : 0;
+	        if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'role_id'=>$role_id, 'status'=>$status])) 
 	        {    
 	            if($role_id==7){
-	                return redirect()->route('home.index');
+                    if($status==1){
+	                   return redirect()->route('home.index');
+                    }else{
+                        Auth::Logout();
+                        return Redirect::back()->withInput($request->only('email'))->with('error','Your account is blocked!');    
+                    }
 	            }else{
 	            	return Redirect::back()->withInput($request->only('email'))->with('error','This email does not allow as a User!');
 	            }
@@ -171,37 +177,50 @@ class AuthController extends Controller
             $replace_number = str_replace('[Start No]', $start_number, $replace_year);
         }
 
-        $add_user = new User;
-        $add_user->role_id        = 7;
-        $add_user->name           = $request->name;
-        $add_user->email          = $request->email;
-        $add_user->contact_number = $request->contact;
-        $add_user->address_1      = $request->company_address;
-        $add_user->country_id     = $request->country_id;
-        $add_user->state_id       = isset($request->state_id)?$request->state_id:null;
-        $add_user->city_id        = isset($request->city_id)?$request->city_id:null;
-        $add_user->post_code      = $request->post_code;
-        $add_user->latitude       = $request->latitude;
-        $add_user->longitude      = $request->longitude;
-        $add_user->customer_no    = $replace_number;
-        $add_user->save();
-
+        $add_user = User::updateOrCreate([
+            'email'          => $request->email,
+        ],[
+            'role_id'        => 7,
+            'name'           => $request->name,
+            'email'          => $request->email,
+            'contact_number' => $request->contact,
+            'address_1'      => $request->company_address,
+            'country_id'     => $request->country_id,
+            'state_id'       => isset($request->state_id)?$request->state_id:null,
+            'city_id'        => isset($request->city_id)?$request->city_id:null,
+            'post_code'      => $request->post_code,
+            'latitude'       => $request->latitude,
+            'longitude'      => $request->longitude,
+            'customer_no'    => $replace_number,
+            'request_from'   => 2,
+            'appoved_status' => 1
+        ]);
+        
         if($add_user){
-            $add_bank = new UserBankAcccount;
-            $add_bank->customer_id = $add_user->id;
-            $add_bank->save();
+            $add_bank = UserBankAcccount::updateOrCreate([
+                'customer_id' => $add_user->id,
+            ],[
+                'account_name'   => null,
+                'account_number' => null,
+                'bank_name'      => null,
+                'bank_branch'    => null,
+                'ifsc_code'      => null,
+                'paynow_contact' => null,
+                'place'          => null,
+                'others'         => null
+            ]);
             if($add_bank){
                 User::where('id',$add_user->id)->update(['bank_account_id'=>$add_bank->id]);
             }
-            $add_poc = new UserPoc;
-            $add_poc->customer_id     = $add_user->id;
-            $add_poc->name            = $request->name;
-            $add_poc->email           = $request->email;
-            $add_user->contact_number = $request->contact;
-            $add_poc->timestamps      = false;
-            $add_poc->save();
+            $add_poc = UserPoc::updateOrCreate([
+                'customer_id'     => $add_user->id,
+            ],[
+                'name'            => $request->name,
+                'email'           => $request->email,
+                'contact_number'  => $request->contact,
+                'timestamps'      => false
+            ]);
         }
-        
         return view('front/customer/new_register_success');
     }
 }

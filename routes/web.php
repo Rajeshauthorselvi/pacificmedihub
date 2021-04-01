@@ -130,6 +130,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::post('save-address-form','Admin\CustomerController@saveAddressForm')->name('save.address');
 	Route::resource('vendor-products','Admin\VendorProdcutsController');
 	Route::post('add-new-address','Admin\CustomerController@AddNewAddressController');
+	Route::get('reject-or-block','Admin\CustomerController@rejectOrBlock')->name('reject.block');
+	Route::get('reject-customers','Admin\CustomerController@rejectCustomerList')->name('reject.customer');
 
 	//Vendor
 	Route::resource('vendor','Admin\VendorController');
@@ -145,6 +147,9 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 
 	//Delivery Zone
 	Route::resource('delivery_zone','Admin\DeliveryZoneController');
+	Route::post('delete-post-code',[
+		'as'=>'delete.post.code','uses'=>'Admin\DeliveryZoneController@deletePostCode'
+	]);
 
 	//Static Page
 	Route::resource('static-page','Admin\StaticPageController');

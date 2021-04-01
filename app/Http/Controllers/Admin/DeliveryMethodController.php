@@ -40,18 +40,18 @@ class DeliveryMethodController extends Controller
      */
     public function store(Request $request)
     {
-
         $this->validate(request(),[
-            'delivery_method'=>'required',
-            'amount'=>'required'
+            'delivery_method' => 'required',
+            'amount'          => 'required',
+            'target_amount'   => 'required'
         ]);
         DeliveryMethod::insert([
-            'delivery_method'=>$request->delivery_method,
-            'amount'    => $request->amount,
-            'status'=>($request->published=="on")?1:2
+            'delivery_method' => $request->delivery_method,
+            'amount'          => $request->amount,
+            'target_amount'   => $request->target_amount,
+            'status'          => ($request->published=="on")?1:2
         ]);
         return Redirect::route('delivery-methods.index')->with('success','Delivery method added successfully');
-
     }
 
     /**
@@ -88,13 +88,15 @@ class DeliveryMethodController extends Controller
     public function update(Request $request, DeliveryMethod $deliveryMethod)
     {
         $this->validate(request(),[
-            'delivery_method'=>'required',
-            'amount'=>'required'
+            'delivery_method' => 'required',
+            'amount'          => 'required',
+            'target_amount'   => 'required'
         ]);
         DeliveryMethod::where('id',$deliveryMethod->id)->update([
-            'delivery_method'=>$request->delivery_method,
-            'amount'    => $request->amount,
-            'status'=>($request->published=="on")?1:2
+            'delivery_method' => $request->delivery_method,
+            'amount'          => $request->amount,
+            'target_amount'   => $request->target_amount,
+            'status'          => ($request->published=="on")?1:2
         ]);
         return Redirect::route('delivery-methods.index')->with('success','Delivery method updated successfully');    
     }
