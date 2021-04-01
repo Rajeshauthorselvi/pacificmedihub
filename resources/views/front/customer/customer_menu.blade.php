@@ -7,9 +7,9 @@
       </a>
     </li>
     <?php 
-      $check_parent = App\Models\UserCompanyDetails::where('customer_id',Auth::id())->first();
+      $check_parent = Auth::user()->parent_company;
     ?>
-    @if($check_parent->parent_company==0)
+    @if($check_parent==0)
       <li class="drop-down-menu @if($current_route=='my-rfq.index'||$current_route=='my-rfq.show'||$current_route=='my-rfq.edit'||$current_route=='my.rfq.comments'||$current_route=='child.rfq.index') active @endif">
         <a class="drop-down link"><i class="far fa-comments"></i>&nbsp;&nbsp;RFQ</a>
         <ul class="drop-down-list" style="display: @if($current_route=='my-rfq.index'||$current_route=='my-rfq.show'||$current_route=='my-rfq.edit'||$current_route=='my.rfq.comments'||$current_route=='child.rfq.index') block @endif">

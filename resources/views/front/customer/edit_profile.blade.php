@@ -17,72 +17,46 @@
 		   	@include('front.customer.customer_menu')
       </div>
 
-		
 		  <div class="col-sm-9">
         <form action="{{ route('my-profile.update',$customer->id) }}" method="post" id="profileForm" enctype="multipart/form-data">
           @csrf
           <input name="_method" type="hidden" value="PATCH">
   		    <ul class="nav nav-tabs flex-nowrap" role="tablist">
             <li role="presentation" class="nav-item">
-              <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Profile"> Profile Details </a>
+              <a href="#step1" class="nav-link active" data-toggle="tab" aria-controls="step1" role="tab customer-link" tab-count="2" title="Company"> Company Details </a>
             </li>
             <li role="presentation" class="nav-item">
-              <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Company"> Company Details </a>
+              <a href="#step2" class="nav-link disabled" data-toggle="tab" aria-controls="step2" role="tab"  tab-count="2" title="POC"> POC Details </a>
             </li>
             <li role="presentation" class="nav-item">
-              <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab"  tab-count="3" title="POC"> POC Details </a>
-            </li>
-            <li role="presentation" class="nav-item">
-              <a href="#step4" class="nav-link disabled" data-toggle="tab" aria-controls="step4" role="tab customer-link"  tab-count="4" title="Bank">Bank Accounts</a>
+              <a href="#step3" class="nav-link disabled" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Bank">Bank Accounts</a>
             </li>
           </ul>
-        	<div class="tab-content py-2"> 
-            <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
-              <div class="form-group">
-                <div class="col-sm-12">
-                  <label for="">Name *</label>
-                  {!! Form::text('customer[name]',$customer->name,['class'=>'form-control name']) !!}
-                  <span class="text-danger name" style="display:none">Name is required</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="col-sm-6">
-                  <label for="">Email *</label>
-                  {!! Form::email('customer[email]',  $customer->email,['class'=>'form-control','readonly']) !!}
-                </div>
-                <div class="col-sm-6">
-                  <label for="">Contact No *</label>
-                  {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control contact','onkeyup'=>'validateNum(event,this);']) !!}
-                  <span class="text-danger contact" style="display:none">Contact is required</span>
-                </div>
-              </div>
-              <a class="btn reset-btn" href="{{ route('my-profile.index') }}">Cancel</a>
-              <button type="button" id="validateStep1" class="btn save-btn next-step">Next</button>
-            </div>
+        	<div class="tab-content py-2">
 
-            <div class="tab-pane company-tabs" tab-count="2" role="tabpanel" id="step2">
+            <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
               <div class="form-group">
                 <div class="col-sm-6">
                   <label for="">Company Name *</label>
-                  {!! Form::text('company[company_name]', $customer->company->company_name,['class'=>'form-control company']) !!}
-                  {!! Form::hidden('company[company_id]',$customer->company->id) !!}
+                  {!! Form::text('company[name]', $customer->name,['class'=>'form-control company']) !!}
                   <span class="text-danger company" style="display:none">Company Name is required</span>
                 </div>
                 <div class="col-sm-6">
-                  <label for="">Company GST No</label>
-                  {!! Form::text('company[company_gst]', $customer->company->company_gst,['class'=>'form-control']) !!}
+                  <label for="">Company UEN *</label>
+                  {!! Form::text('company[company_uen]', $customer->company_uen,['class'=>'form-control company_uen']) !!}
+                  <span class="text-danger company_uen" style="display:none">Company UEN is required</span>
                 </div>
               </div>
             
               <div class="form-group">
                 <div class="col-sm-6">
                   <label for="">Company Email *</label>
-                  {!! Form::text('company[company_email]', $customer->company->company_email,['class'=>'form-control cmpy-email']) !!}
-                  <span class="text-danger cmpy-email" style="display:none">Company Email is required</span>
+                  {!! Form::text('company[email]', $customer->email,['class'=>'form-control cmpy-email','readonly']) !!}
+                  <span class="text-danger cmpy-email" style="display:none">Company/Login Email is required</span>
                 </div>
                 <div class="col-sm-6">
-                  <label for="">Telephone No *</label>
-                  {!! Form::text('company[telephone]', $customer->company->telephone,['class'=>'form-control telephone','onkeyup'=>'validateNum(event,this);']) !!}
+                  <label for="">Contact Number *</label>
+                  {!! Form::text('company[contact_number]', $customer->contact_number,['class'=>'form-control telephone','onkeyup'=>'validateNum(event,this);']) !!}
                   <span class="text-danger telephone" style="display:none">Company Contact is required</span>
                 </div>
               </div>
@@ -90,19 +64,19 @@
               <div class="form-group">
                 <div class="col-sm-6">
                   <label for="">Address Line1 *</label>
-                  {!! Form::text('company[address_1]', $customer->company->address_1,['class'=>'form-control address1']) !!}
+                  {!! Form::text('company[address_1]', $customer->address_1,['class'=>'form-control address1','id'=>'autocomplete']) !!}
                   <span class="text-danger address1" style="display:none">Company Contact is required</span>
                 </div>
                 <div class="col-sm-6">
                   <label for="">Address Line2</label>
-                  {!! Form::text('company[address_2]', $customer->company->address_2,['class'=>'form-control']) !!}
+                  {!! Form::text('company[address_2]', $customer->address_2,['class'=>'form-control']) !!}
                 </div>
               </div>
               
               <div class="form-group">
                 <div class="col-sm-6">
                   <label for="">Country *</label>
-                  {!! Form::select('company[country_id]',$countries,$customer->company->country_id,['class'=>'form-control select2bs4 country', 'id'=>'company_country' ]) !!}
+                  {!! Form::select('company[country_id]',$countries,$customer->country_id,['class'=>'form-control select2bs4 country', 'id'=>'company_country' ]) !!}
                   <span class="text-danger country" style="display:none">Country is required</span>
                 </div>
                 <div class="col-sm-6">
@@ -116,13 +90,25 @@
                   <select name="company[city_id]" class="form-control select2bs4" id="company_city"></select>
                 </div>
                  <div class="col-sm-6">
-                  <label for="">Post Code</label>
-                  {!! Form::text('company[post_code]', $customer->company->post_code,['class'=>'form-control company_postcode']) !!}
+                  <label for="">Post Code *</label>
+                  {!! Form::text('company[post_code]', $customer->post_code,['class'=>'form-control company_postcode']) !!}
+                  <span class="text-danger post-code" style="display:none">Post Code is required</span>
                 </div>
               </div>
-              
+              <div class="form-group">
+                <div class="col-sm-6">
+                  <label for="">Company GST No</label>
+                  {!! Form::text('company[company_gst]', $customer->company_gst,['class'=>'form-control']) !!}
+                </div>
+                <div class="col-sm-6">
+                  <label for="">Sales Rep</label>
+                  {!!Form::text('sales_rep',$customer->getSalesRep->emp_name,['class'=>'form-control','readonly'])!!}
+                </div>
+                {!!Form::hidden('company[latitude]',$customer->latitude,['id'=>'latitude'])!!}
+                {!!Form::hidden('company[longitude]',$customer->longitude,['id'=>'longitude'])!!}
+              </div>
               <?php 
-                if(!empty($customer->company->logo)){$image = 'theme/images/customer/company/'.$customer->company->id.'/'.$customer->company->logo;}
+                if(!empty($customer->logo)){$image = 'theme/images/customer/company/'.$customer->id.'/'.$customer->logo;}
                 else {$image = "theme/images/no_image.jpg";}
               ?>
               <div class="form-group">
@@ -137,43 +123,111 @@
               </div>
 
               <button type="button" class="btn reset-btn prev-step">Previous</button>
-              <button type="button" id="validateStep2" class="btn save-btn next-step">Next</button>
+              <button type="button" id="validateStep1" class="btn save-btn next-step">Next</button>
 
             </div>
 
-            <div class="tab-pane poc-tabs" tab-count="3" role="tabpanel" id="step3">
-              <div class="form-group">
-                <div class="col-sm-6">
-                  {!! Form::hidden('poc[poc_id]',$customer->poc->id) !!}
-                  <label for="">POC Name *</label>
-                  {!! Form::text('poc[name]',$customer->poc->name,['class'=>'form-control poc_name']) !!}
-                  <span class="text-danger poc_name" style="display:none">Name is required</span>
-                </div>
-                <div class="col-sm-6">
-                  <label for="">Company UEN *</label>
-                  {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control company_uen']) !!}
-                  <span class="text-danger company_uen" style="display:none">Company UEN is required</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="col-sm-6">
-                  <label for="">Contact No *</label>
-                  {!! Form::text('poc[contact_number]', $customer->poc->contact_number,['class'=>'form-control poc_contact','onkeyup'=>"validateNum(event,this);"]) !!}
-                  <span class="text-danger poc_contact" style="display:none">Contact is required</span>
-                </div>
-                <div class="col-sm-6">
-                  <label for="">Email *</label>
-                  {!! Form::email('poc[email]',  $customer->poc->email,['class'=>'form-control poc_email']) !!}
-                  <span class="text-danger poc_email" style="display:none">Email is required</span>
-                  <span class="text-danger poc_email_validate" style="display:none">Please enter valid Email Address</span>
-                </div>
-              </div>
+            <div class="tab-pane poc-tabs" tab-count="2" role="tabpanel" id="step2">
+             <table class="list" id="pocList">
+                <thead>
+                  <tr>
+                    <th></th><th>Name</th><th>Email</th><th>Phone No</th>
+                  </tr>
+                </thead>
+                <?php $count=1; ?>
+                <tbody>
+                  @foreach($customer_poc as $poc)
+                    <tr>
+                      <td><span class="counts">{{$count}}</span></td>
+                      <td>
+                        <div class="form-group">
+                          <input type="hidden" name="poc[id][]" value="{{ $poc->id }}">
+                          <input type="text" class="form-control" name="poc[name][]" value="{{old('name',$poc->name)}}">
+                        </div>
+                      </td>
+                      <td>
+                        <div class="form-group">
+                          <input type="text" class="form-control validate-email1" name="poc[email][]" value="{{old('email',$poc->email)}}">
+                          <span class="email-error1" style="display:none;color:red;">Invalid email</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="form-group">
+                          <input type="text" class="form-control" name="poc[contact][]" value="{{old('contact',$poc->contact_number)}}" onkeyup="validateNum(event,this);">
+                        </div>
+                      </td>
+                    </tr>
+                  <input type="hidden" value="{{$count++}}">
+                  @endforeach
+                </tbody>
+                @if(count($customer_poc)<3 && count($customer_poc)==1)
+                  <tr>
+                    <input type="hidden" name="poc[id][]" value="0">
+                    <td><span class="counts">2</span></td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[name][]">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[email][]">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <input type="hidden" name="poc[id][]" value="0">
+                    <td><span class="counts">3</span></td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[name][]">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[email][]">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                      </div>
+                    </td>
+                  </tr>
+                @endif
+                @if(count($customer_poc)<3 && count($customer_poc)==2)
+                  <tr>
+                    <input type="hidden" name="poc[id][]" value="0">
+                    <td><span class="counts">3</span></td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[name][]">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[email][]">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                      </div>
+                    </td>
+                  </tr>
+                @endif
+              </table>
               <button type="button" class="btn reset-btn prev-step">Previous</button>
-              <button type="button" id="validateStep3" class="btn save-btn next-step">Next</button>
+              <button type="button" id="validateStep2" class="btn save-btn next-step">Next</button>
             </div>
 
 
-            <div class="tab-pane bank-tabs" tab-count="4" role="tabpanel" id="step4">
+            <div class="tab-pane bank-tabs" tab-count="3" role="tabpanel" id="step3">
               <div class="col-sm-12">
                 <div class="form-group">
                   <div class="col-sm-6">
@@ -208,7 +262,7 @@
                 </div>
               </div>
               <button type="button" class="btn reset-btn prev-step">Previous</button>
-              <button type="button" id="validateStep4" class="btn save-btn next-step">Submit</button>
+              <button type="button" id="validateStep3" class="btn save-btn next-step">Submit</button>
             </div>
           </div>
         </form>
@@ -216,6 +270,24 @@
     </div>
   </div>
 </div>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=places&language=en-AU&key=AIzaSyDcjnEF0OMP2a5UIqJol_WPtz2GgyTvH24"></script>
+
+<script type="text/javascript">
+  var autocomplete = new google.maps.places.Autocomplete($("#autocomplete")[0], {});
+
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    var place = autocomplete.getPlace();
+    var location = place.geometry.location;
+    console.log(place,location);
+    $('#latitude').val(location.lat()); 
+    $('#longitude').val(location.lng());
+  });
+
+  $('body').attr('onload','initialize()');
+</script>
 
 @push('custom-scripts')
   <script type="text/javascript">
@@ -230,24 +302,12 @@
 
         function validateStep1(e){
           var valid=true;
-          if($(".name").val()=="") {
-            $(".name").closest('.form-group').find('span.text-danger.name').show();
-            valid=false;
-          }
-          if($(".uen").val()=="") {
-            $(".uen").closest('.form-group').find('span.text-danger.uen').show();
-            valid=false;
-          }
-          if($(".contact").val()=="") {
-            $(".contact").closest('.form-group').find('span.text-danger.contact').show();
-            valid=false;
-          }
-          return valid;
-        }
-        function validateStep2(e){
-          var valid=true;
           if($(".company").val()=="") {
             $(".company").closest('.form-group').find('span.text-danger.company').show();
+            valid=false;
+          }
+          if($(".company_uen").val()=="") {
+            $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').show();
             valid=false;
           }
           if($(".cmpy-email").val()=="") {
@@ -266,45 +326,18 @@
             $(".country").closest('.form-group').find('span.text-danger.country').show();
             valid=false;
           }
+          if($(".company_postcode").val()==""){
+            $(".company_postcode").closest('.form-group').find('span.text-danger.post-code').show();
+            valid=false; 
+          }
           return valid;
         }
-        function validateStep3(e){
+        function validateStep2(e){
           var valid=true;
-
-          if($(".poc_name").val()=="") {
-            $(".poc_name").closest('.form-group').find('span.text-danger.poc_name').show();
-            valid=false;
-          }else{
-            $(".poc_name").closest('.form-group').find('span.text-danger.poc_name').hide();
-          }
-          if($(".company_uen").val()=="") {
-            $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').show();
-            valid=false;
-          }else{
-            $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').hide();
-          }
-          if($(".poc_contact").val()=="") {
-            $(".poc_contact").closest('.form-group').find('span.text-danger.poc_contact').show();
-            valid=false;
-          }else{
-            $(".poc_contact").closest('.form-group').find('span.text-danger.poc_contact').hide();
-          }
-          if($(".poc_email").val()=="") {
-            $(".poc_email").closest('.form-group').find('span.text-danger.poc_email').show();
-            valid=false;
-          }else{
-            $(".poc_email").closest('.form-group').find('span.text-danger.poc_email').hide();
-          }
-          if(!validateEmail($('.poc_email').val())){
-            $(".poc_email").closest('.form-group').find('span.text-danger.poc_email_validate').show();
-            valid=false;
-          }else{
-            $(".poc_email").closest('.form-group').find('span.text-danger.poc_email_validate').hide();
-          }
           return valid;
         }
 
-        function validateStep4(e){
+        function validateStep3(e){
           var valid=true;
           return valid;
         }
@@ -314,8 +347,8 @@
           var stepID = $(e.target).attr('id');
           var formFields=$(e.target).closest('.tab-pane.active').find('input,select');
           var fieldsToValidate=[];
-          if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) || (stepID=="validateStep4" && validateStep4(e)) ){
-            if(stepID=="validateStep4"){
+          if((stepID=="validateStep1" && validateStep1(e)) || (stepID=="validateStep2" && validateStep2(e)) || (stepID=="validateStep3" && validateStep3(e)) ){
+            if(stepID=="validateStep3"){
               $(e.target).closest('form').submit();
               return;
             }
@@ -348,14 +381,14 @@
 
 
     $(document).ready(function(){
-        var country_id = "<?php echo json_decode($customer->company->country_id); ?>";
-        var state_id = "<?php echo json_decode($customer->company->state_id); ?>";
+        var country_id = "<?php echo json_decode($customer->country_id); ?>";
+        var state_id = "<?php echo json_decode($customer->state_id); ?>";
         getState(country_id,'#company_state',state_id);
       });
       //Get City
       $(document).ready(function(){
-        var state_id = "<?php echo json_decode($customer->company->state_id); ?>";
-        var city_id = "<?php echo json_decode($customer->company->city_id); ?>";
+        var state_id = "<?php echo json_decode($customer->state_id); ?>";
+        var city_id = "<?php echo json_decode($customer->city_id); ?>";
         getCity(state_id,'#company_city',city_id);
       });
 
@@ -373,7 +406,7 @@
           $.ajax({
             type:"GET",
             dataType: 'json',
-            url:"{{url('admin/get-state-list')}}?country_id="+countryID,
+            url:"{{url('get-state')}}?country_id="+countryID,
             success:function(res){  
               if(res){
                 $(append_id).empty();
@@ -399,7 +432,7 @@
           $.ajax({
             type:"GET",
             dataType: 'json',
-            url:"{{url('admin/get-city-list')}}?state_id="+stateID,
+            url:"{{url('get-city')}}?state_id="+stateID,
             success:function(res){  
               if(res){
                 $(append_id).empty();

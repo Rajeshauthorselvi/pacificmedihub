@@ -239,9 +239,7 @@ class CustomerController extends Controller
         $data['customer_poc'] = UserPoc::where('customer_id',$id)->get();
         
         $data['all_company']  = [''=>'Please Select']+User::where('parent_company',0)->where('role_id',7)
-                                            ->pluck('name','id')->toArray();
-        $data['all_company']  = [''=>'Please Select']+User::where('parent_company',0)->where('role_id',7)
-                                            ->pluck('name','id')->toArray();
+                                            ->whereNotIn('id',[$id])->pluck('name','id')->toArray();
         $data['sales_rep']    = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
         $data['countries']    = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
@@ -311,14 +309,14 @@ class CustomerController extends Controller
                 $i = $i + 1;
             }
             foreach ($poc_data as $key => $value) {
-                if($value['id']!=null){
+                if($value['id']!=0){
                     $update_poc = UserPoc::where('id',$value['id'])->first();
                     $update_poc->name           = $value['name'];
                     $update_poc->email          = $value['email'];
                     $update_poc->contact_number = $value['contact'];
                     $update_poc->timestamps     = false;
                     $update_poc->save();
-                }else{
+                }elseif($value['name']!=null){
                     $add_poc = new UserPoc;
                     $add_poc->customer_id    = $id;
                     $add_poc->name           = $value['name'];

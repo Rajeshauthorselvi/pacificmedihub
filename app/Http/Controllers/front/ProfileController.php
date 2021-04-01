@@ -32,11 +32,11 @@ class ProfileController extends Controller
         }
         $data=array();
         $id = $data['user_id']  = Auth::id();
-        $data['customer'] = User::with('alladdress','company','bank','poc')
+        $data['customer'] = User::with('alladdress','bank')
                             ->whereIn('users.role_id',[1,7])
                             ->where('id',$id)
                             ->first();
-        //dd($data);
+        $data['customer_poc'] = UserPoc::where('customer_id',$id)->get();
         return view('front/customer/profile',$data);
     }
 
@@ -85,10 +85,11 @@ class ProfileController extends Controller
         }
         $data=array();
         $data['user_id']  = Auth::id();
-        $data['customer'] = User::with('alladdress','company','bank','poc')
+        $data['customer'] = User::with('alladdress','bank')
                             ->where('users.role_id',7)
                             ->where('id',$id)
                             ->first();
+        $data['customer_poc'] = UserPoc::where('customer_id',$id)->get();
         $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
         return view('front/customer/edit_profile',$data);
     }
@@ -102,38 +103,69 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $users    = $request->customer;
+        $users    = $request->company;
         $customer = User::where('id',$id)->update($users);
 
+        /* Update Bank details */
         $bank_details = $request->bank;
         $bank         = UserBankAcccount::find($bank_details['account_id']);
         Arr::forget($bank_details,['account_id']);
         $bank->update($bank_details);
 
-        /* Update POC details */
-        $poc_details = $request->poc;
-        $poc = UserPoc::find($poc_details['poc_id']);
-        $poc->timestamps = false;
-        Arr::forget($poc_details,['poc_id']);
-        $poc->update($poc_details);
 
-        $company_details=$request->company;
-        $company = UserCompanyDetails::find($company_details['company_id']);
-        Arr::forget($company_details,['company_id']);
-        $company->update($company_details);
+        /* Update POC details */
+        if($request->poc){
+            $poc_data = [];
+            $i = 0;
+            foreach ($request->poc['id'] as $poc_id) {
+                $poc_data[$i]['id'] = $poc_id;
+                $i = $i + 1;
+            }
+            $i = 0;
+            foreach ($request->poc['name'] as $name) {
+                $poc_data[$i]['name'] = $name;
+                $i = $i + 1;
+            }
+            $i = 0;
+            foreach ($request->poc['email'] as $email) {
+                $poc_data[$i]['email'] = $email;
+                $i = $i + 1;
+            }
+            $i = 0;
+            foreach ($request->poc['contact'] as $contact) {
+                $poc_data[$i]['contact'] = $contact;
+                $i = $i + 1;
+            }
+            foreach ($poc_data as $key => $value) {
+                if($value['id']!=0){
+                    $update_poc = UserPoc::where('id',$value['id'])->first();
+                    $update_poc->name           = $value['name'];
+                    $update_poc->email          = $value['email'];
+                    $update_poc->contact_number = $value['contact'];
+                    $update_poc->timestamps     = false;
+                    $update_poc->save();
+                }elseif($value['name']!=null){
+                    $add_poc = new UserPoc;
+                    $add_poc->customer_id    = $id;
+                    $add_poc->name           = $value['name'];
+                    $add_poc->email          = $value['email'];
+                    $add_poc->contact_number = $value['contact'];
+                    $add_poc->timestamps     = false;
+                    $add_poc->save();
+                }
+            }
+        }
 
         $logo_image = isset($request->company['logo'])?$request->company['logo']:null;
         if($logo_image!=null){
-            $company_id  = $request->company['company_id'];
-            $check_image = UserCompanyDetails::where('id',$company_id)->value('logo');
-            File::delete(public_path('theme/images/customer/company/'.$company_id.'/'.$check_image));
-
+            $check_image = User::where('id',$id)->value('logo');
+            File::delete(public_path('theme/images/customer/company/'.$id.'/'.$check_image));
             $photo           = $request->company['logo'];
             $filename        = $photo->getClientOriginalName();            
             $file_extension  = $request->company['logo']->getClientOriginalExtension();
             $logo_image_name = strtotime("now").".".$file_extension;
-            $request->company['logo']->move(public_path('theme/images/customer/company/'.$company_id.'/'), $logo_image_name);
-            UserCompanyDetails::where('id',$company_id)->update(['logo'=>$logo_image_name]);
+            $request->company['logo']->move(public_path('theme/images/customer/company/'.$id.'/'), $logo_image_name);
+            User::where('id',$id)->update(['logo'=>$logo_image_name]);
         }
        return Redirect::route('my-profile.index')->with('success','Your details updated successfully...!');
     }

@@ -132,8 +132,9 @@
                           <select name="company[city_id]" class="form-control select2bs4" id="company_city"></select>
                         </div>
                         <div class="col-sm-6">
-                          <label for="">Post Code</label>
-                          {!! Form::text('company[post_code]', null,['class'=>'form-control','id'=>'company_postcode']) !!}
+                          <label for="">Post Code *</label>
+                          {!! Form::text('company[post_code]', null,['class'=>'form-control','id'=>'company_postcode','onkeyup'=>"validateNum(event,this);"]) !!}
+                          <span class="text-danger post-code" style="display:none">Post Code is required</span>
                         </div>
                       </div>
                       <div class="form-group">
@@ -552,6 +553,12 @@
           valid=false;
         }else{
           $(".company_uen").closest('.form-group').find('span.text-danger.company_uen').hide();
+        }
+        if($("#company_postcode").val()=="") {
+          $("#company_postcode").closest('.form-group').find('span.text-danger.post-code').show();
+          valid=false;
+        }else{
+          $("#company_postcode").closest('.form-group').find('span.text-danger.post-code').hide();
         }
         return valid;
       }

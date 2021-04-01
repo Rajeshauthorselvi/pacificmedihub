@@ -15,61 +15,29 @@
 		  <div id="column-left" class="col-sm-3 hidden-xs column-left">
 		   	@include('front.customer.customer_menu')
       </div>
-
 		
 		  <div class="col-sm-9">
 		    <ul class="nav nav-tabs flex-nowrap" role="tablist">
           <li role="presentation" class="nav-item">
-            <a href="#step1" class="nav-link customer-link active " data-toggle="tab" aria-controls="step1" role="tab"  tab-count="1" title="Profile"> Profile Details </a>
+            <a href="#step1" class="nav-link active" data-toggle="tab" aria-controls="step1" role="tab customer-link" tab-count="1" title="Company"> Company Details </a>
           </li>
           @if($customer->role_id!=1)
           <li role="presentation" class="nav-item">
-            <a href="#step2" class="nav-link" data-toggle="tab" aria-controls="step2" role="tab customer-link" tab-count="2" title="Company"> Company Details </a>
+            <a href="#step2" class="nav-link customer-link" data-toggle="tab" aria-controls="step2" role="tab"  tab-count="2" title="POC"> POC Details </a>
           </li>
           <li role="presentation" class="nav-item">
-            <a href="#step3" class="nav-link customer-link" data-toggle="tab" aria-controls="step3" role="tab"  tab-count="3" title="POC"> POC Details </a>
+            <a href="#step3" class="nav-link" data-toggle="tab" aria-controls="step3" role="tab customer-link"  tab-count="3" title="Bank">Bank Accounts</a>
           </li>
           <li role="presentation" class="nav-item">
-            <a href="#step4" class="nav-link" data-toggle="tab" aria-controls="step4" role="tab customer-link"  tab-count="4" title="Bank">Bank Accounts</a>
-          </li>
-          <li role="presentation" class="nav-item">
-            <a href="#step5" class="nav-link password" data-toggle="tab" aria-controls="step5" role="tab customer-link"  tab-count="5" title="Password">Change Password</a>
+            <a href="#step4" class="nav-link password" data-toggle="tab" aria-controls="step4" role="tab customer-link"  tab-count="4" title="Password">Change Password</a>
           </li>
           @endif
         </ul>
 
       	<div class="tab-content py-2">
-
-          <div class="tab-pane customer-tabs active" tab-count="1" role="tabpanel" id="step1">
-            <div class="form-group">
-              <div class="col-sm-10">
-                <label for="">Name</label>
-                {!! Form::text('customer[name]',$customer->name,['class'=>'form-control','readonly']) !!}
-              </div>
-              <div class="col-sm-2">
-                <div class="edit-customer">
-                  <a class="btn btn-primary" href="{{route('my-profile.edit',$customer->id)}}">
-                    <i class="far fa-edit"></i> Edit
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-sm-5">
-                <label for="">Email</label>
-                {!! Form::email('customer[email]',  $customer->email,['class'=>'form-control','readonly']) !!}
-              </div>
-              <div class="col-sm-5">
-                <label for="">Contact No</label>
-                {!! Form::text('customer[contact_number]', $customer->contact_number,['class'=>'form-control','readonly']) !!}
-              </div>
-            </div>
-          </div>
-
-          @if($customer->role_id!=1)
-          <div class="tab-pane company-tabs" tab-count="2" role="tabpanel" id="step2">
+          <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
             <?php 
-              if(!empty($customer->company->logo)){$image = 'theme/images/customer/company/'.$customer->company->id.'/'.$customer->company->logo;}
+              if(!empty($customer->logo)){$image = 'theme/images/customer/company/'.$customer->id.'/'.$customer->logo;}
               else {$image = "theme/images/no_image.jpg";}
             ?>
             <div class="form-group">
@@ -88,90 +56,106 @@
             <div class="form-group">
               <div class="col-sm-6">
                 <label for="">Company Name</label>
-                {!! Form::text('company[company_name]', $customer->company->company_name,['class'=>'form-control','readonly']) !!}
+                {!! Form::text('company[company_name]', $customer->name,['class'=>'form-control','readonly']) !!}
               </div>
               <div class="col-sm-6">
-                <label for="">Company GST No</label>
-                {!! Form::text('company[company_gst]', $customer->company->company_gst,['class'=>'form-control','readonly']) !!}
+                <label for="">Company UEN</label>
+                {!! Form::text('company[company_uen]', $customer->company_uen,['class'=>'form-control','readonly']) !!}
               </div>
             </div>
           
             <div class="form-group">
               <div class="col-sm-6">
-                <label for="">Company Email</label>
-                {!! Form::text('company[company_email]', $customer->company->company_email,['class'=>'form-control','readonly']) !!}
+                <label for="">Company/Login Email</label>
+                {!! Form::text('company[company_email]', $customer->email,['class'=>'form-control','readonly']) !!}
               </div>
               <div class="col-sm-6">
-                <label for="">Telephone No</label>
-                {!! Form::text('company[telephone]', $customer->company->telephone,['class'=>'form-control','readonly']) !!}
+                <label for="">Contact Number</label>
+                {!! Form::text('company[contact_number]', $customer->contact_number,['class'=>'form-control','readonly']) !!}
               </div>
             </div>
 
             <div class="form-group">
               <div class="col-sm-6">
                 <label for="">Address Line1</label>
-                {!! Form::text('company[address_1]', $customer->company->address_1,['class'=>'form-control','readonly']) !!}
+                {!! Form::text('company[address_1]', $customer->address_1,['class'=>'form-control','readonly']) !!}
               </div>
               <div class="col-sm-6">
                 <label for="">Address Line2</label>
-                {!! Form::text('company[address_2]', $customer->company->address_2,['class'=>'form-control','readonly']) !!}
+                {!! Form::text('company[address_2]', $customer->address_2,['class'=>'form-control','readonly']) !!}
               </div>
             </div>
             
             <div class="form-group">
               <div class="col-sm-6 csc-sec">
                 <label for="">Country</label>
-                {!! Form::text('country_id',$customer->company->getCountry->name,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
+                {!! Form::text('country_id',$customer->getCountry->name,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
               </div>
               <div class="col-sm-6 csc-sec">
                 <label for="">State</label>
-                {!! Form::text('state_id',isset($customer->company->getState->name)?$customer->company->getState->name:'',['readonly','class'=>'form-control', 'id'=>'State']) !!}
+                {!! Form::text('state_id',isset($customer->getState->name)?$customer->getState->name:'',['readonly','class'=>'form-control', 'id'=>'State']) !!}
               </div>
             </div>
 
             <div class="form-group">
               <div class="col-sm-6 csc-sec">
                 <label for="">City</label>
-                {!! Form::text('city_id',isset($customer->company->getCity->name)?$customer->company->getCity->name:'',['readonly','class'=>'form-control', 'id'=>'City']) !!}
+                {!! Form::text('city_id',isset($customer->getCity->name)?$customer->getCity->name:'',['readonly','class'=>'form-control', 'id'=>'City']) !!}
               </div>
               <div class="col-sm-6">
                 <label for="">Post Code</label>
-                {!! Form::text('company[post_code]', $customer->company->post_code,['readonly','class'=>'form-control company_postcode']) !!}
-              </div>
-            </div>
-          </div>
-
-          <div class="tab-pane customer-tabs" tab-count="3" role="tabpanel" id="step3">
-            <div class="form-group">
-              <div class="col-sm-5">
-                <label for="">Name</label>
-                {!! Form::text('customer[name]',isset($customer->poc->name)?$customer->poc->name:'',['class'=>'form-control','readonly']) !!}
-              </div>
-              <div class="col-sm-5">
-                <label for="">Company UEN</label>
-                {!! Form::text('company[company_uen]', $customer->company->company_uen,['class'=>'form-control','readonly']) !!}
-              </div>
-              <div class="col-sm-2">
-                <div class="edit-customer">
-                  <a class="btn btn-primary" href="{{route('my-profile.edit',$customer->id)}}">
-                    <i class="far fa-edit"></i> Edit
-                  </a>
-                </div>
+                {!! Form::text('company[post_code]', $customer->post_code,['readonly','class'=>'form-control company_postcode']) !!}
               </div>
             </div>
             <div class="form-group">
-              <div class="col-sm-5">
-                <label for="">Email</label>
-                {!! Form::email('customer[email]',  isset($customer->poc->email)?$customer->poc->email:'',['class'=>'form-control','readonly']) !!}
+              <div class="col-sm-6">
+                <label for="">Company GST No</label>
+                {!! Form::text('company[company_gst]', $customer->company_gst,['class'=>'form-control','readonly']) !!}
               </div>
-              <div class="col-sm-5">
-                <label for="">Contact No</label>
-                {!! Form::text('customer[contact_number]', isset($customer->poc->contact_number)?$customer->poc->contact_number:'',['class'=>'form-control','readonly']) !!}
+              <div class="col-sm-6">
+                <label for="">Sales Ref</label>
+                {!! Form::text('company[company_gst]', $customer->getSalesRep->emp_name,['class'=>'form-control','readonly']) !!}
               </div>
             </div>
           </div>
+          @if($customer->role_id!=1)
+          <div class="tab-pane customer-tabs" tab-count="2" role="tabpanel" id="step2">
+            <div class="edit-customer">
+              <a class="btn btn-primary" href="{{route('my-profile.edit',$customer->id)}}">
+                <i class="far fa-edit"></i> Edit
+              </a>
+            </div>
+            <table class="list" id="pocList">
+              <thead>
+                <tr>
+                  <th>Name</th><th>Email</th><th>Phone No</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($customer_poc as $poc)
+                  <tr>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[name][]" readonly value="{{$poc->name}}">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control validate-email1" readonly name="poc[email][]" value="{{$poc->email}}">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="poc[contact][]" readonly id="contact1" value="{{$poc->contact_number}}">
+                      </div>
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
 
-          <div class="tab-pane bank-tabs" tab-count="4" role="tabpanel" id="step4">
+          <div class="tab-pane bank-tabs" tab-count="3" role="tabpanel" id="step3">
             <div class="col-sm-12">
               <div class="form-group">
                 <div class="col-sm-5">
@@ -213,7 +197,7 @@
             </div>
           </div>
 
-          <div class="tab-pane password-tabs" tab-count="5" role="tabpanel" id="step5">
+          <div class="tab-pane password-tabs" tab-count="5" role="tabpanel" id="step4">
             <form action="{{ route('change.cuspwd') }}" method="post" id="pwdForm">
               @csrf
               <div class="password-block">
