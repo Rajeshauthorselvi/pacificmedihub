@@ -47,13 +47,21 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="amount">Amount *</label>
-                    <input type="text" class="form-control" name="amount" id="amount" value="{{ $delivery_method->amount }}">
+                    <label for="amount">Chargeable Amount *</label>
+                    <input type="text" class="form-control" name="amount" id="amount" value="{{ $delivery_method->amount }}" onkeyup="validateNum(event,this);">
                     @if($errors->has('amount'))
                       <span class="text-danger">{{ $errors->first('amount') }}</span>
                     @endif
                   </div>
                   
+                  <div class="form-group">
+                    <label for="target_amount">Target Amount *</label>
+                    <input type="text" class="form-control" name="target_amount" value="{{ $delivery_method->target_amount }}" onkeyup="validateNum(event,this);">
+                    @if($errors->has('target_amount'))
+                      <span class="text-danger">{{ $errors->first('target_amount') }}</span>
+                    @endif
+                  </div>
+
                   <div class="form-group clearfix">
                     <div class="icheck-info d-inline">
                        <input type="checkbox" name="published" id="Published" @if((old('brand_published')=='on')||($delivery_method->status==1)) checked @endif>

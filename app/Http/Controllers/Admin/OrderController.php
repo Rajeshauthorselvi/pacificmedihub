@@ -41,8 +41,6 @@ class OrderController extends Controller
      */
     public function index()
     {
-
-
         $currenct_route=Route::currentRouteName();
         $currenct_route=explode('.',$currenct_route);
         $data=array();
@@ -170,6 +168,7 @@ class OrderController extends Controller
                                         
         $data['delivery_methods'] = DeliveryMethod::all();
         $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
+        $data['free_delivery_target'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('target_amount');
 
         $data['order_code']= '';
         $order_code = Prefix::where('key','prefix')->where('code','order_no')->value('content');
@@ -206,7 +205,6 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-
         $this->validate(request(),[
             'order_status'   => 'required',
             'payment_status' => 'required'
@@ -458,6 +456,7 @@ class OrderController extends Controller
         $data['product_datas']=$product_data;
         $data['delivery_methods'] = DeliveryMethod::all();
         $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
+        $data['free_delivery_target'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('target_amount');
 
         $currenct_route=Route::currentRouteName();
         $currenct_route=explode('.',$currenct_route);

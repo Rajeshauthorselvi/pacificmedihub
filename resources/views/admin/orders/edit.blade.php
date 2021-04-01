@@ -278,17 +278,17 @@
                       <div class="form-group">
                         <div class="col-sm-3">
                           <label for="purchase_date">Delivery Methods *</label>
-                          {!! Form::hidden('free_delivery_amount',$free_delivery,['class'=>'free_delivery_amount']) !!}
+                          {!! Form::hidden('free_delivery_amount',$free_delivery_target,['class'=>'free_delivery_amount']) !!}
                           {!! Form::hidden('delivery_charge',$free_delivery,['class'=>'del_charge_hidden']) !!}
                           <select class="form-control no-search " id="delivery-methods" name="delivery_method_id">
-                            <option value="">Please Select</option>
+                            <option value="" attr-fee="0" attr-target="0">Please Select</option>
                             @foreach($delivery_methods as $method)
                               @if ($order->delivery_method_id==$method->id)
-                                <option value="{{ $method->id }}" attr-fee="{{ $method->amount }}" selected="selected">
+                                <option value="{{ $method->id }}" attr-fee="{{ $method->amount }}" attr-target="{{ $method->target_amount }}" selected="selected">
                                   {{ $method->delivery_method }}
                                 </option>
                               @else
-                                <option value="{{ $method->id }}" attr-fee="{{ $method->amount }}">
+                                <option value="{{ $method->id }}" attr-fee="{{ $method->amount }}" attr-target="{{ $method->target_amount }}">
                                   {{ $method->delivery_method }}
                                 </option>
                               @endif
@@ -393,32 +393,21 @@
       });   
 
       $(document).on('change','#delivery-methods', function(event) {
-
           var currency = $('option:selected', '#currency_rate').attr("currency-rate");
           var all_amount = $('#allAmount').text();
           var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
-          var free_delivery=$('.free_delivery_amount').val();
           var free_del_amount=$('.free_delivery_amount').val();
           var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
           var del_type = $('#delivery-methods option:selected').val();
 
-          if (del_fees!="undefined") {
-            if (del_type==1 || del_type==2) {
-                var all_amount=parseInt(all_amount)+parseInt(del_fees);
-            }
-            else{
-              var all_amount=parseInt(all_amount);
-              var del_fees='0.00';
-            }
-            
+          if (del_fees!=0) {
+            $('#deliveryCharge').text(del_fees);
+          }else{
+            $('#deliveryCharge').text('0.00');
           }
-          else{
-              var all_amount=all_amount;
-          }
-          $('.del_charge_hidden').val(del_fees);
-          $('#deliveryCharge').text(del_fees);
-          overallCalculation(all_amount,tax_rate,currency);
 
+          $('.del_charge_hidden').val(del_fees);
+          overallCalculation(all_amount,tax_rate,currency);
       });
 
       $(function ($) {
@@ -537,26 +526,21 @@
           var del_type = $('#delivery-methods option:selected').val();
 
           if ( parseInt(all_amount) >= parseInt(free_del_amount)) {
-              $('#delivery-methods option[value="3"]').show();
+            $('#delivery-methods option[value="3"]').show();
           }
           else{
-              $('#delivery-methods option[value="3"]').hide();
+            var old_delivery_method_id = <?php echo $order->delivery_method_id; ?>;
+            var old_delivery_method_amount = <?php echo $free_delivery; ?>;
+            $('#delivery-methods').val(old_delivery_method_id).change();
+            $('#deliveryCharge').text(old_delivery_method_amount);
+            $('#delivery-methods option[value="3"]').hide();
           }
 
-          if (del_fees!="undefined") {
-            if (del_type==1 || del_type==2) {
-                var all_amount=parseInt(all_amount)+parseInt(del_fees);
-            }
-            else{
-              var all_amount=parseInt(all_amount);
-              var del_fees='0.00';
-            }
-            
+          if (del_fees!=0) {
+            $('#deliveryCharge').text(del_fees);
+          }else{
+            $('#deliveryCharge').text('0.00');
           }
-          else{
-              var all_amount=all_amount;
-          }
-          $('#deliveryCharge').text(del_fees);
           overallCalculation(all_amount,tax_rate,currency);
         });
 
@@ -642,25 +626,17 @@
         var calculatTax = tax*allAmount;
         var taxAmount = calculatTax.toFixed(2);
         var discount = $('#order-discount').val();
+        var deliveryCharge = $('#deliveryCharge').text();
         $('#orderTax').text(taxAmount);
-        var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount);
+        var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount)+parseFloat(deliveryCharge);
         var totalSGD = parseFloat(calculateSGD)-parseFloat(discount);
         $('#total_amount_sgd').text(totalSGD.toFixed(2));
         var totalExchangeRate = totalSGD*currencyRate;
         $('#toatl_exchange_rate').val(totalExchangeRate.toFixed(2));
-
-          var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
-          var del_type = $('#delivery-methods option:selected').val();
-
-          if (del_fees!="undefined") {
-            if (del_type==1 || del_type==2) {
-                var allAmount=parseInt(allAmount)-parseInt(del_fees);
-            }
-          }
-
         $('#total_amount_hidden').val(allAmount);
         $('#order_tax_amount_hidden').val(taxAmount);
         $('#sgd_total_amount_hidden').val(totalSGD);
+        $('.del_charge_hidden').val(deliveryCharge);
       }
 
       function createTable(currency_code){

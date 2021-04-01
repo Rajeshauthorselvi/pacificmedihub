@@ -49,7 +49,8 @@
                       <tr>
                           <th><input type="checkbox" class="select-all"></th>
                           <th>Delivery Method</th>
-                          <th>Amount</th>
+                          <th>Chargeable Amount</th>
+                          <th>Target Amount</th>
                           <th>Status</th>
                           <th class="text-center">Actions</th>
                       </tr>
@@ -62,6 +63,7 @@
                             </td>
                             <td>{{ $delivery_method->delivery_method }}</td>
                             <td>{{ $delivery_method->amount }}</td>
+                            <td>{{ $delivery_method->target_amount }}</td>
                             <?php
                               if($delivery_method->status==1){$published = "fa-check";}
                               else{$published = "fa-ban";}
