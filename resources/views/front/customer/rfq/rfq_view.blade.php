@@ -239,11 +239,15 @@
                     <td colspan="4" class="text-right">Order Tax</td>
                     <td class="text-center">{{ number_format($rfq_data['tax'],2,'.','') }}</td>
                   </tr>
+                  <tr class="outer">
+                    <td colspan="4" class="text-right">Delivery Charge</td>
+                    <td class="text-center">{{ number_format($rfq->delivery_charge,2,'.','') }}</td>
+                  </tr>
                   <tr class="outer grand">
                     <th colspan="4" class="text-right">Total Amount (SGD)</th>
                     <th class="text-center">{{ number_format($rfq_data['grand_total'],2,'.','') }}</th>
                   </tr>
-                  @if(($rfq_data['currency_code']!='') && ($rfq_data['exchange_amount']!=''))
+                  @if($rfq_data['grand_total']!=$rfq_data['exchange_amount'])
                     <tr class="outer grand">
                       <th colspan="4" class="text-right">Total Amount ({{$rfq_data['currency_code']}})</th>
                       <th colspan="4" class="text-center">{{$rfq_data['exchange_amount']}}</th>
