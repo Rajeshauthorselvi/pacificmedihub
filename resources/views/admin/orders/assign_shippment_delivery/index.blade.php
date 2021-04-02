@@ -33,20 +33,33 @@
               <a class="btn btn-default load-delivery assign-shippment" href="javascript:void(0)"  status-id="14">
               <i class="fas fa-list-alt"></i>&nbsp; Load For Delivery
               </a>
-              <a class="btn btn-default assign-delivery assign-shippment" href="javascript:void(0)" status-id="15">
+              <a class="btn btn-default assign-shippment" href="javascript:void(0)" status-id="15">
               <i class="fas fa-list-alt"></i>&nbsp; Assign to Delivery Person
               </a>
-              <a class="btn btn-default delivered assign-shippment" href="javascript:void(0)"  status-id="16">
+              <a class="btn btn-default delivered assign-shippment" href="javascript:void(0)"  status-id="13">
               <i class="fas fa-list-alt"></i>&nbsp; Delivered
               </a>
               <a class="btn btn-default missed-delivered assign-shippment" href="javascript:void(0)"  status-id="17">
               <i class="fas fa-list-alt"></i>&nbsp; Missed Delivery
               </a>
-              <a class="btn btn-default assign-shippment assign-shippment" href="javascript:void(0)" status-id="18">
-              <i class="fas fa-list-alt"></i>&nbsp; Assign To Shipment
+              <a class="btn btn-default missed-delivered assign-shippment" href="javascript:void(0)"  status-id="notify_admin">
+              <i class="fas fa-list-alt"></i>&nbsp; Notify Admin
               </a>
+            {{--   <a class="btn btn-default assign-shippment assign-shippment" href="javascript:void(0)" status-id="18">
+              <i class="fas fa-list-alt"></i>&nbsp; Assign To Shipment
+              </a> --}}
           </div>
           @endif
+          <div class="assign-delivery hidden col-md-12">
+            <div class="col-sm-4 pull-left">
+              <div class="form-group">
+                {!! Form::select('drivery_id',$all_drivers,null,['class'=>'form-control']) !!}
+              </div>
+            </div>
+            <div class="col-sm-4 pull-left">
+                <button type="button" class="btn btn-primary assign-delivery-btn">Assign Driver</button>
+             </div>
+          </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
@@ -61,7 +74,7 @@
               </div>
               <div class="card">
                 <div class="card-body">
-                  @if (Auth::check())
+{{--                   @if (Auth::check())
                     <div class="action_sec order-page">
                         <?php $active_menu=explode('.',$show_route);
 
@@ -114,7 +127,7 @@
                     </div>
                   @endif
                   <div class="clearfix"></div>
-                  <br>
+                  <br> --}}
                   <table id="data-table" class="table table-bordered">
                     <thead>
                       <tr>
@@ -149,12 +162,28 @@
                        ?>
                         <tr style="{{ $class_bg }}">
                           <td class="text-center">
-                            @if ($order->order_status==18)
-                              <input type="checkbox" class="orders_ids" value="{{$order->id}}">  
-                            @else
-                              -
-                            @endif
-                            
+                            <?php 
+
+                              if ($order->quantity_deducted!="") {
+                                  $check_type="loaded";
+                              }
+                              else{
+                                  $check_type="notloaded"; 
+                              }
+
+                              if ($order->delivery_person_id!=0) {
+                                  $del_person="assigned";
+                              }
+                              else{
+                                $del_person="notassigned";
+                              }
+
+                             ?>
+                            <input type="hidden" class="del-person_{{ $order->id }}" value="{{ $del_person }}"> 
+                            <input type="hidden" class="order-loaded_{{ $order->id }}" value="{{ $check_type }}"> 
+                            <input type="checkbox" name="orders_ids" value="{{$order->id}}" order-id="{{ $order->id }}">
+                            <input type="hidden" class="order-no_{{ $order->id }}" value="{{ $order->order_no }}">
+                            <input type="hidden" class="low_stock_{{ $order->id }}" value="{{ $low_stock }}">
                           </td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
@@ -219,7 +248,8 @@
     </section>
   </div>
 
-
+  <span class="load-error-data"></span>
+  {!! Form::hidden('order_ids_hidden',null,['class'=>'order_ids_hidden']) !!}
   <style type="text/css">
     .form-group{display:flex;}
     .disabled{pointer-events: none;opacity: 0.5;}
@@ -231,15 +261,183 @@
     $(document).on('click', '.assign-shippment', function(event) {
       event.preventDefault();
         var checkedNum = $('input[name="orders_ids"]:checked').length;
+
         var status_id=$(this).attr('status-id');
         if (checkedNum==0) {
           alert('Please select order');
         }    
         else{
-          
+
+          var status_id=$(this).attr('status-id');
+          var load_error_data="";
+          $('.load-error-data').html('');
+          var order_ids = [];
+          $('input[name="orders_ids"]:checked').each(function (index,val) {
+            var order_id=$(this).val()
+            /*Load For Delivery*/
+            var load_type=$('.order-loaded_'+order_id).val();
+            var order_no=$('.order-no_'+order_id).val();
+            var del_type=$('.del-person_'+order_id).val();
+            var low_stock=$('.low_stock_'+order_id).val();
+
+            if (status_id=="notify_admin") {
+              if (low_stock=="yes") {
+                order_ids.push(order_id);
+              }
+            }
+
+            if (status_id==14) {
+
+              var order_id=LoadForDelivery(load_type,order_id);
+              if (order_id!="") {
+                  order_ids.push(order_id);
+              }
+            }
+            else if (status_id==15) {
+              var order_id=AssignDeliveryPerson(load_type,del_type,order_id);
+              console.log(order_id);
+              if (order_id!="") {
+                order_ids.push(order_id);
+              }
+            }
+            else if(status_id==13){
+              var order_id=Delivered(del_type,order_id);
+              if (order_id!="") {
+                  order_ids.push(order_id);
+              }
+            }
+            else if(status_id==17){
+              var order_id=MissedDelivery(del_type,order_id);
+              if (order_id!="") {
+                  order_ids.push(order_id);
+              }
+            }
+          });
+
+            if (order_ids.length>0 && status_id!=15) {
+                if (!confirm('Are you sure want to change status?')) {
+                  return false;
+                }
+              $.ajax({
+                url: "{{ url('admin/update-order-status') }}",
+                type: 'POST',
+                data: {
+                  '_token':"{{ csrf_token() }}",
+                  status_id: status_id,
+                  order_ids:order_ids
+                },
+              })
+              .done(function() {
+                  // location.reload();
+              });
+            }
+            else{
+              $('.order_ids_hidden').val(order_ids);
+              if (order_ids.length>0) {
+                $('.assign-delivery').removeClass('hidden');
+              }
+            }
         }     
     });
 
+
+    $(document).on('click', '.assign-delivery-btn', function(event) {
+
+      var driver=$('[name="drivery_id"] option:selected').val();
+      if (driver=="") {
+        alert('Please select driver');
+        return false;
+      }
+      var order_ids = [];
+        $('input[name="orders_ids"]:checked').each(function (index,val) {
+             order_ids.push($(this).val());
+        });
+
+          if (!confirm('Are you sure want to assign delivery?')) {
+              return false;
+          }
+              $.ajax({
+                url: "{{ url('admin/update-order-status') }}",
+                type: 'POST',
+                data: {
+                  '_token':"{{ csrf_token() }}",
+                  status_id: 15,
+                  order_ids:order_ids,
+                  drivery_id:driver
+                }
+              })
+              .done(function() {
+                  location.reload();
+              });
+
+    });
+
+    function MissedDelivery(del_type,order_no) {
+
+        if (del_type!="notassigned") {
+            return order_no;
+        }
+        else{
+          $('input[value="'+order_no+'"]').prop('checked', false);
+          if ($('.load-error-data').text()=="") {
+            $('.load-error-data').append(order_no);
+          }
+          else{
+            $('.load-error-data').append(','+order_no);
+          }
+          return "";
+        }
+    }
+
+    function Delivered(del_type,order_no) {
+      alert(del_type);
+        if (del_type=="assigned") {
+            return order_no;
+        }
+        else{
+          $('input[value="'+order_no+'"]').prop('checked', false);
+          if ($('.load-error-data').text()=="") {
+            $('.load-error-data').append(order_no);
+          }
+          else{
+            $('.load-error-data').append(','+order_no);
+          }
+          return "";
+        }
+    }
+
+    function AssignDeliveryPerson(load_type,del_type,order_no) {
+        if (del_type=="notassigned" && load_type=="loaded") {
+            return order_no;
+        }
+        else{
+          $('input[value="'+order_no+'"]').prop('checked', false);
+          if ($('.load-error-data').text()=="") {
+            $('.load-error-data').append(order_no);
+          }
+          else{
+            $('.load-error-data').append(','+order_no);
+          }
+          return "";
+        }
+    }
+
+    function LoadForDelivery(load_type,order_no) {
+               if (load_type=="loaded") {
+                    $('input[value="'+order_no+'"]').prop('checked', false);
+                    if ($('.load-error-data').text()=="") {
+                      $('.load-error-data').append(order_no);
+                    }
+                    else{
+                      $('.load-error-data').append(','+order_no);
+                    }
+                    return "";
+                }
+                else{
+                  return order_no;
+                }
+
+    }
 
   var oTable = $('#data-table').dataTable({"ordering": false});
   var allPages = oTable.fnGetNodes();

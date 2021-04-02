@@ -52,8 +52,8 @@ class OrderController extends Controller
           $data['delete_permission']=$this->CheckPermission('delete',$currenct_route[0],'yes')['status'];
         }
 
-
-
+        $data['all_drivers']=[''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                  ->where('emp_department',3)->pluck('emp_name','id')->toArray();
         $orders=Orders::with('customer','salesrep','statusName','deliveryStatus','address');
         if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
             $orders->where('sales_rep_id',Auth::guard('employee')->user()->id);
@@ -1521,13 +1521,32 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
     }
     public function UpdateOrderStatus(Request $request)
     {
-    
       $order_ids=$request->get('order_ids');
       $status_id=$request->get('status_id');
-      foreach ($order_ids as $key => $order_id) {
-        Orders::where('id',$order_id)->update(['order_status'=>$status_id]);
+      $drivery_id=$request->get('drivery_id');
+
+      foreach ($order_ids as $key => $order_no) {
+        
+        if ($status_id==14) {
+            $this->ReduceQuantityToVendor($order_no);
+        }
+        if ($status_id==17) {
+          $this->UpdateQuantityToStock($order_no);
+        }
+        if ($status_id==15) {
+          Orders::where('id',$order_no)->update(['delivery_person_id'=>$drivery_id]);
+        }
+
+        if ($status_id=="notify_admin") {
+            app('App\Http\Controllers\Admin\StockVerifyController')->EmailFunction($order_no);
+        }
+        else{
+        Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
+        }
       }
+
       Session::flash('success', 'Order status updated successfully');
       return ['status'=>'success'];
     }
+
 }

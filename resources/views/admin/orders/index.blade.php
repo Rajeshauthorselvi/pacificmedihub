@@ -146,9 +146,9 @@
                        ?>                      
                         <tr style="{{ $class_bg }}">
                           <td>
-                            <input type="hidden" class="low_stock_data" value="{{ $low_stock }}">
+                            <input type="hidden" class="low_stock_data_{{ $order->id }}" value="{{ $low_stock }}">
                             <input type="checkbox" name="orders_ids" value="{{$order->id}}">
-                            <input type="hidden" class="order-no" value="{{ $order->order_no }}">
+                            <input type="hidden" class="order-no_{{ $order->id }}" value="{{ $order->order_no }}">
 
                           </td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
@@ -369,16 +369,17 @@
           alert('Please select order');
         }   
         else{
-          $('#addign-status').modal('show');
+/*          $('#addign-status').modal('show');
 
-          return false;
+          return false;*/
           var order_ids = [];
           $('.order_ids').html('');
           $('input[name="orders_ids"]:checked').each(function (index,val) {          
               
               var order_no=$(this).next('.order-no').val();
+              var order_id=$(this).val();
 
-              var check_low_stock=$(this).prev('.low_stock_data').val();
+              var check_low_stock=$('.low_stock_data_'+order_id).val();
               if (check_low_stock=="yes" && status_id=="18") {
                 if ($('.order_ids').text()=="") {
                   $('.order_ids').append(order_no);
@@ -410,8 +411,6 @@
             .done(function() {
               location.reload();
             });
-          
-          // 
         }
     });
 

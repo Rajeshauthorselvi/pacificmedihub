@@ -118,7 +118,7 @@ table .dropdown-menu .dropdown-item button{padding:0}
 .order-page .action_sec li {float: left;width: 20%;text-align: center;}
 
 .order-page li .active {background: #3287c7; color: #fff; }
-.order-page li a {float: left;width: 100%;padding: 8px;background-color: #ebeff5;}
+.order-page li a {float: left; width: 100%; padding: 8px; background-color: #ebeff5; color: #000; }
 .order-page li {border: 1px solid #eee; }
 
 /*.new{background: #f0ad4e;}
