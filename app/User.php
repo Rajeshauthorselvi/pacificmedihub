@@ -91,4 +91,16 @@ class User extends Authenticatable
     {
         return self::where('id',$parent_id)->where('role_id',7)->value('name');
     }
+
+    static function TotalOrders($customer_id)
+    {
+        $total_order = DB::table('orders')->where('customer_id',$customer_id)->count();
+        return $total_order;
+    }
+
+    static function TotalOrderAmount($customer_id)
+    {
+        $total_order_amount = DB::table('orders')->where('customer_id',$customer_id)->sum('total_amount');
+        return $total_order_amount;
+    }
 }

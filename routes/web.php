@@ -99,6 +99,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('rfq-to-order/{id}','Admin\OrderController@rfqToOrder')->name('rfq.toOrder');
 	Route::resource('rfq','Admin\RFQController');
 
+
 	//Orders
 	Route::get('order-summary',['as'=>'order.summary','uses'=>'Admin\OrderController@SummaryReport']);
 	Route::get('orders-product',['as'=>'orders.product','uses'=>'Admin\OrderController@ProductSearch']);
@@ -131,6 +132,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('vendor-products','Admin\VendorProdcutsController');
 	Route::post('add-new-address','Admin\CustomerController@AddNewAddressController');
 	Route::get('reject-or-block','Admin\CustomerController@rejectOrBlock')->name('reject.block');
+	Route::get('new-customer-request','Admin\CustomerController@newCustomerList')->name('new.customer');
 	Route::get('reject-customers','Admin\CustomerController@rejectCustomerList')->name('reject.customer');
 
 	//Vendor
@@ -185,6 +187,9 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('view_payment_history/{slip_date}','Admin\EmployeeController@ViewPaymentHistory');
 	//Get Commission Value
 	Route::get('get-commission-value','Admin\DashboardController@commissionValue');
+
+	Route::get('get-delivery-address/{customer_id}','Admin\DashboardController@getDeliveryAddress');
+
 
 /*	Route::get('cop_print/{order_id}','Admin\CompletedOrders@COPrint');
 	Route::get('cop_pdf/{order_id}','Admin\CompletedOrders@COPPdf');

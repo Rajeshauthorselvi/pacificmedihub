@@ -75,17 +75,27 @@
                           <select class="form-control select2bs4 customer_id" name="customer_id">
                               <option value="">Please Select</option>
                               @foreach ($customers as $customer)
-                                <option value="{{ $customer->id }}" sales-rep="{{ $customer->sales_rep }}">
+                                <option value="{{ $customer->id }}" sales-rep="{{ $customer->sales_rep }}" address="{{ $customer->address_id }}">
                                   {{ $customer->name }}
                                 </option>
                               @endforeach
                           </select>
                           <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
                         </div>
+                        <div class="col-sm-8">
+                          <label for="deliveryAddress">Delivery Address *</label>
+                          <select class="form-control no-search select2bs4" id="deliveryAddress" name="del_add_id"></select>
+                        </div>
+                      </div>
+                      <div class="form-group">
                         <div class="col-sm-4">
                           <label for="sales_rep_id">Sales Rep *</label>
                           {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4','id'=>'sales_rep_id']) !!}
                           <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
+                        </div>
+                        <div class="col-sm-4">
+                          <label for="purchase_date">Payment Term</label>
+                          {!! Form::select('payment_term',$payment_terms,null,['class'=>'form-control no-search select2bs4']) !!}
                         </div>
                         <div class="col-sm-4">
                           <label for="currency_rate">Currency</label>
@@ -141,18 +151,13 @@
                           {!! Form::text('order_discount', 0,['class'=>'form-control','id'=>'order-discount','autocomplete'=>'off','onkeyup'=>'validateNum(event,this);']) !!}
                         </div>
                         <div class="col-sm-3">
-                          <label for="purchase_date">Payment Term</label>
-                          {!! Form::select('payment_term',$payment_terms,null,['class'=>'form-control no-search select2bs4']) !!}
-                        </div>
-
-                      </div>
-                    </div>
-                    <div class="tax-sec">
-                        <div class="col-sm-3">
                           <label for="purchase_date">Payment Status *</label>
                           <?php $payment_status=[1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
                           {!! Form::select('payment_status',$payment_status, 3,['class'=>'form-control no-search select2bs4','id'=>'payment_status']) !!}
                         </div>
+                      </div>
+                    </div>
+                    <div class="tax-sec">
                     <div>
                       <input type="hidden" name="total_amount" id="total_amount_hidden">
                       <input type="hidden" name="order_tax_amount" id="order_tax_amount_hidden">
@@ -230,18 +235,36 @@
             $('#deliveryCharge').text('0.00');
           }
           overallCalculation(all_amount,tax_rate,currency);
-
       });
       $(document).on('change', '.customer_id', function(event) {
         event.preventDefault();
-        var sales_rep=$('.customer_id option:selected').attr('sales-rep');
+        var sales_rep = $('.customer_id option:selected').attr('sales-rep');
+        var customerId = $('.customer_id option:selected').val();
+        var addressId = $('.customer_id option:selected').attr('address');
         if (sales_rep) {
           $('#sales_rep_id').val(sales_rep).change();
         }
         else{
           $('#sales_rep_id').val('').change();
         }
-
+        $('#deliveryAddress').removeAttr('readonly');
+        $.ajax({
+          url: "{{ url('admin/get-delivery-address') }}/"+customerId,
+          type:'GET',
+          success:function(data){
+            if(data){
+              $("#deliveryAddress").empty();
+              $.each(data,function(key,value){
+                var select_address="";
+                if(addressId == key) { var select_address = "selected" }
+                $("#deliveryAddress").append('<option value="'+key+'" '+select_address+'>'+value+'</option>');
+              });
+              $('#deliveryAddress').selectpicker('refresh');           
+            }else{
+              $("#deliveryAddress").empty();
+            }
+          }
+        });
       }); 
 
       $(function ($) {
@@ -532,11 +555,11 @@
       
       function validate(){
         var valid=true;
-        if ($("#customer").val()=="") {
-          $("#customer").closest('.form-group').find('span.text-danger.customer').show();
+        if ($(".customer_id").val()=="") {
+          $(".customer_id").closest('.form-group').find('span.text-danger.customer').show();
           valid = false;
         }else{
-          $("#customer").closest('.form-group').find('span.text-danger.customer').hide();
+          $(".customer_id").closest('.form-group').find('span.text-danger.customer').hide();
         }
         if ($("#sales_rep_id").val()=="") {
           $("#sales_rep_id").closest('.form-group').find('span.text-danger.sales_rep').show();

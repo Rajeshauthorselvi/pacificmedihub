@@ -10,10 +10,12 @@ use App\Models\RFQ;
 use App\Models\Orders;
 use App\Models\Vendor;
 use App\User;
+use App\Models\UserAddress;
 use Carbon\Carbon;
 use App\Models\CommissionValue;
 use Auth;
 use Redirect;
+use DB;
 
 class DashboardController extends Controller
 {
@@ -54,5 +56,15 @@ class DashboardController extends Controller
     public function errorPage()
     {
         return view('error');
+    }
+
+    public function getDeliveryAddress($customer_id)
+    {
+        $address = DB::table('address')
+                     ->where('customer_id',$customer_id)
+                     ->where('is_deleted',0)
+                     ->pluck(DB::raw("CONCAT(name,', ',mobile,', ',address_line1,', ',post_code) as addres"),'id')
+                     ->toArray();
+        return $address;
     }
 }

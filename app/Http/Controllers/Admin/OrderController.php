@@ -156,7 +156,7 @@ class OrderController extends Controller
         $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
 
         $customer_details=DB::table('users as u')
-        ->select('u.name','u.id','u.sales_rep')
+        ->select('u.name','u.id','u.sales_rep','u.address_id')
         ->where('is_deleted',0)->where('status',1)
         ->where('role_id',7)->get()
         ->toArray();
@@ -231,7 +231,11 @@ class OrderController extends Controller
           $created_user_type=1;
           $auth_id=Auth::id();
        }
-       $customer_address=User::where('id',$request->customer_id)->value('address_id');
+       if(!isset($request->del_add_id)){
+          $customer_address = User::where('id',$request->customer_id)->value('address_id');
+       }else{
+          $customer_address = $request->del_add_id;
+       }
         $order_data=[
             'rfq_id'                => $request->rfq_id,
             'sales_rep_id'          => $request->sales_rep_id,
@@ -355,8 +359,7 @@ class OrderController extends Controller
                                         ->pluck('name','id')->toArray();
         $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
         $data['admin_address']    = User::where('id',1)->first();
-        $data['customer_address'] = User::with('address')->where('id',$orders->customer_id)->first();
-
+        $data['customer_address'] = UserAddress::where('id',$orders->address_id)->first();
       if ($orders->created_user_type==2) {
         $creater_name=Employee::where('id',$orders->user_id)->first();
         $creater_name=$creater_name->emp_name;
@@ -436,7 +439,11 @@ class OrderController extends Controller
         $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                         ->pluck('name','id')->toArray();
         $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
-
+        $data['del_address']    = DB::table('address')
+                                     ->where('customer_id',$order->customer_id)
+                                     ->where('is_deleted',0)
+                                     ->pluck(DB::raw("CONCAT(name,', ',mobile,', ',address_line1,', ',post_code) as addres"),'id')
+                                     ->toArray();
         $products = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->get();
 
         $product_data = $product_variant=array();
@@ -519,7 +526,6 @@ class OrderController extends Controller
         $variant=$request->variant;
         $new_variant=$request->new_variant;
 
-
         $currenct_route=Route::currentRouteName();
         $route=explode('.',$currenct_route);
         $data['type']=$currenct_route[0];
@@ -533,7 +539,12 @@ class OrderController extends Controller
         }else{
             $order_completed_at = NULL;
         }
-
+        dd($request->all());
+        if(!isset($request->del_add_id)){
+          $customer_address = User::where('id',$request->customer_id)->value('address_id');
+       }else{
+          $customer_address = $request->del_add_id;
+       }
         if ($route[0]=="assign-shippment" || $route[0]=="assign-delivery") {
 
           $order_data['delivery_person_id']=$request->delivery_person_id;
@@ -571,6 +582,7 @@ class OrderController extends Controller
               'sgd_total_amount'      => $request->sgd_total_amount,
               'exchange_total_amount' => $request->exchange_rate,
               'order_completed_at'    => $order_completed_at,
+              'address_id'            => $customer_address,
               'updated_at'            => date('Y-m-d H:i:s')
           ];
         }
