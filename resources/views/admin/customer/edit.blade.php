@@ -43,7 +43,11 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('customers.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          @if($from!='approve')
+            <a href="{{route('customers.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          @else
+            <a href="{{route('new.customer')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          @endif
         </li>
       </ol>
       <div class="container-fluid toggle-tabs">
@@ -193,7 +197,11 @@
                       </div>
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancle</a>
+                          @if($from!='approve')
+                            <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancle</a>
+                          @else
+                            <a href="{{ route('new.customer') }}" class="btn reset-btn">Cancle</a>
+                          @endif
                           <button type="button" id="validateStep1" class="btn save-btn next-step">Next</button>
                         </div>
                       </div>

@@ -131,6 +131,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('vendor-products','Admin\VendorProdcutsController');
 	Route::post('add-new-address','Admin\CustomerController@AddNewAddressController');
 	Route::get('reject-or-block','Admin\CustomerController@rejectOrBlock')->name('reject.block');
+	Route::get('new-customer-request','Admin\CustomerController@newCustomerList')->name('new.customer');
 	Route::get('reject-customers','Admin\CustomerController@rejectCustomerList')->name('reject.customer');
 
 	//Vendor

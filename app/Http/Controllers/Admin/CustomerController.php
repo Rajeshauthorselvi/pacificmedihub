@@ -37,9 +37,8 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['all_customers'] = User::where('users.role_id',7)->whereIN('appoved_status',[1,3])->where('is_deleted',0)->orderBy('id','desc')->get();
+        $data['all_customers'] = User::where('users.role_id',7)->where('appoved_status',3)->where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.customer.index',$data);
-
     }
 
     /**
@@ -116,6 +115,8 @@ class CustomerController extends Controller
         $users['role_id']        = 7;
         $users['status']         = $status;
         $users['parent_company'] = $parent_company;
+        $users['request_from']   = 1;
+        $users['appoved_status'] = 3;
         $users['created_at']     = date('Y-m-d H:i:s');
         $customer_id             = User::insertGetId($users);
         
@@ -191,7 +192,7 @@ class CustomerController extends Controller
             $customer->password = Hash::make($password);
             $customer->mail_sent_status = 1;
             $customer->save();
-            Mail::to($customer->email)->send(new NewRegister($customer->name, $customer->email,$password));
+            //Mail::to($customer->email)->send(new NewRegister($customer->name, $customer->email,$password));
         }
         return Redirect::route('customers.index')->with('success','Customer added successfully...!');
     }   
@@ -352,7 +353,7 @@ class CustomerController extends Controller
             $user_details->password = Hash::make($password);
             $user_details->mail_sent_status = 1;
             $user_details->save();
-            //Mail::to($user_details->email)->send(new NewRegister($user_details->name, $user_details->email,$password));
+            Mail::to($user_details->email)->send(new NewRegister($user_details->name, $user_details->email,$password));
         }
        return Redirect::route('customers.index')->with('success','Customer details updated successfully...!');
     }
@@ -375,8 +376,9 @@ class CustomerController extends Controller
             $cus_poc = UserPoc::where('customer_id',$id)->delete();
             $cus_address = UserAddress::where('customer_id',$id)->delete();*/
         }
+        if($request->from=='reject_list') return redirect()->route('reject.customer')->with('error','Customer deleted successfully...!');
         if ($request->ajax())  return ['status'=>true];
-        else return redirect()->route('customers.index')->with('error','customer deleted successfully...!');
+        else return redirect()->route('customers.index')->with('error','Customer deleted successfully...!');
     }
 
     public function AddNewAddressController(Request $request)
@@ -437,10 +439,27 @@ class CustomerController extends Controller
     {
         if($request->data=='reject'){
             User::find($request->id)->update(['appoved_status'=>2]);
+            return redirect()->route('new.customer')->with('error','Customer rejected successfully...!');
         }elseif($request->data=='block'){
             User::find($request->id)->update(['status'=>0]);
+            return redirect()->route('customers.index')->with('error','Customer blocked successfully...!');
+        }elseif($request->data=='unblock'){
+            User::find($request->id)->update(['status'=>1]);
+            return redirect()->route('customers.index')->with('success','Customer unblocked successfully...!');
         }
-        return redirect()->route('customers.index')->with('error','Customer status changed successfully...!');
+    }
+
+    public function  newCustomerList()
+    {
+         if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','read')) {
+                abort(404);
+            }
+        }
+
+        $data=array();
+        $data['new_request'] = User::where('users.role_id',7)->where('appoved_status',1)->where('is_deleted',0)->orderBy('id','desc')->get();
+        return view('admin.customer.new_request_index',$data);
     }
 
     public function  rejectCustomerList()
@@ -452,7 +471,7 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['all_customers'] = User::where('users.role_id',7)->where('appoved_status',2)->where('is_deleted',0)->orderBy('id','desc')->get();
-        return view('admin.customer.rejected_customer',$data);
+        $data['rejected_customers'] = User::where('users.role_id',7)->where('appoved_status',2)->where('is_deleted',0)->orderBy('id','desc')->get();
+        return view('admin.customer.rejected_index',$data);
     }
 }
