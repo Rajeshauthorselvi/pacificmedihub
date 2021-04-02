@@ -37,18 +37,27 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <div class="pull-left">
+                <div class="pull-left col-sm-6">
                   <h3 class="card-title">List Orders</h3>
                 </div>
                 @if ($type=="assign-shippment")
-                <div class="pull-right">
+                <div class="pull-right col-sm-6">
                   <img src="{{ asset('theme/images/low_stock_color_code.png') }}"> Low Stock Orders
+                </div>
+                @else
+                <div class="pull-right col-sm-6">
+                  <div class="col-sm-12 text-right">
+                      <label>Filter By Date: </label>
+                    
+                      <input type="text" placeholder="Select Date" class="form-control date-picker" value="{{ date('m-d-Y') }}">
+                    
+                  </div>
                 </div>
                 @endif
               </div>
               <div class="card">
                 <div class="card-body">
-                  @if (Auth::check())
+               {{--    @if (Auth::check())
                     <div class="action_sec  order-page">
                         <?php $active_menu=explode('.',$show_route);
 
@@ -100,7 +109,8 @@
                     </div>
                   @endif
                   <div class="clearfix"></div>
-                  <br>
+                  <br> --}}
+                  <div class="ajax_data_append">
                   <table id="data-table" class="table table-bordered">
                     <thead>
                       <tr>
@@ -190,6 +200,7 @@
                       @endforeach
                     </tbody>
                   </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -204,10 +215,24 @@
   <style type="text/css">
     .form-group{display:flex;}
     .disabled{pointer-events: none;opacity: 0.5;}
+    #ui-datepicker-div{z-index: 999 !important}
+    .date-picker{display: inline-block;width: 50%}
   </style>
 
   @push('custom-scripts')
   <script type="text/javascript">
+var $datepicker = $('.date-picker').datepicker({
+    onSelect: function(dateText) {
+          $.ajax({
+            url: "{{ url('admin/assign-delivery') }}?date="+this.value,
+          })
+          .done(function(reponse) {
+            $('.ajax_data_append').html(reponse);
+            $('#data-table').dataTable();
+          });
+          
+    }
+});
 
   var oTable = $('#data-table').dataTable();
   var allPages = oTable.fnGetNodes();

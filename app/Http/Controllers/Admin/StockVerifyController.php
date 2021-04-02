@@ -74,7 +74,7 @@ class StockVerifyController extends Controller
         $user_type=2;
       }
 
-     // Orders::where('id',$request->order_id)->update(['order_status'=>19]);
+     Orders::where('id',$request->order_id)->update(['order_status'=>19]);
       Notification::insert([
         'content'=> 'Stock Needed-'.$order_details->order_no,
         'url'    => route('new-orders.show',$order_id),
@@ -133,7 +133,7 @@ class StockVerifyController extends Controller
         $user_type=2;
       }
 
-     // Orders::where('id',$order_id)->update(['order_status'=>19]);
+     Orders::where('id',$order_id)->update(['order_status'=>19]);
       Notification::insert([
         'content'=> 'Stock Needed-'.$order_details->order_no,
         'url'    => route('new-orders.show',$order_id),
@@ -483,17 +483,24 @@ class StockVerifyController extends Controller
     }
     public function VariantIds($order_id='')
     {
+        $products=Orders::with('orderProducts')
+                    ->where('orders.id',$order_id)
+                    ->where('delivery_person_id',0)->first();
 
-        // $products = OrderProducts::where('order_id',$order_id)->pluck('quantity','product_variation_id');
+        $variant_ids=array();
+        if (isset($products->orderProducts)) {
+            foreach ($products->orderProducts as $key => $product) {
+              // $all_variants=Orders::AllProductVariantIds($product->product_id,$product->product_variation_id);
+                $check_product_quantity=ProductVariantVendor::where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
 
-        $product_variant=DB::select("SELECT op.product_variation_id FROM order_products as op where `quantity` < (SELECT stock_quantity from product_variant_vendors as pvv WHERE pvv.product_id=op.product_id and pvv.product_variant_id=op.product_variation_id) AND op.order_id='".$order_id."'");
-
-            $all_variants=array();
-            foreach ($product_variant as $key => $row) 
-                $all_variants[$key] = $row->product_variation_id;
+                if ($check_product_quantity < $product->quantity) {
 
 
-            // dd($all_variants);
-        return $all_variants;
+                    $variant_ids[]=$product->product_variation_id;
+                }
+            }
+        }
+
+        return $variant_ids;
     }
 }

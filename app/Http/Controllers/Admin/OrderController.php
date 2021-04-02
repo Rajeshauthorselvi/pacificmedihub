@@ -39,7 +39,7 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $currenct_route=Route::currentRouteName();
         $currenct_route=explode('.',$currenct_route);
@@ -61,7 +61,6 @@ class OrderController extends Controller
         if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==3) {
             $orders->where('delivery_person_id',Auth::guard('employee')->user()->id);
         }
-        
         
         $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
                                   ->pluck('payment_method','id')
@@ -88,6 +87,12 @@ class OrderController extends Controller
         elseif($currenct_route[0]=="assign-delivery"){
           $orders->where('order_status',15);
           $data['data_title']='Delivery  In Progress';
+          if ($request->ajax()) {
+            $orders->whereDate('approximate_delivery_date',date('Y-m-d',strtotime($request->date)));
+          }
+          else{
+            $orders->where('approximate_delivery_date',date('Y-m-d'));
+          }
         }
         elseif($currenct_route[0]=="completed-orders"){
           $orders->where('order_status',13);
@@ -96,36 +101,37 @@ class OrderController extends Controller
         elseif($currenct_route[0]=="cancelled-orders"){
           $orders->whereIn('order_status',[21,17,11]);
           $data['data_title']='Cancelled/Missed Orders';
-
         }
+
+
 
       $orders=$orders->orderBy('orders.id','desc')->get();
       $data['orders']=$orders;
 
+        if($currenct_route[0]=="assign-delivery"){
+            $base_location=User::where('id',1)->first();
+            $base_location = array('lat'=>$base_location->latitude,'lng' => $base_location->longitude);
+            $total_orders = array();
 
-      if($currenct_route[0]=="assign-delivery"){
+            foreach ($orders as $key => $order)
+            {
+              $a = $base_location['lat'] - $order->address->latitude;
+              $b = $base_location['lng'] - $order->address->longitude;
+              $distance = sqrt(($a**2) + ($b**2));
 
-        $base_location=User::where('id',1)->first();
-        $base_location = array('lat'=>$base_location->latitude,'lng' => $base_location->longitude);
-        $total_orders = array();
-
-        foreach ($orders as $key => $order)
-        {
-          $a = $base_location['lat'] - $order->address->latitude;
-          $b = $base_location['lng'] - $order->address->longitude;
-          $distance = sqrt(($a**2) + ($b**2));
-
-          $total_orders[$order->id] = [
-              'distance'=>$distance,
-              'orders'  => $order
-          ];
+              $total_orders[$order->id] = [
+                  'distance'=>$distance,
+                  'orders'  => $order
+              ];
+            }
+            asort($total_orders);
+            $data['orders']=$total_orders;
+            if ($request->ajax()) {
+              return view('admin.orders.assign_shippment_delivery.delivery_filter_index',$data);  
+            }
         }
-        asort($total_orders);
-        $data['orders']=$total_orders;
 
-      }
-
-        return view($view,$data);
+      return view($view,$data);
     }
 
     /**
@@ -509,10 +515,9 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-
       
-      $variant=$request->variant;
-      $new_variant=$request->new_variant;
+        $variant=$request->variant;
+        $new_variant=$request->new_variant;
 
 
         $currenct_route=Route::currentRouteName();
@@ -533,14 +538,14 @@ class OrderController extends Controller
 
           $order_data['delivery_person_id']=$request->delivery_person_id;
           if ($request->order_status==15) {
-            $order_data['approximate_delivery_date']=date('Y-m-d');
+            $order_data['approximate_delivery_date']=date('Y-m-d',strtotime($request->delivery_date));
           }
           $order_data['logistic_instruction']=$request->notes;
           // $order_data['delivery_status']=$request->delivery_status;
           $order_data['order_status']=$request->order_status;
 
           if ($request->order_status==16) {
-              $order_data['delivered_at']=date('Y-m-d H:i:s');
+              $order_data['delivered_at']=date('Y-m-d');
               $order_data['order_status']=13;
           }
         }
@@ -571,7 +576,6 @@ class OrderController extends Controller
         }
 
       Orders::where('id',$id)->update($order_data);
-
       if ($request->order_status==19) {
         $existing_product_id=$new_product_variant=array();
         if (isset($variant['product_id'])) {
@@ -584,11 +588,9 @@ class OrderController extends Controller
         $active_product_ids=array_merge($existing_product_id,$new_product_variant);
         $deleted_products=OrderProducts::where('order_id',$id)->whereNotIn('product_id',$active_product_ids)
                           ->pluck('product_id')->toArray();
-
         if(isset($deleted_products)) {
           OrderProducts::where('order_id',$id)->whereIn('product_id',array_unique($deleted_products))->delete();
         }
-
 
         $variant               = $request->variant;
         $row_ids               = $variant['row_id'];
@@ -1524,29 +1526,75 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
       $order_ids=$request->get('order_ids');
       $status_id=$request->get('status_id');
       $drivery_id=$request->get('drivery_id');
+      $delivery_date=$request->get('delivery_date');
 
+      $low_stock_array=array();
       foreach ($order_ids as $key => $order_no) {
-        
         if ($status_id==14) {
-            $this->ReduceQuantityToVendor($order_no);
+            $check_order_staus=$this->CheckQuantity($order_no);
+            if ($check_order_staus['status']) {
+              $this->ReduceQuantityToVendor($order_no);
+              Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
+            }
+            else{
+                $order_id=Orders::where('id',$order_no)->value('order_no');
+                array_push($low_stock_array, $order_id);
+            } 
         }
         if ($status_id==17) {
           $this->UpdateQuantityToStock($order_no);
+          Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
+        }
+        if ($status_id==18 || $status_id==20 || $status_id==21) {
+          Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
         }
         if ($status_id==15) {
-          Orders::where('id',$order_no)->update(['delivery_person_id'=>$drivery_id]);
+          Orders::where('id',$order_no)
+            ->update([
+              'order_status'=>$status_id,
+              'delivery_person_id'=>$drivery_id,
+              'approximate_delivery_date'=>date('Y-m-d',strtotime($delivery_date))
+            ]);
         }
 
         if ($status_id=="notify_admin") {
             app('App\Http\Controllers\Admin\StockVerifyController')->EmailFunction($order_no);
-        }
-        else{
-        Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
+             Orders::where('id',$order_no)->update(['order_status'=>19]);
         }
       }
 
-      Session::flash('success', 'Order status updated successfully');
+      if (count($low_stock_array)>0) {
+        $mess=implode(', ', $low_stock_array).', low stock orders';
+        Session::flash('warning', $mess);
+      }
+      else{
+        $mess='Order status updated successfully';
+        Session::flash('success', $mess);
+      }
+
       return ['status'=>'success'];
     }
 
+
+    public function CheckQuantity($order_id)
+    {
+        $order_products=OrderProducts::where('order_id',$order_id)
+                        ->groupBy('product_id','product_variation_id')
+                        ->get();
+
+        $variant_vendor_details=array();
+        foreach ($order_products as $key => $products) {
+
+          $variant_vendor_details=ProductVariantVendor::where('product_id',$products->product_id)
+                                  ->select(DB::raw('sum(stock_quantity) as stock'),'product_variant_id')
+                                  ->where('product_variant_id',$products->product_variation_id)
+                                  ->first();
+
+          if ($products->quantity > $variant_vendor_details->stock) {
+              return ['status'=>false];
+          }
+        }
+        return ['status'=>true];
+
+    }
 }

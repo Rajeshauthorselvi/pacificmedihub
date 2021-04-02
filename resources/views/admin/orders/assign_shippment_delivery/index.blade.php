@@ -45,6 +45,9 @@
               <a class="btn btn-default missed-delivered assign-shippment" href="javascript:void(0)"  status-id="notify_admin">
               <i class="fas fa-list-alt"></i>&nbsp; Notify Admin
               </a>
+              <div class="spinner-border text-primary hidden" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
             {{--   <a class="btn btn-default assign-shippment assign-shippment" href="javascript:void(0)" status-id="18">
               <i class="fas fa-list-alt"></i>&nbsp; Assign To Shipment
               </a> --}}
@@ -52,11 +55,20 @@
           @endif
           <div class="assign-delivery hidden col-md-12">
             <div class="col-sm-4 pull-left">
+                <label>Delivery Person</label>
+              <div class="clearfix"></div>
               <div class="form-group">
                 {!! Form::select('drivery_id',$all_drivers,null,['class'=>'form-control']) !!}
               </div>
             </div>
             <div class="col-sm-4 pull-left">
+                <label>Delivery Date</label>
+                <br>
+              <div class="form-group">
+                <input type="text" class="form-control date-picker" value="{{ date('d/m/Y') }}" />
+              </div>
+            </div>
+            <div class="col-sm-4 pull-left driver-btn">
                 <button type="button" class="btn btn-primary assign-delivery-btn">Assign Driver</button>
              </div>
           </div>
@@ -247,7 +259,11 @@
 
     </section>
   </div>
-
+<style type="text/css">
+  .driver-btn {
+    padding-top: 32px;
+  }
+</style>
   <span class="load-error-data"></span>
   {!! Form::hidden('order_ids_hidden',null,['class'=>'order_ids_hidden']) !!}
   <style type="text/css">
@@ -295,7 +311,6 @@
             }
             else if (status_id==15) {
               var order_id=AssignDeliveryPerson(load_type,del_type,order_id);
-              console.log(order_id);
               if (order_id!="") {
                 order_ids.push(order_id);
               }
@@ -326,9 +341,13 @@
                   status_id: status_id,
                   order_ids:order_ids
                 },
+                beforeSend: function (){
+                    $('.spinner-border').removeClass('hidden');
+                  }
               })
               .done(function() {
-                  // location.reload();
+                $('.spinner-border').addClass('hidden');
+                  location.reload();
               });
             }
             else{
@@ -344,6 +363,7 @@
     $(document).on('click', '.assign-delivery-btn', function(event) {
 
       var driver=$('[name="drivery_id"] option:selected').val();
+      var delivery_date=$('.date-picker').val();
       if (driver=="") {
         alert('Please select driver');
         return false;
@@ -363,7 +383,8 @@
                   '_token':"{{ csrf_token() }}",
                   status_id: 15,
                   order_ids:order_ids,
-                  drivery_id:driver
+                  drivery_id:driver,
+                  delivery_date:delivery_date
                 }
               })
               .done(function() {

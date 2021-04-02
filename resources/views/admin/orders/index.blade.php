@@ -82,7 +82,7 @@
               </div>
               <div class="card">
                 <div class="card-body ">
-                  <div class="action_sec order-page">
+{{--                   <div class="action_sec order-page">
 
                          
                             <ul class="list-unstyled">
@@ -112,7 +112,7 @@
                                 </a>
                               </li>
                             </ul>
-                  </div>
+                  </div> --}}
                   <div class="clearfix"></div>
                   <br>
                   <table id="example2" class="table table-bordered">
@@ -398,7 +398,9 @@
           if (low_stock_orders!="" && status_id=="18") {
             alert(low_stock_orders+' Orders are low stock. That orders will not update status');
           }
-
+          if (!confirm('Are you sure want to change status?')) {
+            return false;
+          }
             $.ajax({
               url: "{{ url('admin/update-order-status') }}",
               type: 'POST',

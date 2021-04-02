@@ -26,12 +26,12 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12 action-controllers ">
+{{--           <div class="col-md-12 action-controllers ">
             <div class="col-sm-4 pull-right">
               <label>Filter By: </label>
               {{ Form::select('vendor_ids', $all_vendors,null,['class'=>'form-control vendors']) }}
             </div>
-          </div>
+          </div> --}}
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
