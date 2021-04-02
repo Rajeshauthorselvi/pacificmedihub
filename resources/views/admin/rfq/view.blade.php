@@ -97,17 +97,17 @@
                               <h4>{{$customer_address->name}}</h4>
                               <p>
                                 <span>
-                                  {{$customer_address->address->address_line1}},&nbsp;{{isset($customer_address->address->address_line2)?$customer_address->address->address_line2:''}}
+                                  {{$customer_address->address_line1}},&nbsp;{{isset($customer_address->address_line2)?$customer_address->address_line2:''}}
                                 </span><br>
                                 <span>
-                                  {{$customer_address->address->country->name}},&nbsp;{{isset($customer_address->address->state->name)?$customer_address->address->state->name:''}}
+                                  {{$customer_address->country->name}},&nbsp;{{isset($customer_address->state->name)?$customer_address->state->name:''}}
                                 </span><br>
                                 <span>
-                                  {{isset($customer_address->address->city->name)?$customer_address->address->city->name:''}}&nbsp;-&nbsp;{{isset($customer_address->address->post_code)?$customer_address->address->post_code:''}}.
+                                  {{isset($customer_address->city->name)?$customer_address->city->name:''}}&nbsp;-&nbsp;{{isset($customer_address->post_code)?$customer_address->post_code:''}}.
                                 </span>
                               </p>
                               <p>
-                                <span>Tel: {{$customer_address->address->mobile}}</span><br>
+                                <span>Tel: {{$customer_address->mobile}}</span><br>
                                 <span>Email: {{$customer_address->email}}</span>
                               </p>
                             </div>
@@ -285,6 +285,10 @@
                               <td id="orderTax">{{isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:0.00}}</td>
                             </tr>
                             <tr class="total-calculation">
+                              <td colspan="4" class="title">Delivery Charge</td>
+                              <td id="deliveryCharge">{{$rfqs->delivery_charge}}</td>
+                            </tr>
+                            <tr class="total-calculation">
                               <th colspan="4" class="title">Total Amount(SGD)</th>
                               <th id="total_amount_sgd">{{$rfqs->sgd_total_amount}}</th>
                             </tr>
@@ -336,7 +340,8 @@
         $('.all_amount').text(sum.toFixed(2));
         var orderDiscount = $('.order-discount').text();
         var orderTax = $('#orderTax').text();
-        var totalSGD = parseFloat(sum)+parseFloat(orderDiscount)+parseFloat(orderTax);
+        var deliveryCharge = $('#deliveryCharge').text();
+        var totalSGD = parseFloat(sum)+parseFloat(orderDiscount)+parseFloat(orderTax)+parseFloat(deliveryCharge);
         $('#total_amount_sgd').text(totalSGD.toFixed(2));
       });
     </script>

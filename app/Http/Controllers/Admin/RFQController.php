@@ -23,6 +23,7 @@ use App\Models\RFQComments;
 use App\Models\RFQCommentsAttachments;
 use App\Models\Orders;
 use App\Models\Notification;
+use App\Models\DeliveryMethod;
 use Auth;
 use Redirect;
 use Session;
@@ -74,12 +75,9 @@ class RFQController extends Controller
             }
         }
       $data=array();
-      $data['customers']      = [''=>'Please Select']+User::where('is_deleted',0)->where('status',1)
-                                ->where('role_id',7)->pluck('name','id')->toArray();
-
+      $data['customers']      = User::where('is_deleted',0)->where('status',1)->where('role_id',7)->get()->toArray();
       $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
-
       $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[20,1])->pluck('status_name','id')->toArray();
 
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
@@ -88,9 +86,11 @@ class RFQController extends Controller
       $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                   ->pluck('name','id')->toArray();
       $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
+      $data['delivery_methods'] = DeliveryMethod::all();
+      $data['free_delivery']    = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
+      $data['free_delivery_target'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('target_amount');
 
       $data['rfq_id']='';
-
       $rfq_code = Prefix::where('key','prefix')->where('code','rfq')->value('content');
       if (isset($rfq_code)) {
         $value = unserialize($rfq_code);
@@ -148,6 +148,8 @@ class RFQController extends Controller
         'currency'              => $request->currency,
         'order_tax'             => $request->order_tax,
         'order_discount'        => $request->order_discount,
+        'delivery_method_id'    => $request->delivery_method_id,
+        'delivery_charge'       => $request->delivery_charge,
         'payment_term'          => $request->payment_term,
         'order_tax_amount'      => $request->order_tax_amount,
         'total_amount'          => $request->total_amount,
@@ -155,6 +157,7 @@ class RFQController extends Controller
         'exchange_total_amount' => $request->exchange_rate,
         'notes'                 => $request->notes,
         'user_id'               => $auth_id,
+        'delivery_address_id'   => $request->del_add_id,
         'created_user_type'     => $created_user_type,
         'created_at'            => date('Y-m-d H:i:s')
       ];
@@ -244,7 +247,7 @@ class RFQController extends Controller
 
       $data['rfqs']             = $rfq;
       $data['admin_address']    = User::where('id',1)->first();
-      $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
+      $data['customer_address'] = UserAddress::where('id',$rfq->delivery_address_id)->first();
       $data['product_datas']    = $product_data;
       $data['rfq_id']           = $id;
       $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
@@ -281,10 +284,16 @@ class RFQController extends Controller
       $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                     ->pluck('name','id')->toArray();
       $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
-      
+      $data['del_address']    = DB::table('address')
+                                     ->where('customer_id',$rfq_details->customer_id)
+                                     ->where('is_deleted',0)
+                                     ->pluck(DB::raw("CONCAT(name,', ',mobile,', ',address_line1,', ',post_code) as addres"),'id')
+                                     ->toArray();
       $product_data = $product_variant=array();
       $products     = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
-
+      $data['delivery_methods'] = DeliveryMethod::all();
+        $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
+        $data['free_delivery_target'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('target_amount');
       foreach ($products as $key => $product) {
         $product_name    = Product::where('id',$product->product_id)->value('name');
         $all_variants    = RFQProducts::where('rfq_id',$id)->where('product_id',$product->product_id)
@@ -346,7 +355,6 @@ class RFQController extends Controller
       if(isset($deleted_products)) {
         RFQProducts::where('rfq_id',$id)->whereIn('product_id',array_unique($deleted_products))->delete();
       }
-
       $rfq_details=[
         'order_no'              => $request->order_no,
         'status'                => $request->status,
@@ -355,11 +363,14 @@ class RFQController extends Controller
         'currency'              => $request->currency,
         'order_tax'             => $request->order_tax,
         'order_discount'        => $request->order_discount,
+        'delivery_method_id'    => $request->delivery_method_id,
+        'delivery_charge'       => $request->delivery_charge,
         'payment_term'          => $request->payment_term,
         'order_tax_amount'      => $request->order_tax_amount,
         'total_amount'          => $request->total_amount,
         'sgd_total_amount'      => $request->sgd_total_amount,
         'exchange_total_amount' => $request->exchange_rate,
+        'delivery_address_id'   => $request->del_add_id,
         'notes'                 => $request->notes,
         'updated_at'            => date('Y-m-d H:i:s')
       ];

@@ -69,13 +69,24 @@
                     <div class="form-group">
                       <div class="col-sm-4">
                         <label for="customer_id">Customer *</label>
-                        {!! Form::select('customer_id',$customers, null,['class'=>'form-control select2bs4','id'=>'customer']) !!}
+                        {!! Form::select('customer_id',$customers, null,['class'=>'form-control select2bs4','id'=>'customer','disabled']) !!}
+                        {!! Form::hidden('customer_id',$rfqs->customer_id,['class'=>'form-control','readonly']) !!}
                         <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
                       </div>
+                      <div class="col-sm-8">
+                        <label for="deliveryAddress">Delivery Address *</label>
+                         {!! Form::select('del_add_id',$del_address,  $rfqs->delivery_address_id,['class'=>'form-control no-search select2bs4','id'=>'deliveryAddress']) !!}
+                      </div>
+                    </div>
+                    <div class="form-group">
                       <div class="col-sm-4">                        
                         <label for="sales_rep_id">Sales Rep *</label>
                         {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4']) !!}
                         <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
+                      </div>
+                      <div class="col-sm-4">
+                        <label for="purchase_date">Payment Term</label>
+                        {!! Form::select('payment_term',$payment_terms,$rfqs->payment_term,['class'=>'form-control no-search select2bs4']) !!}
                       </div>
                       <div class="col-sm-4">
                         <label for="currency_rate">Currency</label>
@@ -287,11 +298,15 @@
                               <input type="hidden" name="order_tax_amount" id="order_tax_amount_hidden" value="{{isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:0.00}}">
                             </tr>
                             <tr class="total-calculation">
+                              <td colspan="3" class="title">Delivery Charge</td>
+                              <td id="deliveryCharge">{{$rfqs->delivery_charge}}</td>
+                            </tr>
+                            <tr class="total-calculation">
                               <th colspan="3" class="title">Total Amount(SGD)</th>
                               <th id="total_amount_sgd" colspan="2">{{$rfqs->sgd_total_amount}}</th>
                               <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$rfqs->sgd_total_amount}}">
                             </tr>
-                            @if(isset($rfqs->currency))
+                            @if(isset($rfqs->currency)&&$rfqs->currencyCode->currency_code!='SGD')
                               <?php $currency='content'; ?>
                             @else
                               <?php $currency='none'; ?>
@@ -300,7 +315,7 @@
                               <th colspan="3" class="title">
                                 Total Amount (<span class="exchange-code">{{isset($rfqs->currencyCode->currency_code)?$rfqs->currencyCode->currency_code:''}}</span>)
                               </th>
-                              <th>
+                              <th colspan="2">
                                 <input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="{{$rfqs->exchange_total_amount}}" onkeyup="validateNum(event,this);" autocomplete="off">
                               </th>
                             </tr>
@@ -314,6 +329,25 @@
                   <div class="clearfix"></div>
                   <div class="tax-sec">
                     <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="purchase_date">Delivery Methods *</label>
+                        {!! Form::hidden('free_delivery_amount',$free_delivery_target,['class'=>'free_delivery_amount']) !!}
+                        {!! Form::hidden('delivery_charge',$rfqs->delivery_charge,['class'=>'del_charge_hidden']) !!}
+                        <select class="form-control no-search " id="delivery-methods" name="delivery_method_id">
+                          <option value="" attr-fee="0" attr-target="0">Please Select</option>
+                          @foreach($delivery_methods as $method)
+                            @if ($rfqs->delivery_method_id==$method->id)
+                              <option value="{{ $method->id }}" attr-fee="{{ $method->amount }}" attr-target="{{ $method->target_amount }}" selected="selected">
+                                {{ $method->delivery_method }}
+                              </option>
+                            @else
+                              <option value="{{ $method->id }}" attr-fee="{{ $method->amount }}" attr-target="{{ $method->target_amount }}">
+                                {{ $method->delivery_method }}
+                              </option>
+                            @endif
+                          @endforeach
+                        </select>
+                      </div>
                       <div class="col-sm-4">
                         <label for="purchase_date">Order Tax</label>
                         <select class="form-control no-search select2bs4" name="order_tax" id="order_tax">
@@ -332,10 +366,7 @@
                         <label for="purchase_date">Order Discount</label>
                         {!! Form::text('order_discount', isset($rfqs->order_discount)?$rfqs->order_discount:0,['class'=>'form-control','id'=>'order-discount']) !!}
                       </div>
-                      <div class="col-sm-4">
-                        <label for="purchase_date">Payment Term</label>
-                        {!! Form::select('payment_term',$payment_terms,$rfqs->payment_term,['class'=>'form-control no-search select2bs4']) !!}
-                      </div>
+                      
                     </div>
                   </div>
 
@@ -362,7 +393,36 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
+      $(document).ready(function() {
 
+        var all_amount = $('#allAmount').text();
+        var free_del_amount=$('.free_delivery_amount').val();
+          if ( parseInt(all_amount) >= parseInt(free_del_amount)) {
+              $('#delivery-methods option[value="3"]').show();
+          }
+          else{
+              $('#delivery-methods option[value="3"]').hide();
+          }
+          
+      });   
+
+      $(document).on('change','#delivery-methods', function(event) {
+          var currency = $('option:selected', '#currency_rate').attr("currency-rate");
+          var all_amount = $('#allAmount').text();
+          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+          var free_del_amount=$('.free_delivery_amount').val();
+          var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
+          var del_type = $('#delivery-methods option:selected').val();
+
+          if (del_fees!=0) {
+            $('#deliveryCharge').text(del_fees);
+          }else{
+            $('#deliveryCharge').text('0.00');
+          }
+
+          $('.del_charge_hidden').val(del_fees);
+          overallCalculation(all_amount,tax_rate,currency);
+      });
       $(document).ready(function($) {
         var sum = 0;
         $('.get-total').each(function() {
@@ -524,6 +584,26 @@
           var currency = $('option:selected', '#currency_rate').attr("currency-rate");
           var all_amount = $('#allAmount').text();
           var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+          var free_del_amount=$('.free_delivery_amount').val();
+          var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
+          var del_type = $('#delivery-methods option:selected').val();
+
+          if ( parseInt(all_amount) >= parseInt(free_del_amount)) {
+            $('#delivery-methods option[value="3"]').show();
+          }
+          else{
+            var old_delivery_method_id = <?php echo $rfqs->delivery_method_id; ?>;
+            var old_delivery_method_amount = <?php echo $rfqs->delivery_charge; ?>;
+            $('#delivery-methods').val(old_delivery_method_id).change();
+            $('#deliveryCharge').text(old_delivery_method_amount);
+            $('#delivery-methods option[value="3"]').hide();
+          }
+
+          if (del_fees!=0) {
+            $('#deliveryCharge').text(del_fees);
+          }else{
+            $('#deliveryCharge').text('0.00');
+          }
           overallCalculation(all_amount,tax_rate,currency);
         }
       });
@@ -616,8 +696,9 @@
         var calculatTax = tax*allAmount;
         var taxAmount = calculatTax.toFixed(2);
         var discount = $('#order-discount').val();
+        var deliveryCharge = $('#deliveryCharge').text();
         $('#orderTax').text(taxAmount);
-        var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount);
+        var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount)+parseFloat(deliveryCharge);
         var totalSGD = parseFloat(calculateSGD)-parseFloat(discount);
         $('#total_amount_sgd').text(totalSGD.toFixed(2));
 
@@ -630,6 +711,7 @@
         $('#total_amount_hidden').val(allAmount);
         $('#order_tax_amount_hidden').val(taxAmount);
         $('#sgd_total_amount_hidden').val(totalSGD);
+        $('.del_charge_hidden').val(deliveryCharge);
       }
 
       $('.rfq-form').on('keyup keypress', function(e) {

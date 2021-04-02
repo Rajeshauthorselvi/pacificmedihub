@@ -73,10 +73,20 @@
                             {!! Form::hidden('customer_id',$order->customer_id,['class'=>'form-control','readonly']) !!}
                           <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
                         </div>
+                        <div class="col-sm-8">
+                          <label for="deliveryAddress">Delivery Address *</label>
+                           {!! Form::select('del_add_id',$del_address,  $order->address_id,['class'=>'form-control no-search select2bs4','id'=>'deliveryAddress']) !!}
+                        </div>
+                      </div>
+                      <div class="form-group">
                         <div class="col-sm-4">
                           <label for="sales_rep_id">Sales Rep *</label>
                           {!! Form::select('sales_rep_id',$sales_rep,null,['class'=>'form-control select2bs4','id'=>'sales_rep_id']) !!}
                           <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
+                        </div>
+                        <div class="col-sm-4">
+                          <label for="purchase_date">Payment Term</label>
+                          {!! Form::select('payment_term',$payment_terms,null,['class'=>'form-control no-search select2bs4']) !!}
                         </div>
                         <div class="col-sm-4">
                           <label for="currency_rate">Currency</label>
@@ -279,7 +289,7 @@
                         <div class="col-sm-3">
                           <label for="purchase_date">Delivery Methods *</label>
                           {!! Form::hidden('free_delivery_amount',$free_delivery_target,['class'=>'free_delivery_amount']) !!}
-                          {!! Form::hidden('delivery_charge',$free_delivery,['class'=>'del_charge_hidden']) !!}
+                          {!! Form::hidden('delivery_charge',$order->delivery_charge,['class'=>'del_charge_hidden']) !!}
                           <select class="form-control no-search " id="delivery-methods" name="delivery_method_id">
                             <option value="" attr-fee="0" attr-target="0">Please Select</option>
                             @foreach($delivery_methods as $method)
@@ -313,13 +323,6 @@
                           <label for="purchase_date">Order Discount</label>
                           {!! Form::text('order_discount', null,['class'=>'form-control','id'=>'order-discount']) !!}
                         </div>
-                        <div class="col-sm-3">
-                          <label for="purchase_date">Payment Term</label>
-                          {!! Form::select('payment_term',$payment_terms,null,['class'=>'form-control no-search select2bs4']) !!}
-                        </div>
-
-                      </div>
-                      <div class="form-group">
                         <div class="col-sm-3">
                           <label for="purchase_date">Payment Status *</label>
                           <?php $payment_status=[1=>'Paid',3=>'Partly Paid',2=>'Not Paid']; ?>
@@ -530,7 +533,7 @@
           }
           else{
             var old_delivery_method_id = <?php echo $order->delivery_method_id; ?>;
-            var old_delivery_method_amount = <?php echo $free_delivery; ?>;
+            var old_delivery_method_amount = <?php echo $order->delivery_charge; ?>;
             $('#delivery-methods').val(old_delivery_method_id).change();
             $('#deliveryCharge').text(old_delivery_method_amount);
             $('#delivery-methods option[value="3"]').hide();
