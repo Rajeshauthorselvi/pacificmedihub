@@ -119,6 +119,7 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
+                        <th>Region</th>
                         <th>Postcode</th>
                         <th>Ordered Date</th>
                         <th>Delivered Date</th>
@@ -152,6 +153,8 @@
                             <input type="hidden" class="order-no_{{ $order->id }}" value="{{ $order->order_no }}">
 
                           </td>
+                          <?php $region=\App\Models\Orders::GetRegion($order->address->post_code); ?>
+                          <td>{{ isset($region)?$region:'-' }}</td>
                           <td>{{ $order->address->post_code }}</td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>

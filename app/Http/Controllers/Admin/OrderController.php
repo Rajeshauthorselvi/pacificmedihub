@@ -1564,7 +1564,7 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
             ->update([
               'order_status'=>$status_id,
               'delivery_person_id'=>$drivery_id,
-              'approximate_delivery_date'=>date('Y-m-d',strtotime($delivery_date))
+              'approximate_delivery_date'=>date('Y-m-d',strtotime($request->delivery_date))
             ]);
         }
 

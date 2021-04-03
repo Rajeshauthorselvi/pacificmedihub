@@ -202,4 +202,13 @@ class Orders extends Model
     {
         
     }
+    static function GetRegion($postcode)
+    {
+        $region=DB::table('delivery_zone as dz')
+                ->leftjoin('region as r','r.id','dz.region_id')
+                ->where('post_code',$postcode)
+                ->value('r.name');
+
+        return $region;
+    }
 }
