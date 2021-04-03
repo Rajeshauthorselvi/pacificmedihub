@@ -3,6 +3,7 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
+                        <th>Postcode</th>
                         <th>Ordered Date</th>
                         <th>Order Code</th>
                         <th>Customer</th>
@@ -33,10 +34,10 @@
                        ?>
                         <tr style="{{ $class_bg }}">
                           <td><input type="checkbox" class="orders_ids" value="{{$order->id}}"></td>
+                          <td>{{ $order->address->post_code }}</td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td><a href="{{route($show_route,$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->name }}</td>
-
                           <td>
                             <span class="badge" style="background: {{ $order->statusName->color_codes }};color: #fff">
                             {{  $order->statusName->status_name  }}

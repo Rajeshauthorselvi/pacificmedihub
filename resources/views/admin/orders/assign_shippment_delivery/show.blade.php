@@ -72,7 +72,7 @@
                     </div>
                     <div class="col-sm-8">
                       <div class="address-block">
-                        @if(isset($admin_address))
+                        @if(isset($customer_address))
                           <div class="col-sm-6 customer address">
                             <div class="col-sm-2">
                               <span><i class="fas fa-user"></i></span>
@@ -81,17 +81,17 @@
                               <h4>{{$customer_address->name}} {{$customer_address->last_name}}</h4>
                               <p>
                                 <span>
-                                  {{$customer_address->address->address_line1}},&nbsp;{{isset($customer_address->address->address_line2)?$customer_address->address->address_line2:''}}
+                                  {{$customer_address->address_line1}},&nbsp;{{isset($customer_address->address_line2)?$customer_address->address_line2:''}}
                                 </span><br>
                                 <span>
-                                  {{$customer_address->address->country->name}},&nbsp;{{isset($customer_address->address->state->name)?$customer_address->address->state->name:''}}
+                                  {{$customer_address->country->name}},&nbsp;{{isset($customer_address->state->name)?$customer_address->state->name:''}}
                                 </span><br>
                                 <span>
-                                  {{isset($customer_address->address->city->name)?$customer_address->address->city->name:''}}&nbsp;-&nbsp;{{isset($customer_address->address->post_code)?$customer_address->address->post_code:''}}.
+                                  {{isset($customer_address->city->name)?$customer_address->city->name:''}}&nbsp;-&nbsp;{{isset($customer_address->post_code)?$customer_address->post_code:''}}.
                                 </span>
                               </p>
                               <p>
-                                <span>Tel: {{$customer_address->address->mobile}}</span><br>
+                                <span>Tel: {{$customer_address->mobile}}</span><br>
                                 <span>Email: {{$customer_address->email}}</span>
                               </p>
                             </div>

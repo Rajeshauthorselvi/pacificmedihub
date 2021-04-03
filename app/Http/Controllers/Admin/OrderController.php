@@ -539,7 +539,6 @@ class OrderController extends Controller
         }else{
             $order_completed_at = NULL;
         }
-        dd($request->all());
         if(!isset($request->del_add_id)){
           $customer_address = User::where('id',$request->customer_id)->value('address_id');
        }else{

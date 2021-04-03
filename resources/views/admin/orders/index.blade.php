@@ -119,6 +119,7 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
+                        <th>Postcode</th>
                         <th>Ordered Date</th>
                         <th>Delivered Date</th>
                         <th>Order Code</th>
@@ -151,10 +152,12 @@
                             <input type="hidden" class="order-no_{{ $order->id }}" value="{{ $order->order_no }}">
 
                           </td>
+                          <td>{{ $order->address->post_code }}</td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
                             {{ isset($order->delivered_at)?date('m/d/Y',strtotime($order->delivered_at)):'-' }}
                           </td>
+
                           <td><a href="{{route($show_route,$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->name }}</td>
                           <td>{{ $order->salesrep->emp_name }}</td>

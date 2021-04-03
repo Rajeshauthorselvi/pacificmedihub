@@ -273,6 +273,7 @@
 
   @push('custom-scripts')
   <script type="text/javascript">
+    $('.date-picker').datepicker({ minDate: 0});
 
     $(document).on('click', '.assign-shippment', function(event) {
       event.preventDefault();

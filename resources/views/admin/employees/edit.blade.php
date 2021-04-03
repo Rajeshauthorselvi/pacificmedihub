@@ -158,7 +158,7 @@
                             <select name="city_id" class="form-control select2bs4" id="City"></select>
                           </div>
                           <div class="col-sm-5">
-                            {!! Form::label('PostCode', 'Post Code') !!}
+                            {!! Form::label('PostCode', 'Post Code *') !!}
                             {!! Form::text('postcode',$employees->emp_postcode,['class'=>'form-control','id'=>'PostCode']) !!}
                             <span class="text-danger" style="display:none">Post Code is required</span>
                           </div>
@@ -372,6 +372,10 @@
           }
           if($("[name='address1']").val()=="") {
             $("[name='address1']").closest('.form-group').find('span.text-danger').show();
+            valid=false;
+          }
+          if($("[name='postcode']").val()=="") {
+            $("[name='postcode']").closest('.form-group').find('span.text-danger').show();
             valid=false;
           }
           if($("#Country").val()=="") {
