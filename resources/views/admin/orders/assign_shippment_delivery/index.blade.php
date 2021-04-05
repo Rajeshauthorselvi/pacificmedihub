@@ -65,7 +65,7 @@
                 <label>Delivery Date</label>
                 <br>
               <div class="form-group">
-                <input type="text" class="form-control date-picker" value="{{ date('d/m/Y') }}" />
+                <input type="text" class="form-control date-picker" value="{{ date('d-m-Y') }}" />
               </div>
             </div>
             <div class="col-sm-4 pull-left driver-btn">
@@ -278,7 +278,7 @@
 
   @push('custom-scripts')
   <script type="text/javascript">
-    $('.date-picker').datepicker({ minDate: 0});
+    $('.date-picker').datepicker({ minDate: 0,dateFormat: 'dd-mm-yy'});
 
     $(document).on('click', '.assign-shippment', function(event) {
       event.preventDefault();

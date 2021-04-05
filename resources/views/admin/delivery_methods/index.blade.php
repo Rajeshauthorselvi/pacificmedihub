@@ -25,18 +25,18 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-{{--           <div class="col-md-12 action-controllers ">
-            <div class="col-sm-6 text-left pull-left">
+          <div class="col-md-12 action-controllers ">
+{{--             <div class="col-sm-6 text-left pull-left">
               <a href="javascript:void(0)" class="btn btn-danger delete-all">
                 <i class="fa fa-trash"></i> Delete (selected)
               </a>
-            </div>
+            </div> --}}
             <div class="col-sm-6 text-right pull-right">
               <a class="btn add-new" href="{{route('delivery-methods.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
               </a>
             </div>
-          </div> --}}
+          </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">

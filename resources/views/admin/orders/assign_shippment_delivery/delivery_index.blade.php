@@ -49,7 +49,7 @@
                   <div class="col-sm-12 text-right">
                       <label>Filter By Date: </label>
                     
-                      <input type="text" placeholder="Select Date" class="form-control date-picker" value="{{ date('m-d-Y') }}">
+                      <input type="text" placeholder="Select Date" class="form-control date-picker" value="{{ date('d-m-Y') }}">
                     
                   </div>
                 </div>

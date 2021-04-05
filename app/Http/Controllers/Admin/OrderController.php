@@ -840,6 +840,8 @@ class OrderController extends Controller
         }
 
         $rfq = RFQ::find($id);
+        
+        $customer_address = User::where('id',$rfq->customer_id)->value('address_id');
         $order_data=[
             'rfq_id'                => $rfq->id,
             'sales_rep_id'          => $rfq->sales_rep_id,
@@ -857,6 +859,7 @@ class OrderController extends Controller
             'exchange_total_amount' => $rfq->exchange_total_amount,
             'user_id'               => $rfq->user_id,
             'notes'                 => $rfq->notes,
+            'address_id'            => $customer_address,
             'created_at'            => date('Y-m-d H:i:s')
         ];
        
@@ -1541,6 +1544,8 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
       $status_id=$request->get('status_id');
       $drivery_id=$request->get('drivery_id');
       $delivery_date=$request->get('delivery_date');
+
+      // dd(date('Y-m-d',strtotime($delivery_date)),$delivery_date);
 
       $low_stock_array=array();
       foreach ($order_ids as $key => $order_no) {

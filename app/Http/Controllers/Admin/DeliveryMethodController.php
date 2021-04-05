@@ -43,7 +43,6 @@ class DeliveryMethodController extends Controller
         $this->validate(request(),[
             'delivery_method' => 'required',
             'amount'          => 'required',
-            'target_amount'   => 'required'
         ]);
         DeliveryMethod::insert([
             'delivery_method' => $request->delivery_method,
