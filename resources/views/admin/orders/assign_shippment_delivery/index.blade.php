@@ -306,6 +306,9 @@
               if (low_stock=="yes") {
                 order_ids.push(order_id);
               }
+              else{
+                $(this).prop('checked',false);
+              }
             }
 
             if (status_id==14) {
@@ -336,7 +339,13 @@
           });
 
             if (order_ids.length>0 && status_id!=15) {
-                if (!confirm('Are you sure want to change status?')) {
+              if (status_id=="notify_admin") {
+                  var msg='Are you sure want to notify?'
+              }
+              else{
+                  var msg="Are you sure want to change status?";
+              }
+                if (!confirm(msg)) {
                   return false;
                 }
               $.ajax({
