@@ -26,6 +26,8 @@ use Auth;
 use DB;
 use PDF;
 use Str;
+use Storage;
+use Mail;
 use App\Models\Employee;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
@@ -921,5 +923,62 @@ class PurchaseController extends Controller
       $path=public_path('/theme/images/purchase_attachment/').$attachment;
       
       return Response::download($path, $attachment);
+    }
+    public function PurchaseEmail($purchase_id)
+    {
+      $data=array();
+      $purchase               = Purchase::find($purchase_id);
+      $admin_address  = User::where('id',1)->first();
+      $vendor_address = Vendor::where('id',$purchase->vendor_id)->first();
+      $customer_address = User::with('address')->where('id',$purchase->user_id)->first();
+      $products = PurchaseProducts::where('purchase_id',$purchase_id)->groupBy('product_id')->get();
+      if ($purchase->created_user_type==2) {
+        $creater_name=Employee::where('id',$purchase->user_id)->first();
+        $creater_name=$creater_name->emp_name;
+      }
+      else{
+        $creater_name=User::where('id',$purchase->user_id)->first();
+        $creater_name=$creater_name->name;
+      }
+      $product_data = $product_variant = array();
+      foreach ($products as $key => $product) {
+        $product_name    = Product::where('id',$product->product_id)->value('name');
+        $options         = $this->Options($product->product_id);
+        $all_variants    = PurchaseProducts::where('purchase_id',$purchase_id)->where('product_id',$product->product_id)
+                            ->pluck('product_variation_id')->toArray();
+        $product_variant = $this->Variants($product->product_id,$all_variants);
+
+        $product_data[$product->product_id] = [
+          'row_id'          => $product->id,
+          'purchase_id'     => $purchase_id,
+          'product_id'      => $product->product_id,
+          'product_name'    => $product_name,
+          'options'         => $options['options'],
+          'option_count'    => $options['option_count'],
+          'product_variant' => $product_variant
+        ];
+      }
+      $purchase_products = $product_data;
+      $product_name      = $product_name;
+      // $data=;
+      $layout = View::make('admin.purchase.email_purchase',compact('purchase','purchase_products','admin_address','vendor_address','creater_name'));
+      $pdf = App::make('dompdf.wrapper');
+      $pdf->loadHTML($layout->render());
+
+      $data['purchase']=$purchase;
+      $data['purchase_products']=$purchase_products;
+      $data['admin_address']=$admin_address;
+      $data['vendor_address']=$vendor_address;
+      $data['creater_name']=$creater_name;
+      $file = $pdf->output();
+      Storage::put('public/purchase/'.$purchase->purchase_order_number.'.pdf', $file);
+        Mail::send('admin.purchase.email_purchase', $data, function ($m) use($purchase) {
+         $m->from('dhinesh@authorselvi.com');
+         $m->to('dhinesh@authorselvi.com', 'Email Invoice')->subject($purchase->purchase_order_number.' Invoice');
+         $m->attach(storage_path('app/public/purchase/'.$purchase->purchase_order_number.'.pdf'));
+       });
+
+      Session::flash('success', 'Email sent successfully. Please check your email');
+      return Redirect::back();
     }
 }

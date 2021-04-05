@@ -46,7 +46,7 @@
                         </a>
                       </li>
                       <li>
-                        <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
+                        <a href="{{ url('admin/purchase-email/'.$purchase->id) }}" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
                       </li>
                       <li>
                         <a href="{{ route('purchase.edit',$purchase->id) }}" class="edit">
