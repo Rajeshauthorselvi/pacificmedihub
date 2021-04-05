@@ -54,19 +54,10 @@
                         @endif
                       </div>
                       <div class="form-group">
-                        <label for="productCode">Product Code *</label>
-
+                        <label for="productCode">Product Code</label>
                         {!! Form::text('product_code', $product_id,['class'=>'form-control','id'=>'productCode','readonly']) !!}
-                      <span class="text-danger product_code_required hidden">Product code is reqiured</span>
-                        @if($errors->has('product_code'))
-                          <span class="text-danger">{{ $errors->first('product_code') }}</span>
-                        @endif
                       </div>
 
-                      {{-- <div class="form-group">
-                        <label for="productSku">SKU</label>
-                        <input type="text" class="form-control" name="product_sku" id="productSku" value="{{old('product_sku')}}">
-                      </div> --}}
                       <div class="form-group">
                         <label for="productCategory">Category *</label>
                         <select class="form-control select2bs4" name="category">
@@ -354,13 +345,6 @@
         }
         else{
           $('.product_required').addClass('hidden');
-        }
-
-        if (product_code=="") {
-          $('.product_code_required').removeClass('hidden');
-        }
-        else{
-          $('.product_code_required').addClass('hidden');
         }
         if (category=="") {
           $('.category_required').removeClass('hidden');

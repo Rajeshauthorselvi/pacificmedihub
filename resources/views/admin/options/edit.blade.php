@@ -74,12 +74,13 @@
                               </th> 
                             </tr> 
                           </thead> 
-                          <tbody id="tbody"> 
+                          <tbody id="tbody">
+                            <?php $count = 1; ?>
                             @foreach($option_values as $values)
                               <tr id="R1" class="parent_tr"> 
                                 <input type="hidden" id="valueId" name="option_values[id][]" value="{{ $values->id }}">
                                 <td class="row-index text-center"> 
-                                  <p id="count">{{ $values->display_order }}</p>
+                                  <p id="count">{{ $count++ }}</p>
                                   <input type="hidden" id="hiddenCount" name="option_values[count][]" value="{{ $values->display_order }}">
                                 </td>
                                 <td>

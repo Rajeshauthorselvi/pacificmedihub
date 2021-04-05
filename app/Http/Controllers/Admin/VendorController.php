@@ -242,7 +242,6 @@ class VendorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         $this->validate(request(), [
             'vendor_name'    => 'required',
             'vendor_uen'     => 'required',
@@ -252,6 +251,7 @@ class VendorController extends Controller
             'country'        => 'required'
         ]);
 
+        if($request->vendor_status){$status = 1;}else{$status = 0;}
 
         $add_vendor = Vendor::find($id);
         $add_vendor->name = $request->vendor_name;
@@ -273,7 +273,7 @@ class VendorController extends Controller
         $add_vendor->paynow_contact_number = $request->paynow_no;
         $add_vendor->bank_place = $request->place;
         $add_vendor->others = $request->others;
-        $add_vendor->status = $request->vendor_status;
+        $add_vendor->status = $status;
 
         if($request->hasFile('vendorGst_image')){
             if (File::exists(public_path('theme/images/vendor/gst/'.$add_vendor->gst_image))) {

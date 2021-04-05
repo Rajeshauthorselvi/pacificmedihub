@@ -156,7 +156,8 @@ tr.hide-table-padding>td {padding: 0;}
 .total-calculation .title {text-align: right;border-right: 1px solid #ddd;}
 .total-head {border-left: 1px solid #ddd;}
 
-.show-page .action_sec li {float: left;width: 16.6%;text-align: center;}
+.show-page .action_sec .list-unstyled {display: flex;}
+.show-page .action_sec li {float: left;width: 100%;text-align: center;}
 .comment-page .action_sec li{float: left;width: 32.6%;text-align: center;}
 .order-page li {float: left;width: 20%;text-align: center;}
 .show-page .action_sec li a,.comment-page .action_sec li a{float: left;width: 100%;color: #fff;padding: 8px;}

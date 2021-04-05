@@ -123,10 +123,8 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-
         $this->validate(request(), [
             'product_name'  => 'required',
-            'product_code'  => 'required',
             'category'      => 'required',
             'search_engine' => 'required'
         ]);

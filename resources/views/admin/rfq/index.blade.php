@@ -65,7 +65,7 @@
                       @foreach ($rfqs as $rfq)
                       <?php 
                       $disabled="";
-                      if ($rfq->status==10) {
+                      if ($rfq->status==23) {
                           $disabled="pointer-events:none;opacity:0.5";
                       }
                       ?>
@@ -90,20 +90,22 @@
                               <ul class="dropdown-menu">
                                 
                                 <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','update'))
-                                  <a href="{{route('rfq.edit',$rfq->id)}}" style="{{ $disabled }}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                @if($rfq->status!=21)
+                                  @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','update'))
+                                    <a href="{{route('rfq.edit',$rfq->id)}}" style="{{ $disabled }}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                  @endif
+                                  <a href="{{ route('rfq.toOrder',$rfq->id) }}" onclick="return confirm('Are you sure want to Place Order?')" style="{{ $disabled }}"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
+
+                                  <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
+
+                                  <a href="{{ url('admin/rfq_pdf/'.$rfq->id) }}"><li class="dropdown-item"><i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF</li></a>
+
+                                  <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</li></a>
+
+                                  <a href="{{ url('admin/rfq-comments/'.$rfq->id) }}"><li class="dropdown-item"><i class="fas fa-comments"></i>&nbsp;&nbsp;Comments</li></a>
+
+                                  <a href="javascript:void(0)"><li class="dropdown-item"><i class="fas fa-print"></i>&nbsp;&nbsp;Print</li></a>
                                 @endif
-                                <a href="{{ route('rfq.toOrder',$rfq->id) }}" onclick="return confirm('Are you sure want to Place Order?')" style="{{ $disabled }}"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
-
-                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
-
-                                <a href="{{ url('admin/rfq_pdf/'.$rfq->id) }}"><li class="dropdown-item"><i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF</li></a>
-
-                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</li></a>
-
-                                <a href="{{ url('admin/rfq-comments/'.$rfq->id) }}"><li class="dropdown-item"><i class="fas fa-comments"></i>&nbsp;&nbsp;Comments</li></a>
-
-                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fas fa-print"></i>&nbsp;&nbsp;Print</li></a>
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','delete'))
                                 <a href="javascript:void(0)"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('rfq.destroy',$rfq->id) }}">@csrf 

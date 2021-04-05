@@ -33,6 +33,7 @@ use Response;
 use DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
+
 class RFQController extends Controller
 {
     /**
@@ -78,7 +79,7 @@ class RFQController extends Controller
       $data['customers']      = User::where('is_deleted',0)->where('status',1)->where('role_id',7)->get()->toArray();
       $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
-      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[20,1])->pluck('status_name','id')->toArray();
+      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[25,24])->pluck('status_name','id')->toArray();
 
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
                                   ->toArray();
@@ -272,7 +273,7 @@ class RFQController extends Controller
         }
       $data=array();
       $data['rfqs']=$rfq_details= RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
-      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[20,1,13,21])
+      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[25,24])
                                     ->pluck('status_name','id')->toArray();
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
                                     ->pluck('payment_method','id')->toArray();
