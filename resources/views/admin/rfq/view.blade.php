@@ -38,41 +38,48 @@
               </div>
               <div class="card">
                 <div class="card-body">
-                  <div class="action_sec">
-                    <div class="clearfix"></div>
-                    <ul class="list-unstyled">
-                      <?php 
-                      $disabled="";
-                      if ($rfqs->status==13) {
-                          $disabled="pointer-events:none;opacity:0.5";
-                      }
-                      ?>
-                      <li>
-                        <a href="{{ route('rfq.toOrder',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')" style="{{ $disabled }}">
-                          <i class="fa fa-plus-circle"></i>&nbsp; Place Order
-                        </a>
-                      </li>
-                      <li>
-                        <a href="{{ url('admin/rfq_pdf/'.$rfq_id) }}" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
-                      </li>
-                      <li>
-                        <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
-                      </li>
-                      <li>
-                        <a href="{{ url('admin/rfq-comments/'.$rfq_id) }}" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
-                      </li>
-                      <li>
-                        <a href="{{ route('rfq.edit',$rfq_id) }}" class="edit" style="{{ $disabled }}">
-                          <i class="fa fa-edit"></i>&nbsp; Edit
-                        </a>
-                      </li>
-                      <li>
-                        <a href="{{ route('rfq.delete',$rfq_id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
-                          <i class="fa fa-trash"></i>&nbsp; Delete
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  @if($rfqs->status!=21)
+                    <div class="action_sec">
+                      <div class="clearfix"></div>
+                      <ul class="list-unstyled">
+                        <?php 
+                        $disabled="";
+                        if ($rfqs->status==23) {
+                            $disabled="pointer-events:none;opacity:0.5";
+                        }
+                        ?>
+                        @if($rfqs->status==24)
+                        <li>
+                          <a href="{{ route('rfq.toOrder',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')" style="{{ $disabled }}">
+                            <i class="fa fa-plus-circle"></i>&nbsp; Place Order
+                          </a>
+                        </li>
+                        @endif
+                        <li>
+                          <a href="{{ url('admin/rfq_pdf/'.$rfq_id) }}" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
+                        </li>
+                        <li>
+                          <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
+                        </li>
+                        <li>
+                          <a href="{{ url('admin/rfq-comments/'.$rfq_id) }}" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
+                        </li>
+                        @if($rfqs->status!=24)
+                        <li>
+                          <a href="{{ route('rfq.edit',$rfq_id) }}" class="edit" style="{{ $disabled }}">
+                            <i class="fa fa-edit"></i>&nbsp; Edit
+                          </a>
+                        </li>
+
+                        <li>
+                          <a href="{{ route('rfq.delete',$rfq_id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
+                            <i class="fa fa-trash"></i>&nbsp; Delete
+                          </a>
+                        </li>
+                        @endif
+                      </ul>
+                    </div>
+                  @endif
                   <div class="clearfix"></div>
                   <div class="address-sec col-sm-12">
                     <div class="col-sm-4">

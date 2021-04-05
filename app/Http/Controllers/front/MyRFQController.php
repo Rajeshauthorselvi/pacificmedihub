@@ -112,7 +112,7 @@ class MyRFQController extends Controller
 
         $rfq_details=[
             'order_no'            => $rfq_code,
-            'status'              => 1,
+            'status'              => 22,
             'customer_id'         => $user_id,
             'sales_rep_id'        => isset($sales_rep_id)?$sales_rep_id:0,
             'delivery_method_id'  => $request->delevery_method,
@@ -320,7 +320,7 @@ class MyRFQController extends Controller
         if(!Auth::check()){
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
         }
-        RFQ::where('id',$id)->update(['notes'=>$request->notes,'delivery_method_id'=>$request->delevery_method]);
+        RFQ::where('id',$id)->update(['status'=>22,'notes'=>$request->notes,'delivery_method_id'=>$request->delevery_method]);
         return redirect()->route('my-rfq.index')->with('info', 'Your RFQ data updated successfully!');
     }
 
@@ -642,6 +642,7 @@ class MyRFQController extends Controller
     {
         $id = base64_decode($rfq_id);
         $rfq = RFQ::find($id);
+        $rfq->status = 23;
         $rfq->send_approval = 1;
         $rfq->save();
         Session::flash('approval', 'Your Request Sent successfully for Approval.!');
@@ -685,12 +686,14 @@ class MyRFQController extends Controller
     {
         $rfq = RFQ::find($request->rfq_id);
         $rfq->approval_status = $request->rfq_status;
-        $rfq->save();
         if($request->rfq_status==1){
-           Session::flash('approved', 'RFQ Approved successfully.!');
+            $rfq->status = 24;
+            Session::flash('approved', 'RFQ Approved successfully.!');
         }elseif($request->rfq_status==2){
+            $rfq->status = 21;
             Session::flash('disapproved', 'RFQ Disapproved successfully.!');
         }
+        $rfq->save();
         return true;
     }
 

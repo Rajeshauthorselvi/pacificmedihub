@@ -23,9 +23,12 @@
             @foreach($rfq_datas as $rfq)
               <div class="rfq-block">
                 <?php 
-                  if($rfq['status']==1) { $status = 'Pending'; $color_code = '#f0ad4e'; }
-                  elseif($rfq['status']==13) { $status = 'Completed'; $color_code = '#00a65a'; }
-                  elseif($rfq['status']==20) { $status = 'InProcess'; $color_code = '#f0ad4e'; }
+                  $color_code = '';
+                  $status='';
+                  if($rfq['status']==22) { $status = 'Request'; $color_code = '#f0ad4e'; }
+                  elseif($rfq['status']==23) { $status = 'Pending Approval'; $color_code = '#ea8327'; }
+                  elseif($rfq['status']==24) { $status = 'Approved'; $color_code = '#00a65a'; }
+                  elseif($rfq['status']==25) { $status = 'Quoted'; $color_code = '#5bc0de'; }
                   elseif($rfq['status']==21) { $status = 'Rejected'; $color_code = '#dd4b39'; }
                 ?>
                 <div class="header">

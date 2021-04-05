@@ -26,7 +26,7 @@
                 <?php 
                   if($rfq['status']==0)     {$status = 'Waiting for Approval'; $color_code = '#f0ad4e';}
                   elseif($rfq['status']==1) {$status = 'Approved'; $color_code = '#00a65a';}
-                  elseif($rfq['status']==2) {$status = 'Disapproved'; $color_code = '#dd4b39';}
+                  elseif($rfq['status']==2) {$status = 'Rejected'; $color_code = '#dd4b39';}
                 ?>
                 <div class="header">
                   <div class="col-sm-4 text-left">

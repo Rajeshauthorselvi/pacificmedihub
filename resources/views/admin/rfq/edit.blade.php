@@ -60,7 +60,7 @@
                       </div>
                       <div class="col-sm-4">
                         <label for="purchase_order_number">Status *</label>
-                        {!!Form::select('status',$order_status, null,['class'=>'form-control no-search select2bs4'])!!}
+                        {!!Form::select('status',$order_status, 25,['class'=>'form-control no-search select2bs4'])!!}
                         <span class="text-danger rfq" style="display:none;">Status is required. Please Select</span>
                       </div>
                     </div>
