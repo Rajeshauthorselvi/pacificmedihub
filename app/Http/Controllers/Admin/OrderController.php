@@ -29,6 +29,9 @@ use Auth;
 use DB;
 use Redirect;
 use Session;
+use Storage;
+use Str;
+use Mail;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
@@ -1607,5 +1610,32 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
         }
         return ['status'=>true];
 
+    }
+    public function OrderEmail(Request $request,$order_id)
+    {
+      $print_data=$this->PdfAndPrint($order_id);
+
+
+      $data=$print_data['data'];
+      $order_details=$data['order'];
+      $customer_email=User::find($order_details->customer_id);
+      
+
+      $layout = View::make('admin.orders.email_pdf',$print_data['data']);
+      $pdf = App::make('dompdf.wrapper');
+      $pdf->loadHTML($layout->render());
+
+      $file = $pdf->output();
+      Storage::put('public/order/'.$order_details['order_no'].'.pdf', $file);
+
+        Mail::send('admin.orders.email_pdf', $data, function ($m) use($order_details,$customer_email) {
+         $m->from('dhinesh@authorselvi.com');
+         $m->to($customer_email->email, 'Email Invoice')->subject($order_details['order_no'].' Invoice');
+         $m->attach(storage_path('app/public/order/'.$order_details['order_no'].'.pdf'));
+       });
+
+      Session::flash('success', 'Email sent successfully. Please check your email');
+      return Redirect::back();
+      //return $pdf->download('COP-'.$order_details->order_no.'.pdf');    
     }
 }

@@ -68,6 +68,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('puruchase_print/{purchase_id}','Admin\PurchaseController@PurchasePrint');
 	Route::post('search-vendor','Admin\PurchaseController@FindVendors');
 	Route::get('purchase-history',['as'=>'purchase.history','uses'=>'Admin\PurchaseController@PurchaseHistory']);
+	Route::get('purchase-email/{order_id}','Admin\PurchaseController@PurchaseEmail');
 	Route::resource('purchase','Admin\PurchaseController');
 
 	//Stock In Transit
@@ -101,6 +102,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 
 
 	//Orders
+	Route::get('order-email/{order_id}','Admin\OrderController@OrderEmail');
 	Route::get('order-summary',['as'=>'order.summary','uses'=>'Admin\OrderController@SummaryReport']);
 	Route::get('orders-product',['as'=>'orders.product','uses'=>'Admin\OrderController@ProductSearch']);
 	Route::post('create_order_payment',[

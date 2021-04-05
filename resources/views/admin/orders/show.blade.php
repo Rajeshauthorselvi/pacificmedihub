@@ -44,7 +44,7 @@
                         <a href="{{ url('admin/cop_admin_pdf/'.$order->id) }}" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
                       </li>
                       <li>
-                        <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
+                        <a href="{{ url('admin/order-email/'.$order->id) }}" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
                       </li>
                       <li>
                         <a href="{{ route($edit_route,$order->id) }}" class="edit">
