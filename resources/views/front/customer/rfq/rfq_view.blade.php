@@ -89,7 +89,7 @@
                 <li><span>Date: </span>{{ date('d/m/Y - H:i a',strtotime($rfq->created_at)) }}</li>
                 <li><span>Sales Rep: </span>{{ isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'' }}</li>
                 @if(isset($rfq->delivery_method_id))
-                  <li><span>Delivery Method</span>: {{ $rfq->deliveryMethodName->delivery_method }}</li>
+                  <li><span>Delivery Method</span>: {{ $rfq->deliveryMethod->delivery_method }}</li>
                 @endif
                 <?php 
                   if($rfq['status']==22) { $status = 'Request'; $color_code = '#f0ad4e'; }

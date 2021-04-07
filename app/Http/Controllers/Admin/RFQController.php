@@ -79,7 +79,7 @@ class RFQController extends Controller
       $data['customers']      = User::where('is_deleted',0)->where('status',1)->where('role_id',7)->get()->toArray();
       $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
-      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[25,24])->pluck('status_name','id')->toArray();
+      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[25,21])->pluck('status_name','id')->toArray();
 
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)->pluck('payment_method','id')
                                   ->toArray();
@@ -273,7 +273,7 @@ class RFQController extends Controller
         }
       $data=array();
       $data['rfqs']=$rfq_details= RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
-      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[25,24])
+      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[25,21])
                                     ->pluck('status_name','id')->toArray();
       $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
                                     ->pluck('payment_method','id')->toArray();
@@ -317,7 +317,11 @@ class RFQController extends Controller
           'check_rfq_price_exists' => $check_rfq_price_exists
         ];
       }
-      $data['product_datas']=$product_data;
+      $data['total_products']  = RFQProducts::allAmount($id);
+      $data['discount_amt']    = isset($rfqs->order_discount)?$rfqs->order_discount:0.00;
+      $data['order_tax']       = isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:0.00;
+      $data['delivery_charge'] = $rfq_details->deliveryMethod->amount;
+      $data['product_datas']   = $product_data;
       return view('admin.rfq.edit',$data);
     }
 

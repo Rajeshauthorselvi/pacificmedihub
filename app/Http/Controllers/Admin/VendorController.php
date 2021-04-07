@@ -141,7 +141,7 @@ class VendorController extends Controller
         /*$add_vendor->pan_no = $request->vendor_pan;
         $add_vendor->pan_image = $pan_image_name;*/
         $add_vendor->address_line1 = $request->address1;
-        $add_vendor->address_line2 = $request->address2;
+        $add_vendor->website = $request->website;
         $add_vendor->post_code = $request->postcode;
         $add_vendor->country = $request->country;
         $add_vendor->state = $request->state;
@@ -261,7 +261,7 @@ class VendorController extends Controller
         $add_vendor->gst_no = $request->vendor_gst;
         /*$add_vendor->pan_no = $request->vendor_pan;*/
         $add_vendor->address_line1 = $request->address1;
-        $add_vendor->address_line2 = $request->address2;
+        $add_vendor->website = $request->website;
         $add_vendor->post_code = $request->postcode;
         $add_vendor->country = $request->country;
         $add_vendor->state = $request->state;

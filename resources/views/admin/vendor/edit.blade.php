@@ -135,13 +135,13 @@
 
                         <div class="form-group">
                           <div class="col-sm-5">
+                            <label for="website">Website</label>
+                            <input type="text" class="form-control" name="website" id="website" value="{{old('website',$vendor->website)}}">
+                          </div>
+                          <div class="col-sm-5">
                             <label for="address1">Address Line 1 *</label>
                             <input type="text" class="form-control" name="address1" id="address1" value="{{old('address1',$vendor->address_line1)}}">
                             <span class="text-danger" style="display:none">Address Line 1 is required</span>
-                          </div>
-                          <div class="col-sm-5">
-                            <label for="address2">Address Line 2</label>
-                            <input type="text" class="form-control" name="address2" id="address2" value="{{old('address2',$vendor->address_line2)}}">
                           </div>
                         </div>
 
@@ -237,8 +237,8 @@
                               <th></th><th>Name</th><th>Email</th><th>Phone No</th>
                             </tr>
                           </thead>
-                          @foreach($vendor_poc as $poc)
-                            <tbody>
+                          <tbody>
+                            @foreach($vendor_poc as $poc)
                               <tr>
                                 <td><span class="counts">{{$count}}</span></td>
                                 <td>
@@ -258,9 +258,70 @@
                                   </div>
                                 </td>
                               </tr>
-                            </tbody>
-                            <input type="hidden" value="{{$count++}}">
-                          @endforeach
+                              <input type="hidden" value="{{$count++}}">
+                            @endforeach
+                          </tbody>
+                          @if(count($vendor_poc)<3 && count($vendor_poc)==1)
+                          <tr>
+                            <input type="hidden" name="poc[id][]" value="0">
+                            <td><span class="counts">2</span></td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[name][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[email][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <input type="hidden" name="poc[id][]" value="0">
+                            <td><span class="counts">3</span></td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[name][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[email][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                              </div>
+                            </td>
+                          </tr>
+                        @endif
+                        @if(count($vendor_poc)<3 && count($vendor_poc)==2)
+                          <tr>
+                            <input type="hidden" name="poc[id][]" value="0">
+                            <td><span class="counts">3</span></td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[name][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[email][]">
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="poc[contact][]" onkeyup="validateNum(event,this);">
+                              </div>
+                            </td>
+                          </tr>
+                        @endif
                         </table>
                       </div>
                       <ul class="float-left">

@@ -54,7 +54,7 @@ class RFQ extends Model
         return $this->belongsTo(UserAddress::class,'billing_address_id');
     }
 
-    public function deliveryMethodName()
+    public function deliveryMethod()
     {
         return $this->belongsTo(DeliveryMethod::class,'delivery_method_id');
     }

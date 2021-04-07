@@ -114,13 +114,12 @@
                       <div class="table-responsive">
                         <table class="table">
                           <thead class="heading-top">
-                            <?php $total_products=\App\Models\RFQProducts::TotalDatas($rfqs->id); ?>
                             <tr>
                               <th scope="col">#</th>
                               <th scope="col">Product Name</th>
                               <th scope="col">
                                   Total Quantity:&nbsp;
-                                  <span class="all_quantity">{{ $total_products->quantity }}</span>   
+                                  <span class="all_quantity">{{ $total_products['total_qty'] }}</span>   
                               </th>
                              {{--  <th scope="col">
                                   Total Price:&nbsp;
@@ -128,7 +127,7 @@
                               </th> --}}
                               <th>
                                   Total Amount:&nbsp;
-                                  <span class="all_amount" id="allAmount">{{ $total_products->sub_total }}</span>
+                                  <span class="all_amount" id="allAmount">{{ $total_products['total_amount'] }}</span>
                               </th>
                               <th></th>
                             </tr>
@@ -138,21 +137,17 @@
                               <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
                                 <td class="expand-button"></td>
                                 <?php
-                                $total_based_products=\App\Models\RFQProducts::TotalDatas($rfqs->id,$product['product_id']);
-                                  $sum_of_retail_qty=$total_based_products->retail_price*$total_based_products->quantity;
+                                $total_based_products=\App\Models\RFQProducts::totalAmount($rfqs->id,$product['product_id']);
                                  ?>
                                 <td>{{ $product['product_name'] }}</td>
                                 <th>
                                   Quantity: &nbsp;
-                                  <span class="total_quantity">{{ $total_based_products->quantity }}</span>
+                                  <span class="total_quantity">{{ $total_based_products['qty'] }}</span>
                                 </th>
                                 {{-- <th>Price: {{ $total_based_products->rfq_price }}</th> --}}
                                 <th class="total-head">
-                                  <input type="hidden" value="@if($total_based_products->sub_total!=0) {{$total_based_products->sub_total}}
-                                    @else {{$sum_of_retail_qty}} @endif" class="get-total">
-                                  Total: &nbsp;<span class="total">
-                                    @if($total_based_products->sub_total!=0) {{$total_based_products->sub_total}}
-                                    @else {{$sum_of_retail_qty}} @endif</span>
+                                  <input type="hidden" value="{{ $total_based_products['amount'] }}" class="get-total">
+                                  Total: &nbsp;<span class="total">{{$total_based_products['amount']}}</span>
                                 </th>
                                 <td>
                                     <a href="javascript:void(0)" class="btn btn-danger remove-product-row">
@@ -286,25 +281,26 @@
                             @endforeach
                             <tr class="total-calculation">
                               <td colspan="3" class="title">Total</td>
-                              <td colspan="2"><span class="all_amount">{{$rfqs->total_amount}}</span></td>
+                              <td colspan="2"><span class="all_amount">{{$total_products['total_amount']}}</span></td>
                               <input type="hidden" name="total_amount" id="total_amount_hidden" value="{{$rfqs->total_amount}}">
                             </tr>
                             <tr class="total-calculation"><td colspan="3" class="title">Order Discount</td>
-                              <td colspan="2"><span class="order-discount">{{isset($rfqs->order_discount)?$rfqs->order_discount:'0.00'}}</span></td>
+                              <td colspan="2"><span class="order-discount">{{$discount_amt}}</span></td>
                             </tr>
                             <tr class="total-calculation">
                               <td colspan="3" class="title">Order Tax</td>
-                              <td id="orderTax" colspan="2">{{isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:'0.00'}}</td>
-                              <input type="hidden" name="order_tax_amount" id="order_tax_amount_hidden" value="{{isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:0.00}}">
+                              <td id="orderTax" colspan="2">{{$order_tax}}</td>
+                              <input type="hidden" name="order_tax_amount" id="order_tax_amount_hidden" value="{{$order_tax}}">
                             </tr>
                             <tr class="total-calculation">
                               <td colspan="3" class="title">Delivery Charge</td>
-                              <td id="deliveryCharge">{{$rfqs->delivery_charge}}</td>
+                              <td id="deliveryCharge">{{$delivery_charge}}</td>
                             </tr>
                             <tr class="total-calculation">
                               <th colspan="3" class="title">Total Amount(SGD)</th>
-                              <th id="total_amount_sgd" colspan="2">{{$rfqs->sgd_total_amount}}</th>
-                              <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$rfqs->sgd_total_amount}}">
+                              <?php $sgd_total = $total_products['total_amount']+$discount_amt+$order_tax+$delivery_charge; ?>
+                              <th id="total_amount_sgd" colspan="2">{{$sgd_total}}</th>
+                              <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$sgd_total}}">
                             </tr>
                             @if(isset($rfqs->currency)&&$rfqs->currencyCode->currency_code!='SGD')
                               <?php $currency='content'; ?>
@@ -394,9 +390,9 @@
   @push('custom-scripts')
     <script type="text/javascript">
       $(document).ready(function() {
-
         var all_amount = $('#allAmount').text();
         var free_del_amount=$('.free_delivery_amount').val();
+
           if ( parseInt(all_amount) >= parseInt(free_del_amount)) {
               $('#delivery-methods option[value="3"]').show();
           }
@@ -593,7 +589,7 @@
           }
           else{
             var old_delivery_method_id = <?php echo $rfqs->delivery_method_id; ?>;
-            var old_delivery_method_amount = <?php echo $rfqs->delivery_charge; ?>;
+            var old_delivery_method_amount = <?php echo $rfqs->deliveryMethod->amount; ?>;
             $('#delivery-methods').val(old_delivery_method_id).change();
             $('#deliveryCharge').text(old_delivery_method_amount);
             $('#delivery-methods option[value="3"]').hide();

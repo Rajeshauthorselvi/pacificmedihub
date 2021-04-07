@@ -114,13 +114,13 @@
 
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="address1">Address Line 1 *</label>
-                            <input type="text" class="form-control" name="address1" id="address1" value="{{old('address1')}}">
-                            <span class="text-danger" style="display:none">Address Line 1 is required</span>
+                            <label for="website">Website</label>
+                            <input type="text" class="form-control" name="website" id="website" value="{{old('website')}}">
                           </div>
                           <div class="col-sm-5">
-                            <label for="address2">Address Line 2</label>
-                            <input type="text" class="form-control" name="address2" id="address2" value="{{old('address2')}}">
+                            <label for="address1">Address *</label>
+                            <input type="text" class="form-control" name="address1" id="address1" value="{{old('address1')}}">
+                            <span class="text-danger" style="display:none">Address is required</span>
                           </div>
                         </div>
 
@@ -187,12 +187,12 @@
                             <td><span class="counts">1</span></td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control" name="poc[name][]">
+                                <input type="text" class="form-control" name="poc[name][]" id="name1">
                               </div>
                             </td>
                             <td>
                               <div class="form-group">
-                                <input type="text" class="form-control validate-email1" name="poc[email][]">
+                                <input type="text" class="form-control validate-email1" name="poc[email][]" id="email1">
                                 <span class="email-error1" style="display:none;color:red;">Invalid email</span>
                               </div>
                             </td>
@@ -404,6 +404,15 @@
       function prevTab(elem) {
         $(elem).parent().prev().find('a[data-toggle="tab"]').click();
       }
+
+      $('#validateStep1').on('click',function(){
+        var vendor_name    = $('#vendorName').val();
+        var vendor_email   = $('#Email').val();
+        var vendor_contact = $('#Mobile').val();
+        $('#name1').val(vendor_name);
+        $('#email1').val(vendor_email);
+        $('#contact1').val(vendor_contact);
+      });
 
       $('.validate-email').on('keypress', function() {
         var re = /([A-Z0-9a-z_-][^@])+?@[^$#<>?]+?\.[\w]{1,3}/.test(this.value);

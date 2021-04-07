@@ -63,12 +63,6 @@
                     </thead>
                     <tbody>
                       @foreach ($rfqs as $rfq)
-                      <?php 
-                      $disabled="";
-                      if ($rfq->status==23) {
-                          $disabled="pointer-events:none;opacity:0.5";
-                      }
-                      ?>
                         <tr>
                           <td><input type="checkbox" name="rfq_ids" value="{{$rfq->id}}"></td>
                           <td>{{ date('m/d/Y',strtotime($rfq->created_at)) }}</td>
@@ -80,32 +74,39 @@
                             {{ $total_quantity['quantity'] }}
                           </td>
                           <td>
-                            <span class="badge" style="background: {{ $rfq->statusName->color_codes }};color: #fff">
-                            {{  $rfq->statusName->status_name  }}
-                            </span>
+                            <?php 
+                              if($rfq->statusName->id==24){
+                                $color_codes = "#5bc0de";
+                                $status = "Quoted";
+                              }else{
+                                $color_codes = $rfq->statusName->color_codes;
+                                $status = $rfq->statusName->status_name;
+                              }
+                            ?>
+                            <span class="badge" style="background: {{ $color_codes}};color: #fff">{{$status}}</span>
                           </td>
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
-                                
                                 <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                @if($rfq->status!=21)
+                                @if($rfq->status!=23)
                                   @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','update'))
-                                    <a href="{{route('rfq.edit',$rfq->id)}}" style="{{ $disabled }}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                    <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                   @endif
-                                  <a href="{{ route('rfq.toOrder',$rfq->id) }}" onclick="return confirm('Are you sure want to Place Order?')" style="{{ $disabled }}"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
-
-                                  <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
-
-                                  <a href="{{ url('admin/rfq_pdf/'.$rfq->id) }}"><li class="dropdown-item"><i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF</li></a>
-
-                                  <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</li></a>
-
-                                  <a href="{{ url('admin/rfq-comments/'.$rfq->id) }}"><li class="dropdown-item"><i class="fas fa-comments"></i>&nbsp;&nbsp;Comments</li></a>
-
-                                  <a href="javascript:void(0)"><li class="dropdown-item"><i class="fas fa-print"></i>&nbsp;&nbsp;Print</li></a>
                                 @endif
+                                @if($rfq->status==25 || $rfq->status==24)
+                                  <a href="{{ route('rfq.toOrder',$rfq->id) }}" onclick="return confirm('Are you sure want to Place Order?')"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
+                                @endif
+                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
+
+                                <a href="{{ url('admin/rfq_pdf/'.$rfq->id) }}"><li class="dropdown-item"><i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF</li></a>
+
+                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</li></a>
+
+                                <a href="{{ url('admin/rfq-comments/'.$rfq->id) }}"><li class="dropdown-item"><i class="fas fa-comments"></i>&nbsp;&nbsp;Comments</li></a>
+
+                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fas fa-print"></i>&nbsp;&nbsp;Print</li></a>
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','delete'))
                                 <a href="javascript:void(0)"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('rfq.destroy',$rfq->id) }}">@csrf 
