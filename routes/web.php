@@ -248,6 +248,7 @@ Route::group(['middleware' => 'customer'], function () {
 	Route::get('child-rfq', 'front\MyRFQController@childRFQIndex')->name('child.rfq.index');
 	Route::get('child-rfq-view/{rfq_id}', 'front\MyRFQController@show')->name('child.rfq.show');
 	Route::post('response-child-rfq', 'front\MyRFQController@responseChild')->name('response.child.rfq');
+	Route::get('my-rfq-order/{rfq_id}', 'front\MyRFQController@placeOrder')->name('my.rfq.order');
 	//RFQ PDF
 	Route::get('my-rfq-pdf/{rfq_id}','front\MyRFQController@RFQPDF')->name('my.rfq.pdf');
 	//RFQ Comments

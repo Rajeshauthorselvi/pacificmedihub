@@ -44,17 +44,17 @@
             @if($rfq->status!=21 && $data_from!='child')
             <?php $rfq_id = base64_encode($rfq->id); ?>
               <ul class="list-unstyled">
-                <li style="background-color: #216ea7;border-right: 1px solid #227bbb;@if($rfq->status!=24||($rfq->send_approval!=0 && $rfq->approval_status!=1)) display:none; @endif">
+                <li style="background-color: #216ea7;border-right: 1px solid #227bbb;@if($rfq->status==22||$rfq->status==23) display:none; @endif">
                   @if(($check_parent->parent_company!=0)&&($rfq->send_approval==0))
                     <a href="{{ route('send.rfq.approval',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Send Approval?')">
                     <i class="fa fa-plus-circle"></i>&nbsp; Send Approval
                     </a>
-                  @elseif(($check_parent->parent_company!=0)&&($rfq->send_approval!=0)&&($rfq->approval_status==1))
-                    <a href="{{ route('send.rfq.approval',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Send Approval?')">
+                  @elseif(($check_parent->parent_company!=0)&&($rfq->approval_status==1))
+                    <a href="{{ route('my.rfq.order',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
                     <i class="fa fa-plus-circle"></i>&nbsp; Place Order
                     </a>
                   @else
-                    <a href="javascript:void(0);" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
+                    <a href="{{ route('my.rfq.order',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
                       <i class="fa fa-plus-circle"></i>&nbsp; Place Order
                     </a>
                   @endif
@@ -74,7 +74,7 @@
                     <i class="fa fa-comment"></i>&nbsp; Comment
                   </a>
                 </li>
-                <li style="background-color: #f6ac50;@if($rfq->status==13) display:none; @endif">
+                <li style="background-color: #f6ac50;@if($rfq->status==22||$rfq->status==23||$rfq->status==24) display:none; @endif">
                   <a href="{{ route('my-rfq.edit',$rfq_id) }}" class="edit">
                     <i class="fa fa-edit"></i>&nbsp; Edit
                   </a>
@@ -94,12 +94,12 @@
                 <?php 
                   if($rfq['status']==22) { $status = 'Request'; $color_code = '#f0ad4e'; }
                   elseif($rfq['status']==23) { $status = 'Pending Approval'; $color_code = '#ea8327'; }
-                  elseif($rfq['status']==24) { $status = 'Approved'; $color_code = '#00a65a'; }
+                  elseif($rfq['status']==24) { $status = 'Quoted'; $color_code = '#5bc0de'; }
                   elseif($rfq['status']==25) { $status = 'Quoted'; $color_code = '#5bc0de'; }
                   elseif($rfq['status']==21) { $status = 'Rejected'; $color_code = '#dd4b39'; }
                 ?>
                 <li><span>Status</span>: <span class="badge" style="background:{{$color_code}};color:#fff;padding: 5px">{{ $status }}</span></li>
-                {{-- <?php 
+                <?php 
                   $approvalStatus='';
                   if($rfq->approval_status==1) { $approvalStatus = 'Approved'; $color_code = '#00a65a'; }
                   elseif($rfq->approval_status==2) { $approvalStatus = 'Disapproved'; $color_code = '#ef4156'; }
@@ -107,10 +107,7 @@
                 @if($check_parent->parent_company!=0 && $rfq->send_approval !=0)
                   <br>
                   <li><span>Approval Status:</span> <span class="badge" style="background:{{$color_code}};color:#fff;padding: 5px">{{ $approvalStatus }}</span></li>
-                @elseif($check_parent->parent_company==0 && $rfq->send_approval !=0 && $data_from=='child' && $rfq->approval_status!=0)
-                <br>
-                  <li><span>Approval Status:</span> <span class="badge" style="background:{{$color_code}};color:#fff;padding: 5px">{{ $approvalStatus }}</span></li>
-                @endif --}}
+                @endif
               </ul>
               @if($data_from=='child'&& $rfq->send_approval !=0 && $rfq->approval_status==0)
                 <div class="action-btns">
@@ -248,7 +245,7 @@
                     <th colspan="4" class="text-right">Total Amount (SGD)</th>
                     <th class="text-center">{{ number_format($rfq_data['grand_total'],2,'.','') }}</th>
                   </tr>
-                  @if($rfq_data['grand_total']!=$rfq_data['exchange_amount'])
+                  @if($rfq_data['exchange_amount']!=null && ($rfq_data['grand_total']!=$rfq_data['exchange_amount']))
                     <tr class="outer grand">
                       <th colspan="4" class="text-right">Total Amount ({{$rfq_data['currency_code']}})</th>
                       <th colspan="4" class="text-center">{{$rfq_data['exchange_amount']}}</th>

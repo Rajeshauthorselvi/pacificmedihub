@@ -840,8 +840,7 @@ class OrderController extends Controller
         }
 
         $rfq = RFQ::find($id);
-        
-        $customer_address = User::where('id',$rfq->customer_id)->value('address_id');
+
         $order_data=[
             'rfq_id'                => $rfq->id,
             'sales_rep_id'          => $rfq->sales_rep_id,
@@ -859,7 +858,7 @@ class OrderController extends Controller
             'exchange_total_amount' => $rfq->exchange_total_amount,
             'user_id'               => $rfq->user_id,
             'notes'                 => $rfq->notes,
-            'address_id'            => $customer_address,
+            'address_id'            => $rfq->delivery_address_id,
             'created_at'            => date('Y-m-d H:i:s')
         ];
        

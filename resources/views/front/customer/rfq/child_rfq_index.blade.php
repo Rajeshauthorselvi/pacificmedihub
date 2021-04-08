@@ -39,9 +39,8 @@
                     <span>RFQ Code</span>: #{{ $rfq['code'] }}
                   </div>
                 </div>
-
                 <div class="body">
-                  <div class="col-sm-4 text-left">{{ $rfq['company'] }}</div>
+                  <div class="col-sm-4 text-left"><span>Company Name</span>: {{ $rfq['company'] }}</div>
                   <div class="col-sm-4 text-center">
                     <span>Total Items</span>: {{ $rfq['item_count'] }}<br>
                     <span>Total Qty</span>: {{ $rfq['toatl_qty'] }}
