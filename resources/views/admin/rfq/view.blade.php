@@ -171,13 +171,13 @@
                       <div class="table-responsive">
                         <table class="table">
                           <thead class="heading-top">
-                           <?php $total_products=\App\Models\RFQProducts::TotalDatas($rfqs->id); ?>
+                           <?php $total_products=\App\Models\RFQProducts::allAmount($rfqs->id); ?>
                             <tr>
                               <th scope="col">#</th>
                               <th scope="col">Product Name</th>
                               <th scope="col">
                                   Total Quantity:&nbsp;
-                                  <span class="all_quantity">{{ $total_products->quantity }}</span>   
+                                  <span class="all_quantity">{{ $total_products['total_qty'] }}</span>   
                               </th>
                               {{-- <th scope="col">
                                   Total RFQ Price:&nbsp;
@@ -186,7 +186,7 @@
                               <th scope="col"></th>
                               <th>
                                   Total Amount:&nbsp;
-                                  <span class="all_amount">{{ $total_products->sub_total }}</span>
+                                  <span class="all_amount">{{ $total_products['total_amount'] }}</span>
                               </th>
                             </tr>
                           </thead>
@@ -195,14 +195,12 @@
                               <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
                                 <td class="expand-button"></td>
                                 <?php
-                                  $total_based_products=\App\Models\RFQProducts::TotalDatas($rfqs->id,$product['product_id']);
-                                  $sum_of_retail_qty=$total_based_products->retail_price*$total_based_products->quantity;
+                                  $total_based_products=\App\Models\RFQProducts::totalAmount($rfqs->id,$product['product_id']);
                                 ?>
                                 <td>{{ $product['product_name'] }}</td>
-                                <th>Quantity: {{ $total_based_products->quantity }}</th>
-                                <th>RFQ Price: {{ $total_based_products->rfq_price }}</th>
-                                <th class="total-head">Total: <span class="get-total">@if($total_based_products->sub_total!=0) {{$total_based_products->sub_total}}
-                                    @else {{$sum_of_retail_qty}} @endif</span></th>
+                                <th>Quantity: {{ $total_based_products['qty']}}</th>
+                                <th>RFQ Price: {{ $total_based_products['rfq'] }}</th>
+                                <th class="total-head">Total: <span class="get-total">{{$total_based_products['amount']}}
                               </tr>
                               <tr class="hide-table-padding">
                                 <td></td>
@@ -283,23 +281,23 @@
                             @endforeach
                             <tr class="total-calculation">
                               <td colspan="4" class="title">Total</td>
-                              <td><span class="all_amount">{{$rfqs->total_amount}}</span></td>
+                              <td><span class="all_amount">{{number_format($rfqs->total_amount,2,'.','')}}</span></td>
                             </tr>
                             <tr class="total-calculation">
                               <td colspan="4" class="title">Order Discount</td>
-                              <td><span class="order-discount">{{isset($rfqs->order_discount)?$rfqs->order_discount:'0.00'}}</span></td>
+                              <td><span class="order-discount">{{number_format($discount_amt,2,'.','')}}</span></td>
                             </tr>
                             <tr class="total-calculation">
-                              <td colspan="4" class="title">Order Tax ({{isset($rfqs->oderTax->name)?$rfqs->oderTax->name:'No  Tax'}} @ {{isset($rfqs->oderTax->rate)?$rfqs->oderTax->rate:0.00}}%)</td>
-                              <td id="orderTax">{{isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:0.00}}</td>
+                              <td colspan="4" class="title">Order Tax ({{isset($rfqs->oderTax->name)?$rfqs->oderTax->name:'No Tax'}} @ {{isset($rfqs->oderTax->rate)?$rfqs->oderTax->rate:0.00}}%)</td>
+                              <td id="orderTax">{{number_format($order_tax,2,'.','')}}</td>
                             </tr>
                             <tr class="total-calculation">
                               <td colspan="4" class="title">Delivery Charge</td>
-                              <td id="deliveryCharge">{{$rfqs->delivery_charge}}</td>
+                              <td id="deliveryCharge">{{$delivery_charge}}</td>
                             </tr>
                             <tr class="total-calculation">
                               <th colspan="4" class="title">Total Amount(SGD)</th>
-                              <th id="total_amount_sgd">{{$rfqs->sgd_total_amount}}</th>
+                              <th id="total_amount_sgd">{{number_format($rfqs->sgd_total_amount,2,'.','')}}</th>
                             </tr>
                             @if(isset($rfqs->currencyCode->currency_code) && $rfqs->currencyCode->currency_code!='SGD')
                               @php $currency = 'contents'; @endphp 
@@ -310,7 +308,7 @@
                               <th colspan="4" class="title">
                                 Total Amount (<span class="exchange-code">{{isset($rfqs->currencyCode->currency_code)?$rfqs->currencyCode->currency_code:'SGD'}}</span>)
                               </th>
-                              <th colspan="4" id="toatl_exchange_rate">{{$rfqs->exchange_total_amount}}</th>
+                              <th colspan="4" id="toatl_exchange_rate">{{number_format($rfqs->exchange_total_amount,2,'.','')}}</th>
                             </tr>
                             <tr><td colspan="6"></td></tr>
                           </tbody>

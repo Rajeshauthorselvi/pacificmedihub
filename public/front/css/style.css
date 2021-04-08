@@ -1793,8 +1793,8 @@ color: #fff;
     margin-bottom: 0;
 }
   .rfq.edit.view-block .address-sec .address-block {
-    padding: 1rem;
-    height: 250px;
+    border: none;
+    background: transparent;
 }
 .rfq.edit.view-block .address-block .btn.save-btn {
     margin-top: 10px;
