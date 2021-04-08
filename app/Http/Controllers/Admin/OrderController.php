@@ -508,6 +508,11 @@ class OrderController extends Controller
 
         $order_status=$order_status->pluck('status_name','id')->toArray();
 
+        $data['delivery_status']=[''=>'Please Select']+OrderStatus::where('status',1)
+                                 ->whereIn('id',[14,15,16,17,18])
+                                 ->pluck('status_name','id')
+                                 ->toArray();
+
         $data['order_status']=[''=>'Please Select']+$order_status;
 
         if ($currenct_route[0]=="assign-shippment" || $currenct_route[0]=="assign-delivery") {
@@ -554,8 +559,9 @@ class OrderController extends Controller
             $order_data['approximate_delivery_date']=date('Y-m-d',strtotime($request->delivery_date));
           }
           $order_data['logistic_instruction']=$request->notes;
-          // $order_data['delivery_status']=$request->delivery_status;
+          $order_data['delivery_status']=$request->delivery_status;
           $order_data['order_status']=$request->order_status;
+
 
           if ($request->order_status==16) {
               $order_data['delivered_at']=date('Y-m-d');
@@ -668,7 +674,7 @@ class OrderController extends Controller
        ];
        OrderHistory::insert($order_history);
 
-       if ($request->order_status==14) {
+       if ($request->order_status==14 || $request->delivery_status==14) {
          $this->ReduceQuantityToVendor($id);
        }
        elseif ($request->order_status==17) {
@@ -840,7 +846,7 @@ class OrderController extends Controller
         }
 
         $rfq = RFQ::find($id);
-        
+
         $customer_address = User::where('id',$rfq->customer_id)->value('address_id');
         $order_data=[
             'rfq_id'                => $rfq->id,

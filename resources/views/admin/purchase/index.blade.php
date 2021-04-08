@@ -136,7 +136,7 @@
                                 <a href="{{ url('admin/puruchase_pdf/'.$order['purchase_id']) }}"><li class="dropdown-item">
                                   <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
                                  </li></a>
-                                <a href="{{route('purchase.edit',$order['purchase_id'])}}"><li class="dropdown-item">
+                                <a href="{{ url('admin/purchase-email/'.$order['purchase_id']) }}"><li class="dropdown-item">
                                   <i class="fa fa-envelope"></i>&nbsp;&nbsp;Email
                                 </li></a>
                                 <a href="{{ url('admin/puruchase_print/'.$order['purchase_id']) }}" target="_blank"><li class="dropdown-item" >
