@@ -9,6 +9,20 @@ class RFQProducts extends Model
 {
     protected $table="rfq_products";
     public $timestamps=false;
+    
+    protected $fillable=[
+        'rfq_id',
+        'product_id',
+        'product_variant_id',
+        'base_price',
+        'retail_price',
+        'minimum_selling_price',
+        'quantity',
+        'last_rfq_price',
+        'rfq_price',
+        'sub_total'
+    ];
+
     static function VariationPrice($product_id,$product_variation_id,$rfq_id)
     {
 
@@ -38,6 +52,7 @@ class RFQProducts extends Model
         $get_total=self::where('rfq_id',$rfq_id)->where('product_id',$product_id)->first();
         $data['amount'] = $get_total->retail_price*$get_total->quantity;
         $data['qty']    = $get_total->quantity;
+        $data['rfq']    = $get_total->retail_price;
         $total_amount   = $data;
         return $total_amount;
     }

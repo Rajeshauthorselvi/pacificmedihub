@@ -320,15 +320,39 @@ class MyRFQController extends Controller
         if(!Auth::check()){
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
         }
-        RFQ::where('id',$id)->update(['status'=>22,'notes'=>$request->notes,'delivery_method_id'=>$request->delevery_method]);
+
+        $rfq = RFQ::find($id);
+
+        $new_rfq_data = array('delivery_method_id'=>$request->delevery_method,'delivery_address_id'=>$request->delivery_add);
+        $old_rfq_data = array('delivery_method_id'=>$rfq->delivery_method_id,'delivery_address_id'=>$rfq->delivery_address_id);
+        $rfq_diff = array_diff($new_rfq_data,$old_rfq_data);
+
+
+        $rfq_products = $request->item;
+
+        $rfq_items = RFQProducts::where('rfq_id',$id)->orderBy('id','desc')->get();
+        foreach($rfq_items as $item) {
+            $old_item['id'][] = $item->id;
+            $old_item['qty'][] = $item->quantity;
+        }
+
+        foreach($rfq_products['id'] as $key => $value) {
+            $add = RFQProducts::find($value);
+            $add->quantity = $rfq_products['qty'][$key];
+            $add->update();
+        }
+        $rfq_item_diff = array_diff($rfq_products['qty'],$old_item['qty']);
+
+        if((count($rfq_diff)!=0)||(count($rfq_item_diff)!=0)){
+            $rfq->status = 22;            
+        }
+        $rfq->delivery_address_id = $request->delivery_add;
+        $rfq->billing_address_id  = $request->billing_add;
+        $rfq->delivery_method_id  = $request->delevery_method;
+        $rfq->notes               = $request->notes;
+        $rfq->save();
+
         return redirect()->route('my-rfq.index')->with('info', 'Your RFQ data updated successfully!');
-    }
-
-
-    public function updateItem(Request $request)
-    {
-        $rfq_item_count = RFQProducts::where('id',$request->rfq_item_id)->update(['quantity'=>$request->qty_count]);
-        return true;
     }
 
     /**
@@ -342,11 +366,13 @@ class MyRFQController extends Controller
         RFQProducts::where('id',$id)->delete();
         $rfq_item_count = RFQProducts::where('rfq_id',$request->rfq_id)->count();
 
+        $data['status'] = true;
+        $data['redirect'] = 0;
         if($rfq_item_count==0){
             RFQ::where('id',$request->rfq_id)->delete();
-            return redirect()->route('my-rfq.index')->with('error', 'Your RFQ Request deleted successfully.!');
+            $data['redirect'] = 1;
         }
-        return redirect()->back()->with('info', 'Your item removed successfully.!');
+        return $data;
     }
 
 
@@ -499,16 +525,6 @@ class MyRFQController extends Controller
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
         }
         return view('front/customer/rfq/rfq_success');
-    }
-
-    public function changeAddress(Request $request)
-    {
-        if($request->address_type==2){
-            RFQ::where('id',$request->rfq_id)->update(['billing_address_id'=>$request->address_id]);
-        }else if($request->address_type==1){
-            RFQ::where('id',$request->rfq_id)->update(['delivery_address_id'=>$request->address_id]);
-        }
-        return response()->json(true);
     }
 
     public function RFQPDF($id)

@@ -70,8 +70,8 @@
                           <td>{{ $rfq->customer->name }}</td>
                           <td>{{ isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'' }}</td>
                           <td>
-                            <?php $total_quantity=\App\Models\RFQProducts::TotalDatas($rfq->id); ?>
-                            {{ $total_quantity['quantity'] }}
+                            <?php $total_quantity=\App\Models\RFQProducts::allAmount($rfq->id); ?>
+                            {{ $total_quantity['total_qty'] }}
                           </td>
                           <td>
                             <?php 

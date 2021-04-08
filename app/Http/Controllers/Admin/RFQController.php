@@ -57,7 +57,6 @@ class RFQController extends Controller
         $rfqs->where('sales_rep_id',Auth::guard('employee')->user()->id);
     }
      $rfqs=$rfqs->orderBy('rfq.id','desc')->get();
-
      $data['rfqs']=$rfqs;
 
       return view('admin.rfq.index',$data);
@@ -255,6 +254,9 @@ class RFQController extends Controller
       $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                     ->pluck('name','id')->toArray();  
       $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
+      $data['discount_amt']    = isset($rfq->order_discount)?$rfq->order_discount:0.00;
+      $data['order_tax']       = isset($rfq->order_tax_amount)?$rfq->order_tax_amount:0.00;
+      $data['delivery_charge'] = $rfq->deliveryMethod->amount;
       return view('admin.rfq.view',$data);
     }
 
@@ -318,8 +320,8 @@ class RFQController extends Controller
         ];
       }
       $data['total_products']  = RFQProducts::allAmount($id);
-      $data['discount_amt']    = isset($rfqs->order_discount)?$rfqs->order_discount:0.00;
-      $data['order_tax']       = isset($rfqs->order_tax_amount)?$rfqs->order_tax_amount:0.00;
+      $data['discount_amt']    = isset($rfq_details->order_discount)?$rfq_details->order_discount:0.00;
+      $data['order_tax']       = isset($rfq_details->order_tax_amount)?$rfq_details->order_tax_amount:0.00;
       $data['delivery_charge'] = $rfq_details->deliveryMethod->amount;
       $data['product_datas']   = $product_data;
       return view('admin.rfq.edit',$data);
