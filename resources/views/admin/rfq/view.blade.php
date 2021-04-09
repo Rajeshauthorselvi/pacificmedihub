@@ -58,7 +58,8 @@
                       <li>
                         <a href="{{ url('admin/rfq-comments/'.$rfq_id) }}" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
                       </li>
-                      @if($rfqs->status!=23)
+                      
+                      @if($rfqs->status!=23 && $rfqs->status!=10)
                         <li>
                           <a href="{{ route('rfq.edit',$rfq_id) }}" class="edit">
                             <i class="fa fa-edit"></i>&nbsp; Edit
