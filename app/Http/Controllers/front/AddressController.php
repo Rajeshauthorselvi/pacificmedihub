@@ -28,7 +28,7 @@ class AddressController extends Controller
             $primary = $data['primary_id'] = Auth::user()->address_id;
             $data['primary'] = UserAddress::where('id',$primary)->where('customer_id',$user_id)->first();
             $data['all_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('id',[$primary])
-                                                ->whereNotIn('address_type',[2])->where('is_deleted',0)->get();
+                                                ->whereNotIn('address_type',[2])->where('is_deleted',0)->paginate(5);
             $data['user_id'] = $user_id;
             return view('front/customer/address/index',$data);
         }else{
@@ -64,7 +64,7 @@ class AddressController extends Controller
         if(!Auth::check()){
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
         }        
-        $address     = $request->except(['_token']);
+        $address     = $request->address;
         $add_address = UserAddress::insertGetId($address);
         
         if($add_address){

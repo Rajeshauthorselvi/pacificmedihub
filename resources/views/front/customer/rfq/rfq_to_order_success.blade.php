@@ -9,9 +9,9 @@
 			<div class="col-sm-12">
 				<div class="rfq message">
 					<img src="{{ asset('theme/images/successfully.png') }}">
-					<h5>Thank you, We received your RFQ request.</h5>
-					<h5>Your RFQ Code : {{ Session::get('message') }}</h5>
-					<a href="{{ route('my-rfq.index') }}" class="btn save-btn">MY RFQ</a>
+					<h5>Thank you, We received your Order request.</h5>
+					<h5>Your Order Code : {{ $order_number }}</h5>
+					<a href="{{ route('my-orders.index') }}" class="btn save-btn">MY ORDER</a>
 				</div>
 			</div>
 		</div>

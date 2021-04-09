@@ -78,6 +78,9 @@
                               if($rfq->statusName->id==24){
                                 $color_codes = "#5bc0de";
                                 $status = "Quoted";
+                              }elseif($rfq->statusName->id==10){
+                                $color_codes = "#00a65a";
+                                $status = "Order Placed";
                               }else{
                                 $color_codes = $rfq->statusName->color_codes;
                                 $status = $rfq->statusName->status_name;
@@ -91,7 +94,7 @@
                               <ul class="dropdown-menu">
                                 <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                 @if($rfq->status!=23)
-                                  @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','update'))
+                                  @if ($rfq->status!=10 && (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','update')))
                                     <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
                                   @endif
                                 @endif

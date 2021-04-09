@@ -64,7 +64,14 @@
           @endforeach
 
         </div>
-        
+        <div class="category-page-wrapper fotnav">
+          <div class="result-inner">
+            Showing {{($all_address->firstItem())}} to {{($all_address->lastItem())}} of {{ $all_address->total() }} ({{ $all_address->currentpage()  }} Pages)
+          </div>
+          <div class="pagination-inner">
+            {{ $all_address->links() }}
+          </div>
+        </div>
       </div>
 
     </div>

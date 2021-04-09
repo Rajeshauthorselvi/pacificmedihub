@@ -57,6 +57,14 @@
             <div class="no-data">Not data found.</div>
           @endif  
         </div>
+        <div class="category-page-wrapper fotnav">
+          <div class="result-inner">
+            Showing {{($pagination['firstItem'])}} to {{($pagination['lastItem'])}} of {{ $pagination['total']}} ({{ $pagination['currentpage'] }} Pages)
+          </div>
+          <div class="pagination-inner">
+            {{ $pagination['links'] }}
+          </div>
+        </div>
       </div>
     </div>
   </div>

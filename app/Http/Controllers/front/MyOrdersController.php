@@ -33,7 +33,7 @@ class MyOrdersController extends Controller
         }
         $data = array();
         $user_id = Auth::id();
-        $all_data = Orders::where('customer_id',$user_id)->orderBy('id','desc')->get();
+        $all_data = Orders::where('customer_id',$user_id)->orderBy('id','desc')->paginate(5);
         
         $order_data = array();
         foreach ($all_data as $key => $item) {
@@ -47,6 +47,14 @@ class MyOrdersController extends Controller
             $order_data[$key]['item_count']   = $item_count;
             $order_data[$key]['toatl_qty']    = $toatl_qty;
         }
+        $pagination = array();
+        $pagination['firstItem']   = $all_data->firstItem();
+        $pagination['lastItem']    = $all_data->lastItem();
+        $pagination['total']       = $all_data->total();
+        $pagination['currentpage'] = $all_data->currentpage();
+        $pagination['links']       = $all_data->links();
+        $data['pagination']        = $pagination;            
+
         $data['order_data'] = $order_data;
         //dd($data);
         return view('front/customer/orders/order_index',$data);

@@ -30,6 +30,7 @@
                   elseif($rfq['status']==24) { $status = 'Approved'; $color_code = '#00a65a'; }
                   elseif($rfq['status']==25) { $status = 'Quoted'; $color_code = '#5bc0de'; }
                   elseif($rfq['status']==21) { $status = 'Rejected'; $color_code = '#dd4b39'; }
+                  elseif($rfq['status']==10) { $status = 'Order Placed'; $color_code = '#00a65a'; }
                 ?>
                 <div class="header">
                   <div class="col-sm-4 text-left">
@@ -44,16 +45,21 @@
                 </div>
 
                 <div class="body">
-                  <div class="col-sm-4 text-left">
-                    <span>Total Items</span>: {{ $rfq['item_count'] }}
+                  <div class="col-sm-5 text-left">
+                    <span>Sales Rep</span>: {{ $rfq['sales_rep'] }}<br>
+                    <span>Delivery Method</span>: {{ $rfq['delivery_method'] }}
                   </div>
-                  <div class="col-sm-4 text-center">
+                  <div class="col-sm-2 text-center">
+                    <span>Total Items</span>: {{ $rfq['item_count'] }}<br>
                     <span>Total Qty</span>: {{ $rfq['toatl_qty'] }}
                   </div>
-                  <div class="col-sm-4 text-right">
+                  <div class="col-sm-5 text-right">
                     <?php $rfq_id = base64_encode($rfq['id']);?>
-                    <a href="{{ route('my.rfq.comments',$rfq_id) }}" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>&nbsp;&nbsp;
+                    <a href="{{ route('my.rfq.comments',$rfq_id) }}" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>
                     <a href="{{ route('my-rfq.show',$rfq_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
+                    @if($rfq['status']==25)
+                      <a href="{{ route('my-rfq.edit',$rfq_id) }}" class="btn view"><i class="far fa-edit"></i>&nbsp;Edit</a>
+                    @endif
                   </div>
                 </div>
               </div>
@@ -61,6 +67,14 @@
           @else
             <div class="no-data">Not data found.</div>
           @endif  
+        </div>
+        <div class="category-page-wrapper fotnav">
+          <div class="result-inner">
+            Showing {{($pagination['firstItem'])}} to {{($pagination['lastItem'])}} of {{ $pagination['total']}} ({{ $pagination['currentpage'] }} Pages)
+          </div>
+          <div class="pagination-inner">
+            {{ $pagination['links'] }}
+          </div>
         </div>
       </div>
     </div>

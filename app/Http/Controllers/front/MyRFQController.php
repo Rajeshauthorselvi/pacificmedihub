@@ -20,6 +20,9 @@ use App\Models\Currency;
 use App\Models\Tax;
 use App\Models\Notification;
 use App\Models\DeliveryMethod;
+use App\Models\Orders;
+use App\Models\OrderProducts;
+use App\Models\OrderStatus;
 use App\User;
 use Auth;
 use Str;
@@ -44,7 +47,7 @@ class MyRFQController extends Controller
         }
         $data = array();
         $user_id = Auth::id();
-        $all_rfq_data = RFQ::where('customer_id',$user_id)->orderBy('id','desc')->get();
+        $all_rfq_data = RFQ::where('customer_id',$user_id)->orderBy('id','desc')->paginate(5);
         
         $rfq_data = array();
         foreach ($all_rfq_data as $key => $rfq) {
@@ -56,7 +59,18 @@ class MyRFQController extends Controller
             $rfq_data[$key]['code'] = $rfq->order_no;
             $rfq_data[$key]['item_count'] = $item_count;
             $rfq_data[$key]['toatl_qty'] = $toatl_qty;
+            $rfq_data[$key]['sales_rep'] = isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'';
+            $rfq_data[$key]['delivery_method'] = $rfq->deliveryMethod->delivery_method;
         }
+
+        $pagination = array();
+        $pagination['firstItem']   = $all_rfq_data->firstItem();
+        $pagination['lastItem']    = $all_rfq_data->lastItem();
+        $pagination['total']       = $all_rfq_data->total();
+        $pagination['currentpage'] = $all_rfq_data->currentpage();
+        $pagination['links']       = $all_rfq_data->links();
+        $data['pagination']        = $pagination;  
+
         $data['rfq_datas'] = $rfq_data;
         return view('front/customer/rfq/rfq_index',$data);
     }
@@ -687,7 +701,7 @@ class MyRFQController extends Controller
             $toatl_qty   = RFQProducts::where('rfq_id',$rfq->id)->sum('quantity');
             $rfq_data[$key]['id'] = $rfq->id;
             $rfq_data[$key]['create_date'] = date('d/m/Y',strtotime($rfq->created_at));
-            $rfq_data[$key]['company'] = $company->company_name;
+            $rfq_data[$key]['company'] = $company->name;
             $rfq_data[$key]['status'] = $rfq->approval_status;
             $rfq_data[$key]['code'] = $rfq->order_no;
             $rfq_data[$key]['item_count'] = $item_count;
@@ -711,6 +725,88 @@ class MyRFQController extends Controller
         }
         $rfq->save();
         return true;
+    }
+
+    public function placeOrder($rfq_id)
+    {
+        $id = base64_decode($rfq_id);
+        $rfq = RFQ::find($id);
+
+        $order_code = Prefix::where('key','prefix')->where('code','order_no')->value('content');
+        if (isset($order_code)) {
+            $value = unserialize($order_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Orders::count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $order_no=$replace_number;
+        }
+
+        $rfq = RFQ::find($id);
+        
+        if(!isset($rfq->delivery_address_id)){
+          $customer_address = User::where('id',$request->customer_id)->value('address_id');
+        }else{
+            $customer_address = $rfq->delivery_address_id;
+        }
+
+        $order_data=[
+            'rfq_id'                => $rfq->id,
+            'sales_rep_id'          => $rfq->sales_rep_id,
+            'customer_id'           => $rfq->customer_id,
+            'order_no'              => $order_no,
+            'order_status'          => 19,
+            'order_tax'             => $rfq->order_tax,
+            'order_discount'        => $rfq->order_discount,
+            'currency'              => $rfq->currency,
+            'payment_term'          => $rfq->payment_term,
+            'payment_status'        => 3,
+            'order_tax_amount'      => $rfq->order_tax_amount,
+            'total_amount'          => $rfq->total_amount,
+            'sgd_total_amount'      => $rfq->sgd_total_amount,
+            'exchange_total_amount' => $rfq->exchange_total_amount,
+            'user_id'               => $rfq->user_id,
+            'notes'                 => $rfq->notes,
+            'address_id'            => $rfq->delivery_address_id,
+            'created_at'            => date('Y-m-d H:i:s')
+        ];
+       
+        $order_id = Orders::insertGetId($order_data);
+       
+        $rfq_products = RFQProducts::where('rfq_id',$rfq->id)->get();
+
+        foreach ($rfq_products as $key => $products) {
+            OrderProducts::insert([
+                'order_id'              => $order_id,
+                'product_id'            => $products->product_id,
+                'product_variation_id'  => $products->product_variant_id,
+                'base_price'            => $products->base_price,
+                'retail_price'          => $products->retail_price,
+                'minimum_selling_price' => $products->minimum_selling_price,
+                'quantity'              => $products->quantity,
+                'sub_total'             => $products->sub_total,
+                'final_price'           => $products->rfq_price
+            ]);
+        }
+
+        RFQ::where('id',$rfq->id)->update(['status'=>10]);
+        $orders_data = Orders::find($order_id);
+        $data['order_number'] = $orders_data->order_no;
+       return view('front/customer/rfq/rfq_to_order_success',$data);
     }
 
     public function Variants($product_id,$variation_id=0)
