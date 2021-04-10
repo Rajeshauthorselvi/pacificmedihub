@@ -129,6 +129,7 @@
                             </thead>
                             <tbody>
                               @foreach ($product_datas as $product)
+
                                 <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
                                   <td class="expand-button"></td>
                                   <?php
@@ -153,6 +154,8 @@
                                               <th>{{ $option }}</th>
                                             @endforeach
                                             <th>Quantity</th>
+                                            <th>Batch Id</th>
+                                            <th>Expiry Date</th>
                                           </tr>
                                         </thead>
                                         <tbody>
@@ -161,6 +164,7 @@
                                             <?php 
                                               $option_count=$product['option_count'];
                                               $variation_details=\App\Models\OrderProducts::VariationPrice($product['product_id'],$variant['variant_id'],$order->id);
+
                                             ?>
                                             <tr class="parent_tr">
                                               <td>{{$variant['option_value1']}}</td>
@@ -178,6 +182,41 @@
                                               @endif
                                               <td>
                                                 <div class="form-group">{{ $variation_details['quantity'] }}</div>
+                                              </td>
+                                              <td width="20%">
+                                                <?php 
+                                                $batch_details=App\Models\Orders::PurchaseBatchInfo($product['product_id'],$variant['variant_id']); 
+
+                                                $batch_val=explode(',',$variation_details->batch_ids);
+                                                $exp_dates=App\Models\OrderProducts::BatchInfos($batch_val);
+                                                ?>
+
+                                                <select class="form-control select2 batch_data" name="batch_ids[{{ $product['product_id'] }}][{{ $variant['variant_id'] }}][]" multiple>
+                                                  @foreach ($batch_details as $key=>$batch)
+                                                  @if (in_array($batch->id,$batch_val))
+                                                    <option value="{{ $batch->id }}" selected="selected">
+                                                      {{ $batch->batch_id }}
+                                                    </option>    
+                                                  @else
+                                                    <option value="{{ $batch->id }}">
+                                                      {{ $batch->batch_id }}
+                                                    </option>
+                                                  @endif
+                                                  @endforeach
+                                                </select>
+                                                @foreach ($batch_details as $batch)
+                                                  <input type="hidden"  class="batch_{{ $batch->id }}" value="{{ $batch->expiry_date }}">
+                                                  <input type="hidden" name="exp_dates[{{ $product['product_id'] }}][{{ $variant['variant_id'] }}]" class="append_data_{{$batch->id}} ex-date">
+                                                @endforeach
+                                           
+                                              </td>
+                                              <td width="20%" class="expiry_date_text">
+                                                  
+                                                  @if (isset($exp_dates))
+                                                    {{ $exp_dates['batch_exp'] }}
+                                                  @endif
+
+
                                               </td>
                                             </tr>
                                             <?php $total_quantity +=$variation_details['quantity']; ?>
@@ -229,6 +268,35 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
+
+      $(document).on('change', '.batch_data', function(event) {
+        event.preventDefault();
+        var parent_this=$(this);
+        $(this).parents('.parent_tr').find('.expiry_date_text').text('');
+        $(this).parents('.parent_tr').find('.ex-date').val('');
+
+        var currenct_val=$(this).select2('data');
+        $.each(currenct_val, function(index, val) {
+            var att_id=val.element.attributes[0].value;
+            var exp_date=$('.batch_'+att_id).val();
+            var check_parent=parent_this.parents('.parent_tr').find('.expiry_date_text').text();
+
+            if (check_parent=="") {
+         
+              parent_this.parents('.parent_tr').find('.expiry_date_text').append(exp_date);
+            }
+            else{
+              parent_this.parents('.parent_tr').find('.expiry_date_text').append(', '+exp_date);
+            }
+              $('.append_data_'+att_id).val(exp_date);
+        });
+      });
+
+      $(function ($) {
+        $('.select2').select2({
+          minimumResultsForSearch: -1
+        });
+      });
       $(document).ready(function() {
           var delivery_status="{{ $order->order_status }}";
           if (delivery_status==15 || delivery_status==16) {
@@ -243,7 +311,7 @@
        var currenct_val=$(this).val();
           if (currenct_val==15 || currenct_val==16) {
               $('.delivery-date').css('display','block');
-              $('.date-picker').val(<?php date('m/d/Y'); ?>);
+              $('.date-picker').val(<?php date('m-d-Y'); ?>);
           }
           else{
             $('.delivery-date').css('display','none');

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\OptionValue;
 use App\Models\PurchaseStockHistory;
+use App\Models\PurchaseBatchInfo;
 use DB;
 class PurchaseProducts extends Model
 {
@@ -125,5 +126,16 @@ class PurchaseProducts extends Model
 
             
         return $total;
+    }
+    static function BatchInfo($purchase_id,$product_id,$variant_id)
+    {
+        $batch_details=PurchaseBatchInfo::where([
+          'purchase_id'         =>$purchase_id,
+          'product_id'          =>$product_id,
+          'product_variant_id'  =>$variant_id
+        ])
+        ->first();
+
+        return $batch_details;
     }
 }

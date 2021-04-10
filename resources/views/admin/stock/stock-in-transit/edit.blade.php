@@ -92,6 +92,8 @@
                             <th class="quantity-info" width="22%">Damaged Quantity<br><small>(C)</small></th>
                             <th class="quantity-info">Missed Quantity<br><small>(A-B=D)</small></th>
                             <th class="quantity-info">Stock Quantity<br><small>(A-C-D)</small></th>
+                            <th>Batch Id</th>
+                            <th>Expiry Date</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -170,6 +172,17 @@
                                   <input type="text" name="variant[stock_quantity][]" value="0" class="form-control stock_quantity" readonly>
                               </div>
                             </td>
+                            <?php 
+
+                              $batch_details=\App\Models\PurchaseProducts::BatchInfo($purchase->id,$product['product_id'],$variant['variant_id']);
+
+                            ?>
+                            <td width="20%">
+                              <input type="text" name="variant[batch_id][]" class="form-control" value="{{ isset($batch_details->batch_id)?$batch_details->batch_id:'' }}">
+                            </td>
+                            <td width="20%">
+                              <input type="text" name="variant[expiry_date][]" class="form-control date-picker" value="{{ isset($batch_details->expiry_date)?date('d-m-Y',strtotime($batch_details->expiry_date)):'' }}">
+                            </td>
                           </tr>
                         @endforeach
    
@@ -241,7 +254,7 @@
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
-
+      $('.date-picker').datepicker({dateFormat: 'dd-mm-yy'});
       $(function ($) {
         $('.no-search.select2bs4').select2({
           minimumResultsForSearch: -1

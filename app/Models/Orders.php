@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\OrderStatus;
 use App\Models\OrderProducts;
 use App\Models\ProductVariantVendor;
+use App\Models\PurchaseBatchInfo;
 class Orders extends Model
 {
     public function customer()
@@ -210,5 +211,16 @@ class Orders extends Model
                 ->value('r.name');
 
         return $region;
+    }
+    static function PurchaseBatchInfo($product_id,$product_variant_id)
+    {
+        $batch_details=PurchaseBatchInfo::where([
+                        'product_id'          => $product_id,
+                        'product_variant_id'  => $product_variant_id
+                      ])
+                      ->get();
+                      // 'batch_id','expiry_date'
+
+        return $batch_details;
     }
 }

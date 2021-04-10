@@ -28,29 +28,17 @@
           @if ($type=="assign-shippment")
           <div class="col-md-12 action-controllers ">
               <a class="btn btn-primary download-summary" href="javascript:void(0)">
-              <i class="fas fa-list-alt"></i>&nbsp;Generate Summary
+                <i class="fas fa-list-alt"></i>&nbsp;Generate Summary
               </a>
-              <a class="btn btn-default load-delivery assign-shippment" href="javascript:void(0)"  status-id="14">
-              <i class="fas fa-list-alt"></i>&nbsp; Load For Delivery
-              </a>
-              <a class="btn btn-default assign-shippment" href="javascript:void(0)" status-id="15">
-              <i class="fas fa-list-alt"></i>&nbsp; Assign to Delivery Person
-              </a>
-              <a class="btn btn-default delivered assign-shippment" href="javascript:void(0)"  status-id="13">
-              <i class="fas fa-list-alt"></i>&nbsp; Delivered
-              </a>
-              <a class="btn btn-default missed-delivered assign-shippment" href="javascript:void(0)"  status-id="17">
-              <i class="fas fa-list-alt"></i>&nbsp; Missed Delivery
-              </a>
+            {{--   <a class="btn btn-default assign-shippment" href="javascript:void(0)" status-id="15">
+                <i class="fas fa-list-alt"></i>&nbsp; Assign to Delivery Person
+              </a> --}}
               <a class="btn btn-default missed-delivered assign-shippment" href="javascript:void(0)"  status-id="notify_admin">
-              <i class="fas fa-list-alt"></i>&nbsp; Notify Admin
+                <i class="fas fa-list-alt"></i>&nbsp; Notify Admin
               </a>
               <div class="spinner-border text-primary hidden" role="status">
                 <span class="sr-only">Loading...</span>
               </div>
-            {{--   <a class="btn btn-default assign-shippment assign-shippment" href="javascript:void(0)" status-id="18">
-              <i class="fas fa-list-alt"></i>&nbsp; Assign To Shipment
-              </a> --}}
           </div>
           @endif
           <div class="assign-delivery hidden col-md-12">
@@ -426,7 +414,6 @@
     }
 
     function Delivered(del_type,order_no) {
-      alert(del_type);
         if (del_type=="assigned") {
             return order_no;
         }
