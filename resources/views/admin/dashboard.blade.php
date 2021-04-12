@@ -47,7 +47,7 @@
                 <p>Total New Orders</p>
               </div>
               <div class="icon">
-                <span>{{$delivery_completed}}</span>
+                <span>{{$pending_order_count}}</span>
               </div>
               <a href="{{route('new-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -120,7 +120,7 @@
             <div class="small-box">
               <div class="inner">
                 <h5>Daily Sales</h5>
-                <span>$3,500</span>
+                <span>${{ $current_day_total }}</span>
               </div>
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -131,7 +131,7 @@
             <div class="small-box">
               <div class="inner">
                 <h5>Weekly Sales</h5>
-                <span>$10,500</span>
+                <span>${{ $current_week_total }}</span>
               </div>
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -142,7 +142,7 @@
             <div class="small-box">
               <div class="inner">
                 <h5>Monthly Sales</h5>
-                <span>$35,500</span>
+                <span>${{ $current_month_total }}</span>
               </div>
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -153,7 +153,7 @@
             <div class="small-box">
               <div class="inner">
                 <h5>Annual Sales</h5>
-                <span>$4,35,500</span>
+                <span>${{ $current_year_total }}</span>
               </div>
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>

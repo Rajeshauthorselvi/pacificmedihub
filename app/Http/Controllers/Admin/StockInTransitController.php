@@ -15,6 +15,7 @@ use App\Models\Vendor;
 use Illuminate\Http\Request;
 use App\Models\PurchaseReturn;
 use App\Models\PurchaseProductReturn;
+use App\Models\PurchaseBatchInfo;
 use Session;
 use Redirect;
 use DB;
@@ -196,6 +197,7 @@ class StockInTransitController extends Controller
        $row_ids=$variant['row_id'];
        $qty_received=$variant['qty_received'];
        $damaged_qty=$variant['damaged_qty'];
+       $variant_id=$variant['variant_id'];
 
        $missed_quantity=$variant['missed_qty'];
        $stock_quantity=$variant['stock_quantity'];
@@ -217,7 +219,6 @@ class StockInTransitController extends Controller
                           ->where('product_id',$product_id[$key])
                           ->first();
 
-              // dd($variant_data);
 
               /*Add Stock History*/
               if ($qty_received[$key]!=0) {
@@ -261,17 +262,13 @@ class StockInTransitController extends Controller
 
                         $balance_quantity=$existing_quantity->quantity-$damaged_qty[$key];
 
-
                         DB::table('purchase_products')
                           ->where('id',$existing_quantity->id)
                           ->update(['quantity'=>$balance_quantity]);
 
-
-
                         $existing_price=DB::table('purchase_products')
                                         ->where('id',$existing_quantity->id)
                                         ->first();
-
 
                         $total_amount=$existing_price->base_price*$balance_quantity;
 
@@ -287,6 +284,50 @@ class StockInTransitController extends Controller
           }
 
        }
+
+        $batch_id=$variant['batch_id'];
+        $expiry_date=$variant['expiry_date'];
+
+
+          foreach ($row_ids as $key => $row_id) {
+
+            $date=PurchaseBatchInfo::where([
+                  'purchase_id'         => $id,
+                  'product_id'          => $product_id[$key],
+                  'product_variant_id'  => $variant_id[$key]
+                ])
+            ->value('expiry_date');
+
+            if (isset($expiry_date[$key])) {
+                $ex_date=date('Y-m',strtotime($expiry_date[$key]));
+                $ex_date=$expiry_date[$key];
+            }
+            else{
+              $ex_date=null;
+            }
+
+            if (isset($batch_id[$key])) {
+                $batch=$batch_id[$key];
+            }
+            else{
+                $batch=null;
+            }
+              PurchaseBatchInfo::updateOrCreate(
+                [
+                  'purchase_id'         => $id,
+                  'product_id'          => $product_id[$key],
+                  'product_variant_id'  => $variant_id[$key]
+                ],
+                [
+                  'purchase_id'         => $id,
+                  'product_id'          => $product_id[$key],
+                  'product_variant_id'  => $variant_id[$key],
+                  'batch_id'            => $batch,
+                  'expiry_date'         => $ex_date
+                ]
+              );
+          }
+
 
           $total_quantity=PurchaseProducts::where('purchase_id',$id)->sum('quantity');
           $return_quantity=PurchaseStockHistory::where('purchase_id',$id)

@@ -88,7 +88,7 @@ class OrderController extends Controller
           $data['data_title']='Assign for Delivery';
         }
         elseif($currenct_route[0]=="assign-delivery"){
-          $orders->where('order_status',15);
+          $orders->whereIn('order_status',[14,15]);
           $data['data_title']='Delivery  In Progress';
           if ($request->ajax()) {
             $orders->whereDate('approximate_delivery_date',date('Y-m-d',strtotime($request->date)));
@@ -484,7 +484,7 @@ class OrderController extends Controller
          $order_status=OrderStatus::where('status',1);  
                                  
         if ($currenct_route[0]=="assign-delivery") {
-           $order_status->whereIn('id',[16,17]);
+           $order_status->whereIn('id',[14,15,16,17]);
         }                     
         elseif ($currenct_route[0]=="assign-shippment") {
             if($order->order_status==18){
@@ -508,10 +508,17 @@ class OrderController extends Controller
 
         $order_status=$order_status->pluck('status_name','id')->toArray();
 
-        $data['delivery_status']=[''=>'Please Select']+OrderStatus::where('status',1)
-                                 ->whereIn('id',[14,15,16,17,18])
-                                 ->pluck('status_name','id')
+        $delivery_status=OrderStatus::where('status',1);
+                                if ($currenct_route[0]=="assign-shippment") {
+                                    $delivery_status->whereIn('id',[15,16,17]);
+                                }
+                                else{
+                                    $delivery_status->whereIn('id',[14,15,16,17]); 
+                                }
+                                 $delivery_status=$delivery_status->pluck('status_name','id')
                                  ->toArray();
+
+            $data['delivery_status']=[''=>'Please Select']+$delivery_status;
 
         $data['order_status']=[''=>'Please Select']+$order_status;
 
@@ -530,7 +537,13 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-      
+        $this->validate(request(),[
+            'order_status'   => 'required',
+        ]);
+
+        $order_details=Orders::find($id);
+        $batch_ids=$request->get('batch_ids');
+
         $variant=$request->variant;
         $new_variant=$request->new_variant;
 
@@ -538,10 +551,7 @@ class OrderController extends Controller
         $route=explode('.',$currenct_route);
         $data['type']=$currenct_route[0];
 
-        $this->validate(request(),[
-            'order_status'   => 'required',
-        ]);
-            
+ 
         if($request->order_status==13){
             $order_completed_at = date('Y-m-d H:i:s');
         }else{
@@ -553,20 +563,41 @@ class OrderController extends Controller
           $customer_address = $request->del_add_id;
        }
         if ($route[0]=="assign-shippment" || $route[0]=="assign-delivery") {
-
           $order_data['delivery_person_id']=$request->delivery_person_id;
-          if ($request->order_status==15) {
-            $order_data['approximate_delivery_date']=date('Y-m-d',strtotime($request->delivery_date));
-          }
+          $order_data['approximate_delivery_date']=date('Y-m-d',strtotime($request->delivery_date));
           $order_data['logistic_instruction']=$request->notes;
           $order_data['delivery_status']=$request->delivery_status;
           $order_data['order_status']=$request->order_status;
-
 
           if ($request->order_status==16) {
               $order_data['delivered_at']=date('Y-m-d');
               $order_data['order_status']=13;
           }
+
+          if ($request->delivery_status==14) {
+              $order_data['order_status']=14;
+          }
+
+         if ($request->delivery_status==16) {
+              $order_data['order_status']=13;
+              $order_data['delivered_at']=date('Y-m-d');
+          }
+            
+
+          if (isset($batch_ids) && count($batch_ids)>0) {
+            foreach ($batch_ids as $product_id => $batchs) {
+                  OrderProducts::where('order_id',$id)
+                  ->where('product_id',$product_id)
+                  ->update(['batch_ids'=>null]);
+                foreach ($batchs as $variant_id => $batch) {
+                  OrderProducts::where('order_id',$id)
+                  ->where('product_id',$product_id)
+                  ->where('product_variation_id',$variant_id)
+                  ->update(['batch_ids'=>implode(',',$batch)]);
+                }
+            }
+          }
+
         }
         else{
           $order_data=[
@@ -674,10 +705,13 @@ class OrderController extends Controller
        ];
        OrderHistory::insert($order_history);
 
-       if ($request->order_status==14 || $request->delivery_status==14) {
-         $this->ReduceQuantityToVendor($id);
+       if ($request->delivery_status==15) {
+        if (!isset($order_details->quantity_deducted)) {
+           $this->ReduceQuantityToVendor($id);
+        }
+         Orders::where('id',$id)->update(['order_status'=>15]);
        }
-       elseif ($request->order_status==17) {
+       elseif ($request->delivery_status==17) {
           $this->UpdateQuantityToStock($id);
        }
 
@@ -1555,7 +1589,10 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
       $low_stock_array=array();
       foreach ($order_ids as $key => $order_no) {
         if ($status_id==14) {
-            $check_order_staus=$this->CheckQuantity($order_no);
+          
+          Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
+                
+/*            $check_order_staus=$this->CheckQuantity($order_no);
             if ($check_order_staus['status']) {
               $this->ReduceQuantityToVendor($order_no);
               Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
@@ -1563,10 +1600,13 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
             else{
                 $order_id=Orders::where('id',$order_no)->value('order_no');
                 array_push($low_stock_array, $order_id);
-            } 
+            } */
         }
         if ($status_id==17) {
           $this->UpdateQuantityToStock($order_no);
+          Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
+        }
+        if ($status_id==13) {
           Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
         }
         if ($status_id==18 || $status_id==20 || $status_id==21) {
@@ -1584,8 +1624,30 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
         if ($status_id=="notify_admin") {
             app('App\Http\Controllers\Admin\StockVerifyController')->EmailFunction($order_no);
              Orders::where('id',$order_no)->update(['order_status'=>19]);
+
+             $status_id=19;
         }
+
+
+       /*OrderHistory*/
+         if (!Auth::check() && Auth::guard('employee')->check()) {
+            $updated_by=Auth::guard('employee')->user()->id;
+            $user_type=2;
+         }
+         else{
+            $updated_by=Auth::id();
+            $user_type=1;
+         }
+         $order_history=[
+            'order_id'    => $order_no,
+            'order_status_id' => $status_id,
+            'updated_by'  => $updated_by,
+            'user_type'   => $user_type 
+         ];
+         OrderHistory::insert($order_history);
+       /*OrderHistory*/
       }
+
 
       if (count($low_stock_array)>0) {
         $mess=implode(', ', $low_stock_array).', low stock orders';

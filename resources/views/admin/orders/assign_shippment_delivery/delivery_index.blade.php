@@ -36,6 +36,20 @@
           @endif
           
           <div class="col-md-12">
+          <div class="col-md-12 action-controllers ">
+              <a class="btn btn-default load-delivery assign-shippment" href="javascript:void(0)"  status-id="14">
+                <i class="fas fa-list-alt"></i>&nbsp; Load For Delivery
+              </a>
+              <a class="btn btn-default delivered assign-shippment" href="javascript:void(0)"  status-id="13">
+                <i class="fas fa-list-alt"></i>&nbsp; Delivered
+              </a>
+              <a class="btn btn-default missed-delivered assign-shippment" href="javascript:void(0)"  status-id="17">
+                <i class="fas fa-list-alt"></i>&nbsp; Missed Delivery
+              </a>
+              <div class="spinner-border text-primary hidden" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+          </div>
             <div class="card card-outline card-primary">
               <div class="card-header">
                 <div class="pull-left col-sm-6">
@@ -50,7 +64,7 @@
                   <div class="col-sm-12 text-right">
                       <label>Filter By Date: </label>
                     
-                      <input type="text" placeholder="Select Date" class="form-control date-picker" value="{{ date('m/d/Y') }}">
+                      <input type="text" placeholder="Select Date" class="form-control date-picker" value="{{ date('d-m-Y') }}">
                     
                   </div>
                 </div>
@@ -145,8 +159,21 @@
                         if ($order->order_status==11) {
                           $disabled_edit="pointer-events:none;opacity:0.5";
                         }
-                       ?>
+
+   
+                        $check_if_load=\App\Models\OrderHistory::CheckIfLoad($order->id);
+                           if ($check_if_load) {
+                                  $check_type="loaded";
+                              }
+                              else{
+                                  $check_type="notloaded"; 
+                              }
+                             ?>
                         <tr style="{{ $class_bg }}">
+                          <td>
+                            <input type="checkbox"  name="orders_ids" class="orders_ids" value="{{$order->id}}">
+                            <input type="hidden" class="order-loaded_{{ $order->id }}" value="{{ $check_type }}"> 
+                          </td>
                           <?php $region=\App\Models\Orders::GetRegion($order->address->post_code); ?>
                           <td>{{ isset($region)?$region:'-' }}</td>
                           <td>{{ $order->address->post_code }}</td>
@@ -173,13 +200,15 @@
                                   </a>
                                   @endif
                                 @endif
-                               <a href="{{ url('admin/cop_pdf/'.$order->id) }}"><li class="dropdown-item">
+                               <a href="{{ url('admin/cop_pdf/'.$order->id) }}">
+                                 <li class="dropdown-item">
                                   <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
-                                 </li></a>
+                                 </li>
+                               </a>
                                 <a href="{{ url('admin/cop_print/'.$order->id) }}" target="_blank">
                                   <li class="dropdown-item" >
                                   <i class="fa fa-print"></i>&nbsp;&nbsp;Print
-                                </li>
+                                  </li>
                                 </a>
                                 @if (isset($check_quantity[0]) && $check_quantity[0]=="yes") 
                                  <a href="{{ route('verify-stock.show',[$order->id]) }}">
@@ -216,7 +245,7 @@
     </section>
   </div>
 
-
+  <div class="load-error-data"></div>
   <style type="text/css">
     .form-group{display:flex;}
     .disabled{pointer-events: none;opacity: 0.5;}
@@ -226,7 +255,125 @@
 
   @push('custom-scripts')
   <script type="text/javascript">
+    $(document).on('click', '.assign-shippment', function(event) {
+      event.preventDefault();
+        var checkedNum = $('input[name="orders_ids"]:checked').length;
+
+        var status_id=$(this).attr('status-id');
+        if (checkedNum==0) {
+          alert('Please select order');
+        }
+        else{
+
+            var current_status=$(this).val();
+            var order_ids = [];
+            var order = "";
+            $('input[name="orders_ids"]:checked').each(function (index,val) {
+              var order_id=$(this).val();
+              var load_type=$('.order-loaded_'+order_id).val();
+              if (status_id==14) {
+                 var order=LoadForDelivery(load_type,order_id);
+                 if (order!=undefined) {
+                   order_ids.push(order);
+                 }
+               }
+               else if(status_id==13){
+                 var order=Delivered(load_type,order_id);
+                 if (order!=undefined) {
+                   order_ids.push(order);
+                 }
+               }
+              else if(status_id==17){
+                var order=MissedDelivery(load_type,order_id);
+                if (order!=undefined) {
+                    order_ids.push(order);
+                }
+              }
+
+            });
+              
+                if (order_ids.length>0){
+                  if (status_id==13) {
+                    var msg="Are you sure want to delivered?"
+                  }
+                  else if (status_id==14) {
+                    var msg='Are you sure want to Load?';
+                  }
+                  else{
+                    var msg='Are you sure change status?';
+                  }
+                  
+                  if (!confirm(msg)) {
+                    return false;
+                  } 
+
+                    $.ajax({
+                    url: "{{ url('admin/update-order-status') }}",
+                    type: 'POST',
+                    data: {
+                      '_token':"{{ csrf_token() }}",
+                      status_id: status_id,
+                      order_ids:order_ids
+                    },
+                    beforeSend: function (){
+                        $('.spinner-border').removeClass('hidden');
+                    }
+                  })
+                  .done(function() {
+                    $('.spinner-border').addClass('hidden');
+                      location.reload();
+                  });
+                }
+            console.log(order_ids);
+
+        }  
+    });
+    function Delivered(load_type,order_no) {
+        if (load_type=="loaded") {
+            return order_no;
+        }
+        else{
+          $('input[value="'+order_no+'"]').prop('checked', false);
+          if ($('.load-error-data').text()=="") {
+            $('.load-error-data').append(order_no);
+          }
+          else{
+            $('.load-error-data').append(','+order_no);
+          }
+        }
+    }
+
+    function LoadForDelivery(load_type,order_no) {
+               if (load_type=="loaded") {
+                    $('input[value="'+order_no+'"]').prop('checked', false);
+                    if ($('.load-error-data').text()=="") {
+                      $('.load-error-data').append(order_no);
+                    }
+                    else{
+                      $('.load-error-data').append(','+order_no);
+                    }
+                }
+                else{
+                  return order_no;
+                }
+
+    }
+    function MissedDelivery(load_type,order_no) {
+        if (load_type=="loaded") {
+            return order_no;
+        }
+        else{
+          $('input[value="'+order_no+'"]').prop('checked', false);
+          if ($('.load-error-data').text()=="") {
+            $('.load-error-data').append(order_no);
+          }
+          else{
+            $('.load-error-data').append(','+order_no);
+          }
+        }
+    }
 var $datepicker = $('.date-picker').datepicker({
+    dateFormat: 'dd-mm-yy',
     onSelect: function(dateText) {
           $.ajax({
             url: "{{ url('admin/assign-delivery') }}?date="+this.value,
@@ -235,7 +382,6 @@ var $datepicker = $('.date-picker').datepicker({
             $('.ajax_data_append').html(reponse);
             $('#data-table').dataTable();
           });
-          
     }
 });
 
@@ -250,36 +396,6 @@ var $datepicker = $('.date-picker').datepicker({
         $(this).toggleClass('allChecked');
     });
 
-    $('.download-summary').click(function(event) {
-      var checkedNum = $('.orders_ids:checked',allPages).length;
-
-      if (checkedNum==0) {
-        alert('Please select order');
-      }
-      else{
-        if (confirm('Are you sure want to download?')) {
-
-          var order_ids = [];
-          $('.orders_ids:checked',allPages).each(function () {
-            order_ids.push($(this).val());
-          });
-
-            $.ajax({
-              url: "{{ url('admin/order-summary/') }}",
-              type: 'GET',
-              data:{
-                order_ids:order_ids
-              }
-            })
-            .done(function(reponse) {
-               window.open(reponse.url,'_blank');
-            })
-            .fail(function() {
-              console.log("Ajax Error :-");
-            });
-        }
-      }
-    });
 
   </script>
   @endpush

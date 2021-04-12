@@ -25,11 +25,29 @@ class DashboardController extends Controller
         $data = array();
         $data['rfq_count'] = RFQ::where('status',1)->count();
         $data['delivery_completed'] = Orders::where('order_status',13)->count();
-        $data['pending_order_count'] = Orders::where('order_status',1)->count();
+        $data['pending_order_count'] = Orders::where('order_status',19)->count();
         $data['vendor_count'] = Vendor::where('is_deleted',0)->count();
         $data['customer_count'] = User::where('role_id',7)->where('is_deleted',0)->count();
         $low_stock_count=Orders::LowStockQuantity();
         $data['low_stock_count']=$low_stock_count['low_stock_count'];
+
+        $data['current_day_total']=Orders::where('order_status',13)
+                                   ->whereDate('created_at', Carbon::today())
+                                   ->sum('sgd_total_amount');
+
+        $data['current_week_total']=Orders::where('order_status',13)
+                                   ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+                                   ->sum('sgd_total_amount');
+
+        $data['current_month_total']=Orders::where('order_status',13)
+                                   ->whereMonth('created_at', date('m'))
+                                   ->sum('sgd_total_amount');
+
+        $data['current_year_total']=Orders::where('order_status',13)
+                                   ->whereYear('created_at', date('Y'))
+                                   ->sum('sgd_total_amount');
+
+
         
     	return view('admin/dashboard',$data);
     }

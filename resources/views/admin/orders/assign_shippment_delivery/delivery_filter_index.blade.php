@@ -34,7 +34,21 @@
                         }
                        ?>
                         <tr style="{{ $class_bg }}">
-                          <td><input type="checkbox" class="orders_ids" value="{{$order->id}}"></td>
+                            <?php 
+                        $check_if_load=\App\Models\OrderHistory::CheckIfLoad($order->id);
+                        if ($check_if_load) {
+                          $check_type="loaded";
+                        }
+                        else{
+                          $check_type="notloaded"; 
+                        }
+                        ?>
+
+                          <td>
+                            <input type="checkbox"  name="orders_ids" class="orders_ids" value="{{$order->id}}">
+                            <input type="hidden" class="order-loaded_{{ $order->id }}" value="{{ $check_type }}"> 
+                          </td>
+
                           <?php $region=\App\Models\Orders::GetRegion($order->address->post_code); ?>
                           <td>{{ isset($region)?$region:'-' }}</td>
                           <td>{{ $order->address->post_code }}</td>
