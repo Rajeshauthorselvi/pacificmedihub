@@ -30,7 +30,7 @@
           @endforeach
         </ul>
       </div>
-    @endif   
+    @endif
     <!-- Main content -->
     <section class="content">
       <ol class="breadcrumb float-sm-right">
@@ -79,12 +79,12 @@
                           <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
                         </div>
                             <div class="col-sm-4">
-                              <?php 
-                              if (isset($check_quantity[0]) && $check_quantity[0]=="yes") 
+                              <?php
+                              if (isset($check_quantity[0]) && $check_quantity[0]=="yes")
                                   $style="disabled";
                               else
                                   $style="";
-                                 ?> 
+                                 ?>
                               <label for="sales_rep_id">Delivery Status</label>
                               {!! Form::select('delivery_status',$delivery_status,null,['class'=>'form-control','id'=>'delivery_status',$style]) !!}
                               <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
@@ -106,7 +106,7 @@
 
                           </div>
                         </div>
-                          
+
                         </div>
 
                     <div class="product-sec">
@@ -119,11 +119,11 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Product Name</th>
                                 <th scope="col"></th>
-                                
+
                                 <th scope="col"></th>
                                 <th>
                                     Total Quantity:&nbsp;
-                                    <span class="all_quantity">{{ $total_products->quantity }}</span>   
+                                    <span class="all_quantity">{{ $total_products->quantity }}</span>
                                 </th>
                               </tr>
                             </thead>
@@ -161,7 +161,7 @@
                                         <tbody>
                                           <?php $total_amount=$total_quantity=$final_price=0 ?>
                                           @foreach($product['product_variant'] as $key=>$variant)
-                                            <?php 
+                                            <?php
                                               $option_count=$product['option_count'];
                                               $variation_details=\App\Models\OrderProducts::VariationPrice($product['product_id'],$variant['variant_id'],$order->id);
 
@@ -170,7 +170,7 @@
                                               <td>{{$variant['option_value1']}}</td>
                                               @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
                                                 <td>{{$variant['option_value2']}}</td>
-                                              @endif
+                         e                      @endif
                                               @if($option_count==3||$option_count==4||$option_count==5)
                                                 <td>{{$variant['option_value3']}}</td>
                                               @endif
@@ -184,8 +184,8 @@
                                                 <div class="form-group">{{ $variation_details['quantity'] }}</div>
                                               </td>
                                               <td width="20%">
-                                                <?php 
-                                                $batch_details=App\Models\Orders::PurchaseBatchInfo($product['product_id'],$variant['variant_id']); 
+                                                <?php
+                                                $batch_details=App\Models\Orders::PurchaseBatchInfo($product['product_id'],$variant['variant_id']);
 
                                                 $batch_val=explode(',',$variation_details->batch_ids);
                                                 $exp_dates=App\Models\OrderProducts::BatchInfos($batch_val);
@@ -196,7 +196,7 @@
                                                   @if (in_array($batch->id,$batch_val))
                                                     <option value="{{ $batch->id }}" selected="selected">
                                                       {{ $batch->batch_id }}
-                                                    </option>    
+                                                    </option>
                                                   @else
                                                     <option value="{{ $batch->id }}">
                                                       {{ $batch->batch_id }}
@@ -208,10 +208,10 @@
                                                   <input type="hidden"  class="batch_{{ $batch->id }}" value="{{ $batch->expiry_date }}">
                                                   <input type="hidden" name="exp_dates[{{ $product['product_id'] }}][{{ $variant['variant_id'] }}]" class="append_data_{{$batch->id}} ex-date">
                                                 @endforeach
-                                           
+
                                               </td>
                                               <td width="20%" class="expiry_date_text">
-                                                  
+
                                                   @if (isset($exp_dates))
                                                     {{ $exp_dates['batch_exp'] }}
                                                   @endif
@@ -262,7 +262,7 @@
     </section>
   </div>
 
-</div>       
+</div>
   <style type="text/css">
     .form-group{display:flex;}
   </style>
@@ -282,7 +282,7 @@
             var check_parent=parent_this.parents('.parent_tr').find('.expiry_date_text').text();
 
             if (check_parent=="") {
-         
+
               parent_this.parents('.parent_tr').find('.expiry_date_text').append(exp_date);
             }
             else{
@@ -305,7 +305,7 @@
           else{
             $('.delivery-date').css('display','none');
           }
-      }); 
+      });
       var $datepicker = $('.date-picker').datepicker({ minDate: 0,dateFormat: 'dd-mm-yy'});
       $(document).on('change', '#order_status, #delivery_status', function(event) {
        var currenct_val=$(this).val();

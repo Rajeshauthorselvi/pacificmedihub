@@ -299,7 +299,8 @@ class StockInTransitController extends Controller
             ->value('expiry_date');
 
             if (isset($expiry_date[$key])) {
-                $ex_date=date('Y-m-d',strtotime($expiry_date[$key]));
+                $ex_date=date('Y-m',strtotime($expiry_date[$key]));
+                $ex_date=$expiry_date[$key];
             }
             else{
               $ex_date=null;

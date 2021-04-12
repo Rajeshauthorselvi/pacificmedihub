@@ -106,8 +106,8 @@
 <!-- InputMask -->
 <script src="{{ asset('theme/plugins/moment/moment.min.js') }}"></script>
 <!-- daterangepicker -->
-<script src="{{ asset('theme/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <script src="{{ asset('theme/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
+<script src="{{ asset('theme/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{ asset('theme/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 <!-- overlayScrollbars -->
@@ -177,11 +177,11 @@ function notificationSec() {
   $(function () {
 
     //Datemask dd/mm/yyyy
-    $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    // $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
     //Datemask2 mm/dd/yyyy
-    $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+    // $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
    //Money Euro
-    $('[data-mask]').inputmask()
+     $('[data-mask]').inputmask('mm-yyyy', { 'placeholder': 'mm-yyyy' });
 
     //Date range picker
     $('#reservationdate').datetimepicker({

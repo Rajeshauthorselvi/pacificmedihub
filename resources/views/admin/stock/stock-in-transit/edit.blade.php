@@ -181,7 +181,7 @@
                               <input type="text" name="variant[batch_id][]" class="form-control" value="{{ isset($batch_details->batch_id)?$batch_details->batch_id:'' }}">
                             </td>
                             <td width="20%">
-                              <input type="text" name="variant[expiry_date][]" class="form-control date-picker" value="{{ isset($batch_details->expiry_date)?date('d-m-Y',strtotime($batch_details->expiry_date)):'' }}">
+                              <input type="text" class="form-control"  name="variant[expiry_date][]" data-inputmask-alias="datetime" data-inputmask-inputformat="mm-yyyy" data-mask value="{{ isset($batch_details->expiry_date)?$batch_details->expiry_date:'' }}">
                             </td>
                           </tr>
                         @endforeach
@@ -254,6 +254,7 @@
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
+      // $('[data-mask]').inputmask();
       $('.date-picker').datepicker({dateFormat: 'dd-mm-yy'});
       $(function ($) {
         $('.no-search.select2bs4').select2({
