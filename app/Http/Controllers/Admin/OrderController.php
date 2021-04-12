@@ -484,7 +484,6 @@ class OrderController extends Controller
          $order_status=OrderStatus::where('status',1);  
                                  
         if ($currenct_route[0]=="assign-delivery") {
-          echo "string";
            $order_status->whereIn('id',[14,15,16,17]);
         }                     
         elseif ($currenct_route[0]=="assign-shippment") {
