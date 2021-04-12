@@ -284,9 +284,9 @@
                               <td colspan="2"><span class="all_amount">{{$total_products['total_amount']}}</span></td>
                               <input type="hidden" name="total_amount" id="total_amount_hidden" value="{{$rfqs->total_amount}}">
                             </tr>
-                            <tr class="total-calculation"><td colspan="3" class="title">Order Discount</td>
+                            {{-- <tr class="total-calculation"><td colspan="3" class="title">Order Discount</td>
                               <td colspan="2"><span class="order-discount">{{$discount_amt}}</span></td>
-                            </tr>
+                            </tr> --}}
                             <tr class="total-calculation">
                               <td colspan="3" class="title">Order Tax</td>
                               <td id="orderTax" colspan="2">{{$order_tax}}</td>

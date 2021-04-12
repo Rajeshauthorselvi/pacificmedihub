@@ -284,10 +284,10 @@
                               <td colspan="4" class="title">Total</td>
                               <td><span class="all_amount">{{number_format($rfqs->total_amount,2,'.','')}}</span></td>
                             </tr>
-                            <tr class="total-calculation">
+                            {{-- <tr class="total-calculation">
                               <td colspan="4" class="title">Order Discount</td>
                               <td><span class="order-discount">{{number_format($discount_amt,2,'.','')}}</span></td>
-                            </tr>
+                            </tr> --}}
                             <tr class="total-calculation">
                               <td colspan="4" class="title">Order Tax ({{isset($rfqs->oderTax->name)?$rfqs->oderTax->name:'No Tax'}} @ {{isset($rfqs->oderTax->rate)?$rfqs->oderTax->rate:0.00}}%)</td>
                               <td id="orderTax">{{number_format($order_tax,2,'.','')}}</td>

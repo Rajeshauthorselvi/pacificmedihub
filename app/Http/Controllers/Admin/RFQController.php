@@ -24,6 +24,7 @@ use App\Models\RFQCommentsAttachments;
 use App\Models\Orders;
 use App\Models\Notification;
 use App\Models\DeliveryMethod;
+use App\Models\OrderRFQProductDescription;
 use Auth;
 use Redirect;
 use Session;
@@ -147,7 +148,6 @@ class RFQController extends Controller
         'sales_rep_id'          => $request->sales_rep_id,
         'currency'              => $request->currency,
         'order_tax'             => $request->order_tax,
-        'order_discount'        => $request->order_discount,
         'delivery_method_id'    => $request->delivery_method_id,
         'delivery_charge'       => $request->delivery_charge,
         'payment_term'          => $request->payment_term,
@@ -161,9 +161,21 @@ class RFQController extends Controller
         'created_user_type'     => $created_user_type,
         'created_at'            => date('Y-m-d H:i:s')
       ];
+
       $rfq_id=RFQ::insertGetId($rfq_details);
 
-      $quantites             = $request->quantity;
+      $description_notes = $request->product_description;
+
+      foreach($description_notes as $prod_id => $notes){
+        $add_notes = new OrderRFQProductDescription;
+        $add_notes->type = 'rfq';
+        $add_notes->ref_id = 1;
+        $add_notes->product_id = $prod_id;
+        $add_notes->description = $notes;
+        $add_notes->timestamps = false;
+        $add_notes->save();
+      }
+
       $variant               = $request->variant;
       $product_ids           = $variant['product_id'];
       $variant_id            = $variant['id'];
@@ -172,8 +184,11 @@ class RFQController extends Controller
       $minimum_selling_price = $variant['minimum_selling_price'];
       $stock_qty             = $variant['stock_qty'];
       $rfq_price             = $variant['rfq_price'];
-      $sub_total             = $variant['sub_total'];
       $last_rfq_price        = $variant['last_rfq_price'];
+      $discount_value        = $variant['discount_value'];
+      $final_price           = $variant['final_price'];
+      $total_price           = $variant['price'];
+      $sub_total             = $variant['sub_total'];
 
       foreach ($product_ids as $key => $product_id) {
         if ($stock_qty[$key]!=0 && $stock_qty[$key]!="") {
@@ -186,6 +201,10 @@ class RFQController extends Controller
             'minimum_selling_price'     => $minimum_selling_price[$key],
             'quantity'                  => $stock_qty[$key],
             'rfq_price'                 => $rfq_price[$key],
+            'discount_type'             => $variant['discount_type'][$product_id],
+            'discount_value'            => $discount_value[$key],
+            'final_price'               => $final_price[$key],
+            'total_price'               => $total_price[$key],
             'sub_total'                 => $sub_total[$key],
             'last_rfq_price'            => $last_rfq_price[$key]
           ];

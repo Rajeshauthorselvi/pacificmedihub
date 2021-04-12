@@ -246,3 +246,7 @@ tr.hide-table-padding>td {padding: 0;}
 #myMap #pac-input:focus {border-color: #4d90fe;}
 #myMap #title {color: #fff;background-color: #4d90fe;font-size: 22px;font-weight: 500;padding: 5px;}
 .hidden{display: none;}
+
+
+.vatiant_table .table-bordered thead td,.vatiant_table .table-bordered thead th{text-align: center;
+vertical-align: middle;}
