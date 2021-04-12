@@ -206,7 +206,7 @@ class MyRFQController extends Controller
         $data['cus_email']        = $user->email;
         $data['delivery_address'] = UserAddress::find($del_add_id);
         $data['admin_address']    = User::where('id',1)->first();
-        $data['delivery_method']  = DeliveryMethod::where('is_free_delivery','no')->get();
+        $data['delivery_method']  = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
         $rfq_products = RFQProducts::with('product','variant')->where('rfq_id',$id)->orderBy('id','desc')->get();
         $rfq_data = $rfq_items = array();
         foreach ($rfq_products as $key => $item) {
@@ -287,7 +287,7 @@ class MyRFQController extends Controller
         $data['billing']     = UserAddress::find($bill_add_id);
 
         $data['all_address'] = UserAddress::where('customer_id',$user_id)->where('is_deleted',0)->get();
-        $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->get();
+        $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
         $rfq_products = RFQProducts::with('product','variant')->where('rfq_id',$id)->orderBy('id','desc')->get();
         $rfq_data = $rfq_items = array();
         foreach ($rfq_products as $key => $item) {
@@ -415,7 +415,7 @@ class MyRFQController extends Controller
                                                   ->where('is_deleted',0)->get();
 
             $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
-            $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->get();
+            $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
             Cart::instance('cart')->restore('userID_'.$user_id);
 
             $cart_data = [];
@@ -473,7 +473,7 @@ class MyRFQController extends Controller
                                                   ->where('is_deleted',0)->get();
 
             $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
-            $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->get();
+            $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
             Cart::instance('cart')->restore('userID_'.$user_id);
 
             $cart_data = [];
@@ -513,7 +513,7 @@ class MyRFQController extends Controller
         
         $user_id = Auth::id();
         Cart::instance('cart')->restore('userID_'.$user_id);
-        $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->get();
+        $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
         if(isset($user_id)){
             $cartItem = Cart::instance('cart')->add($product->id, $product->name, $price, $qty,[
                 'product_img' => $request->product_img,
