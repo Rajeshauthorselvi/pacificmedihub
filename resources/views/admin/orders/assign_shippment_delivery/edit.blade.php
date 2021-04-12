@@ -170,7 +170,7 @@
                                               <td>{{$variant['option_value1']}}</td>
                                               @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
                                                 <td>{{$variant['option_value2']}}</td>
-                         e                      @endif
+                                              @endif
                                               @if($option_count==3||$option_count==4||$option_count==5)
                                                 <td>{{$variant['option_value3']}}</td>
                                               @endif
@@ -211,12 +211,9 @@
 
                                               </td>
                                               <td width="20%" class="expiry_date_text">
-
                                                   @if (isset($exp_dates))
                                                     {{ $exp_dates['batch_exp'] }}
                                                   @endif
-
-
                                               </td>
                                             </tr>
                                             <?php $total_quantity +=$variation_details['quantity']; ?>

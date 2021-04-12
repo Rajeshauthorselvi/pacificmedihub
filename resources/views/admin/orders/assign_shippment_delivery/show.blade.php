@@ -182,6 +182,8 @@
                                             <th>{{ $option }}</th>
                                           @endforeach
                                           <th>Quantity</th>
+                                          <th>Batch Id</th>
+                                          <th>Expiry Date</th>
                                         </tr>
                                       </thead>
                                       <tbody>
@@ -208,6 +210,32 @@
                                             <td>
                                               <div class="form-group">{{ $variation_details['quantity'] }}</div>
                                             </td>
+                                            <?php
+                                                $batch_details=App\Models\Orders::PurchaseBatchInfo($product['product_id'],$variant['variant_id']);
+
+                                                $batch_val=explode(',',$variation_details->batch_ids);
+                                                $exp_dates=App\Models\OrderProducts::BatchInfos($batch_val);
+                                            ?>
+                                            <td>
+                                              <span class="batch">
+                                              @foreach ($batch_details as $key=>$batch)
+                                                @if (in_array($batch->id,$batch_val))
+                                                  {{ $batch->batch_id }}
+                                                  @if (!$loop->last)
+                                                    ,
+                                                  @endif
+                                                @endif
+                                              @endforeach
+                                              </span>
+                                            </td>
+                                              <td width="20%" class="expiry_date_text">
+
+                                                  @if (isset($exp_dates))
+                                                    {{ $exp_dates['batch_exp'] }}
+                                                  @endif
+
+
+                                              </td>
                                           </tr>
                                           <?php $total_amount +=$variation_details['sub_total']; ?>
                                           <?php $final_price +=$variation_details['final_price']; ?>
@@ -264,6 +292,7 @@
 </div>       
   <style type="text/css">
     .form-group{display:flex;}
+
   </style>
   @push('custom-scripts')
     <script type="text/javascript">

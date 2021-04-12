@@ -47,7 +47,7 @@ class OrderProducts extends Model
     static function BatchInfos($ids)
     {
         $batch_exp=DB::table('purchase_batch_info')->whereIn('id',$ids)->pluck('expiry_date')->toArray();
-
+        $batch_exp=array_filter($batch_exp);
         return ['batch_exp'=>implode(',', $batch_exp)];
     }
 }

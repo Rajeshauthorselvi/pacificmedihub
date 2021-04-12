@@ -119,6 +119,8 @@
                                           <th style="font-weight: normal;border-right: 1px solid #000;">
                                             Quantity
                                           </th>
+                                         <th>Batch Id</th>
+                                            <th>Expiry Date</th>
                                         </tr>
                                       </thead>
                                       <tbody style="font-size: 14px;">
@@ -147,6 +149,37 @@
                                             <td style="border: 1px solid #000">
                                               {{ $variation_details['quantity'] }}
                                             </td>
+                                            <?php
+                                                $batch_details=App\Models\Orders::PurchaseBatchInfo($product['product_id'],$variant['variant_id']);
+
+                                                $batch_val=explode(',',$variation_details->batch_ids);
+                                                $exp_dates=App\Models\OrderProducts::BatchInfos($batch_val);
+                                            ?>
+                                            <td style="border: 1px solid #000">
+
+                                              <span class="batch">
+                                                @if (count(array_filter($batch_val))>0)
+                                                  @foreach ($batch_details as $key=>$batch)
+                                                    @if (in_array($batch->id,$batch_val))
+                                                      {{ $batch->batch_id }}
+                                                      @if (!$loop->last)
+                                                        ,
+                                                      @endif
+                                                    @endif
+                                                  @endforeach
+                                                @else
+                                                  -
+                                                @endif
+                                              </span>
+                                            </td>
+                                                <td style="border: 1px solid #000" width="20%">
+
+                                                  @if ($exp_dates['batch_exp']!="")
+                                                    {{ $exp_dates['batch_exp'] }}
+                                                  @else
+                                                    -
+                                                  @endif
+                                              </td>
                                           </tr>
                                           <?php $total_quantity +=$variation_details['quantity']; ?>
                                         @endforeach
@@ -155,6 +188,8 @@
                                             Total:
                                           </td>
                                           <td  style="border: 1px solid #000">{{ $total_quantity }}</td>
+                                          <td></td>
+                                          <td></td>
                                         </tr>
                                       </tbody>
                                     </table>
@@ -184,3 +219,4 @@
 
 </body>
 </html>
+
