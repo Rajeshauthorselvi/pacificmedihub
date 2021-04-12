@@ -70,11 +70,11 @@ class RFQController extends Controller
      */
     public function create()
     {
-        if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('rfq','create')) {
-                abort(404);
-            }
-        }
+      if (!Auth::check() && Auth::guard('employee')->check()) {
+          if (!Auth::guard('employee')->user()->isAuthorized('rfq','create')) {
+              abort(404);
+          }
+      }
       $data=array();
       $data['customers']      = User::where('is_deleted',0)->where('status',1)->where('role_id',7)->get()->toArray();
       $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
@@ -87,7 +87,7 @@ class RFQController extends Controller
       $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                   ->pluck('name','id')->toArray();
       $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
-      $data['delivery_methods'] = DeliveryMethod::all();
+      $data['delivery_methods'] = DeliveryMethod::where('status',1)->get();
       $data['free_delivery']    = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
       $data['free_delivery_target'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('target_amount');
 
