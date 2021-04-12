@@ -87,7 +87,7 @@
                                  ?>
                               <label for="sales_rep_id">Delivery Status</label>
                               {!! Form::select('delivery_status',$delivery_status,null,['class'=>'form-control','id'=>'delivery_status',$style]) !!}
-                              <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
+                              <span class="text-danger sales_rep" style="display:none;">Delivery Status is required. Please Select</span>
                             </div>
 
                       </div>
@@ -296,7 +296,7 @@
       });
       $(document).ready(function() {
           var delivery_status="{{ $order->order_status }}";
-          if (delivery_status==15 || delivery_status==16) {
+          if (delivery_status==14 || delivery_status==15 || delivery_status==16) {
               $('.delivery-date').css('display','block');
           }
           else{
@@ -306,7 +306,7 @@
       var $datepicker = $('.date-picker').datepicker({ minDate: 0,dateFormat: 'dd-mm-yy'});
       $(document).on('change', '#order_status, #delivery_status', function(event) {
        var currenct_val=$(this).val();
-          if (currenct_val==15 || currenct_val==16) {
+          if (currenct_val==14 || currenct_val==15 || currenct_val==16) {
               $('.delivery-date').css('display','block');
               $('.date-picker').val(<?php date('m-d-Y'); ?>);
           }

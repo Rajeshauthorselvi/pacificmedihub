@@ -484,7 +484,8 @@ class OrderController extends Controller
          $order_status=OrderStatus::where('status',1);  
                                  
         if ($currenct_route[0]=="assign-delivery") {
-           $order_status->whereIn('id',[16,17]);
+          echo "string";
+           $order_status->whereIn('id',[14,15,16,17]);
         }                     
         elseif ($currenct_route[0]=="assign-shippment") {
             if($order->order_status==18){
@@ -508,10 +509,17 @@ class OrderController extends Controller
 
         $order_status=$order_status->pluck('status_name','id')->toArray();
 
-        $data['delivery_status']=[''=>'Please Select']+OrderStatus::where('status',1)
-                                 ->whereIn('id',[15,16,17])
-                                 ->pluck('status_name','id')
+        $delivery_status=OrderStatus::where('status',1);
+                                if ($currenct_route[0]=="assign-shippment") {
+                                    $delivery_status->whereIn('id',[15,16,17]);
+                                }
+                                else{
+                                    $delivery_status->whereIn('id',[14,15,16,17]); 
+                                }
+                                 $delivery_status=$delivery_status->pluck('status_name','id')
                                  ->toArray();
+
+            $data['delivery_status']=[''=>'Please Select']+$delivery_status;
 
         $data['order_status']=[''=>'Please Select']+$order_status;
 
@@ -544,8 +552,7 @@ class OrderController extends Controller
         $route=explode('.',$currenct_route);
         $data['type']=$currenct_route[0];
 
-
-            
+ 
         if($request->order_status==13){
             $order_completed_at = date('Y-m-d H:i:s');
         }else{
@@ -567,6 +574,17 @@ class OrderController extends Controller
               $order_data['delivered_at']=date('Y-m-d');
               $order_data['order_status']=13;
           }
+
+          if ($request->delivery_status==14) {
+              $order_data['order_status']=14;
+          }
+
+         if ($request->delivery_status==16) {
+              $order_data['order_status']=13;
+              $order_data['delivered_at']=date('Y-m-d');
+          }
+            
+
           if (isset($batch_ids) && count($batch_ids)>0) {
             foreach ($batch_ids as $product_id => $batchs) {
                   OrderProducts::where('order_id',$id)
