@@ -76,10 +76,10 @@
 							$minimum_price_row_id = 'minimum_price_row1';
 							$stock_qty_row_id 	  = 'stock_qty_row1';
 						}else{
-							$base_price_row_id 	  = 'base_price_row';
-							$retail_price_row_id  = 'retail_price_row';
-							$minimum_price_row_id = 'minimum_price_row';
-							$stock_qty_row_id     = 'stock_qty_row';
+							$base_price_row_id 	  = 'base_price_row child_base_price';
+							$retail_price_row_id  = 'retail_price_row child_retail_price';
+							$minimum_price_row_id = 'minimum_price_row child_minimum_price';
+							$stock_qty_row_id     = 'stock_qty_row child_stock_qty';
 						}
 					?>
 					<tr>
@@ -129,22 +129,22 @@
 						</td>
 						<td>
 							<div class="form-group">
-		                        <input type="text" class="form-control base_price_row" id="{{$base_price_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][base_price][]">
+		                        <input type="text" class="form-control {{$base_price_row_id}}" id="{{$base_price_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][base_price][]">
 		                    </div>
 		                </td>
 		                <td>
 		                	<div class="form-group">
-		                		<input type="text" class="form-control retail_price_row" id="{{$retail_price_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][retail_price][]">
+		                		<input type="text" class="form-control {{$retail_price_row_id}}" id="{{$retail_price_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][retail_price][]">
 		                	</div>
 		                </td>
 		                <td>
 		                	<div class="form-group">
-		                		<input type="text" class="form-control minimum_price_row" id="{{$minimum_price_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][minimum_price][]">
+		                		<input type="text" class="form-control {{$minimum_price_row_id}}" id="{{$minimum_price_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][minimum_price][]">
 		                	</div>
 		                </td>
 		                <td>
 		                	<div class="form-group">
-		                		<input type="text" class="form-control stock_qty_row" id="{{$stock_qty_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][stock_qty][]">
+		                		<input type="text" class="form-control {{$stock_qty_row_id}}" id="{{$stock_qty_row_id}}" onkeyup="validateNum(event,this);" name="variant_data[{{ $vendor_id }}][stock_qty][]">
 		                	</div>
 		                </td>
 		                <td>
@@ -175,17 +175,57 @@
 </style>
 <script type="text/javascript">
 	$('#base_price_row1').keyup(function(){
-        $('.base_price_row').val(this.value);
+		var check_attr=$(this).attr('data');
+		if (typeof check_attr !== 'undefined' && check_attr !== false) {
+	        return false;
+		}
+		else{
+			$('.base_price_row').val(this.value);
+		}
     });
     $('#retail_price_row1').keyup(function(){
-        $('.retail_price_row').val(this.value);
+
+		var check_attr=$(this).attr('data');
+		if (typeof check_attr !== 'undefined' && check_attr !== false) {
+	        return false;
+		}
+		else{
+			$('.retail_price_row').val(this.value);
+		}
+
     });
     $('#minimum_price_row1').keyup(function(){
-        $('.minimum_price_row').val(this.value);
+		var check_attr=$(this).attr('data');
+		if (typeof check_attr !== 'undefined' && check_attr !== false) {
+	        return false;
+		}
+		else{
+			$('.minimum_price_row').val(this.value);
+		}
     });
     $('#stock_qty_row1').keyup(function(){
-        $('.stock_qty_row').val(this.value);
+		var check_attr=$(this).attr('data');
+		if (typeof check_attr !== 'undefined' && check_attr !== false) {
+	        return false;
+		}
+		else{
+			$('.stock_qty_row').val(this.value);
+		}
     });
+
+    $('.child_base_price').keyup(function(event) {
+    	$('#base_price_row1').attr('data', 'changed');
+    });
+    $('.child_retail_price').keyup(function(event) {
+    	$('#retail_price_row1').attr('data', 'changed');
+    });
+    $('.child_minimum_price').keyup(function(event) {
+    	$('#minimum_price_row1').attr('data', 'changed');
+    });
+    $('.child_stock_qty').keyup(function(event) {
+    	$('#stock_qty_row1').attr('data', 'changed');
+    });
+
 
     $(function ($) {
         $('body').find('.display.select2bs4').select2({
