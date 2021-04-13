@@ -39,10 +39,9 @@ class ShopController extends Controller
         $data['parent_id']      = isset($category->parent_category_id)?$category->parent_category_id:NULL;
         $data['selected_id']    = $id;
         if($id=='all'){
-            $data['products']   = Product::where('published',1)->where('show_home',1)->where('is_deleted',0)
-                                         ->paginate(10);
+            $data['products']   = Product::where('published',1)->where('is_deleted',0)->paginate(10);
         }else{
-            $data['products']   = Product::where('category_id',$id)->where('published',1)->where('show_home',1)
+            $data['products']   = Product::where('category_id',$id)->where('published',1)
                                          ->where('is_deleted',0)->paginate(10);    
         }
     	$data['categories']     = Categories::where('published',1)->where('is_deleted',0)
