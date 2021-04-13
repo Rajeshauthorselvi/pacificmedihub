@@ -115,7 +115,9 @@
                   </div> --}}
                   <div class="clearfix"></div>
                   <br>
-                  <table id="example2" class="table table-bordered">
+                  <div class="table-responsive">
+                    
+                  <table id="order-list" class="table table-bordered">
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
@@ -247,6 +249,7 @@
                       @endforeach
                     </tbody>
                   </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -359,15 +362,13 @@
       </div>
     </div>
   </div>
-
   <style type="text/css">
     .form-group{display:flex;}
     .disabled{pointer-events: none;opacity: 0.5;}
   </style>
-
   @push('custom-scripts')
   <script type="text/javascript">
-
+    $('#order-list').DataTable();
     $(document).on('click', '#assign-order', function(event) {
         var checkedNum = $('input[name="orders_ids"]:checked').length;
         var status_id=$(this).attr('status-id');

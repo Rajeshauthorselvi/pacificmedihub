@@ -308,18 +308,13 @@ class OrderController extends Controller
                 'payment_id' => $request->paying_by,
                 'created_at' => date('Y-m-d H:i:s')
            ]);
-
             $total_amount=$request->sgd_total_amount;
             $total_paid=$request->amount;
             $balance_amount=$total_amount-$total_paid;
-
-
             if ($balance_amount==0) 
               $payment_status=1;
             else
               $payment_status=2; 
-
-
           Orders::where('id',$order_id)->update(['payment_status'=>$payment_status]);
        }
        /*Order Payment*/
@@ -626,7 +621,7 @@ class OrderController extends Controller
           ];
         }
 
-      Orders::where('id',$id)->update($order_data);
+      //Orders::where('id',$id)->update($order_data);
       if ($request->order_status==19) {
         $existing_product_id=$new_product_variant=array();
         if (isset($variant['product_id'])) {
@@ -715,6 +710,11 @@ class OrderController extends Controller
           $this->UpdateQuantityToStock($id);
        }
 
+        if ($order_details->order_status!=$request->order_status) {
+          
+            $this->EmailNotification($id);
+        }
+
        $route=$this->RouteLinks();
        return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
 
@@ -740,6 +740,18 @@ class OrderController extends Controller
                 }
             }
         }
+    }
+    public function EmailNotification($order_id)
+    {
+        $order_details=Orders::with('customer','statusName')->where('orders.id',$order_id)->first();
+        $data=[
+            'order_details'=>$order_details
+        ];
+        Mail::send('admin.orders.emails.notification_status_email', $data, function ($m) use($order_details) {
+          $m->from('dhinesh@authorselvi.com');
+          $m->to($order_details->customer->email,'Status Notification');
+          $m->subject('New Status Notification:- '.$order_details->order_no);
+       });
     }
     public function ReduceQuantityToVendor($order_id='')
     {
