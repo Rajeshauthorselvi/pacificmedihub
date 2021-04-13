@@ -78,7 +78,7 @@ class HomePageController extends Controller
     public function search(Request $request)
     {
     	if($request->catgory_id==0){
-        	$get_product = Product::where('name','like','%'.$request->search_text.'%')->where('published',1)->->where('is_deleted',0)->limit(10)->get();
+        	$get_product = Product::where('name','like','%'.$request->search_text.'%')->where('published',1)->where('is_deleted',0)->limit(10)->get();
     	}else{
         	$get_product = DB::table('categories as c')->leftJoin('products as p','c.id','p.category_id')
         				->where('c.id',$request->catgory_id)->orWhere('c.parent_category_id',$request->catgory_id)
