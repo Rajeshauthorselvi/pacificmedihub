@@ -36,14 +36,14 @@
 		<div class="header-top">
 			<div class="row">
 				<div class="col-sm-2 col-xs-4 logo">
-					<a href="{{ route('home.index') }}"><img src="{{ asset('front/img/pacificmedihub_logo.png') }}" alt="pacificmedihub" width="137" height="57" /></a>
+					<a href="{{ route('home.index') }}"><img src="{{ asset('front/img/logo_mtcu.png') }}" alt="pacificmedihub" width="137" height="57" /></a>
 				</div>
 				<div class="col-sm-10 col-xs-8">
 					<ul>
 						<li>
 							<div class="head-icon">
 							<i class="mail-icon"></i>
-							<div class="wrap"><label>Email us:</label>info@pacificmedihub.com</div>
+							<div class="wrap"><label>Email us:</label>info@mtcu.com</div>
 							</div>
 						</li>
 						<li>

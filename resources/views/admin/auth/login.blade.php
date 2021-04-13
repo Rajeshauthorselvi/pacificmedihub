@@ -46,7 +46,7 @@
         <div class="right-half">
           <div class="login-box">
             <div class="login-box-logo text-center">
-              <img class="admin-logo" src="{{ asset('theme/images/logo.png') }}" >
+              <img class="admin-logo" src="{{ asset('theme/images/logo_mtcu.png') }}" >
             </div>
             <div class="input-block">
 
