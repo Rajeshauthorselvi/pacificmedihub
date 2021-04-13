@@ -8,7 +8,7 @@
   <meta name="author" content="">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>PACIFIC MEDIHUB | ADMIN DASHBOARD</title>
-  <link rel="icon" type="image/png" href="{{ asset('theme/images/fav.png') }}" />
+  <link rel="icon" type="image/png" href="{{ asset('theme/images/fav_icon.png') }}" />
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">

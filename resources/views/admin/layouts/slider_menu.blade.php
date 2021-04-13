@@ -3,7 +3,7 @@
   <aside class="main-sidebar sidebar-light-primary">
     <!-- Brand Logo -->
     <a href="{{route('admin.dashboard')}}" class="brand-link">
-      <img src="{{ asset('theme/images/logo.jpeg') }}" alt="Logo" class="brand-image">
+      <img src="{{ asset('theme/images/logo_mtcu.png') }}" alt="Logo" class="brand-image">
     </a>
 
     <!-- Sidebar -->
