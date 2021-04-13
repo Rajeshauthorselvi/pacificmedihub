@@ -21,7 +21,7 @@
 			          	<input type="password" class="form-control" name="password">
 			        </div>
 			        <div class="form-group mb-3 forget">
-		        		<a href="{{ route('forget.password') }}">Forgot Yout Password?</a>
+		        		<a href="{{ route('forget.password') }}">Forgot Your Password?</a>
 		      		</div>
 			        <div class="row">
 			          <div class="col-12">

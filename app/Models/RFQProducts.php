@@ -20,6 +20,10 @@ class RFQProducts extends Model
         'quantity',
         'last_rfq_price',
         'rfq_price',
+        'discount_value',
+        'discount_type',
+        'final_price',
+        'total_price',
         'sub_total'
     ];
 
@@ -39,7 +43,7 @@ class RFQProducts extends Model
         $total_amount=0;
         $total_qty=0;
         foreach ($get_all_amount as $get_amount) {
-            $total_amount += $get_amount->retail_price*$get_amount->quantity;
+            $total_amount += $get_amount->final_price*$get_amount->quantity;
             $total_qty += $get_amount->quantity;
         }
         $data['total_amount'] = $total_amount;
@@ -50,9 +54,8 @@ class RFQProducts extends Model
 
     static function totalAmount($rfq_id,$product_id=0){
         $get_total=self::where('rfq_id',$rfq_id)->where('product_id',$product_id)->first();
-        $data['amount'] = $get_total->retail_price*$get_total->quantity;
-        $data['qty']    = $get_total->quantity;
-        $data['rfq']    = $get_total->retail_price;
+        $data['amount'] = self::where('rfq_id',$rfq_id)->where('product_id',$product_id)->sum('sub_total');
+        $data['qty']    = self::where('rfq_id',$rfq_id)->where('product_id',$product_id)->sum('quantity');
         $total_amount   = $data;
         return $total_amount;
     }

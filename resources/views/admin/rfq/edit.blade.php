@@ -73,33 +73,17 @@
                         {!! Form::hidden('customer_id',$rfqs->customer_id,['class'=>'form-control','readonly']) !!}
                         <span class="text-danger customer" style="display:none;">Customer is required. Please Select</span>
                       </div>
-                      <div class="col-sm-8">
+                      <div class="col-sm-4">
                         <label for="deliveryAddress">Delivery Address *</label>
                          {!! Form::select('del_add_id',$del_address,  $rfqs->delivery_address_id,['class'=>'form-control no-search select2bs4','id'=>'deliveryAddress']) !!}
                       </div>
-                    </div>
-                    <div class="form-group">
                       <div class="col-sm-4">                        
                         <label for="sales_rep_id">Sales Rep *</label>
                         {!! Form::select('sales_rep_id',$sales_rep, null,['class'=>'form-control select2bs4']) !!}
                         <span class="text-danger sales_rep" style="display:none;">Sales Rep is required. Please Select</span>
                       </div>
-                      <div class="col-sm-4">
-                        <label for="purchase_date">Payment Term</label>
-                        {!! Form::select('payment_term',$payment_terms,$rfqs->payment_term,['class'=>'form-control no-search select2bs4']) !!}
-                      </div>
-                      <div class="col-sm-4">
-                        <label for="currency_rate">Currency</label>
-                        <select class="form-control no-search select2bs4" name="currency" id="currency_rate">
-                          <option currency-rate="0" currency-code="" value="">Please Select</option>
-                          @foreach($currencies as $currency)
-                            <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($rfqs->currency==$currency->id)  selected="selected" @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
-                              {{$currency->currency_code}} - {{$currency->currency_name}}
-                            </option>
-                          @endforeach
-                        </select>
-                      </div>
                     </div>
+                    
                     <div class="form-group">
                       <div class="col-sm-12">
                         <label for="product">Products *</label>
@@ -118,71 +102,65 @@
                               <th scope="col">#</th>
                               <th scope="col">Product Name</th>
                               <th scope="col">
-                                  Total Quantity:&nbsp;
-                                  <span class="all_quantity">{{ $total_products['total_qty'] }}</span>   
+                                Total Quantity:&nbsp;
+                                <span class="all_quantity">{{ $total_products['total_qty'] }}</span>   
                               </th>
-                             {{--  <th scope="col">
-                                  Total Price:&nbsp;
-                                  <span class="all_rfq_price">{{ $total_products->rfq_price }}</span>  
-                              </th> --}}
                               <th>
-                                  Total Amount:&nbsp;
-                                  <span class="all_amount" id="allAmount">{{ $total_products['total_amount'] }}</span>
+                                Total Amount:&nbsp;
+                                <span class="all_amount" id="allAmount">{{ $total_products['total_amount'] }}</span>
                               </th>
-                              <th></th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody class="parent_tbody">
                             @foreach ($product_datas as $product)
-                              <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
-                                <td class="expand-button"></td>
-                                <?php
-                                $total_based_products=\App\Models\RFQProducts::totalAmount($rfqs->id,$product['product_id']);
-                                 ?>
-                                <td>{{ $product['product_name'] }}</td>
-                                <th>
-                                  Quantity: &nbsp;
-                                  <span class="total_quantity">{{ $total_based_products['qty'] }}</span>
-                                </th>
-                                {{-- <th>Price: {{ $total_based_products->rfq_price }}</th> --}}
-                                <th class="total-head">
-                                  <input type="hidden" value="{{ $total_based_products['amount'] }}" class="get-total">
-                                  Total: &nbsp;<span class="total">{{$total_based_products['amount']}}</span>
-                                </th>
-                                <td>
-                                    <a href="javascript:void(0)" class="btn btn-danger remove-product-row">
-                                      <i class="fa fa-trash"></i>
-                                    </a>
-                                </td>
-                              </tr>
-                              <tr class="hide-table-padding">
-                                <td colspan="5">
-                                  <div id="collapse{{ $product['product_id'] }}" class="collapse in p-3">
-                                    <table class="table table-bordered" style="width: 100%">
-                                      <thead>
-                                        <tr>
-                                          @foreach ($product['options'] as $option)
-                                            <th>{{ $option }}</th>
-                                          @endforeach
-                                          <th>Base Price</th>
-                                          <th>Retail Price</th>
-                                          <th>Minimum Selling Price</th>
-                                          @if ($product['check_rfq_price_exists'])
-                                            <th>Last RFQ Price</th>
-                                          @endif
-                                          <th>RFQ Price</th>
-                                          <th>Quantity</th>
-                                          <th>Subtotal</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <?php $rfq_price=$total_amount=$total_quantity=0 ?>
+                              <tr class="append-data-row">
+                                <td colspan="4" style="padding:0">
+                                  <table class="table table-bordered" style="width: 100%">
+                                    <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
+                                      <td class="expand-button" style="width:2rem;"></td>
+
+                                      <td colspan="{{ count($product['options'])+8 }}" class="prod-name">{{ $product['product_name'] }}</td>
+                                      <td style="width: 5%;">
+                                        <a href="javascript:void(0)" class="btn btn-danger remove-product-row"><i class="fa fa-trash"></i></a>
+                                      </td>
+                                    </tr>
+
+                                    <tbody id="collapse{{ $product['product_id'] }}" class="collapse in p-3">
+                                      <tr>
+                                        <th></th>
+                                        @foreach ($product['options'] as $option)
+                                          <th>{{ $option }}</th>
+                                        @endforeach
+                                        <th class="width">Base Price</th>
+                                        <th class="width">Retail Price</th>
+                                        <th class="width">Minimum Selling Price</th>
+                                        @if ($product['check_rfq_price_exists'])
+                                          <th class="width">Last RFQ Price</th>
+                                        @endif
+                                        <th class="width">RFQ Price <br><small>(a)</small></th>
+                                        <th class="width">QTY <br><small>(b)</small></th>
+                                        <th class="width">Discount
+                                          <div class="discount-type">
+                                            <div class="icheck-info d-inline">
+                                              <input type="radio" name="variant[discount_type][{{ $product['product_id'] }}]" @if($discount_type[$product['product_id']]=='percentage') checked @endif id="percentage{{ $product['product_id'] }}" class="dis-type" value="percentage"><label for="percentage{{ $product['product_id'] }}">%</label>
+                                            </div>&nbsp;&nbsp;&nbsp;
+                                            <div class="icheck-info d-inline">
+                                              <input type="radio" class="dis-type" name="variant[discount_type][{{ $product['product_id'] }}]" @if($discount_type[$product['product_id']]=='amount') checked @endif id="amount{{ $product['product_id'] }}" value="amount"><label for="amount{{ $product['product_id'] }}">$</label>
+                                            </div>
+                                          </div>
+                                        </th>
+                                        <th class="width">Discount Price <br><small>(c)</small></th>
+                                        <th class="width">Total <br><small>(a x b)</small></th>
+                                        <th class="width">Subtotal <br><small>(b x c)</small></th>
+                                      </tr>
+                                      <?php $total_amount=$total_quantity=0 ?>
                                         @foreach($product['product_variant'] as $key=>$variant)
                                           <?php 
                                            $option_count=$product['option_count'];
                                            $variation_details=\App\Models\RFQProducts::VariationPrice($product['product_id'],$variant['variant_id'],$product['rfq_id']);
                                           ?>
                                           <tr class="parent_tr">
+                                            <td></td>
                                             <td>
                                               <input type="hidden" name="variant[row_id][]" value="{{$variation_details->id}}">
                                               <input type="hidden" name="variant[product_id][]" value="{{ $product['product_id'] }}" class="product_id">
@@ -229,7 +207,6 @@
                                                 </div>
                                               </td>
                                             @endif
-
                                             <td class="base_price">{{$variant['base_price']}}</td>
                                             <td>
                                               <input type="hidden" name="variant[base_price][]" value="{{$variant['base_price']}}">
@@ -237,41 +214,50 @@
                                               {{$variant['retail_price']}}
                                             </td>
                                             <td>
-                                              <input type="hidden" name="variant[minimum_selling_price][]" value="{{$variant['minimum_selling_price']}}">
+                                              <input type="hidden" class="minimum-price" name="variant[minimum_selling_price][]" value="{{$variant['minimum_selling_price']}}">
                                               {{$variant['minimum_selling_price']}}
                                             </td>
                                             @if ($product['check_rfq_price_exists'])
-                                            <td>
+                                              <td>
                                                 {{ $variation_details->last_rfq_price }}
-                                            </td>
+                                              </td>
                                             @endif
                                             <td>
                                               <?php $high_value = isset($variation_details['rfq_price'])?$variation_details['rfq_price']:$variant['retail_price']; ?>
                                               <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{ $high_value }}" autocomplete="off">
                                             </td>
                                             <td>
-                                              <div class="form-group">
-                                                <?php $quantity=1 ?>
-                                                <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" value="{{ $variation_details['quantity'] }}" autocomplete="off">
-                                              </div>
-                                            </td>  
+                                              <?php $quantity=1; ?>
+                                              <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" autocomplete="off" value="{{ $variation_details['quantity'] }}">
+                                            </td>
                                             <td>
-                                              <?php $sub_total = $variation_details['quantity']*$high_value; ?>
-                                              <div class="form-group">
-                                                <span class="sub_total">{{ $sub_total }}</span>
-                                                <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $sub_total }}">
-                                              </div>
+                                              <input type="text" name="variant[discount_value][]" class="form-control discount-value" autocomplete="off" value="{{ (int)$variation_details['discount_value'] }}">
+                                            </td>
+                                            <td>
+                                              <span class="dis-price">{{ $variation_details['final_price'] }}</span>
+                                              <input type="hidden" name="variant[final_price][]" class="form-control dis-price" value="{{ $variation_details['final_price'] }}">
+                                            </td>
+                                            <td>
+                                              <span class="price">{{ $variation_details['total_price'] }}</span>
+                                              <input type="hidden" name="variant[price][]" class="form-control price" value="{{ $variation_details['total_price'] }}">
+                                            </td>
+                                            <td>
+                                              <?php $sub_total =  $variation_details['sub_total']; ?>
+                                              <span class="sub_total">{{ $variation_details['sub_total'] }}</span>
+                                              <input type="hidden" class="subtotal_hidden" name="variant[sub_total][]" value="{{ $sub_total }}">
                                             </td>
                                           </tr>
                                           <?php $total_amount +=$sub_total; ?>
                                           <?php $total_quantity +=$variation_details['quantity']; ?>
-                                          <?php $rfq_price +=$high_value; ?>
                                         @endforeach
                                         <tr>
-                                          
-                                          <td colspan="{{ count($product['options'])+4 }}" class="text-right">Total:</td>
+                                          <td colspan="{{ count($product['options'])+3 }}">
+                                            <input type="text" class="form-control" name="product_description[{{ $product['product_id'] }}]" placeholder="Notes" value="{{ isset($product_description_notes[$product['product_id']])?$product_description_notes[$product['product_id']]:'' }}">
+                                          </td>
+                                          <td colspan="2" class="text-right">Total Qty:</td>
                                           <td class="total_quantity">{{ $total_quantity }}</td>
-                                          <td class="total_amount total">{{ $total_amount }}</td>
+                                          <td colspan="3" class="text-right">Grand Total:</td>
+                                          <td class="total_amount">{{ $total_amount }}</td>
                                         </tr>
                                       </tbody>
                                     </table>
@@ -279,58 +265,19 @@
                                 </td>
                               </tr>
                             @endforeach
-                            <tr class="total-calculation">
-                              <td colspan="3" class="title">Total</td>
-                              <td colspan="2"><span class="all_amount">{{$total_products['total_amount']}}</span></td>
-                              <input type="hidden" name="total_amount" id="total_amount_hidden" value="{{$rfqs->total_amount}}">
-                            </tr>
-                            {{-- <tr class="total-calculation"><td colspan="3" class="title">Order Discount</td>
-                              <td colspan="2"><span class="order-discount">{{$discount_amt}}</span></td>
-                            </tr> --}}
-                            <tr class="total-calculation">
-                              <td colspan="3" class="title">Order Tax</td>
-                              <td id="orderTax" colspan="2">{{$order_tax}}</td>
-                              <input type="hidden" name="order_tax_amount" id="order_tax_amount_hidden" value="{{$order_tax}}">
-                            </tr>
-                            <tr class="total-calculation">
-                              <td colspan="3" class="title">Delivery Charge</td>
-                              <td id="deliveryCharge">{{$delivery_charge}}</td>
-                            </tr>
-                            <tr class="total-calculation">
-                              <th colspan="3" class="title">Total Amount(SGD)</th>
-                              <?php $sgd_total = $total_products['total_amount']+$discount_amt+$order_tax+$delivery_charge; ?>
-                              <th id="total_amount_sgd" colspan="2">{{$sgd_total}}</th>
-                              <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$sgd_total}}">
-                            </tr>
-                            @if(isset($rfqs->currency)&&$rfqs->currencyCode->currency_code!='SGD')
-                              <?php $currency='content'; ?>
-                            @else
-                              <?php $currency='none'; ?>
-                            @endif
-                            <tr class="total-calculation" id="total_exchange" style="display:{{$currency}}">
-                              <th colspan="3" class="title">
-                                Total Amount (<span class="exchange-code">{{isset($rfqs->currencyCode->currency_code)?$rfqs->currencyCode->currency_code:''}}</span>)
-                              </th>
-                              <th colspan="2">
-                                <input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="{{$rfqs->exchange_total_amount}}" onkeyup="validateNum(event,this);" autocomplete="off">
-                              </th>
-                            </tr>
-                            <tr><td colspan="5"></td></tr>
                           </tbody>
                         </table>
                       </div>
                     </div>
                   </div>
-                
-                  <div class="clearfix"></div>
-                  <div class="tax-sec">
+                  
+                  <div class="additional-sec container">
                     <div class="form-group">
                       <div class="col-sm-4">
                         <label for="purchase_date">Delivery Methods *</label>
                         {!! Form::hidden('free_delivery_amount',$free_delivery_target,['class'=>'free_delivery_amount']) !!}
                         {!! Form::hidden('delivery_charge',$rfqs->delivery_charge,['class'=>'del_charge_hidden']) !!}
                         <select class="form-control no-search " id="delivery-methods" name="delivery_method_id">
-                          <option value="" attr-fee="0" attr-target="0">Please Select</option>
                           @foreach($delivery_methods as $method)
                             @if ($rfqs->delivery_method_id==$method->id)
                               <option value="{{ $method->id }}" attr-fee="{{ $method->amount }}" attr-target="{{ $method->target_amount }}" selected="selected">
@@ -343,7 +290,9 @@
                             @endif
                           @endforeach
                         </select>
+                        <span class="text-danger delivery_method" style="display:none;">Delivery Method is required. Please Select</span>
                       </div>
+
                       <div class="col-sm-4">
                         <label for="purchase_date">Order Tax</label>
                         <select class="form-control no-search select2bs4" name="order_tax" id="order_tax">
@@ -356,24 +305,67 @@
                             </option>
                           @endforeach
                         </select>
+                      </div>
 
-                      </div>
                       <div class="col-sm-4">
-                        <label for="purchase_date">Order Discount</label>
-                        {!! Form::text('order_discount', isset($rfqs->order_discount)?$rfqs->order_discount:0,['class'=>'form-control','id'=>'order-discount']) !!}
+                        <label for="purchase_date">Payment Term</label>
+                        {!! Form::select('payment_term',$payment_terms,$rfqs->payment_term,['class'=>'form-control no-search select2bs4']) !!}
                       </div>
-                      
+                    </div>
+                  
+                    <div class="summery-block">
+                      <h5>Summery</h5>
+                      <table>
+                        <tbody>
+                          <tr class="total-calculation">
+                            <td class="title">Total</td>
+                            <td><span class="all_amount">{{$total_products['total_amount']}}</span></td>
+                          </tr>
+                          <tr class="total-calculation">
+                            <td class="title">Order Tax</td>
+                            <td id="orderTax">{{$order_tax}}</td>
+                            <input type="hidden" name="order_tax_amount" id="order_tax_amount_hidden" value="{{$order_tax}}">
+                          </tr>
+                            <tr class="total-calculation">
+                              <td class="title">Delivery Charge</td>
+                            <td id="deliveryCharge">{{$delivery_charge}}</td>
+                          </tr>
+                            <tr class="total-calculation">
+                              <?php $sgd_total = $total_products['total_amount']+$discount_amt+$order_tax+$delivery_charge; ?>
+                              <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$sgd_total}}">
+                              <th  class="title">Total Amount(SGD)</th>
+                            <th id="total_amount_sgd">{{$sgd_total}}</th>
+                          </tr>
+                            <td style="display:inline-flex;">
+                              <label for="currency_rate">Currency</label>&nbsp;&nbsp;
+                              <select class="form-control no-search select2bs4" name="currency" id="currency_rate">
+                                @foreach($currencies as $currency)
+                                  <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($rfqs->currency==$currency->id)  selected="selected" @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
+                                    {{$currency->currency_code}} - {{$currency->currency_name}}
+                                  </option>
+                                @endforeach
+                              </select>
+                            </td>
+                            <td>
+                              <input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="{{$rfqs->exchange_total_amount}}" onkeyup="validateNum(event,this);" autocomplete="off">
+                            </td>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-12">
+                        <label for="sales_rep_id">Notes</label>
+                        {!! Form::textarea('notes',null,['class'=>'form-control summernote']) !!}
+                      </div>
                     </div>
                   </div>
 
-                  <div class="col-sm-12">
-                    <label for="sales_rep_id">Notes</label>
-                    {!! Form::textarea('notes',null,['class'=>'form-control summernote']) !!}
-                  </div>
-                  <br>
+                 
                   <div class="form-group">
-                    <a href="{{ route('rfq.index') }}" class="btn reset-btn">Cancel</a>
-                    <button class="btn save-btn" type="submit">Save</button>
+                    <div class="col-sm-12">
+                      <a href="{{ route('rfq.index') }}" class="btn reset-btn">Cancel</a>
+                      <button class="btn save-btn" type="submit">Save</button>
+                    </div>
                   </div>
                 {!! Form::close() !!}
               </div>
@@ -384,100 +376,42 @@
     </section>
   </div>
 
-  <style type="text/css">
+   <style type="text/css">
     .form-group{display:flex;}
+    .summery-block {
+      margin: 1.5rem 0;
+      position: relative;
+      width: 50%;
+      left: 50%;
+    }
+    .summery-block h5 {
+      font-weight: bold;
+    }
+    .summery-block table tr td,.summery-block table tr th {
+      width: 300px;
+      border: 1px solid #eee;
+      padding: 10px;
+    }
+    .summery-block .total-calculation .title{text-align:left;border-color:#eee}
+    th.width{width:90px;}
+    .prod-name {
+      width: 175px;
+    }
   </style>
+
   @push('custom-scripts')
     <script type="text/javascript">
-      $(document).ready(function() {
-        var all_amount = $('#allAmount').text();
-        var free_del_amount=$('.free_delivery_amount').val();
-
-          if ( parseInt(all_amount) >= parseInt(free_del_amount)) {
-              $('#delivery-methods option[value="3"]').show();
-          }
-          else{
-              $('#delivery-methods option[value="3"]').hide();
-          }
-          
-      });   
-
-      $(document).on('change','#delivery-methods', function(event) {
-          var currency = $('option:selected', '#currency_rate').attr("currency-rate");
-          var all_amount = $('#allAmount').text();
-          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
-          var free_del_amount=$('.free_delivery_amount').val();
-          var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
-          var del_type = $('#delivery-methods option:selected').val();
-
-          if (del_fees!=0) {
-            $('#deliveryCharge').text(del_fees);
-          }else{
-            $('#deliveryCharge').text('0.00');
-          }
-
-          $('.del_charge_hidden').val(del_fees);
-          overallCalculation(all_amount,tax_rate,currency);
-      });
-      $(document).ready(function($) {
-        var sum = 0;
-        $('.get-total').each(function() {
-          sum += Number($(this).val());
+      $(function ($) {
+        $('.no-search.select2bs4').select2({
+          minimumResultsForSearch: -1
         });
-        $('.all_amount').text(sum);
-        $('#total_amount_hidden').val(sum);
-
-        var sgdTotal = $('#sgd_total_amount_hidden').val();
-        if(sgdTotal==''){
-          $('#sgd_total_amount_hidden').val(sum);
-          $('#total_amount_sgd').text(sum);
-        }
       });
 
-      $(document).on('change', '#customer', function(event) {
-        if ($('.vatiant_table').length!=0) {
-          ExistingRFQPrice();
-        }
+      $(document).on('click','.accordion-toggle',function(){
+        $('.parent_tbody').find('.accordion-toggle').addClass('accordion-toggle collapsed');
+        $('.parent_tbody').find('.collapse.show').removeClass('show');
       });
 
-      function ExistingRFQPrice() {
-            var value_array = [];
-            $('.parent_tr').each(function(index, el) {
-                var customer_id=$('#customer').val();
-                var product_id=$(this).find('.product_id').val();
-                var variant_id=$(this).find('.variant_id').val();
-                var current_node=$(this);
-                $.ajax({
-                  url: '{{ url('admin/check-rfq-existing') }}',
-                  data: {
-                    product_id: product_id,
-                    variant_id:variant_id,
-                    customer_id:customer_id,
-                  }
-                })
-                .done(function(response) {
-                  if (response.price!=null) {
-                    current_node.find('.last-rfq').text(response.price);
-                    value_array.push(response.price);
-                  }
-                  else{
-                    current_node.find('.last-rfq').text('-');
-                  }
-                  if (value_array.length>0) {
-                    current_node.find('.last-rfq').show();
-                    $('#collapse'+product_id+' th.last-rfq').show();
-                  }
-                  else{
-                    current_node.find('.last-rfq').hide();
-                    $('#collapse'+product_id+' th.last-rfq').hide();
-                  }
-                })
-                .fail(function() {
-                  
-                });
-
-            });
-      }
       $('#prodct-add-sec').autocomplete({
         source: function( request, response) {
           $.ajax({
@@ -510,7 +444,7 @@
             },
           })
           .done(function(response) {
-            $('.total-calculation:first').before(response);
+            $('.append-data-row:last').after(response);
           });
            $(this).val('');
           return false;
@@ -524,30 +458,189 @@
       });
 
 
-      $(document).on('click', '.remove-product-row', function(event) {
-        event.preventDefault();
-        var curr_tr_quantity=$(this).closest('tr').find('.total_quantity').text();
-        var curr_tr_total=$(this).closest('tr').find('.total').text();
-
-        $(this).closest('tr').next('tr').remove();
-        $(this).closest('tr').remove();
-
-        var all_amount = $('#allAmount').text();
-        var all_quantity = $('.all_quantity').text();
-        var balance_amount=parseInt(all_amount)-parseInt(curr_tr_total);
-        var balance_quantity=parseInt(all_quantity)-parseInt(curr_tr_quantity);
-
-        $('.all_amount').text(balance_amount);
-        $('.all_quantity').text(balance_quantity);
-        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
-        overallCalculation(balance_amount,tax_rate);
+     $(document).on('click', '.remove-product-row', function(event) {
+        if(!confirm('Are you sure to remove it.?')){
+          return false;
+        }else{
+          event.preventDefault();
+          var curr_tr_quantity=$(this).parents('tbody').next('tbody').find('.total_quantity').text();
+          var curr_tr_total=$(this).parents('tbody').next('tbody').find('.total_amount').text();
+          $(this).parents('tbody').parents('table').parents('td').parents('tr').remove();
+          
+          var all_amount = $('#allAmount').text();
+          var all_quantity = $('.all_quantity').text();
+          var balance_amount=parseInt(all_amount)-parseInt(curr_tr_total);
+          var balance_quantity=parseInt(all_quantity)-parseInt(curr_tr_quantity);
+          $('.all_amount').text(balance_amount);
+          $('.all_quantity').text(balance_quantity);
+          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+          overallCalculation(balance_amount,tax_rate);
+          currencyCalculation();
+        }
       });
 
+      $(document).on('change', '.rfq_price', function(event) {
+        var minimum_price = $(this).parents('.parent_tr').find('.minimum-price').val();
+        var qty           = $(this).parents('.parent_tr').find('.stock_qty').val();
+        var discountType = $(this).parents('.parent_tr').parent().find('.discount-type').find('input[type=radio]:checked').val();
+        var discount     = $(this).parents('.parent_tr').find('.discount-value').val();
 
-      $(function ($) {
-        $('.no-search.select2bs4').select2({
-          minimumResultsForSearch: -1
-        });
+        var current_price = $(this).val();
+        if(current_price==''){
+          $(this).val(minimum_price);
+          if(discountType=='amount'){
+            dis_price = current_price-discount;
+          }else if(discountType=='percentage'){
+            dis_price = (current_price - (current_price * discount/100));
+          }
+          $(this).parents('.parent_tr').find('.dis-price').val(dis_price)
+          $(this).parents('.parent_tr').find('.price').val(minimum_price*qty);
+          $(this).parents('.parent_tr').find('.dis-price').text(dis_price)
+          $(this).parents('.parent_tr').find('.price').text(minimum_price*qty);
+        }else{
+          if ((current_price !== '') && (current_price.indexOf('.') === -1)) {
+            var current_price = Math.max(Math.max(current_price, parseInt(minimum_price)), -90);
+            $(this).val(current_price);
+            if(discountType=='amount'){
+              dis_price = current_price-discount;
+            }else if(discountType=='percentage'){
+              dis_price = (current_price - (current_price * discount/100));
+            }
+            $(this).parents('.parent_tr').find('.dis-price').val(dis_price);
+            $(this).parents('.parent_tr').find('.price').val(current_price*qty);
+            $(this).parents('.parent_tr').find('.dis-price').text(dis_price);
+            $(this).parents('.parent_tr').find('.price').text(current_price*qty);
+          }
+        }
+        var total_quantity = SumTotal('.collapse.show .stock_qty');
+        $('.collapse.show').find('.total_quantity').text(total_quantity);
+
+        var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+        var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+        $('.collapse.show').find('.total_amount').text(total_amount.toFixed(2));
+
+        $('.all_quantity').text(SumAllTotal('.total_quantity'));
+        $('.all_amount').text(SumAllTotal('.total_amount'));
+
+        var all_amount = $('#allAmount').text();
+        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        overallCalculation(all_amount,tax_rate);
+        currencyCalculation();
+      });
+
+      $(document).on('keyup', '.rfq_price', function(event) {
+        if(/\D/g.test(this.value))
+        {
+          this.value = this.value.replace(/\D/g, '');
+        }
+          var current_price  = $(this).val();
+          var qty            = $(this).parents('.parent_tr').find('.stock_qty').val();
+          var discountType   = $(this).parents('.parent_tr').parent().find('.discount-type').find('input[type=radio]:checked').val();
+          var discount     = $(this).parents('.parent_tr').find('.discount-value').val();
+          var dis_price = current_price;
+          if(discountType=='amount'){
+            dis_price = current_price-discount;
+          }else if(discountType=='percentage'){
+            dis_price = (current_price - (current_price * discount/100));
+          }
+          var subTotal = singeSubtotal(qty,dis_price);
+          if(qty==0||qty==''){
+            $(this).parents('.parent_tr').find('.dis-price').val(0);
+            $(this).parents('.parent_tr').find('.dis-price').text(0);
+          }else{
+            $(this).parents('.parent_tr').find('.dis-price').val(dis_price);
+            $(this).parents('.parent_tr').find('.dis-price').text(dis_price);
+          }
+          $(this).parents('.parent_tr').find('.price').val(current_price*qty);
+          $(this).parents('.parent_tr').find('.price').text(current_price*qty);
+          $(this).parents('.parent_tr').find('.sub_total').text(subTotal.toFixed(2));
+          $(this).parents('.parent_tr').find('.subtotal_hidden').val(subTotal);
+            
+          var total_quantity = SumTotal('.collapse.show .stock_qty');
+          $('.collapse.show').find('.total_quantity').text(total_quantity);
+
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+          $('.collapse.show').find('.total_amount').text(total_amount.toFixed(2));
+
+          $('.all_quantity').text(SumAllTotal('.total_quantity'));
+          $('.all_amount').text(SumAllTotal('.total_amount'));
+
+          var all_amount = $('#allAmount').text();
+          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+          overallCalculation(all_amount,tax_rate);
+          currencyCalculation();
+      });
+
+      
+      $(document).on('click','.dis-type',function() {
+        if(!confirm("Are you sure want to change discount type.?")){
+          return false;
+        }else{
+          $('.collapse.show').find('.price').val(0);
+          $('.collapse.show').find('.price').text(0);
+          $('.collapse.show').find('.stock_qty').val(0);
+          $('.collapse.show').find('.discount-value').val(0);
+          $('.collapse.show').find('.dis-price').val(0);
+          $('.collapse.show').find('.dis-price').text(0);
+          $('.collapse.show').find('.sub_total').text('0.00');
+          $('.collapse.show').find('.subtotal_hidden').val(0);
+          $('.collapse.show').find('.total_quantity').text(0);
+          $('.collapse.show').find('.total_amount').text('0.00');
+          $('.all_quantity').text(SumAllTotal('.total_quantity'));
+          $('.all_amount').text(SumAllTotal('.total_amount'));
+          var all_amount = $('#allAmount').text();
+          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+          overallCalculation(all_amount,tax_rate);
+          currencyCalculation();
+        }
+      });
+
+      $(document).on('keyup', '.discount-value', function(event) {
+        if (/\D/g.test(this.value))
+        {
+          this.value = this.value.replace(/\D/g, '');
+        }
+        else{
+          /*if($(this).val()==''){
+            $(this).val(0);
+          }*/
+          var discountType = $(this).parents('.parent_tr').parent().find('.discount-type').find('input[type=radio]:checked').val();
+          var price = $(this).parents('.parent_tr').find('.rfq_price').val();
+          var discount = $(this).val();
+          var final_amount = price;
+          var qty = $(this).parents('.parent_tr').find('.stock_qty').val();
+          if(discountType=='amount'){
+            final_amount = price-discount;
+          }else if(discountType=='percentage'){
+            final_amount = (price - (price * discount/100));
+          }
+          var subTotal = singeSubtotal(qty,final_amount);
+          $(this).parents('.parent_tr').find('.dis-price').val(final_amount);
+          $(this).parents('.parent_tr').find('.dis-price').text(final_amount);
+          $(this).parents('.parent_tr').find('.sub_total').text(subTotal.toFixed(2));
+          $(this).parents('.parent_tr').find('.subtotal_hidden').val(subTotal);
+
+          $(this).parents('.parent_tr').find('.price').val(price*qty);
+          $(this).parents('.parent_tr').find('.price').text(price*qty);
+          $(this).parents('.parent_tr').find('.sub_total').text(subTotal.toFixed(2));
+          $(this).parents('.parent_tr').find('.subtotal_hidden').val(subTotal);
+            
+          var total_quantity = SumTotal('.collapse.show .stock_qty');
+          $('.collapse.show').find('.total_quantity').text(total_quantity);
+
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+          $('.collapse.show').find('.total_amount').text(total_amount.toFixed(2));
+
+          $('.all_quantity').text(SumAllTotal('.total_quantity'));
+          $('.all_amount').text(SumAllTotal('.total_amount'));
+
+          var all_amount = $('#allAmount').text();
+          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+          overallCalculation(all_amount,tax_rate);
+          currencyCalculation();
+        }
       });
 
       $(document).on('keyup', '.stock_qty', function(event) {
@@ -556,28 +649,43 @@
           this.value = this.value.replace(/\D/g, '');
         }
         else{
-          var base=$(this).parents('.parent_tr');
-          var base_price=base.find('.rfq_price').val();
-          var total_price=base_price*$(this).val();
-
-          base.find('.subtotal_hidden').val(total_price);
-          base.find('.sub_total').text(total_price);
-              
-          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
-          var attr=$(this).parents('tbody').find('.collapse.show');
-          var total_quantity=SumTotal('.collapse.show .stock_qty');
-          console.log(total_quantity);
-          
+          /*if($(this).val()==''){
+            $(this).val(0);
+          }*/
+          var qty          = $(this).val();
+          var real_price   = $(this).parents('.parent_tr').find('.rfq_price').val();
+          var price        = qty*real_price;
+          var discountType = $(this).parents('.parent_tr').parent().find('.discount-type').find('input[type=radio]:checked').val();
+          var discount     = $(this).parents('.parent_tr').find('.discount-value').val();
+          var dis_price=real_price;
+          if(discountType=='amount'){
+            dis_price = real_price-discount;
+          }else if(discountType=='percentage'){
+            dis_price = (real_price - (real_price * discount/100));
+          }
+          var subTotal = singeSubtotal(qty,dis_price);
+          if(qty==0||qty==''){
+            $(this).parents('.parent_tr').find('.dis-price').val(0);
+            $(this).parents('.parent_tr').find('.dis-price').text(0);
+          }else{
+            $(this).parents('.parent_tr').find('.dis-price').val(dis_price);
+            $(this).parents('.parent_tr').find('.dis-price').text(dis_price);
+          }
+          $(this).parents('.parent_tr').find('.price').val(price);
+          $(this).parents('.parent_tr').find('.price').text(price);
+          $(this).parents('.parent_tr').find('.sub_total').text(subTotal.toFixed(2));
+          $(this).parents('.parent_tr').find('.subtotal_hidden').val(subTotal);
+            
+          var total_quantity = SumTotal('.collapse.show .stock_qty');
           $('.collapse.show').find('.total_quantity').text(total_quantity);
-          $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);
-          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
-          
-          $('.collapse.show').find('.total').text(total_amount);
-          $('[href="#'+attr_id+'"]').find('.total').text(total_amount);
-          $('.all_quantity').text(SumTotal('.stock_qty'));
-          $('.all_amount').text(SumTotal('.subtotal_hidden'));
 
-          var currency = $('option:selected', '#currency_rate').attr("currency-rate");
+          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+          $('.collapse.show').find('.total_amount').text(total_amount.toFixed(2));
+
+          $('.all_quantity').text(SumAllTotal('.total_quantity'));
+          $('.all_amount').text(SumAllTotal('.total_amount'));
+
           var all_amount = $('#allAmount').text();
           var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
           var free_del_amount=$('.free_delivery_amount').val();
@@ -588,10 +696,7 @@
             $('#delivery-methods option[value="3"]').show();
           }
           else{
-            var old_delivery_method_id = <?php echo $rfqs->delivery_method_id; ?>;
-            var old_delivery_method_amount = <?php echo $rfqs->deliveryMethod->amount; ?>;
-            $('#delivery-methods').val(old_delivery_method_id).change();
-            $('#deliveryCharge').text(old_delivery_method_amount);
+            $('#delivery-methods').prop('selectedIndex',0);
             $('#delivery-methods option[value="3"]').hide();
           }
 
@@ -600,114 +705,143 @@
           }else{
             $('#deliveryCharge').text('0.00');
           }
-          overallCalculation(all_amount,tax_rate,currency);
+          overallCalculation(all_amount,tax_rate);
+          currencyCalculation();
         }
       });
 
-      $(document).on('keyup', '.rfq_price', function(event) {
-        if (/\D/g.test(this.value))
-        {
-          this.value = this.value.replace(/\D/g, '');
-        }
-        else{
-          var base=$(this).parents('.parent_tr');
-          var base_price=base.find('.stock_qty').val();
-          var total_price=base_price*$(this).val();
-         
-          base.find('.subtotal_hidden').val(total_price);
-          base.find('.sub_total').text(total_price);
-            
-          var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
-          var attr=$(this).parents('tbody').find('.collapse.show');
-          var total_quantity=SumTotal('.collapse.show .stock_qty');
-          console.log(total_quantity);
 
-          $('.collapse.show').find('.total_quantity').text(total_quantity);
-          $('[href="#'+attr_id+'"]').find('.total_quantity').text(total_quantity);
-          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
-          $('.collapse.show').find('.total').text(total_amount);
-          $('[href="#'+attr_id+'"]').find('.total').text(total_amount);
-
-          $('.all_quantity').text(SumTotal('.stock_qty'));
-          $('.all_amount').text(SumTotal('.subtotal_hidden'));
-
-          var currency = $('option:selected', '#currency_rate').attr("currency-rate");
-          var all_amount = $('#allAmount').text();
-          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
-          overallCalculation(all_amount,tax_rate,currency);
-        }
+      $(document).ready(function() {
+        $('#delivery-methods option[value="3"]').hide();
+        var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
+        $('#deliveryCharge').text(del_fees);
       });
 
-      $(document).on('keyup', '.rfq_price', function(event) {
-        $('.all_rfq_price').text(SumTotal('.rfq_price'));
+      $(document).on('change','#delivery-methods', function(event) {
+        var all_amount = $('#allAmount').text();
+        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        var free_del_amount=$('.free_delivery_amount').val();
+        var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
+        var del_type = $('#delivery-methods option:selected').val();
+        
+        if (del_fees!=0) {
+          $('#deliveryCharge').text(del_fees);
+        }else{
+          $('#deliveryCharge').text('0.00');
+        }
+        overallCalculation(all_amount,tax_rate);
+        currencyCalculation();
       });
+
+      $(document).on('change', '#order_tax', function() {
+        var all_amount = $('#allAmount').text();
+        var tax_rate = $('option:selected', this).attr("tax-rate");
+        overallCalculation(all_amount,tax_rate);
+        currencyCalculation();
+      });
+
+
+      $(document).on('change', '#currency_rate', function() {
+        currencyCalculation();
+      });
+
+      $('.dis-price').on('keypress',function(e){
+        if(e.which === 8 && $.inArray(e.target.tagName, inputTags) === -1)
+        e.preventDefault();
+      });
+
+      function singeSubtotal(qty,final_price){
+        var subTotal = final_price*qty;
+        return subTotal;
+      }
+
+      function SumAllTotal(class_name) {
+        var sum = 0;
+        $(class_name).each(function(){
+          var inputVal = '';
+          if($(this).text()==''){
+            inputVal = parseFloat(0);
+          }else{
+            inputVal = $(this).text();
+          }
+          sum += parseFloat(inputVal);
+        });
+        return sum;
+      }
 
       function SumTotal(class_name) {
         var sum = 0;
         $(class_name).each(function(){
-          sum += parseFloat(this.value);
+          var inputVal = '';
+          if(this.value==''){
+            inputVal = parseFloat(0);
+          }else{
+            inputVal = this.value;
+          }
+          sum += parseFloat(inputVal);
         });
         return sum;
       }
-      
-      $(document).on('keyup', '#order-discount', function() {
-        var discount = $(this).val();
-        $('.order-discount').text(discount);
-        var currency = $('option:selected', '#currency_rate').attr("currency-rate");
-        var all_amount = $('#allAmount').text();
-        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
-        overallCalculation(all_amount,tax_rate,currency);
-      });
 
-      $(document).on('change', '#order_tax', function() {
-        var currency = $('option:selected', '#currency_rate').attr("currency-rate");
-        var all_amount = $('#allAmount').text();
-        var tax_rate = $('option:selected', this).attr("tax-rate");
-        overallCalculation(all_amount,tax_rate,currency);
-      });
+      function ExistingRFQPrice() {
+        var value_array = [];
+        $('.parent_tr').each(function(index, el) {
+            var customer_id=$('#customer').val();
+            var product_id=$(this).find('.product_id').val();
+            var variant_id=$(this).find('.variant_id').val();
+            var current_node=$(this);
+            $.ajax({
+              url: '{{ url('admin/check-rfq-existing') }}',
+              data: {
+                product_id: product_id,
+                variant_id:variant_id,
+                customer_id:customer_id,
+              }
+            })
+            .done(function(response) {
+              if (response.price!=null) {
+                current_node.find('.last-rfq').text(response.price);
+                current_node.find('.rfq_price').val(response.price);
+                current_node.find('.last_rfq_price_val').val(response.price);
+                value_array.push(response.price);
+              }
+              else{
+                current_node.find('.last-rfq').text('-');
+              }
+              if (value_array.length>0) {
+                current_node.find('.last-rfq').show();
+                $('#collapse'+product_id+' th.last-rfq').show();
+              }
+              else{
+                current_node.find('.last-rfq').hide();
+                $('#collapse'+product_id+' th.last-rfq').hide();
+              }
+            })
+            .fail(function() {
+            });
+        });
+      }
 
-      $(document).on('change', '#currency_rate', function() {
-        var currency = $('option:selected', this).attr("currency-rate");
-        var currencyCode = $('option:selected', this).attr("currency-code");
-        if(currency!=0){
-          $('#total_exchange').show();
-        }else{
-          $('#total_exchange').hide();
-        }
-        if(currencyCode=='SGD'){
-          $('#total_exchange').hide();
-        }
-        var all_amount = $('#allAmount').text();
-        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
-        $('.exchange-code').text(currencyCode);
-        overallCalculation(all_amount,tax_rate,currency);
-      });
-
-      function overallCalculation(all_amount,tax_rate,currency_rate){
-        var allAmount = all_amount;
-        var taxRate = tax_rate;
-        var currencyRate = currency_rate;
-        
-        var tax = taxRate/100;
-        var calculatTax = tax*allAmount;
+      function overallCalculation(all_amount,tax_rate){
+        var tax = tax_rate/100;
+        var calculatTax = tax*all_amount;
         var taxAmount = calculatTax.toFixed(2);
-        var discount = $('#order-discount').val();
         var deliveryCharge = $('#deliveryCharge').text();
         $('#orderTax').text(taxAmount);
-        var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount)+parseFloat(deliveryCharge);
-        var totalSGD = parseFloat(calculateSGD)-parseFloat(discount);
+        var calculateSGD = parseFloat(all_amount)+parseFloat(taxAmount)+parseFloat(deliveryCharge);
+        var totalSGD = parseFloat(calculateSGD);
         $('#total_amount_sgd').text(totalSGD.toFixed(2));
-
-        if(currencyRate!=0){
-          var totalExchangeRate = totalSGD*currencyRate;
-          $('#toatl_exchange_rate').val(totalExchangeRate.toFixed(2));
-        }else{
-          $('#total_exchange').hide();
-        }
-        $('#total_amount_hidden').val(allAmount);
+        $('#total_amount_hidden').val(all_amount);
         $('#order_tax_amount_hidden').val(taxAmount);
         $('#sgd_total_amount_hidden').val(totalSGD);
         $('.del_charge_hidden').val(deliveryCharge);
+      }      
+    
+      function currencyCalculation() {
+        var currency = $('option:selected', '#currency_rate').attr("currency-rate");
+        var all_amount = $('#total_amount_sgd').text();
+        var totalExchangeRate = all_amount*currency;
+        $('#toatl_exchange_rate').val(totalExchangeRate.toFixed(2));
       }
 
       $('.rfq-form').on('keyup keypress', function(e) {
@@ -717,6 +851,7 @@
           return false;
         }
       });
+
 
       $(document).on('click', '.save-btn', function(event) {
         if(validate()!=false){
@@ -742,14 +877,20 @@
           $("#rfqStatus").closest('.form-group').find('span.text-danger.rfq').show();
           valid = false;
         }
+        if($('#sgd_total_amount_hidden').val()==""||$('#sgd_total_amount_hidden').val()==0)
+        {
+          alert('Please enter minimum Quantity');
+          valid = false;
+        }
         return valid;
       }
-      
+
       function scroll_to(form){
         $('html, body').animate({
           scrollTop: $(".rfq-form").offset().top
         },1000);
       }
+
     </script>
   @endpush
 @endsection

@@ -259,7 +259,7 @@
             
           <div class="footer-sec">
             <label>Note:</label>
-            <div class="notes">{{ $rfq_data['notes'] }}</div>
+            <div class="notes">{!! $rfq_data['notes'] !!}</div>
           </div>
 
         </div>
