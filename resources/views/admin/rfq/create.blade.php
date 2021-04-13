@@ -128,17 +128,6 @@
                         </select>
                       </div>
 
-                      {{-- <div class="col-sm-3">
-                        <label for="currency_rate">Currency</label>
-                        <select class="form-control no-search select2bs4" name="currency" id="currency_rate">
-                          @foreach($currencies as $currency)
-                            <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($currency->is_primary==1)  selected="selected" @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
-                              {{$currency->currency_code}} - {{$currency->currency_name}}
-                            </option>
-                          @endforeach
-                        </select>
-                      </div> --}}
-
                       <div class="col-sm-4">
                         <label for="purchase_date">Payment Term</label>
                         {!! Form::select('payment_term',$payment_terms,null,['class'=>'form-control no-search select2bs4']) !!}
@@ -170,7 +159,7 @@
                               <select class="form-control no-search select2bs4" name="currency" id="currency_rate">
                                 @foreach($currencies as $currency)
                                   <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($currency->is_primary==1)  selected="selected" @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
-                                    {{$currency->currency_code}}
+                                    {{$currency->currency_code}} - {{$currency->currency_name}}
                                   </option>
                                 @endforeach
                               </select>
@@ -339,10 +328,6 @@
         }
       });
 
-      $(document).on('click', '.remove-item', function(event) {
-        $(this).parents('.parent_tr').remove();
-      });
-
       $(document).on('click', '.remove-product-row', function(event) {
         if(!confirm('Are you sure to remove it.?')){
           return false;
@@ -365,24 +350,52 @@
       });
 
       $(document).on('change', '.rfq_price', function(event) {
-          var minimum_price = $(this).parents('.parent_tr').find('.minimum-price').val();
-          var current_price = $(this).val();
-          if(current_price==''){
-            $(this).val(minimum_price);
-            $(this).parents('.parent_tr').find('.dis-price').val(minimum_price)
-            $(this).parents('.parent_tr').find('.price').val(minimum_price);
-            $(this).parents('.parent_tr').find('.dis-price').text(minimum_price)
-            $(this).parents('.parent_tr').find('.price').text(minimum_price);
-          }else{
-            if ((current_price !== '') && (current_price.indexOf('.') === -1)) {
-              var current_price = Math.max(Math.max(current_price, parseInt(minimum_price)), -90);
-              $(this).val(current_price);
-              $(this).parents('.parent_tr').find('.dis-price').val(current_price);
-              $(this).parents('.parent_tr').find('.price').val(current_price);
-              $(this).parents('.parent_tr').find('.dis-price').text(current_price);
-              $(this).parents('.parent_tr').find('.price').text(current_price);
-            }
+        var minimum_price = $(this).parents('.parent_tr').find('.minimum-price').val();
+        var qty           = $(this).parents('.parent_tr').find('.stock_qty').val();
+        var discountType = $(this).parents('.parent_tr').parent().find('.discount-type').find('input[type=radio]:checked').val();
+        var discount     = $(this).parents('.parent_tr').find('.discount-value').val();
+
+        var current_price = $(this).val();
+        if(current_price==''){
+          $(this).val(minimum_price);
+          if(discountType=='amount'){
+            dis_price = current_price-discount;
+          }else if(discountType=='percentage'){
+            dis_price = (current_price - (current_price * discount/100));
           }
+          $(this).parents('.parent_tr').find('.dis-price').val(dis_price)
+          $(this).parents('.parent_tr').find('.price').val(minimum_price*qty);
+          $(this).parents('.parent_tr').find('.dis-price').text(dis_price)
+          $(this).parents('.parent_tr').find('.price').text(minimum_price*qty);
+        }else{
+          if ((current_price !== '') && (current_price.indexOf('.') === -1)) {
+            var current_price = Math.max(Math.max(current_price, parseInt(minimum_price)), -90);
+            $(this).val(current_price);
+            if(discountType=='amount'){
+              dis_price = current_price-discount;
+            }else if(discountType=='percentage'){
+              dis_price = (current_price - (current_price * discount/100));
+            }
+            $(this).parents('.parent_tr').find('.dis-price').val(dis_price);
+            $(this).parents('.parent_tr').find('.price').val(current_price*qty);
+            $(this).parents('.parent_tr').find('.dis-price').text(dis_price);
+            $(this).parents('.parent_tr').find('.price').text(current_price*qty);
+          }
+        }
+        var total_quantity = SumTotal('.collapse.show .stock_qty');
+        $('.collapse.show').find('.total_quantity').text(total_quantity);
+
+        var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
+        var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+        $('.collapse.show').find('.total_amount').text(total_amount.toFixed(2));
+
+        $('.all_quantity').text(SumAllTotal('.total_quantity'));
+        $('.all_amount').text(SumAllTotal('.total_amount'));
+
+        var all_amount = $('#allAmount').text();
+        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        overallCalculation(all_amount,tax_rate);
+        currencyCalculation();
       });
 
       $(document).on('keyup', '.rfq_price', function(event) {
@@ -392,7 +405,7 @@
         }
           var current_price  = $(this).val();
           var qty            = $(this).parents('.parent_tr').find('.stock_qty').val();
-          var discountType = $('.discount-type').find('input[type=radio]:checked').val();
+          var discountType   = $(this).parents('.parent_tr').parent().find('.discount-type').find('input[type=radio]:checked').val();
           var discount     = $(this).parents('.parent_tr').find('.discount-value').val();
           var dis_price = current_price;
           if(discountType=='amount'){
@@ -408,8 +421,8 @@
             $(this).parents('.parent_tr').find('.dis-price').val(dis_price);
             $(this).parents('.parent_tr').find('.dis-price').text(dis_price);
           }
-          $(this).parents('.parent_tr').find('.price').val(current_price);
-          $(this).parents('.parent_tr').find('.price').text(current_price);
+          $(this).parents('.parent_tr').find('.price').val(current_price*qty);
+          $(this).parents('.parent_tr').find('.price').text(current_price*qty);
           $(this).parents('.parent_tr').find('.sub_total').text(subTotal.toFixed(2));
           $(this).parents('.parent_tr').find('.subtotal_hidden').val(subTotal);
             
@@ -418,10 +431,10 @@
 
           var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
           var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
-          $('.collapse.show').find('.total').text(total_amount.toFixed(2));
+          $('.collapse.show').find('.total_amount').text(total_amount.toFixed(2));
 
           $('.all_quantity').text(SumAllTotal('.total_quantity'));
-          $('.all_amount').text(SumAllTotal('.total_amount total'));
+          $('.all_amount').text(SumAllTotal('.total_amount'));
 
           var all_amount = $('#allAmount').text();
           var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
@@ -488,7 +501,7 @@
 
           var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
           var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
-          $('.collapse.show').find('.total').text(total_amount.toFixed(2));
+          $('.collapse.show').find('.total_amount').text(total_amount.toFixed(2));
 
           $('.all_quantity').text(SumAllTotal('.total_quantity'));
           $('.all_amount').text(SumAllTotal('.total_amount'));
@@ -512,7 +525,7 @@
           var qty          = $(this).val();
           var real_price   = $(this).parents('.parent_tr').find('.rfq_price').val();
           var price        = qty*real_price;
-          var discountType = $('.discount-type').find('input[type=radio]:checked').val();
+          var discountType = $(this).parents('.parent_tr').parent().find('.discount-type').find('input[type=radio]:checked').val();
           var discount     = $(this).parents('.parent_tr').find('.discount-value').val();
           var dis_price=real_price;
           if(discountType=='amount'){
@@ -526,7 +539,7 @@
             $(this).parents('.parent_tr').find('.dis-price').text(0);
           }else{
             $(this).parents('.parent_tr').find('.dis-price').val(dis_price);
-            $(this).parents('.parent_tr').find('.dis-price').text(0);
+            $(this).parents('.parent_tr').find('.dis-price').text(dis_price);
           }
           $(this).parents('.parent_tr').find('.price').val(price);
           $(this).parents('.parent_tr').find('.price').text(price);
@@ -538,7 +551,7 @@
 
           var attr_id=$(this).parents('tbody').find('.collapse.show').attr('id');
           var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
-          $('.collapse.show').find('.total').text(total_amount.toFixed(2));
+          $('.collapse.show').find('.total_amount').text(total_amount.toFixed(2));
 
           $('.all_quantity').text(SumAllTotal('.total_quantity'));
           $('.all_amount').text(SumAllTotal('.total_amount'));
