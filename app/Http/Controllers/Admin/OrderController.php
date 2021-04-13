@@ -176,7 +176,7 @@ class OrderController extends Controller
         $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                         ->pluck('name','id')->toArray();
                                         
-        $data['delivery_methods'] = DeliveryMethod::all();
+        $data['delivery_methods'] = DeliveryMethod::where('status',1)->get();
         $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
         $data['free_delivery_target'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('target_amount');
 
@@ -478,7 +478,7 @@ class OrderController extends Controller
      
         $data['check_quantity']=Orders::CheckQuantity($order_id);
         $data['product_datas']=$product_data;
-        $data['delivery_methods'] = DeliveryMethod::all();
+        $data['delivery_methods'] = DeliveryMethod::where('status',1)->get();
         $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
         $data['free_delivery_target'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('target_amount');
 
