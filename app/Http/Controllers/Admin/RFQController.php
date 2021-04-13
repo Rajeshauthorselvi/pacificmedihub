@@ -169,7 +169,7 @@ class RFQController extends Controller
       foreach($description_notes as $prod_id => $notes){
         $add_notes = new OrderRFQProductDescription;
         $add_notes->type = 'rfq';
-        $add_notes->ref_id = 1;
+        $add_notes->ref_id = $rfq_id;
         $add_notes->product_id = $prod_id;
         $add_notes->description = $notes;
         $add_notes->timestamps = false;

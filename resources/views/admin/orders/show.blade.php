@@ -156,10 +156,6 @@
                                   Total Quantity:&nbsp;
                                   <span class="all_quantity">{{ $total_products->quantity }}</span>   
                               </th>
-                              {{-- <th scope="col">
-                                  Price:&nbsp;
-                                  <span class="all_rfq_price">{{ $total_products->final_price  }}</span>  
-                              </th> --}}
                               <th scope="col"></th>
                               <th>
                                   Total Amount:&nbsp;
@@ -190,12 +186,24 @@
                                           @foreach ($product['options'] as $option)
                                             <th>{{ $option }}</th>
                                           @endforeach
-                                          <th>Base Price</th>
-                                          <th>Retail Price</th>
-                                          <th>Minimum Selling Price</th>
-                                          <th>Quantity</th>
-                                          <th>Price</th>
-                                          <th>Subtotal</th>
+                                          <th class="width">Base Price</th>
+                                          <th class="width">Retail Price</th>
+                                          <th class="width">Minimum Selling Price</th>
+                                          <th class="width">Price <br><small>(a)</small></th>
+                                          <th class="width">QTY <br><small>(b)</small></th>
+                                          <th class="width">Discount
+                                            <div class="discount-type">
+                                              <div class="icheck-info d-inline">
+                                                <input type="radio" checked id="percentage" class="dis-type" value="percentage"><label for="percentage">%</label>
+                                              </div>&nbsp;&nbsp;&nbsp;
+                                              <div class="icheck-info d-inline">
+                                                <input type="radio" class="dis-type" name="variant[discount_type][]" id="amount" value="amount"><label for="amount">$</label>
+                                              </div>
+                                            </div>
+                                          </th>
+                                          <th class="width">Discount Price <br><small>(c)</small></th>
+                                          <th class="width">Total <br><small>(a x b)</small></th>
+                                          <th class="width">Subtotal <br><small>(b x c)</small></th>
                                         </tr>
                                       </thead>
                                       <tbody>
@@ -220,28 +228,26 @@
                                               <td> {{$variant['option_value5']}} </td>
                                             @endif
                                             <td class="base_price"> {{$variant['base_price']}} </td>
-                                            <td> {{$variant['retail_price']}}</td>
-                                            <td> {{$variant['minimum_selling_price']}} </td>
-                                            <td>
-                                              <div class="form-group">{{ $variation_details['quantity'] }}</div>
-                                            </td>
-                                            <td>
-                                              <?php $high_value=$variation_details['final_price']; ?>
-                                              {{ $high_value }}
-                                            </td>
-                                            <td>
-                                              <div class="form-group">{{ $variation_details['sub_total'] }}</div>
-                                            </td>
+                                            <td>{{$variant['retail_price']}}</td>
+                                            <td>{{$variant['minimum_selling_price']}} </td>
+                                            <td>{{$variation_details['price']}}</td>
+                                            <td>{{$variation_details['quantity']}}</td>
+                                            <td>{{$variation_details['discount_value']}}</td>
+                                            <td>{{$variation_details['final_price']}}</td>
+                                            <td>{{$variation_details['total_price']}}</td>
+                                            <td>{{$variation_details['sub_total']}}</td>
                                           </tr>
                                           <?php $total_amount +=$variation_details['sub_total']; ?>
-                                          <?php $final_price +=$variation_details['final_price']; ?>
                                           <?php $total_quantity +=$variation_details['quantity']; ?>
                                         @endforeach
                                         <tr>
-                                          <td colspan="{{ count($product['options'])+3 }}" class="text-right">Total:</td>
+                                          <td colspan="{{ count($product['options'])+3 }}">
+                                            <input type="text" class="form-control" placeholder="Notes" value="{{ isset($product_description_notes[$product['product_id']])?$product_description_notes[$product['product_id']]:'' }}">
+                                          </td>
+                                          <td colspan="2" class="text-right">Total Qty:</td>
                                           <td class="total_quantity">{{ $total_quantity }}</td>
-                                          <td class="final_price">{{ $final_price }}</td>
-                                          <td class="total_amount">{{ $total_amount }}</td>
+                                          <td colspan="2" class="text-right">Grand Total:</td>
+                                          <td class="total_amount total">{{ $total_amount }}</td>
                                         </tr>
                                       </tbody>
                                     </table>
@@ -252,10 +258,6 @@
                             <tr class="total-calculation">
                               <td colspan="4" class="title">Total</td>
                               <td><span class="all_amount">{{ $order->total_amount }}</span></td>
-                            </tr>
-                            <tr class="total-calculation">
-                              <td colspan="4" class="title">Order Discount</td>
-                              <td><span class="order-discount">{{$order->order_discount}}</span></td>
                             </tr>
                             <tr class="total-calculation">
                               <td colspan="4" class="title">Order Tax</td>
@@ -306,5 +308,7 @@
       </div>
     </section>
   </div>
-                      
+  <style type="text/css">
+    th.width{width:90px;}
+  </style>
 @endsection

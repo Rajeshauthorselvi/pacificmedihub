@@ -67,7 +67,10 @@ class Orders extends Model
     {
         return $this->belongsTo(UserAddress::class,'address_id');
     }
-
+    public function deliveryMethod()
+    {
+        return $this->belongsTo(DeliveryMethod::class,'delivery_method_id');
+    }
     static function CheckQuantity($order_id)
     {
         $products =self::with('orderProducts')

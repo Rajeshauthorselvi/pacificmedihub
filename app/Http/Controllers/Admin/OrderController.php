@@ -23,6 +23,7 @@ use App\Models\PaymentTerm;
 use App\Models\UserAddress;
 use App\Models\OrderHistory;
 use App\Models\Purchase;
+use App\Models\OrderRFQProductDescription;
 use App\User;
 use App\Models\DeliveryMethod;
 use Auth;
@@ -214,131 +215,141 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate(request(),[
-            'order_status'   => 'required',
-            'payment_status' => 'required'
+      $this->validate(request(),[
+        'order_status'   => 'required',
+        'payment_status' => 'required'
+      ]);
+
+      /*Order*/
+      if($request->order_status==13){
+        $order_completed_at = date('Y-m-d H:i:s');
+      }else{
+        $order_completed_at = NULL;
+      }
+      if(!Auth::check() && Auth::guard('employee')->check()) {
+        $created_user_type=2;
+        $auth_id=Auth::guard('employee')->user()->id;
+      }else{
+        $created_user_type=1;
+        $auth_id=Auth::id();
+      }
+      if(!isset($request->del_add_id)){
+        $customer_address = User::where('id',$request->customer_id)->value('address_id');
+      }else{
+        $customer_address = $request->del_add_id;
+      }
+      $order_data=[
+        'rfq_id'                => $request->rfq_id,
+        'sales_rep_id'          => $request->sales_rep_id,
+        'customer_id'           => $request->customer_id,
+        'order_no'              => $request->order_no,
+        'order_status'          => $request->order_status,
+        'order_tax'             => $request->order_tax,
+        'order_discount'        => $request->order_discount,
+        'delivery_method_id'    => $request->delivery_method_id,
+        'delivery_charge'       => $request->delivery_charge,
+        'currency'              => $request->currency,
+        'payment_term'          => $request->payment_term,
+        'payment_status'        => $request->payment_status,
+        'order_tax_amount'      => $request->order_tax_amount,
+        'total_amount'          => $request->total_amount,
+        'sgd_total_amount'      => $request->sgd_total_amount,
+        'exchange_total_amount' => $request->exchange_rate,
+        'user_id'               => $auth_id,
+        'created_user_type'     => $created_user_type,
+        'notes'                 => $request->note,
+        'order_completed_at'    => $order_completed_at,
+        'address_id'            => $customer_address,
+        'created_at'            => date('Y-m-d H:i:s')
+      ];
+     
+      $order_id = Orders::insertGetId($order_data);
+      
+      $description_notes = $request->product_description;
+      foreach($description_notes as $prod_id => $notes){
+        $add_notes = new OrderRFQProductDescription;
+        $add_notes->type = 'order';
+        $add_notes->ref_id = $order_id;
+        $add_notes->product_id = $prod_id;
+        $add_notes->description = $notes;
+        $add_notes->timestamps = false;
+        $add_notes->save();
+      }
+
+      /*Order Products*/
+      $variant               = $request->variant;
+      $product_ids           = $variant['product_id'];
+      $variant_id            = $variant['id'];
+      $base_price            = $variant['base_price'];
+      $retail_price          = $variant['retail_price'];
+      $minimum_selling_price = $variant['minimum_selling_price'];
+      $stock_qty             = $variant['stock_qty'];
+      $price                 = $variant['rfq_price'];
+      $discount_value        = $variant['discount_value'];
+      $final_price           = $variant['final_price'];
+      $total_price           = $variant['price'];
+      $sub_total             = $variant['sub_total'];
+
+      foreach ($product_ids as $key => $product_id) {
+        if ($stock_qty[$key]!=0) {
+          $data=[
+            'order_id'                  => $order_id,
+            'product_id'                => $product_id,
+            'product_variation_id'      => $variant_id[$key],
+            'base_price'                => $base_price[$key],
+            'retail_price'              => $retail_price[$key],
+            'minimum_selling_price'     => $minimum_selling_price[$key],
+            'quantity'                  => $stock_qty[$key],
+            'price'                     => $price[$key],
+            'discount_type'             => $variant['discount_type'][$product_id],
+            'discount_value'            => $discount_value[$key],
+            'final_price'               => $final_price[$key],
+            'total_price'               => $total_price[$key],
+            'sub_total'                 => $sub_total[$key]
+          ];
+          OrderProducts::insert($data);
+        }
+      }
+      
+      /*Order Payment*/
+      if ($request->amount!="" || $request->amount!=0) {
+        PaymentHistory::insert([
+          'ref_id'  => $order_id,
+          'reference_no'  => $request->payment_ref_no,
+          'payment_from'  => 2,
+          'amount'  => $request->amount,
+          'payment_notes' => $request->payment_note,
+          'payment_id' => $request->paying_by,
+          'created_at' => date('Y-m-d H:i:s')
         ]);
+        $total_amount=$request->sgd_total_amount;
+        $total_paid=$request->amount;
+        $balance_amount=$total_amount-$total_paid;
+        if ($balance_amount==0) 
+          $payment_status=1;
+        else
+          $payment_status=2; 
+        Orders::where('id',$order_id)->update(['payment_status'=>$payment_status]);
+      }
+      
+      /*OrderHistory*/
+      if (!Auth::check() && Auth::guard('employee')->check()) {
+        $updated_by=Auth::guard('employee')->user()->id;
+        $user_type=2;
+      }else{
+        $updated_by=Auth::id();
+        $user_type=1;
+      }
+      $order_history=[
+        'order_id'    => $order_id,
+        'order_status_id' => $order_data['order_status'],
+        'updated_by'  => $updated_by,
+        'user_type'   => $user_type 
+      ];
+      OrderHistory::insert($order_history);
 
-        /*Order*/
-        if($request->order_status==13){
-            $order_completed_at = date('Y-m-d H:i:s');
-        }else{
-            $order_completed_at = NULL;
-        }
-
-       if (!Auth::check() && Auth::guard('employee')->check()) {
-          $created_user_type=2;
-          $auth_id=Auth::guard('employee')->user()->id;
-       }
-       else{
-          $created_user_type=1;
-          $auth_id=Auth::id();
-       }
-       if(!isset($request->del_add_id)){
-          $customer_address = User::where('id',$request->customer_id)->value('address_id');
-       }else{
-          $customer_address = $request->del_add_id;
-       }
-        $order_data=[
-            'rfq_id'                => $request->rfq_id,
-            'sales_rep_id'          => $request->sales_rep_id,
-            'customer_id'           => $request->customer_id,
-            'order_no'              => $request->order_no,
-            'order_status'          => $request->order_status,
-            'order_tax'             => $request->order_tax,
-            'order_discount'        => $request->order_discount,
-            'delivery_method_id'    => $request->delivery_method_id,
-            'delivery_charge'       => $request->delivery_charge,
-            'currency'              => $request->currency,
-            'payment_term'          => $request->payment_term,
-            'payment_status'        => $request->payment_status,
-            'order_tax_amount'      => $request->order_tax_amount,
-            'total_amount'          => $request->total_amount,
-            'sgd_total_amount'      => $request->sgd_total_amount,
-            'exchange_total_amount' => $request->exchange_rate,
-            'user_id'               => $auth_id,
-            'created_user_type'     => $created_user_type,
-            'notes'                 => $request->note,
-            'order_completed_at'    => $order_completed_at,
-            'address_id'            => $customer_address,
-            'created_at'            => date('Y-m-d H:i:s')
-       ];
-       
-        $order_id = Orders::insertGetId($order_data);
-        /*Order*/
-
-        /*Order Products*/
-        $quantites             = $request->quantity;
-        $variant               = $request->variant;
-        $product_ids           = $variant['product_id'];
-        $variant_id            = $variant['id'];
-        $base_price            = $variant['base_price'];
-        $retail_price          = $variant['retail_price'];
-        $minimum_selling_price = $variant['minimum_selling_price'];
-        $stock_qty             = $variant['stock_qty'];
-        $sub_total             = $variant['sub_total'];
-        $final_price           = $variant['final_price'];
-
-        foreach ($product_ids as $key => $product_id) {
-            if ($stock_qty[$key]!=0) {
-                $data=[
-                    'order_id'                  => $order_id,
-                    'product_id'                => $product_id,
-                    'product_variation_id'      => $variant_id[$key],
-                    'base_price'                => $base_price[$key],
-                    'retail_price'              => $retail_price[$key],
-                    'minimum_selling_price'     => $minimum_selling_price[$key],
-                    'quantity'                  => $stock_qty[$key],
-                    'sub_total'                 => $sub_total[$key],
-                    'final_price'               => $final_price[$key]
-                ];
-                OrderProducts::insert($data);
-            }
-        }
-        /*Order Products*/
-
-        /*Order Payment*/
-       if ($request->amount!="" || $request->amount!=0) {
-           PaymentHistory::insert([
-                'ref_id'  => $order_id,
-                'reference_no'  => $request->payment_ref_no,
-                'payment_from'  => 2,
-                'amount'  => $request->amount,
-                'payment_notes' => $request->payment_note,
-                'payment_id' => $request->paying_by,
-                'created_at' => date('Y-m-d H:i:s')
-           ]);
-            $total_amount=$request->sgd_total_amount;
-            $total_paid=$request->amount;
-            $balance_amount=$total_amount-$total_paid;
-            if ($balance_amount==0) 
-              $payment_status=1;
-            else
-              $payment_status=2; 
-          Orders::where('id',$order_id)->update(['payment_status'=>$payment_status]);
-       }
-       /*Order Payment*/
-
-       /*OrderHistory*/
-         if (!Auth::check() && Auth::guard('employee')->check()) {
-            $updated_by=Auth::guard('employee')->user()->id;
-            $user_type=2;
-         }
-         else{
-            $updated_by=Auth::id();
-            $user_type=1;
-         }
-         $order_history=[
-            'order_id'    => $order_id,
-            'order_status_id' => $order_data['order_status'],
-            'updated_by'  => $updated_by,
-            'user_type'   => $user_type 
-         ];
-         OrderHistory::insert($order_history);
-       /*OrderHistory*/
-
-       $route=$this->RouteLinks();
-       return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
+      $route=$this->RouteLinks();
+      return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
     }
 
     /**
@@ -404,6 +415,8 @@ class OrderController extends Controller
         if ($currenct_route[0]=="assign-shippment" || $currenct_route[0]=="assign-delivery") {
            return view('admin.orders.assign_shippment_delivery.show',$data);
         }
+        $data['product_description_notes'] = OrderRFQProductDescription::where('type','order')->where('ref_id',$order_id)->pluck('description','product_id')->toArray();
+        $data['discount_type'] = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->pluck('discount_type','product_id')->toArray();
         return view('admin.orders.show',$data);
     }
 
@@ -504,22 +517,23 @@ class OrderController extends Controller
         $order_status=$order_status->pluck('status_name','id')->toArray();
 
         $delivery_status=OrderStatus::where('status',1);
-                                if ($currenct_route[0]=="assign-shippment") {
-                                    $delivery_status->whereIn('id',[15,16,17]);
-                                }
-                                else{
-                                    $delivery_status->whereIn('id',[14,15,16,17]); 
-                                }
-                                 $delivery_status=$delivery_status->pluck('status_name','id')
-                                 ->toArray();
-
+          if ($currenct_route[0]=="assign-shippment") {
+            $delivery_status->whereIn('id',[15,16,17]);
+          }
+          else{
+            $delivery_status->whereIn('id',[14,15,16,17]);
+          }
+            $delivery_status=$delivery_status->pluck('status_name','id')->toArray();
             $data['delivery_status']=[''=>'Please Select']+$delivery_status;
-
         $data['order_status']=[''=>'Please Select']+$order_status;
 
         if ($currenct_route[0]=="assign-shippment" || $currenct_route[0]=="assign-delivery") {
            return view('admin.orders.assign_shippment_delivery.edit',$data);
         }
+        $data['product_description_notes'] = OrderRFQProductDescription::where('type','order')->where('ref_id',$order_id)->pluck('description','product_id')->toArray();
+        $data['discount_type'] = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->pluck('discount_type','product_id')->toArray();
+        $data['order_tax']       = isset($order->order_tax_amount)?$order->order_tax_amount:0.00;
+        $data['delivery_charge'] = $order->deliveryMethod->amount;
         return view('admin.orders.edit',$data);
     }
 
@@ -532,6 +546,7 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
+      //dd($request->all());
         $this->validate(request(),[
             'order_status'   => 'required',
         ]);
@@ -621,7 +636,7 @@ class OrderController extends Controller
           ];
         }
 
-      //Orders::where('id',$id)->update($order_data);
+      Orders::where('id',$id)->update($order_data);
       if ($request->order_status==19) {
         $existing_product_id=$new_product_variant=array();
         if (isset($variant['product_id'])) {
@@ -638,87 +653,96 @@ class OrderController extends Controller
           OrderProducts::where('order_id',$id)->whereIn('product_id',array_unique($deleted_products))->delete();
         }
 
-        $variant               = $request->variant;
-        $row_ids               = $variant['row_id'];
-        $stock_qty             = $variant['stock_qty'];
-        $final_price             = $variant['final_price'];
-        $sub_total             = $variant['sub_total'];
+        $variant        = $request->variant;
+        $row_ids        = $variant['row_id'];
+        $price          = $variant['rfq_price'];
+        $stock_qty      = $variant['stock_qty'];
+        $discount_value = $variant['discount_value'];
+        $final_price    = $variant['final_price'];
+        $total_price    = $variant['price'];
+        $sub_total      = $variant['sub_total'];
+
         foreach ($row_ids as $key => $row_id) {
           $data=[
-            'quantity'   => $stock_qty[$key],
-            'final_price'  => $final_price[$key],
-            'sub_total'  => $sub_total[$key],
+            'quantity'                  => $stock_qty[$key],
+            'price'                     => $price[$key],
+            'discount_type'             => $variant['discount_type'][$variant['product_id'][$key]],
+            'discount_value'            => $discount_value[$key],
+            'final_price'               => $final_price[$key],
+            'total_price'               => $total_price[$key],
+            'sub_total'                 => $sub_total[$key],
           ];
           OrderProducts::where('id',$row_id)->update($data);
         }
         if ($request->has('new_variant')) {
-
-            $variant               = $request->new_variant;
-            $product_ids           = $variant['product_id'];
-            $variant_id            = $variant['id'];
-            $base_price            = $variant['base_price'];
-            $retail_price          = $variant['retail_price'];
-            $minimum_selling_price = $variant['minimum_selling_price'];
-            $stock_qty             = $variant['stock_qty'];
-            $final_price             = $variant['final_price'];
-            $sub_total             = $variant['sub_total'];
-
+          $variant               = $request->new_variant;
+          $product_ids           = $variant['product_id'];
+          $variant_id            = $variant['id'];
+          $base_price            = $variant['base_price'];
+          $retail_price          = $variant['retail_price'];
+          $minimum_selling_price = $variant['minimum_selling_price'];
+          $price                 = $variant['rfq_price'];
+          $stock_qty             = $variant['stock_qty'];
+          $discount_value        = $variant['discount_value'];
+          $final_price           = $variant['final_price'];
+          $total_price           = $variant['price'];
+          $sub_total             = $variant['sub_total'];
           foreach ($product_ids as $key => $product_id) {
             if ($stock_qty[$key]!=0 && $stock_qty[$key]!="") {
               $data=[
-                      'order_id'                  => $id,
-                      'product_id'                => $product_id,
-                      'product_variation_id'      => $variant_id[$key],
-                      'base_price'                => $base_price[$key],
-                      'retail_price'              => $retail_price[$key],
-                      'minimum_selling_price'     => $minimum_selling_price[$key],
-                      'quantity'                  => $stock_qty[$key],
-                      'sub_total'                 => $sub_total[$key],
-                      'final_price'               => $final_price[$key]
-                  ];
+                'order_id'                  => $id,
+                'product_id'                => $product_id,
+                'product_variation_id'      => $variant_id[$key],
+                'base_price'                => $base_price[$key],
+                'retail_price'              => $retail_price[$key],
+                'minimum_selling_price'     => $minimum_selling_price[$key],
+                'price'                     => $price[$key],
+                'quantity'                  => $stock_qty[$key],
+                'discount_type'             => $variant['discount_type'][$product_id],
+                'discount_value'            => $discount_value[$key],
+                'final_price'               => $final_price[$key],
+                'total_price'               => $total_price[$key],
+                'sub_total'                 => $sub_total[$key]
+              ];
               OrderProducts::insert($data);
             }
           }
         }
       }
 
-       if (!Auth::check() && Auth::guard('employee')->check()) {
-          $updated_by=Auth::guard('employee')->user()->id;
-          $user_type=2;
-       }
-       else{
-          $updated_by=Auth::id();
-          $user_type=1;
-       }
-
-
-       $order_history=[
+      if (!Auth::check() && Auth::guard('employee')->check()) {
+        $updated_by=Auth::guard('employee')->user()->id;
+        $user_type=2;
+      }
+      else{
+        $updated_by=Auth::id();
+        $user_type=1;
+      }
+      $order_history=[
           'order_id'    => $id,
           'order_status_id' => $order_data['order_status'],
           'updated_by'  => $updated_by,
           'user_type'   => $user_type 
-       ];
-       OrderHistory::insert($order_history);
+      ];
+      OrderHistory::insert($order_history);
 
-       if ($request->delivery_status==15) {
+      if ($request->delivery_status==15) {
         if (!isset($order_details->quantity_deducted)) {
-           $this->ReduceQuantityToVendor($id);
+          $this->ReduceQuantityToVendor($id);
         }
-         Orders::where('id',$id)->update(['order_status'=>15]);
-       }
-       elseif ($request->delivery_status==17) {
-          $this->UpdateQuantityToStock($id);
-       }
+        Orders::where('id',$id)->update(['order_status'=>15]);
+      }
+      elseif ($request->delivery_status==17) {
+        $this->UpdateQuantityToStock($id);
+      }
 
-        if ($order_details->order_status!=$request->order_status) {
-          
-            $this->EmailNotification($id);
-        }
-
-       $route=$this->RouteLinks();
-       return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
-
+      if ($order_details->order_status!=$request->order_status) {
+        $this->EmailNotification($id);
+      }
+      $route=$this->RouteLinks();
+      return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
     }
+
     public function UpdateQuantityToStock($order_id)
     {
         $stock_quantity=Orders::where('id',$order_id)->value('quantity_deducted');
