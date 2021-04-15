@@ -36,22 +36,14 @@
                      <div class="panel-body">
                       <form action="{{ route('report-purchase.store') }}" method="POST">
                         @csrf
-                        <div class="clearfix"></div>
                         <div class="col-sm-12 filters">
-                              <div class="clearfix"></div>
-
                           <div class="col-sm-3">
                             <div class="form-group">
                               <label>Customer:</label>
                               {!! Form::select('filter_vendor',$all_vendors,Request::get('filter_vendor'), ['class'=>'form-control']) !!}
                             </div>
                           </div>
-              {{--             <div class="col-sm-2">
-                            <div class="form-group">
-                              <label>Date:</label>
-                              <input type="text" name="filter_date" class="form-control" id="reservation" value="{{  Request::get('filter_date') }}"> 
-                            </div>
-                          </div> --}}
+
                           <div class="col-sm-3">
                             <div class="form-group">
                               <label>Order Value:</label>
