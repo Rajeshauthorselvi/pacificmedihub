@@ -246,7 +246,12 @@
                         html +="<td>"+ moment(val.payment_month).format('DD-MM-yyyy')+"</td>";
                         html +="<td>"+val.amount+"</td>";
                         html +="<td>"+val.payment_method.payment_method+"</td>";
-                        html +="<td>"+val.payment_notes+"</td>";
+                        if (val.payment_notes!='') {
+                          html +="<td>"+val.payment_notes+"</td>";
+                        }
+                        else{
+                          html +="<td>-</td>";
+                        }
                         html +="<tr>";
 
                         $('.modal-body tbody').append(html);
