@@ -210,6 +210,7 @@ class MyRFQController extends Controller
         $rfq_products = RFQProducts::with('product','variant')->where('rfq_id',$id)->orderBy('id','desc')->get();
         $rfq_data = $rfq_items = array();
         foreach ($rfq_products as $key => $item) {
+            $rfq_items[$key]['product_id'] =  $item->product->id;
             $rfq_items[$key]['product_name'] =  $item->product->name;
             $rfq_items[$key]['variant_sku'] = $item->variant->sku;
             $rfq_items[$key]['variant_option1'] = isset($item->variant->optionName1->option_name)?$item->variant->optionName1->option_name:null;
@@ -224,6 +225,10 @@ class MyRFQController extends Controller
             $rfq_items[$key]['variant_option_value5'] = isset($item->variant->optionValue5->option_value)?$item->variant->optionValue5->option_value:null;
             $rfq_items[$key]['quantity'] = $item->quantity;
             $rfq_items[$key]['rfq_price'] = isset($item->rfq_price)?(float)$item->rfq_price:'0.00';
+            $rfq_items[$key]['discount_value'] = isset($item->discount_value)?(float)$item->discount_value:'0.00';
+            $rfq_items[$key]['discount_type'] = isset($item->discount_type)?(float)$item->discount_type:'0.00';
+            $rfq_items[$key]['final_price'] = isset($item->final_price)?(float)$item->final_price:'0.00';
+            $rfq_items[$key]['total_price'] = isset($item->total_price)?(float)$item->total_price:'0.00';
             $rfq_items[$key]['sub_total'] = isset($item->sub_total)?(float)$item->sub_total:'0.00';
         }
 
@@ -247,6 +252,8 @@ class MyRFQController extends Controller
         if($request->has('child')){
             $data['data_from'] = 'child';
         }
+        $data['discount_type'] = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->pluck('discount_type','product_id')->toArray();
+        
         return view('front/customer/rfq/rfq_view',$data);
     }
 

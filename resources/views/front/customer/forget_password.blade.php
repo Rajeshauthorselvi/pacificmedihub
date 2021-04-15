@@ -5,7 +5,7 @@
   		<div class="card">
     		<div class="card-body code-block" style="display:block;">
       			<div class="login-header">
-        			<h4>Forget Password</h4>
+        			<h4>Forgot Password</h4>
         			<p>Please enter your registerd email. A unique code will send your email, to verify.</p>
       			</div>
         		@include('flash-message')
@@ -86,9 +86,12 @@
 	    		} else {
 	    			$('.text-danger.email').hide();
 	    			$.ajax({
-						url: '{{ route('reset.password') }}',
+						url: '{{ url('reset-password') }}',
 						type: 'POST',
-						data: {"_token": "{{ csrf_token() }}",email: emailID},
+						data: {
+							"_token": "{{ csrf_token() }}",
+							email: emailID
+						},
 					})
 					.done(function(data) {
 						console.log(data);
