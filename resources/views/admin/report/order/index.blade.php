@@ -46,7 +46,7 @@
                           <div class="col-sm-2">
                             <div class="form-group">
                               <label>Date:</label>
-                              <input type="text" name="filter_date" class="form-control  date-picker" value="{{  Request::get('filter_date') }}"> 
+                              <input type="text" name="filter_date" class="form-control" id="reservation" value="{{  Request::get('filter_date') }}"> 
                             </div>
                           </div>
                           <div class="col-sm-2">

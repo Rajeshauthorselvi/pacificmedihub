@@ -32,6 +32,54 @@
               </div>
               <div class="card">
                 <div class="card-body">
+                  <div class="panel panel-primary">
+                     <div class="panel-body">
+                      <form action="{{ route('report-purchase.store') }}" method="POST">
+                        @csrf
+                        <div class="clearfix"></div>
+                        <div class="col-sm-12 filters">
+                              <div class="clearfix"></div>
+
+                          <div class="col-sm-3">
+                            <div class="form-group">
+                              <label>Customer:</label>
+                              {!! Form::select('filter_vendor',$all_vendors,Request::get('filter_vendor'), ['class'=>'form-control']) !!}
+                            </div>
+                          </div>
+              {{--             <div class="col-sm-2">
+                            <div class="form-group">
+                              <label>Date:</label>
+                              <input type="text" name="filter_date" class="form-control" id="reservation" value="{{  Request::get('filter_date') }}"> 
+                            </div>
+                          </div> --}}
+                          <div class="col-sm-3">
+                            <div class="form-group">
+                              <label>Order Value:</label>
+                              <br>
+                              <input type="text" name="filter_value" class="form-control" value="{{  Request::get('filter_value') }}"> 
+                            </div>
+                          </div>
+                          <div class="col-sm-3">
+                          <div class="form-group">
+                              <label>Order Status:</label>
+                              <br>
+                              {!! Form::select('filter_status',$order_status, Request::get('filter_status'),['class'=>'form-control']) !!}
+                            </div>
+                          </div>
+                          <div class="col-sm-3">
+                          <div class="form-group">
+                               <label></label>
+                               <br>
+                               <button class="btn btn-success" type="submit">
+                                  <i class="fa fa-filter"></i> Filter
+                               </button>
+                          </div>
+                          </div>
+                        </div>
+                      </form>
+                     </div>
+                  </div>
+                  <div class="clearfix"></div>
                   <table id="example2" class="table table-bordered table-striped">
                     <thead>
                       <tr>
@@ -92,14 +140,13 @@
       </div>
     </section>
   </div>
-  <style type="text/css">
+    <style type="text/css">
+    .filters .col-sm-3{
+      float: left;
+    }
+
     .form-group{display:flex;}
     .disabled{pointer-events: none;opacity: 0.5;}
   </style>
 
-  @push('custom-scripts')
-    <script type="text/javascript">
-      
-    </script>
-  @endpush
 @endsection

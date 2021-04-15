@@ -25,7 +25,7 @@ class OrderReportController extends Controller
                                ->toArray();
 
         $data['order_status']=['Please Select']+OrderStatus::pluck('status_name','id')->toArray();
-        $data['all_orders']=Orders::get();
+        $data['all_orders']=Orders::all();
 
         return view('admin.report.order.index',$data);
     }
@@ -48,16 +48,23 @@ class OrderReportController extends Controller
      */
     public function store(Request $request)
     {
+
+        $dates=explode('-',$request->get('filter_date'));
+        $dates = array_map('trim', $dates);
+
+
+
         $data['all_customers']=['Please Select']+User::where('role_id',7)
                                ->where('status',1)
                                ->where('is_deleted',0)
                                ->pluck('name','id')
                                ->toArray();
         $data['order_status']=['Please Select']+OrderStatus::pluck('status_name','id')->toArray();
-
+        $from_date=date('Y-m-d',strtotime($dates[0]));
+        $to_date=date('Y-m-d',strtotime($dates[1] . " +1 days"));
         $orders=Orders::where('order_status','<>',"");
                 if ($request->get('filter_date')!=null) {
-                    $orders->whereDate('created_at',date('Y-m-d',strtotime($request->get('filter_date'))));
+                    $orders->whereBetween('created_at',[$from_date,$to_date]);
                 }
                 if ($request->get('customer_id')!=null) {
                     $orders->where('customer_id',$request->get('customer_id'));
