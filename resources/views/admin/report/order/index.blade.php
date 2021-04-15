@@ -101,7 +101,7 @@
                                 </span>
                               <td>
                                 @if (isset($orders->deliveryStatus['status_name']))
-                                <span class="badge" style="background: {{ $orders->statusName->color_codes }};color: #fff">
+                                <span class="badge" style="background: {{ $orders->deliveryStatus['color_codes'] }};color: #fff">
                                 {{ $orders->deliveryStatus['status_name'] }}
                                </span>
                                @else
