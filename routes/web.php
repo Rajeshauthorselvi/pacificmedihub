@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Log;
 Route::get('admin','Admin\AuthController@index')->name('admin.login');
 Route::post('admin','Admin\AuthController@store')->name('admin.store');
 Route::get('login','Admin\AuthController@index');
+	
+Route::post('Ckfinder/upload','CkfinderController@uploadAction')->name('ckfinder.upload');
 
 Route::resource('employee', 'Employee\EmployeeLoginController');
 
@@ -219,6 +221,8 @@ Route::post('reset-password','front\AuthController@resetPassword')->name('reset.
 Route::get('new-customer','front\AuthController@newCustomerPage')->name('register.new.customer');
 Route::post('new-customer','front\AuthController@newCustomerStore')->name('store.new.customer');
 
+Route::post('news-letter','front\AuthController@newsLetterStore')->name('news.letter');
+
 //Get Sate and City
 Route::get('get-state','front\AddressController@getStateList');
 Route::get('get-city','front\AddressController@getCityList');
@@ -270,6 +274,7 @@ Route::group(['middleware' => 'customer'], function () {
 Route::get('home','front\HomePageController@index');
 Route::get('','front\HomePageController@index')->name('home.index');
 //Home page Search Box
+Route::get('search',['as'=>'seach','uses'=>'front\HomePageController@search']);
 Route::post('search',['as'=>'seach.text','uses'=>'front\HomePageController@search']);
 //Category
 Route::get('{slug}/{category_id}','front\ShopController@category');

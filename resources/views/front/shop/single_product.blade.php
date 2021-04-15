@@ -160,7 +160,7 @@
                     			@if(isset($product->long_description))
                       				<p>{!! $product->long_description !!}</p>
                       			@else
-                      				<p>{!! isset($product->short_description)?$product->short_description:$product->name !!}</p>
+                      				<p>{!! isset($product->short_description)?$product->short_description:'' !!}</p>
                       			@endif
                     		</div>
                     		<div class="tab-pane fade" id="Information">
@@ -371,7 +371,7 @@
 
         $('.cart-btn').on('click',function() {
        		var variantId = $(this).attr('variant-id');
-       		var productId = <?php echo $product->id; ?>;
+       		var productId = <?php echo isset($product->id)?$product->id:''; ?>;
        		var productImg = $('.product-img').val();
        		var qty = $('.qty-count').val();
        		var variantSku = $('#printSku').text();
@@ -400,7 +400,7 @@
 
         $('.rfq-btn').on('click',function() {
        		var variantId = $(this).attr('variant-id');
-       		var productId = <?php echo $product->id; ?>;
+       		var productId = <?php echo isset($product->id)?$product->id:''; ?>;
        		var productImg = $('.product-img').val();
        		var qty = $('.qty-count').val();
        		var variantSku = $('#printSku').text();

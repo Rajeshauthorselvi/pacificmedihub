@@ -61,7 +61,7 @@
 			          <label class="control-label" for="input-sort">View by :</label>
 			          <div class="sort-inner">
 			            <select id="input-sort" class="form-control">
-			              <option value="ASC" selected="selected">Default</option>
+			              <option value="" selected="selected">Default</option>
 			              <option value="ASC">Name (A - Z)</option>
 			              <option value="DESC">Name (Z - A)</option>
 			            </select>
@@ -140,6 +140,28 @@
 
 @push('custom-scripts')
 <script type="text/javascript">
+	$('#input-sort').on('change',function(){
+		var sortVal = $('option:selected', this).val();
+		if(sortVal=='ASC'){
+			$('.product-layout').sort(function(a, b) {
+			  	if (a.textContent < b.textContent) {
+			    	return -1;
+			  	} else {
+			    	return 1;
+			  	}
+			}).appendTo('.grid-list-wrapper .row');
+		}else if(sortVal=='DESC'){
+			$('.product-layout').sort(function(a, b) {
+			  	if (a.textContent > b.textContent) {
+			    	return -1;
+			  	} else {
+			    	return 1;
+			  	}
+			}).appendTo('.grid-list-wrapper .row');
+		}else{
+			location.reload();
+		}
+	});
 
 	$(document).find('.wishlist-action').click(function () {
 		var userID = $('.user-id').val();

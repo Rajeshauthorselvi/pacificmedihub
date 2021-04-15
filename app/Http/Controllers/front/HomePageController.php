@@ -78,24 +78,47 @@ class HomePageController extends Controller
     public function search(Request $request)
     {
     	if($request->catgory_id==0){
-        	$get_product = Product::where('name','like','%'.$request->search_text.'%')->where('published',1)->where('is_deleted',0)->limit(10)->get();
+        	$get_product = Product::where('name','like','%'.$request->search_text.'%')->where('published',1)->where('is_deleted',0)->limit(10)->paginate(10);
     	}else{
         	$get_product = DB::table('categories as c')->leftJoin('products as p','c.id','p.category_id')
         				->where('c.id',$request->catgory_id)->orWhere('c.parent_category_id',$request->catgory_id)
         				->where('p.name','like','%'.$request->search_text.'%')->where('p.published',1)
-        				->where('p.is_deleted',0)->limit(10)->get();
+        				->where('p.is_deleted',0)->limit(10)->paginate(10);
         }
-        $output=array();
-        if(count($get_product)!=0){
-	        foreach ($get_product as $key => $product) {
-                $category_slug = isset($product->category->search_engine_name)?$product->category->search_engine_name:'categories';
-                $product_id = base64_encode($product->id);
-                $url = url($category_slug.'/'.$product->search_engine_name.'/'.$product_id);
-	            $output[$key] = '<li><a href='.$url.'>'.$product->name.'</a></li>';
-	        }
-	    }else{
-	    	$output = "<li><a href='javascript:void(0);'>No Result</a></li>";
-	    }
-        return response()->json($output);
+        
+        if(!$request->ajax()){
+            $data['user_id'] = null;
+            $wishlist=[];
+            if(Auth::check()){
+                $user_id = Auth::id();
+                Cart::instance('wishlist')->restore('userID_'.$user_id);
+                $k = 1;
+                foreach(Cart::instance('Wishlist')->content() as $item){
+                    $wishlist[$k]['product_id'] = $item->id;
+                    $wishlist[$k]['row_id']     = $item->getUniqueId();
+                    $k++;
+                }
+                $data['user_id'] = $user_id;
+            }
+            $data['wishlist'] = $wishlist;
+        
+            $data['products'] = $get_product;
+            return view('front.shop.search_product',$data);
+        }
+
+        else if($request->ajax()){
+            $output=array();
+            if(count($get_product)!=0){
+    	        foreach ($get_product as $key => $product) {
+                    $category_slug = isset($product->category->search_engine_name)?$product->category->search_engine_name:'categories';
+                    $product_id = base64_encode($product->id);
+                    $url = url($category_slug.'/'.$product->search_engine_name.'/'.$product_id);
+    	            $output[$key] = '<li><a href='.$url.'>'.$product->name.'</a></li>';
+    	        }
+    	    }else{
+    	    	$output = "<li><a href='javascript:void(0);'>No Result</a></li>";
+    	    }
+            return response()->json($output);
+        }
     }
 }

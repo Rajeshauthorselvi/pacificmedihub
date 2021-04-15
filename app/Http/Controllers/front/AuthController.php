@@ -11,6 +11,7 @@ use App\Models\Prefix;
 use App\Models\UserCompanyDetails;
 use App\Models\UserBankAcccount;
 use App\Models\UserPoc;
+use App\Models\NewsLetter;
 use App\User;
 use Auth;
 use Redirect;
@@ -222,5 +223,20 @@ class AuthController extends Controller
             ]);
         }
         return view('front/customer/new_register_success');
+    }
+
+    public function newsLetterStore(Request $request)
+    {
+        $this->validate(request(),['email' => 'unique:news_letters']);
+
+        $add             = new NewsLetter;
+        $add->email      = $request->email;
+        $add->created_at = date('Y-m-d H:i:s');
+        $add->timestamps = false;
+        $add->save();
+        if($add){
+            Session::flash('mail_staus','added');
+        }
+        return Redirect::back();
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Slider;
 use App\Models\FeatureBlock;
 use App\Models\Settings;
+use App\Models\StaticPage;
 use Redirect;
 use Arr;
 
@@ -19,7 +20,8 @@ class StaticPageController extends Controller
      */
     public function index()
     {
-        return view('admin/static_page/pages/index');
+        $data['static_pages'] = StaticPage::where('is_deleted',0)->get();
+        return view('admin/static_page/pages/index',$data);
     }
 
     /**
@@ -27,27 +29,33 @@ class StaticPageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        $data['status']           = [1=>'Yes',2=>'No'];
-        $data['selected_slider']  = Slider::where('is_deleted',0)->where('published',1)->value('id');
-        $data['sliders']          = Slider::where('is_deleted',0)->orderBy('id','desc')->pluck('slider_name','id')
-                                         ->toArray();
-        $data['features']         = FeatureBlock::where('is_deleted',0)->orderBy('id','desc')->pluck('feature_name','id')
-                                         ->toArray();
-        $data['selected_feature'] = FeatureBlock::where('is_deleted',0)->where('published',1)->value('id');
+        $data = array();
+        if($request->has('home')){
+            $data['status']           = [1=>'Yes',2=>'No'];
+            $data['selected_slider']  = Slider::where('is_deleted',0)->where('published',1)->value('id');
+            $data['sliders']          = Slider::where('is_deleted',0)->orderBy('id','desc')->pluck('slider_name','id')
+                                             ->toArray();
+            $data['features']         = FeatureBlock::where('is_deleted',0)->orderBy('id','desc')->pluck('feature_name','id')
+                                             ->toArray();
+            $data['selected_feature'] = FeatureBlock::where('is_deleted',0)->where('published',1)->value('id');
 
-        $setting = Settings::where('key','front-end')->pluck('content','code')->toArray();
-        if(isset($setting['home'])){
-            $statuses = unserialize($setting['home']);
+            $setting = Settings::where('key','front-end')->pluck('content','code')->toArray();
+            if(isset($setting['home'])){
+                $statuses = unserialize($setting['home']);
+            }
+            
+            $data['slider_status']         = isset($statuses['slider_status'])?$statuses['slider_status']:0;
+            $data['features_status']       = isset($statuses['features_status'])?$statuses['features_status']:0;
+            $data['new_arrival_status']    = isset($statuses['new_arrival_status'])?$statuses['new_arrival_status']:0;
+            $data['category_block_status'] = isset($statuses['category_block_status'])?$statuses['category_block_status']:0;
+
+            return view('admin/static_page/pages/home',$data);
+        }else{
+
+            return view('admin/static_page/pages/create',$data);
         }
-        
-        $data['slider_status']         = isset($statuses['slider_status'])?$statuses['slider_status']:0;
-        $data['features_status']       = isset($statuses['features_status'])?$statuses['features_status']:0;
-        $data['new_arrival_status']    = isset($statuses['new_arrival_status'])?$statuses['new_arrival_status']:0;
-        $data['category_block_status'] = isset($statuses['category_block_status'])?$statuses['category_block_status']:0;
-
-        return view('admin/static_page/pages/home',$data);
     }
 
     /**
@@ -58,6 +66,7 @@ class StaticPageController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
         $data=array();
         if($request->from=='home'){
 

@@ -7,8 +7,8 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>PACIFIC MEDIHUB</title>
-  <link rel="icon" type="image/png" href="{{ asset('theme/images/fav.png') }}" />
+  <title>MTC U TRADING</title>
+  <link rel="icon" type="image/png" href="{{ asset('theme/images/fav_icon.png') }}" />
   <!-- Google Font: Source Sans Pro -->
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">

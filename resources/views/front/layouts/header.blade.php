@@ -67,20 +67,20 @@
 				<div class="col-sm-3 col-xs-2">
 					<div class="category-dropdown dropdown">
 						<button id="header-category-dropdown" class="hamburger-menu btn {{ $header_category_status }}">
-	                        <i class="fas fa-bars"></i> &nbsp; <span>SHOP BY CATEGORIES</span>
-	                    </button>
+              <i class="fas fa-bars"></i> &nbsp; <span>SHOP BY CATEGORIES</span>
+            </button>
 						<ul class="toogle-menu dropdown-menu" style="display:{{ $header_category_style }}">
 							@foreach($categories as $category)
-				          		<?php 
-				          			if(count($category->children)!=0)
-				          				$tree = "menu-list";
-				          		 	else
-				          		 		$tree = "";
-				          		 	$catgory_id = base64_encode($category->id);
-				          		?>
-				            	<li class="{{ $tree }}">
-				            		<a id="menu" class="dropdown-item" href="{{ url("$category->search_engine_name/$catgory_id") }}">{{$category->name}}</a>
-				            		<div class="toogle-menu dropdown-menu">
+	          		<?php 
+	          			if(count($category->children)!=0)
+	          				$tree = "menu-list";
+	          		 	else
+	          		 		$tree = "";
+	          		 	$catgory_id = base64_encode($category->id);
+	          		?>
+	            	<li class="{{ $tree }}">
+	            		<a id="menu" class="dropdown-item" href="{{ url("$category->search_engine_name/$catgory_id") }}">{{$category->name}}</a>
+	            		<div class="toogle-menu dropdown-menu">
 										<ul class="subchildmenu">
 											@foreach($category->children as $child)
 											<?php $cat_id = base64_encode($child->id); ?>
@@ -88,95 +88,93 @@
 											@endforeach
 										</ul>
 									</div>
-				            	</li>
-			         		@endforeach
+				        </li>
+			        @endforeach
 							<?php $all_cat_id = base64_encode('all'); ?>
-					        @if(count($categories)>6)
-								<li>
-									<a href="{{ url("shop-by-category/$all_cat_id") }}">More...</a>
-								</li>
-							@endif
+							<li>
+								<a href="{{ url("shop-by-category/$all_cat_id") }}">More...</a>
+							</li>
 						</ul>
 					</div>
+        </div>
+        <div class="col-sm-5 col-xs-7">
+        	<div class="search-form">
+        		<form method="GET" action="{{ route('seach') }}" id="searchForm">
+							<div class="input-group">
+			          <div class="input-group-btn search-panel">
+			            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			             	<span id="search_concept">All Categories </span> <span class="caret"></span>
+			            </button>
+                  <ul class="dropdown-menu" role="menu">
+                  	<li><a class="search-category" href="" catgory-id="0">All Categories </a></li>
+                  	@foreach($categories as $categoy)
+											<li><a class="search-category" href="" catgory-id="{{ $categoy->id }}">{{ $categoy->name }}</a></li>
+										@endforeach
+			            </ul>
+			          </div>
+                <input type="hidden" name="catgory_id" value="" id="selected_category">
+                <input type="hidden" name="search_param" value="all" id="search_param">         
+                <input type="text" class="form-control" id="txtSearch" name="search_text" placeholder="Search entire store here..." autocomplete="off">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit"><i class="fas fa-search"></i></button>
+                </span>
+            </div>
+          </form>
+        </div>
+			  <ul id="search_result" style="display: none"></ul>
+      </div>
+     	<div class="col-sm-4 col-xs-3">
+     		<div class="bottom-nav">
+     			<ul>
+     				@if(!Auth::check())
+     					<li><a class="nav-link" href="{{ route('customer.login') }}">Sign In</a></li>
+     				@else
+     					<?php 
+     						$name = Auth::user()->name;
+     						$id = Auth::id();
+     					?>
+     					<li class="customer-dropdown">
+     						<a class="nav-link" href="javascript:void(0);">{{ $name }}<i class="fas fa-sort-down"></i></a>
+     						<div class="customer-menu">
+                  <a class="menu-list" href="{{ route('my-profile.index') }}">
+                  	<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
+                  </a>
+                	<a class="menu-list" href="{{ route('my-rfq.index') }}">
+                		<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
+                	</a>
+                	<a class="menu-list" href="{{ route('my-orders.index') }}">
+                		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
+                	</a>
+                	<a class="menu-list" href="{{ route('cart.index') }}">
+                		<i class="fas fa-shopping-cart"></i>&nbsp;&nbsp;My Cart
+                	</a>
+                	<a class="menu-list" href="{{ route('wishlist.index') }}">
+                		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
+                	</a>
+                	<a class="menu-list" href="{{ route('my-address.index') }}">
+                		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
+                	</a>
+                		<a class="menu-list" href="{{route('customer.logout')}}">
+                		<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout
+                	</a>
                 </div>
-                <div class="col-sm-5 col-xs-7">
-                	<div class="search-form">
-						<div class="input-group">
-			                <div class="input-group-btn search-panel">
-			                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-			                    	<span id="search_concept">All Categories </span> <span class="caret"></span>
-			                    </button>
-			                    <ul class="dropdown-menu" role="menu">
-			                    	<li><a class="search-category" href="" catgory-id="0">All Categories </a></li>
-			                    	@foreach($categories as $categoy)
-										<li><a class="search-category" href="" catgory-id="{{ $categoy->id }}">{{ $categoy->name }}</a></li>
-									@endforeach
-			                    </ul>
-			                </div>
-			                <input type="hidden" value="" id="selected_category">
-			                <input type="hidden" name="search_param" value="all" id="search_param">         
-			                <input type="text" class="form-control" id="txtSearch" name="search_text" placeholder="Search entire store here...">
-			                <span class="input-group-btn">
-			                    <button class="btn btn-default" type="button"><i class="fas fa-search"></i></button>
-			                </span>
-			            </div>
-                	</div>
-			        <ul id="search_result" style="display: none"></ul>
-               	</div>
-               	<div class="col-sm-4 col-xs-3">
-               		<div class="bottom-nav">
-               			<ul>
-               				@if(!Auth::check())
-               					<li><a class="nav-link" href="{{ route('customer.login') }}">Sign In</a></li>
-               				@else
-               					<?php 
-               						$name = Auth::user()->name;
-               						$id = Auth::id();
-               					?>
-               					<li class="customer-dropdown">
-               						<a class="nav-link" href="javascript:void(0);">
-               							{{ $name }}<i class="fas fa-sort-down"></i>
-               						</a>
-               						<div class="customer-menu">
-				                    	<a class="menu-list" href="{{ route('my-profile.index') }}">
-				                    		<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
-				                    	</a>
-				                    	<a class="menu-list" href="{{ route('my-rfq.index') }}">
-				                    		<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
-				                    	</a>
-				                    	<a class="menu-list" href="{{ route('my-orders.index') }}">
-				                    		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
-				                    	</a>
-				                    	<a class="menu-list" href="{{ route('cart.index') }}">
-				                    		<i class="fas fa-shopping-cart"></i>&nbsp;&nbsp;My Cart
-				                    	</a>
-				                    	<a class="menu-list" href="{{ route('wishlist.index') }}">
-				                    		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
-				                    	</a>
-				                    	<a class="menu-list" href="{{ route('my-address.index') }}">
-				                    		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
-				                    	</a>
-				                    		<a class="menu-list" href="{{route('customer.logout')}}">
-				                    		<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout
-				                    	</a>
-			                    	</div>
-               					</li>
-               				@endif
-               				<li class="cart__menu">
-								<a class="nav-link" href="javascript:void(0);" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-				                  <i class="fas fa-shopping-cart"></i>
-				                  <span class="badge rounded-pill badge-notification">{{ $cart_count }}</span>
-				                </a>
-               				</li>
-               			</ul>
-               		</div>
-           		</div>
-        	</div>
-   		</div>
-	</div>
+     					</li>
+     				@endif
+     				<li class="cart__menu">
+							<a class="nav-link" href="javascript:void(0);" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="badge rounded-pill badge-notification">{{ $cart_count }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
-
+     				
 <div class="body__overlay"></div>
 <!-- Start Cart Panel -->
 <div class="shopping__cart">
@@ -265,27 +263,32 @@
 	          $('#search_result').css('display','none');
 	        }
       	});
-	  $('.cart__menu').on('click', function() {
-	    $('.shopping__cart').addClass('shopping__cart__on');
-	    $('.body__overlay').addClass('is-visible');
+	  	$('.cart__menu').on('click', function() {
+	    	$('.shopping__cart').addClass('shopping__cart__on');
+	    	$('.body__overlay').addClass('is-visible');
+	  	});
 
-	  });
-
-	  $('.offsetmenu__close__btn').on('click', function() {
-	      $('.shopping__cart').removeClass('shopping__cart__on');
-	      $('.body__overlay').removeClass('is-visible');
-	  });
-	  $('.body__overlay').on('click', function() {
-	    $(this).removeClass('is-visible');
-	    // $('.offsetmenu').removeClass('offsetmenu__on');
-	    $('.shopping__cart').removeClass('shopping__cart__on');
-	  });
+	  	$('.offsetmenu__close__btn').on('click', function() {
+	    	$('.shopping__cart').removeClass('shopping__cart__on');
+	      	$('.body__overlay').removeClass('is-visible');
+	  	});
+	  	$('.body__overlay').on('click', function() {
+	    	$(this).removeClass('is-visible');
+	    	// $('.offsetmenu').removeClass('offsetmenu__on');
+	    	$('.shopping__cart').removeClass('shopping__cart__on');
+	  	});
 
 	  	$('body').click(function() {
    			$('#search_result').hide();
 		});
 
-
+		$('#txtSearch').keypress(function (e) {
+			var key = e.which;
+			if(key == 13)
+			{
+				$('#searchForm').submit();
+			}
+		});
 	});
 </script>
 @endpush

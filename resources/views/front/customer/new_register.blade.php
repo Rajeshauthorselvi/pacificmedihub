@@ -44,7 +44,7 @@
 			        <div class="form-group mb-3">
 			        	<div class="left-column">
 			        		<label>Country *</label>
-				          	{!! Form::select('country_id',$countries,null,['class'=>'form-contol select2bs4 required add_country_id', 'id'=>'address_country']) !!}
+				          	{!! Form::select('country_id',$countries,196,['class'=>'form-contol select2bs4 required add_country_id', 'id'=>'address_country']) !!}
 				          	<span class="text-danger add_country_id" style="display:none">Country is required</span>
 			        	</div>
 			        	<div class="right-column">
@@ -71,7 +71,7 @@
 
 			        <div class="form-group mb-4 condition">
 		        		<div class="icheck-info d-inline">
-            				<input type="checkbox" id="TnC">
+            				<input type="checkbox" checked id="TnC">
             				<label for="TnC">I agree to the <span>Terms & Conditions</span></label>
           				</div>
 		      		</div>

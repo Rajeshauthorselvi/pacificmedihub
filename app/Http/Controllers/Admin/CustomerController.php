@@ -192,7 +192,7 @@ class CustomerController extends Controller
             $customer->password = Hash::make($password);
             $customer->mail_sent_status = 1;
             $customer->save();
-            //Mail::to($customer->email)->send(new NewRegister($customer->name, $customer->email,$password));
+            Mail::to($customer->email)->send(new NewRegister($customer->name, $customer->email,$password));
         }
         return Redirect::route('customers.index')->with('success','Customer added successfully...!');
     }   

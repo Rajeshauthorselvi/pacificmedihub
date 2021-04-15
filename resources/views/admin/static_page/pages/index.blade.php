@@ -26,6 +26,15 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
+          <div class="col-md-12 action-controllers ">
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','create'))
+              <div class="col-sm-6 text-right pull-right">
+                <a class="btn add-new" href="{{ route('static-page.create') }}">
+                  <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
+                </a>
+              </div>
+            @endif
+          </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">

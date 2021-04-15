@@ -41,8 +41,18 @@ class ShopController extends Controller
         if($id=='all'){
             $data['products']   = Product::where('published',1)->where('is_deleted',0)->paginate(10);
         }else{
-            $data['products']   = Product::where('category_id',$id)->where('published',1)
+            $check_parent       = Categories::find($id);
+            if($check_parent->parent_category_id){
+                $products       = Product::where('category_id',$id)->where('published',1)
                                          ->where('is_deleted',0)->paginate(10);    
+            }else{
+                $category_ids   = Categories::where('id',$id)->orWhere('parent_category_id',$id)->where('published',1)
+                                          ->where('is_deleted',0)->pluck('id')->toArray();
+
+                $products       = Product::whereIn('category_id',$category_ids)->where('published',1)
+                                         ->where('is_deleted',0)->paginate(10);    
+            }
+            $data['products']   = $products;
         }
     	$data['categories']     = Categories::where('published',1)->where('is_deleted',0)
     						 		    ->where('parent_category_id',NULL)->orderBy('display_order','asc')->get();
