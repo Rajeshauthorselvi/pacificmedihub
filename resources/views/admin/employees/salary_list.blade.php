@@ -246,7 +246,7 @@
                         html +="<td>"+ moment(val.payment_month).format('DD-MM-yyyy')+"</td>";
                         html +="<td>"+val.amount+"</td>";
                         html +="<td>"+val.payment_method.payment_method+"</td>";
-                        if (val.payment_notes!='') {
+                        if (val.payment_notes!=null) {
                           html +="<td>"+val.payment_notes+"</td>";
                         }
                         else{
