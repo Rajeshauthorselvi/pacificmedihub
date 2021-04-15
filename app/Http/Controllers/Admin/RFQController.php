@@ -691,7 +691,7 @@ class RFQController extends Controller
       }
       $data['creater_name']=$creater_name;
 
-
+      $data['discount_type'] = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->pluck('discount_type','product_id')->toArray();
       $data['rfqs']             = $rfq;
       $data['admin_address']    = User::where('id',1)->first();
       $data['customer_address'] = User::with('address')->where('id',$rfq->customer_id)->first();
@@ -701,7 +701,10 @@ class RFQController extends Controller
       $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                     ->pluck('name','id')->toArray();  
       $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
-
+      $data['discount_amt']    = isset($rfq->order_discount)?$rfq->order_discount:0.00;
+      $data['order_tax']       = isset($rfq->order_tax_amount)?$rfq->order_tax_amount:0.00;
+      $data['delivery_charge'] = $rfq->deliveryMethod->amount;
+      $data['product_description_notes'] = OrderRFQProductDescription::where('type','rfq')->where('ref_id',$id)->pluck('description','product_id')->toArray();
       $layout = View::make('admin.rfq.rfq_pdf',$data);
       $pdf = App::make('dompdf.wrapper');
       $pdf->loadHTML($layout->render());

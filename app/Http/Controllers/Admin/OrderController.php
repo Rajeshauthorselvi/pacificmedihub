@@ -347,7 +347,7 @@ class OrderController extends Controller
         'user_type'   => $user_type 
       ];
       OrderHistory::insert($order_history);
-
+      $this->EmailNotification($order_id);
       $route=$this->RouteLinks();
       return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
     }
@@ -635,7 +635,6 @@ class OrderController extends Controller
               'updated_at'            => date('Y-m-d H:i:s')
           ];
         }
-
       Orders::where('id',$id)->update($order_data);
       if ($request->order_status==19) {
         $existing_product_id=$new_product_variant=array();
@@ -736,7 +735,11 @@ class OrderController extends Controller
         $this->UpdateQuantityToStock($id);
       }
 
-      if ($order_details->order_status!=$request->order_status) {
+      $notification_status=[20,18,13,16,17];
+      if ($order_details->order_status!=$request->order_status && in_array($request->order_status, $notification_status)) {
+        $this->EmailNotification($id);
+      }
+      if ($order_details->delivery_status!=$request->delivery_status && in_array($request->delivery_status, $notification_status)) {
         $this->EmailNotification($id);
       }
       $route=$this->RouteLinks();
@@ -771,10 +774,16 @@ class OrderController extends Controller
         $data=[
             'order_details'=>$order_details
         ];
-        Mail::send('admin.orders.emails.notification_status_email', $data, function ($m) use($order_details) {
+        if (isset($order_details->statusName->subject)) {
+          $subject= str_replace("~order_no~",'<b>'.$order_details->order_no.'</b>',$order_details->statusName->subject);
+        }
+        else{
+          $subject='New Status Notification:- '.$order_details->order_no;
+        }
+        Mail::send('admin.orders.emails.notification_status_email', $data, function ($m) use($order_details,$subject) {
           $m->from('dhinesh@authorselvi.com');
           $m->to($order_details->customer->email,'Status Notification');
-          $m->subject('New Status Notification:- '.$order_details->order_no);
+          $m->subject($subject);
        });
     }
     public function ReduceQuantityToVendor($order_id='')
@@ -1690,6 +1699,11 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
         Session::flash('warning', $mess);
       }
       else{
+        $notification_status=[20,18,13,16,17];
+        if (in_array($status_id, $notification_status)) {
+          $this->EmailNotification($order_no);
+        }
+
         $mess='Order status updated successfully';
         Session::flash('success', $mess);
       }

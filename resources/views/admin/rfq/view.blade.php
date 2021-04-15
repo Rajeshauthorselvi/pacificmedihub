@@ -231,7 +231,7 @@
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        <?php $rfq_price=$total_amount=$total_quantity=0 ?>
+                                        <?php $rfq_price=$total_amount=$total_quantity=$last_rfq_pr=0 ?>
                                         @foreach($product['product_variant'] as $key=>$variant)
                                           <?php 
                                             $option_count=$product['option_count'];
@@ -257,6 +257,7 @@
                                             @if ($product['check_rfq_price_exists'])
                                               <td>
                                                   {{ $variation_details->last_rfq_price }}
+                                                  <?php $last_rfq_pr=1; ?>
                                               </td>
                                             @endif
                                             <td>
@@ -284,9 +285,10 @@
                                         @endforeach
                                         <tr>
                                           <td colspan="{{ count($product['options'])+2 }}">
+                                            {{ count($product['options']) }}
                                             <input type="text" class="form-control" name="product_description[{{ $product['product_id'] }}]" placeholder="Notes" value="{{ isset($product_description_notes[$product['product_id']])?$product_description_notes[$product['product_id']]:'' }}">
                                           </td>
-                                          <td colspan="2" class="text-right">Total Qty:</td>
+                                          <td colspan="2{{ $last_rfq_pr+2 }}" class="text-right">Total Qty:</td>
                                           <td class="total_quantity">{{ $total_quantity }}</td>
                                           <td colspan="3" class="text-right">Grand Total:</td>
                                           <td class="total_amount">{{ $total_amount }}</td>
