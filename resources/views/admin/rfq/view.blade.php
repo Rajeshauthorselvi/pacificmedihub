@@ -285,10 +285,9 @@
                                         @endforeach
                                         <tr>
                                           <td colspan="{{ count($product['options'])+2 }}">
-                                            {{ count($product['options']) }}
                                             <input type="text" class="form-control" name="product_description[{{ $product['product_id'] }}]" placeholder="Notes" value="{{ isset($product_description_notes[$product['product_id']])?$product_description_notes[$product['product_id']]:'' }}">
                                           </td>
-                                          <td colspan="2{{ $last_rfq_pr+2 }}" class="text-right">Total Qty:</td>
+                                          <td colspan="{{ $last_rfq_pr+2 }}" class="text-right">Total Qty:</td>
                                           <td class="total_quantity">{{ $total_quantity }}</td>
                                           <td colspan="3" class="text-right">Grand Total:</td>
                                           <td class="total_amount">{{ $total_amount }}</td>
