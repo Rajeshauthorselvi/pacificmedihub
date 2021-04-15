@@ -191,11 +191,32 @@
             </a>
           </li>
 
-          <!-- Reports Menu -->
-          <li class="nav-item">
-            <a href="javascript:void(0)" class="nav-link"><i class="fas fa-chart-bar"></i><p>Reports</p></a>
+ 
+          <!-- Static Page Menu -->
+          <li class="nav-item ">
+            <a href="javascript:void(0)" class="nav-link">
+              <i class="fas fa-chart-bar"></i><p>Reports<i class="fas fa-angle-left right"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('report-order.index') }}" class="nav-link">
+                  <i class="fas fa-angle-double-right"></i>
+                  <p>Orders</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('report-purchase.index') }}" class="nav-link"><i class="fas fa-angle-double-right"></i><p>Purchase</p></a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('report-employee.index') }}" class="nav-link"><i class="fas fa-angle-double-right"></i><p>Employee</p></a>
+              </li>
+   {{--            <li class="nav-item">
+                <a href="{{ route('static-page-features.index') }}" class="nav-link"><i class="fas fa-angle-double-right"></i><p>Salary</p></a>
+              </li> --}}
+            </ul>
           </li>
-          
+
+
           <!-- Static Page Menu -->
           <li class="nav-item  @if($current_route=='static-page.index'||$current_route=='static-page.create'||$current_route=='static-page.edit'||$current_route=='static-page-slider.index'||$current_route=='static-page-slider.create'||$current_route=='static-page-slider.edit'||$current_route=='static-page-features.index'||$current_route=='static-page-features.create'||$current_route=='static-page-features.edit') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">

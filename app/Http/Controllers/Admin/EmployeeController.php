@@ -31,6 +31,7 @@ use DB;
 use Hash;
 use Auth;
 use App\Models\Role;
+use App\User;
 class EmployeeController extends Controller
 {
     /**

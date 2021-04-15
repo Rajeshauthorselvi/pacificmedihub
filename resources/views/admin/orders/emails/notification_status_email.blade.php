@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Status Notification</title>
+	<title>
+     {{isset($order_details->statusName->subject)?$order_details->statusName->subject:'Status Notification'}}   
+    </title>
 <style type="text/css">
     @font-face {font-family:'SourceSansPro';src: url("{{asset('fonts/SourceSansPro-Regular.otf')}}") format('otf');font-style: 'normal';}
     body{font-family: 'SourceSansPro', sans-serif;}
@@ -22,7 +24,11 @@
     <div class="header-logo"><img src="{{ asset('theme/images/logo.png') }}"></div>
     <h3>Pacific Medihub</h3>
     <div class="mail-content">
-        <div>Your order status has been changed to <b>{{ $order_details->statusName->status_name }}</b></div>
+        @if (isset($order_details->statusName->email_content))
+            {!!  str_replace("~order_no~",'<b>'.$order_details->order_no.'</b>',$order_details->statusName->email_content)  !!}
+        @else
+            <div>Your order status has been changed to <b>{{ $order_details->statusName->status_name }}</b></div>
+        @endif
          <br/>
          <br/>
         Questions? Need help getting set up? Simply send an email <b>admin@medihub.com</b><br/>

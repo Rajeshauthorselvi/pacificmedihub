@@ -160,7 +160,7 @@ class PurchaseController extends Controller
           $auth_id=Auth::guard('employee')->user()->id;
        }
        else{
-          $created_user_type=2;
+          $created_user_type=1;
           $auth_id=Auth::id();
        }
       $purchase_data=[

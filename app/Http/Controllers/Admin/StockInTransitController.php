@@ -211,7 +211,6 @@ class StockInTransitController extends Controller
 
 
          foreach ($row_ids as $key => $row_id) {
-
             $purchase_data=DB::table('purchase_products')->where('id',$row_id)->first();
             $variant_data=DB::table('product_variant_vendors')
                           ->where('product_variant_id',$purchase_data->product_variation_id)
@@ -245,8 +244,8 @@ class StockInTransitController extends Controller
 
           /*Update Stock Quantity*/
               if ($request->purchase_status==2 || $request->purchase_status==4) {
-
                 $total_quantity=$variant_data->stock_quantity+$stock_quantity[$key];
+
                   DB::table('product_variant_vendors')
                   ->where('product_variant_id',$purchase_data->product_variation_id)
                   ->where('vendor_id',$vendor_id)

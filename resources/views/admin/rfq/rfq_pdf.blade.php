@@ -122,7 +122,24 @@
                                             Minimum Selling Price
                                           </th>
                                           <th style="font-weight: normal;border-right: 1px solid #000;">
+                                            RFQ Price <br><small>(a)</small>
+                                          </th>
+                                          <th style="font-weight: normal;border-right: 1px solid #000;">
                                             Quantity
+                                          </th>
+                                          <th style="font-weight: normal;border-right: 1px solid #000;">
+                                            Discount
+                                            @if($discount_type[$product['product_id']]=='percentage')
+                                              (%)P
+                                            @else
+                                              ($)A
+                                            @endif
+                                          </th>
+                                          <th style="font-weight: normal;border-right: 1px solid #000;">
+                                            Discount Price <br><small>(c)</small>
+                                          </th>
+                                          <th style="font-weight: normal;border-right: 1px solid #000;">
+                                            Total <br><small>(a x b)</small>
                                           </th>
                                           <th style="font-weight: normal;border-right: 1px solid #000;">
                                             Subtotal
@@ -130,11 +147,11 @@
                                         </tr>
                                       </thead>
                                       <tbody style="font-size: 14px;">
-                                        <?php $total_amount=$total_quantity=$final_price=0; ?>
+                                        <?php $total_amount=$total_quantity=$final_price=$last_rfq_pr=0; ?>
                                         @foreach($product['product_variant'] as $key=>$variant)
                                           <?php 
                                             $option_count=$product['option_count'];
-                                            $variation_details=\App\Models\PurchaseProducts::VariationPrice($product['product_id'],$variant['variant_id'],$rfqs->id);
+                                            $variation_details=\App\Models\RFQProducts::VariationPrice($product['product_id'],$variant['variant_id'],$rfqs->id);
                                           ?>
                                          
                                           <tr class="parent_tr">
@@ -163,7 +180,22 @@
                                               <span class="test"> {{$variant['minimum_selling_price']}} </span>
                                             </td>
                                             <td style="border: 1px solid #000">
+                                              <?php $rfq_price = isset($variation_details['rfq_price'])?$variation_details['rfq_price']:$variant['minimum_selling_price'];
+                                              $last_rfq_pr=1;
+                                               ?>
+                                              {{ $rfq_price }}
+                                            </td>
+                                            <td style="border: 1px solid #000">
                                               {{ $variation_details['quantity'] }}
+                                            </td>
+                                            <td style="border: 1px solid #000">
+                                              {{ (int)$variation_details['discount_value'] }}
+                                            </td>
+                                            <td style="border: 1px solid #000">
+                                              {{ $variation_details['final_price'] }}
+                                            </td>
+                                            <td style="border: 1px solid #000">
+                                              {{ $variation_details['total_price'] }}
                                             </td>
                                             <td style="border: 1px solid #000">
                                               {{ $variation_details['sub_total'] }}
@@ -172,11 +204,18 @@
                                           <?php $total_amount +=$variation_details['sub_total']; ?>
                                           <?php $total_quantity +=$variation_details['quantity']; ?>
                                         @endforeach
+
                                         <tr>
-                                          <td colspan="{{ count($product['options'])+3 }}" style="border: 1px solid #000;text-align: right;">
-                                            Total:
+                                          <td colspan="{{ count($product['options'])+2 }}" style="border: 1px solid #000;">
+                                              {{ isset($product_description_notes[$product['product_id']])?$product_description_notes[$product['product_id']]:'' }}
+                                          </td>
+                                          <td colspan="{{ $last_rfq_pr+1 }}" style="border: 1px solid #000;text-align: right;">
+                                            Total Qty:
                                           </td>
                                           <td  style="border: 1px solid #000">{{ $total_quantity }}</td>
+                                          <td colspan="3"   style="border: 1px solid #000; text-align:right;">
+                                            Grand Total:
+                                          </td>
                                           <td style="border: 1px solid #000;border-collapse: collapse;">{{ $total_amount }}</td>
                                         </tr>
                                       </tbody>
@@ -186,31 +225,59 @@
                               </tr>
 
                             @endforeach
+                     
+                      
+                            <tr><td colspan="6"></td></tr>
                           </tbody>
                         </table>
-                        <div style="clear: both;"></div>
-                        <table style="width: 50%;float: right;padding: 4px;">
-                            <tr class="total-calculation first_calculation">
-                              <td style="text-align: right;">Total :</td>
-                              <td style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{ $rfqs->total_amount }}</td>
-                            </tr>
-                            <tr class="total-calculation">
-                              <td  style="font-size: 14px;text-align: right;" class="title">
-                                Order Discount : 
+                        <table style="width: 100%;border-collapse: collapse; border: 1px solid #000;">
+   <tr>
+                              <td colspan="4"style="border: 1px solid #000;text-align: right;">
+                                Total
                               </td>
-                              <td style="font-size: 14px;padding-left: 20px;">
-                                &nbsp;&nbsp;{{$rfqs->order_discount}}
+                              <td style="border: 1px solid #000;border-collapse: collapse;">
+                                <span class="all_amount">{{number_format($rfqs->total_amount,2,'.','')}}</span>
                               </td>
                             </tr>
-                            <tr class="total-calculation">
-                              <td style="font-size: 14px;text-align: right;">Order Tax : </td>
-                              <td  style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{$rfqs->order_tax_amount}}</td>
+                            <tr>
+                              <td colspan="4" style="border: 1px solid #000;text-align: right;">
+                                Order Tax ({{isset($rfqs->oderTax->name)?$rfqs->oderTax->name:'No Tax'}} @ {{isset($rfqs->oderTax->rate)?$rfqs->oderTax->rate:0.00}}%)
+                              </td>
+                              <td style="border: 1px solid #000;border-collapse: collapse;">
+                                {{number_format($order_tax,2,'.','')}}
+                              </td>
                             </tr>
-                            <tr class="total-calculation" style="font-weight: bold;">
-                              <td style="font-size: 14px;text-align: right;">Total Amount(SGD) : </td>
-                              <td  style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{$rfqs->sgd_total_amount}}</td>
+                            <tr>
+                              <td colspan="4" style="border:1px solid #000;border-collapse: collapse;text-align: right;">
+                                Delivery Charge
+                              </td>
+                              <td style="border:1px solid #000;border-collapse: collapse;">
+                                {{$delivery_charge}}
+                              </td>
+                            </tr>
+                            <tr>
+                              <th colspan="4" style="border:1px solid #000;border-collapse: collapse; text-align: right;">
+                                Total Amount(SGD)
+                              </th>
+                              <th style="border:1px solid #000;border-collapse: collapse;text-align: left;">
+                                {{number_format($rfqs->sgd_total_amount,2,'.','')}}
+                              </th>
+                            </tr>
+                            @if(isset($rfqs->currencyCode->currency_code) && $rfqs->currencyCode->currency_code!='SGD')
+                              @php $currency = 'contents'; @endphp 
+                            @else
+                              @php $currency = 'none'; @endphp
+                            @endif
+                            <tr class="total-calculation" style="display:{{$currency}}">
+                              <td colspan="4" style="border:1px solid #000;border-collapse: collapse;">
+                                Total Amount (<span class="exchange-code">{{isset($rfqs->currencyCode->currency_code)?$rfqs->currencyCode->currency_code:'SGD'}}</span>)
+                              </td>
+                              <td colspan="4" style="border:1px solid #000;border-collapse: collapse;">
+                               {{number_format($rfqs->exchange_total_amount,2,'.','')}}
+                              </td>
                             </tr>
                         </table>
+                        <div style="clear: both;"></div>
                         <div style="clear: both;"></div>
                         <hr>
                         <div class="order_by" style="float:right;">
@@ -226,3 +293,5 @@
                         <div ></div>
 
   </div>
+
+  <?php //exit(); ?>
