@@ -306,8 +306,9 @@
                               <td colspan="4" class="title">Order Tax ({{isset($rfqs->oderTax->name)?$rfqs->oderTax->name:'No Tax'}} @ {{isset($rfqs->oderTax->rate)?$rfqs->oderTax->rate:0.00}}%)</td>
                               <td id="orderTax">{{number_format($order_tax,2,'.','')}}</td>
                             </tr>
+
                             <tr class="total-calculation">
-                              <td colspan="4" class="title">Delivery Charge</td>
+                              <td colspan="4" class="title">Delivery Charge ({{ isset($rfqs->deliveryMethod->delivery_method)?$rfqs->deliveryMethod->delivery_method:'-' }})</td>
                               <td id="deliveryCharge">{{$delivery_charge}}</td>
                             </tr>
                             <tr class="total-calculation">

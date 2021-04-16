@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use Illuminate\Http\Request;
-
+use Auth;
 class NotificationController extends Controller
 {
     /**
@@ -15,7 +15,20 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        $all_notifications=Notification::where('if_read','no')->orderBy('id','DESC')->get();
+
+         if (!Auth::check() && Auth::guard('employee')->check()) {
+            $updated_by=Auth::guard('employee')->user()->id;
+            $user_type=2;
+         }
+         else{
+            $updated_by=Auth::id();
+            $user_type=1;
+         }
+        $all_notifications=Notification::where('if_read','no')
+                          ->where('created_user_type','<>',$user_type)
+                          ->where('created_by','<>',$updated_by)
+                          ->orderBy('id','DESC')
+                          ->get();
 
         $total_notification=array();
         foreach ($all_notifications as $key => $notification) {

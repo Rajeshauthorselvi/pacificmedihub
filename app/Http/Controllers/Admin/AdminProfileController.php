@@ -79,13 +79,21 @@ class AdminProfileController extends Controller
         ]);
 
        $update_details=User::find($id);
+       $update_details->name       = $request->name;
        $update_details->latitude       = $request->latitude;
        $update_details->longitude      = $request->longitude;
        $update_details->address_1      = $request->address1;
        $update_details->address_2      = $request->address2;
        $update_details->contact_number = $request->contact_number;
        $update_details->company_gst    = $request->gst;
-       $update_details->save();
+       
+        if ($request->hasFile('logo')) {
+            $imageName = time().'.'.$request->logo->extension();  
+            $request->logo->move(public_path('theme/images/profile'), $imageName);
+            $update_details->logo    = $imageName;
+        }
+
+        $update_details->save();
        
        return Redirect::back()->with('success','Profile details updated successfully...!');
     }
