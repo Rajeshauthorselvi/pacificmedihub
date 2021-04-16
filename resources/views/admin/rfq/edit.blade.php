@@ -339,6 +339,7 @@
                             <td style="display:inline-flex;">
                               <label for="currency_rate">Currency</label>&nbsp;&nbsp;
                               <select class="form-control no-search select2bs4" name="currency" id="currency_rate">
+                                <option value="">Please Select</option>
                                 @foreach($currencies as $currency)
                                   <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($rfqs->currency==$currency->id)  selected="selected" @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
                                     {{$currency->currency_code}} - {{$currency->currency_name}}

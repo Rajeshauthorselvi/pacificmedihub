@@ -474,7 +474,7 @@
     });
 
     $('.download-summary').click(function(event) {
-      var checkedNum = $('.orders_ids:checked',allPages).length;
+      var checkedNum = $('input[name="orders_ids"]:checked',allPages).length;
 
       if (checkedNum==0) {
         alert('Please select order');
@@ -483,7 +483,7 @@
         if (confirm('Are you sure want to download?')) {
 
           var order_ids = [];
-          $('.orders_ids:checked',allPages).each(function () {
+          $('input[name="orders_ids"]:checked',allPages).each(function () {
             order_ids.push($(this).val());
           });
 
