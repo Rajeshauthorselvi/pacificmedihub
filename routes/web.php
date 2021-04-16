@@ -231,6 +231,9 @@ Route::get('get-state','front\AddressController@getStateList');
 Route::get('get-city','front\AddressController@getCityList');
 
 Route::group(['middleware' => 'customer'], function () {
+	//Notification
+	Route::resource('custom-notification','front\NotificationController');
+
 	//Customer Auth
 	Route::get('customer-logout','front\AuthController@logout')->name('customer.logout');
 	Route::post('change-customer-password','front\AuthController@changePassword')->name('change.cuspwd');

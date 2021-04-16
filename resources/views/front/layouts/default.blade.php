@@ -72,6 +72,50 @@
 
 <script type="text/javascript">
 
+  @if(Auth::check())
+    $(document).ready(function() {
+      notificationSec();
+    });
+    window.setInterval(function(){
+      notificationSec();
+    }, 5000);
+
+    function notificationSec() {
+      $.ajax({
+        url: '{{ route('custom-notification.index') }}',
+      })
+      .done(function(response) {
+        $.each(response, function(index, val) {
+          var check_length=$("[notification-id="+val['notification_id']+"]").length;
+          console.log(check_length);
+          if (check_length==0) {
+            var html  = '<a href="'+val['url']+'" class="dropdown-item" notification-id="'+val['notification_id']+'">';
+            html += '<i class="fa fa-bell"></i>  '+val['content'];
+            html += '<span class="float-right text-muted text-sm">'+val['created_time']+'</span>';
+            html += '</a>';
+            html += '<div class="dropdown-divider"></div>';
+            $('.notification-append-sec').append(html);
+            var count=$('.notificaion_count').text();
+            $('.notificaion_count').text(parseInt(count)+1);
+          }
+          else{
+            $("[notification-id="+val['notification_id']+"]").find('.text-muted').text(val['created_time']);
+          }
+        });
+      })
+      .fail(function() {
+        console.log("error");
+      });
+    }
+    $(document).on('click', '.notificaion_icon', function(event) {
+      $.ajax({
+        url: "{{ route('custom-notification.store') }}",
+        type: 'POST',
+        data: { "_token": "{{ csrf_token() }}"}
+      });
+    });
+  @endif
+
   $(function () {
     bsCustomFileInput.init();
   });

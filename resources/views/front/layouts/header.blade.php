@@ -89,7 +89,7 @@
 				        </li>
 			        @endforeach
 							<?php $all_cat_id = base64_encode('all'); ?>
-							<li>
+							<li class="last">
 								<a href="{{ url("shop-by-category/$all_cat_id") }}">More...</a>
 							</li>
 						</ul>
@@ -128,9 +128,9 @@
 	     					<li><a class="nav-link" href="{{ route('customer.login') }}">Sign In</a></li>
 	     				@else
 	     					<li class="nav-item dropdown">
-	        				<a class="nav-link notificaion_icon" data-toggle="dropdown" href="#">
+	        				<a class="nav-link notificaion_icon" data-toggle="dropdown" href="javascript:void(0)">
 	          				<i class="far fa-bell"></i>
-	          				<strong><span class="badge badge-warning navbar-badge notificaion_count">0</span></strong>
+	          				<strong><span class="badge badge-warning navbar-badge notificaion_count"></span></strong>
 	        				</a>
 	        				<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
 					          <span class="dropdown-item dropdown-header">

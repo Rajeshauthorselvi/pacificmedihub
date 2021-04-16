@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\front;
 
 use App\Http\Controllers\Controller;
-use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Models\Notification;
+use App\Models\RFQ;
+use App\Models\Orders;
+use Auth;
 
 class NotificationController extends Controller
 {
@@ -15,18 +18,23 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        $all_notifications=Notification::where('if_read','no')->orderBy('id','DESC')->get();
-
-        $total_notification=array();
+        $id = Auth::id();
+        $total_notification = array();
+        $all_notifications = Notification::where('customer_id',$id)->where('if_read','no')->orderBy('id','DESC')->get();
         foreach ($all_notifications as $key => $notification) {
+            if($notification->type=='rfq'){
+                $url = url('my-rfq/'.base64_encode($notification->ref_id));
+            }else if($notification->type=='order'){
+                $url = url('my-orders/'.base64_encode($notification->ref_id));
+            }
             $total_notification[]=[
                 'notification_id'   => $notification->id,
                 'content'           => $notification->content,
-                'url'               => $notification->url,
+                'url'               => $url,
+                'type'              => $notification->type,
                 'created_time'      => $this->humanTiming(strtotime($notification->created_at)),
             ];
         }
-
         return $total_notification;
     }
 
@@ -49,6 +57,7 @@ class NotificationController extends Controller
             $numberOfUnits = floor($time / $unit);
             return $numberOfUnits.' '.$text.(($numberOfUnits>1)?'s ago':'ago');
         }
+
     }
 
     /**
@@ -69,18 +78,18 @@ class NotificationController extends Controller
      */
     public function store(Request $request)
     {
-        Notification::where('if_read','no')->update(['if_read'=>'yes']);
-
+        $id = Auth::id();
+        Notification::where('customer_id',$id)->where('if_read','no')->update(['if_read'=>'yes']);
         return ['status'=>true];
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Notification  $notification
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Notification $notification)
+    public function show($id)
     {
         //
     }
@@ -88,10 +97,10 @@ class NotificationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Notification  $notification
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Notification $notification)
+    public function edit($id)
     {
         //
     }
@@ -100,10 +109,10 @@ class NotificationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Notification  $notification
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Notification $notification)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -111,10 +120,10 @@ class NotificationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Notification  $notification
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Notification $notification)
+    public function destroy($id)
     {
         //
     }
