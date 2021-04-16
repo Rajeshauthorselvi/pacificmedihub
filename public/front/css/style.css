@@ -351,30 +351,8 @@ img {
     top: 0;
 }
 
-/*.ser-sec li::before {
-
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    content: "\f0d1";
-    font-size: 25px;
-    position: absolute;
-    left: 0;
-}
-.ser-sec li.free-ship::before {
-    content: "\f0d1";
-}
-.ser-sec li.supp::before {
-    content: "\f1cd";
-}
-.ser-sec li.retn::before {
-    content: "\f01e";
-}
-.ser-sec li.paysh::before {
-    content: "\f023";
-}
-*/
 .slide-products {
-    padding:60px 0;
+    padding:30px 0;
 }
 .slider-title{position:relative;}
 .slider-title::before{

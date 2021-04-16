@@ -1,9 +1,7 @@
 <?php 
-	$categories = App\Models\Categories::where('published',1)->where('is_deleted',0)
-											  ->where('parent_category_id',NULL)->limit(6)
-											  ->orderBy('display_order','asc')->get();
+	$categories = App\Models\Categories::where('published',1)->where('is_deleted',0)->where('parent_category_id',NULL)
+																		 ->limit(6)->orderBy('display_order','asc')->get();
 	$current_route=Route::current()->uri();
-
 	if(($current_route=="home")||($current_route=="/")){
 		$header_category_status = "active";
 		$header_category_style  = "block";
@@ -11,26 +9,26 @@
 		$header_category_status = "";
 		$header_category_style  = "none";
 	}
-
 	$cart_data = [];
 	$cart_count = 0;
 	if(Auth::check()){
-        $user_id = Auth::id();
-        Cart::instance('cart')->restore('userID_'.$user_id);
-        $cart_items = Cart::content();
-        $cart_count = Cart::count();
-        foreach($cart_items as $key => $items)
-        {
-            $cart_data[$key]['uniqueId']      = $items->getUniqueId();
-            $cart_data[$key]['product_id']    = $items->id;
-            $cart_data[$key]['product_name']  = $items->name;
-            $cart_data[$key]['product_image'] = $items->options['product_img'];
-            $cart_data[$key]['qty']           = $items->quantity;
-            $cart_data[$key]['variant_id']    = $items->options['variant_id'];
-        }
+    $user_id = Auth::id();
+    Cart::instance('cart')->restore('userID_'.$user_id);
+    $cart_items = Cart::content();
+    $cart_count = Cart::count();
+    foreach($cart_items as $key => $items)
+    {
+        $cart_data[$key]['uniqueId']      = $items->getUniqueId();
+        $cart_data[$key]['product_id']    = $items->id;
+        $cart_data[$key]['product_name']  = $items->name;
+        $cart_data[$key]['product_image'] = $items->options['product_img'];
+        $cart_data[$key]['qty']           = $items->quantity;
+        $cart_data[$key]['variant_id']    = $items->options['variant_id'];
     }
-    $cartData = $cart_data;
+  }
+  $cartData = $cart_data;
 ?>
+
 <div class="header">
 	<div class="container">
 		<div class="header-top">
@@ -116,103 +114,116 @@
                 <input type="hidden" name="search_param" value="all" id="search_param">         
                 <input type="text" class="form-control" id="txtSearch" name="search_text" placeholder="Search entire store here..." autocomplete="off">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="submit"><i class="fas fa-search"></i></button>
+                  <button class="btn btn-default" type="submit"><i class="fas fa-search"></i></button>
                 </span>
-            </div>
-          </form>
-        </div>
-			  <ul id="search_result" style="display: none"></ul>
-      </div>
-     	<div class="col-sm-4 col-xs-3">
-     		<div class="bottom-nav">
-     			<ul>
-     				@if(!Auth::check())
-     					<li><a class="nav-link" href="{{ route('customer.login') }}">Sign In</a></li>
-     				@else
-     					<?php 
-     						$name = Auth::user()->name;
-     						$id = Auth::id();
-     					?>
-     					<li class="customer-dropdown">
-     						<a class="nav-link" href="javascript:void(0);">{{ $name }}<i class="fas fa-sort-down"></i></a>
-     						<div class="customer-menu">
-                  <a class="menu-list" href="{{ route('my-profile.index') }}">
-                  	<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
-                  </a>
-                	<a class="menu-list" href="{{ route('my-rfq.index') }}">
-                		<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
-                	</a>
-                	<a class="menu-list" href="{{ route('my-orders.index') }}">
-                		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
-                	</a>
-                	<a class="menu-list" href="{{ route('cart.index') }}">
-                		<i class="fas fa-shopping-cart"></i>&nbsp;&nbsp;My Cart
-                	</a>
-                	<a class="menu-list" href="{{ route('wishlist.index') }}">
-                		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
-                	</a>
-                	<a class="menu-list" href="{{ route('my-address.index') }}">
-                		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
-                	</a>
-                		<a class="menu-list" href="{{route('customer.logout')}}">
-                		<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout
-                	</a>
-                </div>
-     					</li>
-     				@endif
-     				<li class="cart__menu">
-							<a class="nav-link" href="javascript:void(0);" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="badge rounded-pill badge-notification">{{ $cart_count }}</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
+            	</div>
+          	</form>
+        	</div>
+			  	<ul id="search_result" style="display: none"></ul>
+      	</div>
+     		<div class="col-sm-4 col-xs-3">
+     			<div class="bottom-nav">
+     				<ul>
+     					@if(!Auth::check())
+	     					<li><a class="nav-link" href="{{ route('customer.login') }}">Sign In</a></li>
+	     				@else
+	     					<li class="nav-item dropdown">
+	        				<a class="nav-link notificaion_icon" data-toggle="dropdown" href="#">
+	          				<i class="far fa-bell"></i>
+	          				<strong><span class="badge badge-warning navbar-badge notificaion_count">0</span></strong>
+	        				</a>
+	        				<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+					          <span class="dropdown-item dropdown-header">
+					          	<span class="notificaion_count">0</span> Notifications
+					          </span>
+					          <div class="dropdown-divider"></div>
+					          <div class="notification-append-sec"></div>
+	        				</div>
+	      				</li>
 
+	     					<?php 
+	     						$name = Auth::user()->name;
+	     						$id = Auth::id();
+	     					?>
+	     					<li class="customer-dropdown">
+	     						<a class="nav-link" href="javascript:void(0);">{{ $name }}<i class="fas fa-sort-down"></i></a>
+	     						<div class="customer-menu">
+	                  <a class="menu-list" href="{{ route('my-profile.index') }}">
+	                  	<i class="far fa-user-circle"></i>&nbsp;&nbsp;My Profile
+	                  </a>
+	                	<a class="menu-list" href="{{ route('my-rfq.index') }}">
+	                		<i class="far fa-comments"></i>&nbsp;&nbsp;My RFQ
+	                	</a>
+	                	<a class="menu-list" href="{{ route('my-orders.index') }}">
+	                		<i class="fas fa-dolly-flatbed"></i>&nbsp;&nbsp;My Orders
+	                	</a>
+	                	<a class="menu-list" href="{{ route('cart.index') }}">
+	                		<i class="fas fa-shopping-cart"></i>&nbsp;&nbsp;My Cart
+	                	</a>
+	                	<a class="menu-list" href="{{ route('wishlist.index') }}">
+	                		<i class="far fa-heart"></i>&nbsp;&nbsp;My Wishlist
+	                	</a>
+	                	<a class="menu-list" href="{{ route('my-address.index') }}">
+	                		<i class="fas fa-street-view"></i>&nbsp;&nbsp;My Address
+	                	</a>
+	                		<a class="menu-list" href="{{route('customer.logout')}}">
+	                		<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout
+	                	</a>
+	                </div>
+	     					</li>
+     					@endif
+	     				<li class="cart__menu">
+								<a class="nav-link" href="javascript:void(0);" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+	                <i class="fas fa-shopping-cart"></i>
+	                <span class="badge rounded-pill badge-notification">{{ $cart_count }}</span>
+	              </a>
+	            </li>
+          	</ul>
+        	</div>
+      	</div>
+    	</div>
+  	</div>
+	</div>
+</div>
      				
 <div class="body__overlay"></div>
 <!-- Start Cart Panel -->
 <div class="shopping__cart">
-    @if($cart_count!=0)
-    	<div class="shopping__cart__inner">
-	        <div class="offsetmenu__close__btn">
-	            <a href="javascript:void(0);"><i class="fas fa-times"></i></a>
-	        </div>
-        	<div class="shp__cart__wrap">
-	        	@foreach($cartData as $data)
-		            <div class="shp__single__product">
-		                <div class="shp__pro__thumb">
-		                    <a href="javascript:void(0);">
-		                    	@if($data['product_image']!='placeholder.jpg')
+  @if($cart_count!=0)
+    <div class="shopping__cart__inner">
+	    <div class="offsetmenu__close__btn">
+	      <a href="javascript:void(0);"><i class="fas fa-times"></i></a>
+	    </div>
+      <div class="shp__cart__wrap">
+	    	@foreach($cartData as $data)
+		      <div class="shp__single__product">
+		        <div class="shp__pro__thumb">
+		          <a href="javascript:void(0);">
+		            @if($data['product_image']!='placeholder.jpg')
 									<img src="{{asset('theme/images/products/main/'.$data['product_image'])}}">
 								@else
 									<img src="{{ asset('theme/images/products/placeholder.jpg') }}">
 								@endif
-		                    </a>
-		                </div>
-		                <div class="shp__pro__details">
-		                    <h2><a href="javascript:void(0);">{{ $data['product_name'] }}</a></h2>
-		                    <span class="quantity">QTY: {{ $data['qty'] }}</span>
-		                </div>
-		                {{-- <div class="remove__btn">
-		                	<form method="POST" action="{{ route('cart.destroy',$data['uniqueId']) }}">
-                                @csrf 
-                                <input name="_method" type="hidden" value="DELETE">
-                                <button class="btn" type="submit" onclick="return confirm('Are you sure you want to remove this item?');"><i class="far fa-times-circle"></i></button>
-                            </form>
-		                </div> --}}
-		            </div>
-		        @endforeach
-        	</div>
-        	<ul class="shopping__btn">
-            	<li><a href="{{ route('cart.index') }}">View Cart</a></li>
-            	<li class="shp__checkout"><a href="{{ route('request.rfq') }}">RFQ</a></li>
-        	</ul>
+		          </a>
+		        </div>
+		        <div class="shp__pro__details">
+		          <h2><a href="javascript:void(0);">{{ $data['product_name'] }}</a></h2>
+		          <span class="quantity">QTY: {{ $data['qty'] }}</span>
+		        </div>
+            {{-- <div class="remove__btn">
+            	<form method="POST" action="{{ route('cart.destroy',$data['uniqueId']) }}">
+                        @csrf 
+                        <input name="_method" type="hidden" value="DELETE">
+                        <button class="btn" type="submit" onclick="return confirm('Are you sure you want to remove this item?');"><i class="far fa-times-circle"></i></button>
+                    </form>
+            </div> --}}
+        		</div>
+		    	@endforeach
+      	</div>
+      	<ul class="shopping__btn">
+      		<li><a href="{{ route('cart.index') }}">View Cart</a></li>
+      		<li class="shp__checkout"><a href="{{ route('request.rfq') }}">RFQ</a></li>
+      	</ul>
     	</div>
     @else
     	<div class="empty-cart">
@@ -221,7 +232,9 @@
 	@endif
 </div>
 <!-- End Cart Panel -->
-
+<style type="text/css">
+	.dropdown-menu.dropdown-menu-lg.dropdown-menu-right.show{left: -6rem;min-width: 16rem;}
+</style>
 @push('custom-scripts')
 <script type="text/javascript">
 	$(document).ready(function() {
