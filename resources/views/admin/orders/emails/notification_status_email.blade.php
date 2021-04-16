@@ -22,7 +22,7 @@
 <body>
 <div class="container">
     <div class="header-logo"><img src="{{ asset('theme/images/logo_mtcu.png') }}"></div>
-    <h3>Pacific Medihub</h3>
+    <h3>MTC U TRADING</h3>
     <div class="mail-content">
         @if (isset($order_details->statusName->email_content))
             {!!  str_replace("~order_no~",'<b>'.$order_details->order_no.'</b>',$order_details->statusName->email_content)  !!}
