@@ -26,6 +26,7 @@ use App\Models\Purchase;
 use App\Models\OrderRFQProductDescription;
 use App\User;
 use App\Models\DeliveryMethod;
+use App\Models\Notification;
 use Auth;
 use DB;
 use Redirect;
@@ -775,6 +776,34 @@ class OrderController extends Controller
         else{
           $subject='New Status Notification:- '.$order_details->order_no;
         }
+
+      if ($order_details->created_user_type==2) {
+        $creater_name=Employee::where('id',$order_details->user_id)->first();
+        $creater_name=$creater_name->emp_name;
+      }
+      else{
+        $creater_name=User::where('id',$order_details->user_id)->first();
+        $creater_name=$creater_name->name;
+      }
+
+         if (!Auth::check() && Auth::guard('employee')->check()) {
+            $updated_by=Auth::guard('employee')->user()->id;
+            $user_type=2;
+         }
+         else{
+            $updated_by=Auth::id();
+            $user_type=1;
+         }
+
+      Notification::insert([
+        'type'                => 'order',
+        'ref_id'              => $order_details->id,
+        'content'             => $creater_name.' added new comment to '.$order_details->order_no,
+        'url'                 => url('my-orders/'.base64_encode($order_id)),
+        'created_at'          => date('Y-m-d H:i:s'),
+        'created_by'          => $updated_by,
+        'created_user_type'   => $user_type,
+      ]);
         Mail::send('admin.orders.emails.notification_status_email', $data, function ($m) use($order_details,$subject) {
           $m->from('dhinesh@authorselvi.com');
           $m->to($order_details->customer->email,'Status Notification');

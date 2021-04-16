@@ -57,7 +57,7 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Image</th><th>Name</th><th>Code</th><th>SKU</th><th>Category</th><th>Stock</th>
+                        <th>Image</th><th>Name</th><th>Code</th><th>Category</th><th>Stock</th>
                         <th>Base Price</th><th>Retail Price</th><th>Minimum Selling Price</th><th>Published</th>
                         <th>Actions</th>
                       </tr>
@@ -73,7 +73,6 @@
                           <td><img class="brand-img" style="width:50%;height:auto;" src="{{ asset($img_url)}}"></td>
                           <td>{{$product['name']}}</td>
                           <td>{{$product['code']}}</td>
-                          <td>{{$product['sku']}}</td>
                           <td>{{$product['category']}}</td>
                           <td>{{$product['stock']}}</td>
                           <td>{{$product['base_price']}}</td>
