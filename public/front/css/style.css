@@ -72,6 +72,7 @@ img {
 }
 .header_bottom .toogle-menu.dropdown-menu{border:1px solid #eee;border-radius:0 0 3px 3px;border-top:0}
 .category-dropdown li{float:left;width:100%;border-bottom:1px solid #eee;position:relative;}
+.category-dropdown li.last {border: none;}
 .category-dropdown li a{padding:0.65rem;width:100%;display:block;}
 .category-dropdown li a:hover{background:transparent;color:#00abbf;}
 .category-dropdown li.menu-list a.dropdown-item::after {
