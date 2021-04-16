@@ -185,10 +185,13 @@
                 <thead>
                   <tr>
                     <th>No.</th>
-                    <th style="width:50%">Product Name</th>
-                    <th class="text-center">Quantity</th>
-                    <th class="text-center">Price</th>
-                    <th class="text-center">Sub Total</th></tr>
+                    <th>Product Name</th>
+                    <th class="text-center width">Price <br><small>(a)</small></th>
+                    <th class="text-center width">QTY <br><small>(b)</small></th>
+                    <th class="text-center width">Dis count</th>
+                    <th class="text-center width">Discount Price <br><small>(c)</small></th>
+                    <th class="text-center width">Total <br><small>(a x b)</small></th>
+                    <th class="text-center width">Subtotal <br><small>(b x c)</small></th>
                 </thead>
                 <tbody>
                   @php $s_no = 1 @endphp
@@ -220,36 +223,39 @@
                         </div>
                       </div>
                     </td>
-                    <td class="text-center">{{ $products['quantity'] }}</td>
                     <td class="text-center">{{ number_format($products['rfq_price'],2,'.','') }}</td>
+                    <td class="text-center">{{ $products['quantity'] }}</td>
+                    <td class="text-center">@if($discount_type[$products['product_id']]=='amount') $ @endif {{ $products['discount_value'] }} @if($discount_type[$products['product_id']]=='percentage') % @endif </td>
+                    <td class="text-center">{{ number_format($products['final_price'],2,'.','') }}</td>
+                    <td class="text-center">{{ number_format($products['total_price'],2,'.','') }}</td>
                     <td class="text-center">{{ number_format($products['sub_total'],2,'.','') }}</td>
                   </tr>
                   @php $s_no++ @endphp
                   @endforeach
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Total</td>
+                    <td colspan="7" class="text-right">Total</td>
                     <td class="text-center">{{ number_format($rfq_data['total'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Order Discount</td>
+                    <td colspan="7" class="text-right">Order Discount</td>
                     <td class="text-center">{{ number_format($rfq_data['discount'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Order Tax</td>
+                    <td colspan="7" class="text-right">Order Tax</td>
                     <td class="text-center">{{ number_format($rfq_data['tax'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Delivery Charge</td>
+                    <td colspan="7" class="text-right">Delivery Charge</td>
                     <td class="text-center">{{ number_format($rfq->delivery_charge,2,'.','') }}</td>
                   </tr>
                   <tr class="outer grand">
-                    <th colspan="4" class="text-right">Total Amount (SGD)</th>
+                    <th colspan="7" class="text-right">Total Amount (SGD)</th>
                     <th class="text-center">{{ number_format($rfq_data['grand_total'],2,'.','') }}</th>
                   </tr>
                   @if($rfq_data['exchange_amount']!=null && ($rfq_data['grand_total']!=$rfq_data['exchange_amount']))
                     <tr class="outer grand">
-                      <th colspan="4" class="text-right">Total Amount ({{$rfq_data['currency_code']}})</th>
-                      <th colspan="4" class="text-center">{{$rfq_data['exchange_amount']}}</th>
+                      <th colspan="7" class="text-right">Total Amount ({{$rfq_data['currency_code']}})</th>
+                      <th colspan="7" class="text-center">{{$rfq_data['exchange_amount']}}</th>
                     </tr>
                   @endif
                 </tbody>
@@ -267,7 +273,9 @@
     </div>
   </div>
 </div>
-
+<style type="text/css">
+  .text-center.width{width:60px}
+</style>
 @push('custom-scripts')
   <script type="text/javascript">
     $('.approved,.disapproved').on('click',function(){
