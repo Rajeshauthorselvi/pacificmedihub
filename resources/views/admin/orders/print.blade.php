@@ -13,7 +13,7 @@
   <div style="width: 700px;margin: auto;">
                     <div>
                       <div style="width: 42%;float: left;">
-                        <img src="{{ asset('theme/images/logo.jpeg') }}">
+                        <img src="{{ asset('theme/images/logo_mtcu.png') }}">
                       </div>
                       <div style="width: 50%;float: left;padding-top: 20px">
                         <strong>Invoice No:</strong> {{ $order_code }}
@@ -25,7 +25,7 @@
                         @if(isset($admin_address))
                           <div class="customer address" style="width: 43%;float:left;">
                               
-                              <h4>{{$admin_address->company_name}}</h4>
+                              <h4>{{$admin_address->name}}</h4>
                               <p>
                                 <span>
                                   {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}

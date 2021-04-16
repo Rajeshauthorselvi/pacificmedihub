@@ -15,15 +15,15 @@
 </style>
 </head>
 <div class="container">
-    <div class="header-logo"><img src="{{ asset('theme/images/logo.png') }}"></div>
-    <h3>Pacific Medihub</h3>
+    <div class="header-logo"><img src="{{ asset('theme/images/logo_mtcu.png') }}"></div>
+    <h3>MTC U TRADING</h3>
     <div class="mail-content">
         Your account password rest Code has been in the following:<br/>
         
         <strong>Your Password Rest Code:</strong> <?php echo $code; ?> <br/><br/>
 
-        Questions? Need help getting set up? Simply send an email <b>admin@medihub.com</b><br/>
-    		<p>- Team Pacific Medihub</p>    
+        Questions? Need help getting set up? Simply send an email <b>admin@mtcu.com</b><br/>
+    		<p>- Team MTC U TRADING</p>    
     </div>
     <footer>
         <div class="social-links">
@@ -34,6 +34,6 @@
                 <li><a href="javascript:void(0);"><img src="{{ asset('theme/images/social/yt-b.png') }}"></a></li>
             </ul>
         </div>
-        <div class="cpy-ryt">&#169;{{date('Y')}}&nbsp;<b>Pacific Medihub</b>. All Rights Reserved.</div>
+        <div class="cpy-ryt">&#169;{{date('Y')}}&nbsp;<b>MTC U TRADING</b>. All Rights Reserved.</div>
     </footer>
 </div>

@@ -32,7 +32,7 @@
                       <div style="width: 70%;float: left; font-size: 14px">
                         @if(isset($admin_address))
                           <div class="customer address" style="width: 43%;float:left;padding-right: 7%;">
-                              <h4>{{$admin_address->company_name}}</h4>
+                              <h4>{{$admin_address->name}}</h4>
                               <p>
                                 <span>
                                   {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}
