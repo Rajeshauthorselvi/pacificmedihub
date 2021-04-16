@@ -582,17 +582,12 @@ class OrderController extends Controller
           if ($request->order_status==16) {
               $order_data['delivered_at']=date('Y-m-d');
               $order_data['order_status']=13;
+              $order_data['order_completed_at']  = date('Y-m-d H:i:s');
           }
 
           if ($request->delivery_status==14) {
               $order_data['order_status']=14;
           }
-
-         if ($request->delivery_status==16) {
-              $order_data['order_status']=13;
-              $order_data['delivered_at']=date('Y-m-d');
-          }
-            
 
           if (isset($batch_ids) && count($batch_ids)>0) {
             foreach ($batch_ids as $product_id => $batchs) {
@@ -1652,7 +1647,11 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
           Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
         }
         if ($status_id==13) {
-          Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
+          Orders::where('id',$order_no)->update([
+            'order_status'        => $status_id,
+            'order_completed_at'  => date('Y-m-d H:i:s'),
+            'delivered_at'        => date('Y-m-d')
+          ]);
         }
         if ($status_id==18 || $status_id==20 || $status_id==21) {
           Orders::where('id',$order_no)->update(['order_status'=>$status_id]);

@@ -10,24 +10,30 @@ class CkfinderController extends Controller
 {
   public function uploadAction(Request $request)
   {
-    dd($request->all());
+        if($request->hasFile('upload')) {
+             $originName = $request->file('upload')->getClientOriginalName();
+             $fileName = pathinfo($originName, PATHINFO_FILENAME);
+             $extension = $request->file('upload')->getClientOriginalExtension();
+             $fileName = $fileName.'_'.time().'.'.$extension;
+            
+             $request->file('upload')->move(public_path('images'), $fileName);
 
-     $CKEditor = $request->get('CKEditor');
-        $funcNum  = $request->get('CKEditorFuncNum');
-        $message  = $url = '';
+             $CKEditorFuncNum = $request->input('CKEditorFuncNum');
+/*             $url = asset('images/'.$fileName); 
+             $msg = 'Image uploaded successfully'; 
+             $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";*/
+             $CKEditorFuncNum = $request->input('CKEditorFuncNum');
+             $url = asset('images/'.$fileName); 
+             $msg = 'Image uploaded successfully'; 
+             $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";
+                   
+             @header('Content-type: text/html; charset=utf-8'); 
+             echo $response;
+            
+         }
+         else{
+            return ['status'=>'response'];
+         }
 
-        if ($request->hasFile('upload')) {
-        $file = $request->file('upload');
-        if ($file->isValid()) {
-        $filename =rand(1000,9999).$file->getClientOriginalName();
-        $file->move(public_path().'/wysiwyg/', $filename);
-        $url = url('wysiwyg/' . $filename);
-        } else {
-        $message = 'An error occurred while uploading the file.';
-        }
-        } else {
-        $message = 'No file uploaded.';
-        }
-        return '<script>window.parent.CKEDITOR.tools.callFunction('.$funcNum.', "'.$url.'", "'.$message.'")</script>';
-        }
+  }
 }

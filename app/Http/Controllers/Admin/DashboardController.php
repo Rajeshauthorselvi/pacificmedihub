@@ -32,20 +32,22 @@ class DashboardController extends Controller
         $data['low_stock_count']=$low_stock_count['low_stock_count'];
 
         $data['current_day_total']=Orders::where('order_status',13)
-                                   ->whereDate('created_at', Carbon::today())
+                                   ->whereDate('delivered_at',date('Y-m-d'))
                                    ->sum('sgd_total_amount');
 
         $data['current_week_total']=Orders::where('order_status',13)
-                                   ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+                                   ->whereBetween('delivered_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
                                    ->sum('sgd_total_amount');
 
         $data['current_month_total']=Orders::where('order_status',13)
-                                   ->whereMonth('created_at', date('m'))
+                                   ->whereMonth('delivered_at', date('m'))
                                    ->sum('sgd_total_amount');
 
         $data['current_year_total']=Orders::where('order_status',13)
-                                   ->whereYear('created_at', date('Y'))
+                                   ->whereYear('delivered_at', date('Y'))
                                    ->sum('sgd_total_amount');
+
+
 
 
         

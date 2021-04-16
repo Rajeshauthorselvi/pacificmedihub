@@ -91,7 +91,11 @@
                         @foreach ($all_orders as $orders)
                             <tr>
                               <td>{{ date('m-d-Y',strtotime($orders->created_at)) }}</td>
-                              <td>{{ $orders->order_no }}</td>
+                              <td>
+                                <a href="{{ route('orders.show',[$orders->id]) }}" target="_blank">
+                                  {{ $orders->order_no }}
+                                </a>
+                              </td>
                               <td>{{ $orders->customer->name }}</td>
                               <td>{{ $orders->salesrep->emp_name }}</td>
                               <td>{{ $orders->exchange_total_amount }}</td>
