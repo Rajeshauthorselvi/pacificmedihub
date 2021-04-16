@@ -534,7 +534,7 @@ class OrderController extends Controller
         $data['product_description_notes'] = OrderRFQProductDescription::where('type','order')->where('ref_id',$order_id)->pluck('description','product_id')->toArray();
         $data['discount_type'] = OrderProducts::where('order_id',$order_id)->groupBy('product_id')->pluck('discount_type','product_id')->toArray();
         $data['order_tax']       = isset($order->order_tax_amount)?$order->order_tax_amount:0.00;
-        $data['delivery_charge'] = $order->deliveryMethod->amount;
+        $data['delivery_charge'] = isset($order->deliveryMethod->amount)?$order->deliveryMethod->amount:'0.00';
         return view('admin.orders.edit',$data);
     }
 

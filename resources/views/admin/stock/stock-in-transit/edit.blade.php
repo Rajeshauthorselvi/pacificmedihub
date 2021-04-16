@@ -153,10 +153,10 @@
                               </div>
                               <div class="form-group">
                                 <input type="radio" name="variant[goods_type][{{ $key }}]" value="2" id="goods_replace_{{ $key }}" class="goods_replace goods_type">
-                                <label for="goods_replace_{{ $key }}"><small>Goods Replace</small></label>
+                                <label for="goods_replace_{{ $key }}"><small>Replace</small></label>
                                 &nbsp;
                                 <input type="radio" name="variant[goods_type][{{ $key }}]" value="1" id="goods_return_{{ $key }}" class="goods_return goods_type">
-                                <label for="goods_return_{{ $key }}"><small>Goods Return</small></label>
+                                <label for="goods_return_{{ $key }}"><small>Return</small></label>
                               </div>
 
                               <input type="hidden" class="total_amount_hidden" value="">

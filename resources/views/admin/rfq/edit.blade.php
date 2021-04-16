@@ -350,10 +350,11 @@
                                   <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($currency->id==3)  selected="selected" @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
                                       {{$currency->currency_code}} - {{$currency->currency_name}}
                                   </option>
-                                @endif
+                                @else
                                   <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
                                     {{$currency->currency_code}} - {{$currency->currency_name}}
                                   </option>
+                                @endif
                                 @endforeach
                               </select>
                             </td>
