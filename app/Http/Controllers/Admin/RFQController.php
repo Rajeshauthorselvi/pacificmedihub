@@ -211,6 +211,29 @@ class RFQController extends Controller
           RFQProducts::insert($data);
         }
       }
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+          $created_user_type=2;
+          $auth_id=Auth::guard('employee')->user()->id;
+          $creater_name=Auth::guard('employee')->emp_name;
+       }
+       else{
+          $created_user_type=1;
+          $auth_id=Auth::id();
+          $creater_name=Auth::user()->name;
+       }
+
+      $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();
+      Notification::insert([
+        'type'                => 'rfq',
+        'ref_id'              => $rfq_id,
+        'customer_id'         => $rfq_details->customer_id,
+        'content'             => $creater_name.' added new rfq to '.$rfq_details->order_no,
+        'url'                 => url('admin/rfq-comments/'.$rfq_id),
+        'created_at'          => date('Y-m-d H:i:s'),
+        'created_by'          => $auth_id,
+        'created_user_type'   => $created_user_type,
+      ]);
+
       return Redirect::route('rfq.index')->with('success','RFQ added successfully...!');
     }
 
@@ -345,6 +368,7 @@ class RFQController extends Controller
       $data['product_datas']   = $product_data;
       $data['product_description_notes'] = OrderRFQProductDescription::where('type','rfq')->where('ref_id',$id)->pluck('description','product_id')->toArray();
       $data['discount_type'] = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->pluck('discount_type','product_id')->toArray();
+
       return view('admin.rfq.edit',$data);
     }
 
@@ -461,6 +485,32 @@ class RFQController extends Controller
           }
         }
       }
+
+
+
+       if (!Auth::check() && Auth::guard('employee')->check()) {
+          $created_user_type=2;
+          $auth_id=Auth::guard('employee')->user()->id;
+          $creater_name=Auth::guard('employee')->emp_name;
+       }
+       else{
+          $created_user_type=1;
+          $auth_id=Auth::id();
+          $creater_name=Auth::user()->name;
+       }
+
+      $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
+      Notification::insert([
+        'type'                => 'rfq',
+        'ref_id'              => $id,
+        'customer_id'         => $rfq_details->customer_id,
+        'content'             => $creater_name.' updated rfq to '.$rfq_details->order_no,
+        'url'                 => url('admin/rfq-comments/'.$id),
+        'created_at'          => date('Y-m-d H:i:s'),
+        'created_by'          => $auth_id,
+        'created_user_type'   => $created_user_type,
+      ]);
+
       return Redirect::route('rfq.index')->with('success','RFQ added successfully.!');
     }
 
