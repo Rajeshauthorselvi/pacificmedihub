@@ -1050,8 +1050,8 @@ button:focus{outline:none}
 }
 
 .login-page .btn:hover{
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #02abbf;
+    border-color: #02abbf;
 }
 
 .login-page .btn-primary, .register-page .btn-primary {
@@ -1266,7 +1266,7 @@ div.customer-menu a:hover {
     border-color: #ccc;
 }
 .btn.reset-btn {background: #363636;padding: 5px 15px;border-radius: 2px;color: #fff;margin-right: 5px;}
-.btn.save-btn {padding: 5px 20px;background: #3287c7;color: #fff;border-radius: 2px;}
+.btn.save-btn {padding: 5px 20px;background: #02abbf;color: #fff;border-radius: 2px;}
 
 .add-address {
     padding: 15px 25px;
@@ -1385,7 +1385,7 @@ div.customer-menu a:hover {
 }
 
 .select2-container--default .select2-results__option--highlighted {
-  background-color: #007bff;
+  background-color: #02abbf;
   color: #fff;
 }
 
@@ -1423,7 +1423,7 @@ div.customer-menu a:hover {
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-  background-color: #007bff;
+  background-color: #02abbf;
   border-color: #006fe6;
   color: #fff;
   padding: 0 10px;
@@ -1599,8 +1599,8 @@ color: #fff;
     margin-top: 10px;
 }
 .rfq.message .btn.save-btn:hover {
-    background: #3287c7;
-    border-color: #3287c7;
+    background: #02abbf;
+    border-color: #02abbf;
     color: #fff;
 }
 

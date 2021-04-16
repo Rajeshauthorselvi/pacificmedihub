@@ -100,6 +100,6 @@
     .customer .nav.nav-tabs.flex-nowrap {border: none;}
     .customer .nav-tabs .nav-item{margin:0 3px;width:21%;text-align:center;}
     .customer .nav-tabs .nav-item .nav-link{border: none;border-radius: 0;background: #ebeff5;}
-    .customer .nav-tabs .nav-item .nav-link.active {background: #3287c7;color: #fff;}
+    .customer .nav-tabs .nav-item .nav-link.active {background: #02abbf;color: #fff;}
   </style>
  @endsection

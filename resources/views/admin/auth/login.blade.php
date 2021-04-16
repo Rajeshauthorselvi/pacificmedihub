@@ -24,15 +24,15 @@
     .login-page .login-box .login-box-logo {text-align: center;padding: 0 0 25px 0;}
     .login-page .login-box .input-block {width: 90%;margin: auto;}
     .login-page .login-box #ex1-content .input-group .form-control {padding: 25px 15px;border-radius: 0;border-right: 0;}
-    .login-page .login-box #ex1-content .input-group-text .fas{color: #3287c7;}
+    .login-page .login-box #ex1-content .input-group-text .fas{color: #02abbf;}
     .login-page .login-box #ex1-content .input-group-text {padding: 0.375rem 1.2rem;background-color:#fff;border-left:0;border-radius: 0;}
     .login-page .login-box #ex1-content .btn-primary{border-radius: 0;}
     .login-page .login-box #ex1-content .btn-primary:hover{background: #297ab5;}
     ul#ex1 li.nav-item {width: 50%;border-top-left-radius: 0;border-top-right-radius: 0;text-align: center;font-weight: normal;}
-    ul#ex1 li.nav-item a.tabs.nav-link, ul.#ex1 li.nav-item a.tabs.nav-link.active {color: #fff;background-color:#3287c7;border-color: #3287c7;font-weight: bold;border-radius: 0;font-weight: normal;}
-    ul#ex1 li.nav-item .nav-link.tabs.active{border:none;color:#fff;background:#3287c7;padding:12px 10px;border-radius:0;}
+    ul#ex1 li.nav-item a.tabs.nav-link, ul.#ex1 li.nav-item a.tabs.nav-link.active {color: #fff;background-color:#02abbf;border-color: #02abbf;font-weight: bold;border-radius: 0;font-weight: normal;}
+    ul#ex1 li.nav-item .nav-link.tabs.active{border:none;color:#fff;background:#02abbf;padding:12px 10px;border-radius:0;}
     ul#ex1 li.nav-item a.nav-link{padding: 12px 10px;border: none;color: #49506a;}
-    ul#ex1 li.nav-item a.nav-link:hover {border: none;color: #3287c7;padding: 12px 10px;}
+    ul#ex1 li.nav-item a.nav-link:hover {border: none;color: #02abbf;padding: 12px 10px;}
     .tab-pane.active{animation: slide-down .8s ease-out;}
     @keyframes slide-down {0% { opacity: 0; transform: translateY(20%); }100% { opacity: 1; transform: translateX(0); }}
   </style>
