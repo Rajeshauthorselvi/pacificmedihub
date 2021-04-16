@@ -45,12 +45,12 @@
             <div class="card">
               <div class="card-body">
                 <div class="tab-content">
-                  {!! Form::model($admin,['method' => 'PATCH','class'=>'rfq-form','route' =>['admin-profile.update',$admin->id]]) !!}
+                  {!! Form::model($admin,['method' => 'PATCH','class'=>'rfq-form','route' =>['admin-profile.update',$admin->id],'files'=>true]) !!}
                   <div class="active tab-pane" id="persnol_details">
                     <div class="form-group">
                       <div class="col-sm-12">
                         <label for="firstName">Name *</label>
-                        {!! Form::text('name', $admin->name,['class'=>'form-control','readonly']) !!}
+                        {!! Form::text('name', $admin->name,['class'=>'form-control']) !!}
                       </div>
                     </div>
                     <div class="form-group">
@@ -69,6 +69,10 @@
                         <label for="gst">GST No *</label>
                         {!! Form::text('gst', $admin->company_gst,['class'=>'form-control']) !!}
                         <span class="text-danger">{{ $errors->first('gst') }}</span>
+                      </div>
+                      <div class="col-sm-6">
+                        <label for="gst">Logo</label>
+                        <input type="file" name="logo" accept="image/*" class="form-control">
                       </div>
                     </div>
                      <div class="form-group">
