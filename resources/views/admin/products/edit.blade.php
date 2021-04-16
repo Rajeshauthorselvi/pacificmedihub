@@ -157,7 +157,8 @@
                         </div>
 
                         <div class="submit-sec">
-                          <a id="clear-option" class="btn reset-btn" style="display:none">Clear</a>
+                          {{-- <a id="clear-option" class="btn reset-btn" style="display:none">Clear</a> --}}
+                          <a onclick="document.location.reload(true)" id="clear-option" class="btn reset-btn" style="display:none">Clear</a>
                           <button type="button" class="btn save-btn" id="add-options" style="display:none">Apply</button>
                           &nbsp;
                         </div>

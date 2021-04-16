@@ -124,7 +124,9 @@
                         <th>Region</th>
                         <th>Postcode</th>
                         <th>Ordered Date</th>
+                        @if ($active_menu[0]!="new-orders") {
                         <th>Delivered Date</th>
+                        @endif
                         <th>Order Code</th>
                         <th>Customer</th>
                         <th>Sales Rep</th>
@@ -159,10 +161,11 @@
                           <td>{{ isset($region)?$region:'-' }}</td>
                           <td>{{ $order->address->post_code }}</td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
+                          @if ($active_menu[0]!="new-orders") {
                           <td>
                             {{ isset($order->delivered_at)?date('m/d/Y',strtotime($order->delivered_at)):'-' }}
                           </td>
-
+                          @endif
                           <td><a href="{{route($show_route,$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->name }}</td>
                           <td>{{ $order->salesrep->emp_name }}</td>

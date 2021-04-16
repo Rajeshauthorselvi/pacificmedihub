@@ -8,6 +8,8 @@ use App\Models\Orders;
 use App\Models\OrderStatus;
 use App\User;
 use DB;
+use Carbon\Carbon;
+
 class OrderReportController extends Controller
 {
     /**
@@ -15,7 +17,7 @@ class OrderReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         
         $data['all_customers']=['Please Select']+User::where('role_id',7)
@@ -23,9 +25,26 @@ class OrderReportController extends Controller
                                ->where('is_deleted',0)
                                ->pluck('name','id')
                                ->toArray();
-
         $data['order_status']=['Please Select']+OrderStatus::pluck('status_name','id')->toArray();
-        $data['all_orders']=Orders::all();
+        $orders=Orders::where('order_status','<>',"");
+                    if ($request->has('filter_status')) {
+                        $orders->where('order_status',13);
+                    }
+                    if ($request->get('period')=="day") {
+                        $orders->whereDate('delivered_at', date('Y-m-d'));
+                    }
+                    if ($request->get('period')=="week") {
+                        $orders->whereBetween('delivered_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+                    }
+                    if ($request->get('period')=="month") {
+                        $orders->whereMonth('delivered_at', date('m'));
+                    }
+                    if ($request->get('period')=="year") {
+                        $orders->whereYear('delivered_at', date('Y'));
+                    }
+                    $all_orders=$orders->get();
+
+        $data['all_orders']=$all_orders;
 
         return view('admin.report.order.index',$data);
     }

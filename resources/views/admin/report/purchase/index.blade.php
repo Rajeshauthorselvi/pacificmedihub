@@ -37,28 +37,31 @@
                       <form action="{{ route('report-purchase.store') }}" method="POST">
                         @csrf
                         <div class="col-sm-12 filters">
-                          <div class="col-sm-3">
+                          <div class="col-sm-2">
                             <div class="form-group">
                               <label>Customer:</label>
-                              {!! Form::select('filter_vendor',$all_vendors,Request::get('filter_vendor'), ['class'=>'form-control']) !!}
+                              {!! Form::select('filter_vendor',$all_vendors,Request::get('filter_customer'), ['class'=>'form-control']) !!}
                             </div>
                           </div>
-
-                          <div class="col-sm-3">
+                          <div class="col-sm-2">
+                            <div class="form-group">
+                              <label>Date:</label>
+                              <input type="text" name="filter_date" class="form-control" id="reservation" value="{{  Request::get('filter_date') }}"> 
+                            </div>
+                          </div>
+                          <div class="col-sm-2">
                             <div class="form-group">
                               <label>Order Value:</label>
-                              <br>
                               <input type="text" name="filter_value" class="form-control" value="{{  Request::get('filter_value') }}"> 
                             </div>
                           </div>
-                          <div class="col-sm-3">
+                          <div class="col-sm-2">
                           <div class="form-group">
                               <label>Order Status:</label>
-                              <br>
                               {!! Form::select('filter_status',$order_status, Request::get('filter_status'),['class'=>'form-control']) !!}
                             </div>
                           </div>
-                          <div class="col-sm-3">
+                          <div class="col-sm-2">
                           <div class="form-group">
                                <label></label>
                                <br>
@@ -93,7 +96,7 @@
                           {{-- <td><input type="checkbox" name="currency_id" value="{{ $order['purchase_id'] }}"></td> --}}
                           <td>{{ date('d-m-Y',strtotime($order['purchase_date'])) }}</td>
                           <td>
-                            <a href="{{ route('purchase.show',[$order['purchase_id']]) }}" class="btn btn-link">
+                            <a href="{{ route('purchase.show',[$order['purchase_id']]) }}" class="btn btn-link" target="_blank">
                               {{ $order['po_number'] }}
                             </a>
                           </td>
@@ -133,7 +136,7 @@
     </section>
   </div>
     <style type="text/css">
-    .filters .col-sm-3{
+    .filters .col-sm-2{
       float: left;
     }
 

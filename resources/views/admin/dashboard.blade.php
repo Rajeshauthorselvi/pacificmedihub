@@ -120,9 +120,9 @@
             <div class="small-box">
               <div class="inner">
                 <h5>Daily Sales</h5>
-                <span>${{ $current_day_total }}</span>
+                <span>SGD {{ $current_day_total }}</span>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('report-order.index',['filter_status'=>13,'period'=>'day']) }}" class="small-box-footer" target="_blank">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -131,9 +131,9 @@
             <div class="small-box">
               <div class="inner">
                 <h5>Weekly Sales</h5>
-                <span>${{ $current_week_total }}</span>
+                <span>SGD {{ $current_week_total }}</span>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('report-order.index',['filter_status'=>13,'period'=>'week']) }}" class="small-box-footer" target="_blank">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -142,9 +142,9 @@
             <div class="small-box">
               <div class="inner">
                 <h5>Monthly Sales</h5>
-                <span>${{ $current_month_total }}</span>
+                <span>SGD {{ $current_month_total }}</span>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('report-order.index',['filter_status'=>13,'period'=>'month']) }}" class="small-box-footer" target="_blank">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -153,9 +153,9 @@
             <div class="small-box">
               <div class="inner">
                 <h5>Annual Sales</h5>
-                <span>${{ $current_year_total }}</span>
+                <span>SGD {{ $current_year_total }}</span>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('report-order.index',['filter_status'=>13,'period'=>'year']) }}" class="small-box-footer" target="_blank">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->

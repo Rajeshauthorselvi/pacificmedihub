@@ -58,8 +58,8 @@
                     <div class="col-sm-12">
                       <label>Page Contents *</label>
                       <div class="centered">
-                        <div id="editor">
-                        </div>
+                        <div id="editor"></div>
+                        <textarea id="editor1" name="editor1"></textarea>
                       </div>
                       <span class="text-danger page_contents" style="display:none;">Page Contents is required.</span>
                     </div>
@@ -106,22 +106,19 @@
       display: flex;
     }
   </style>
-  <script src="{{ asset('theme/plugins/ckeditor/ckeditor.js') }}"></script>
+  {{-- <script src="{{ asset('theme/plugins/ckeditor/ckeditor.js') }}"></script> --}}
+  <script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
   <script>
-     window.onload = function() {
-      ClassicEditor
-        .create( document.querySelector( '#editor' ), {
-          ckfinder: {
-            uploadUrl: "{{route('ckfinder.upload', ['_token' => csrf_token() ])}}"
-          }
-        } )
-        .then( editor => {
-          window.editor = editor;
-        } )
-        .catch( err => {
-          console.error( err.stack );
-        } );
-      }
+
+ClassicEditor
+  .create( document.querySelector( '#editor1' ), {
+    ckfinder: {
+      uploadUrl:  "{{route('ckfinder.upload', ['_token' => csrf_token() ])}}",
+    }
+  } )
+  .catch( error => {
+    console.error( error );
+  } );
   </script>
 
   @push('custom-scripts')
