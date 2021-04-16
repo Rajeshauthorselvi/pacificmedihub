@@ -765,6 +765,8 @@ class RFQController extends Controller
       } 
       $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$request->rfq_id)->first();
       Notification::insert([
+        'type'                => 'rfq',
+        'ref_id'              => $request->rfq_id,
         'content'             => $creater_name.' added new comment to '.$rfq_details->order_no,
         'url'                 => url('admin/rfq-comments/'.$request->rfq_id),
         'created_at'          => date('Y-m-d H:i:s'),
