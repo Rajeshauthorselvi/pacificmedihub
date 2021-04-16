@@ -87,7 +87,7 @@
       .done(function(response) {
         $.each(response, function(index, val) {
           var check_length=$("[notification-id="+val['notification_id']+"]").length;
-          console.log(check_length);
+          //console.log(check_length);
           if (check_length==0) {
             var html  = '<a href="'+val['url']+'" class="dropdown-item" notification-id="'+val['notification_id']+'">';
             html += '<i class="fa fa-bell"></i>  '+val['content'];
@@ -95,8 +95,8 @@
             html += '</a>';
             html += '<div class="dropdown-divider"></div>';
             $('.notification-append-sec').append(html);
-            var count=$('.notificaion_count').text();
-            $('.notificaion_count').text(parseInt(count)+1);
+            var count = response.length;
+            $('.notificaion_count').text(parseInt(count));
           }
           else{
             $("[notification-id="+val['notification_id']+"]").find('.text-muted').text(val['created_time']);

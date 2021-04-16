@@ -27,6 +27,11 @@
     }
   }
   $cartData = $cart_data;
+
+  $setting = App\Models\Settings::where('key','front-end')->pluck('content','code')->toArray();
+  if(isset($setting['header'])){
+    $datas = unserialize($setting['header']);
+  }
 ?>
 
 <div class="header">
@@ -34,20 +39,20 @@
 		<div class="header-top">
 			<div class="row">
 				<div class="col-sm-2 col-xs-4 logo">
-					<a href="{{ route('home.index') }}"><img src="{{ asset('front/img/logo_mtcu.png') }}" alt="pacificmedihub" width="137" height="57" /></a>
+					<a href="{{ route('home.index') }}"><img src="{{ asset('front/img/'.$datas['image']) }}" alt="pacificmedihub" width="137" height="57" /></a>
 				</div>
 				<div class="col-sm-10 col-xs-8">
 					<ul>
 						<li>
 							<div class="head-icon">
 							<i class="mail-icon"></i>
-							<div class="wrap"><label>Email us:</label>info@mtcu.com</div>
+							<div class="wrap"><label>Email us:</label>{{ $datas['email'] }}</div>
 							</div>
 						</li>
 						<li>
 							<div class="head-icon">
 							<i class="help-icon"></i>
-							<div class="wrap"><label>Free Helpline:</label>(+100) 123 456 7890</div>
+							<div class="wrap"><label>Free Helpline:</label>{{ $datas['helpline'] }}</div>
 							</div>
 						</li>
 						@if(!Auth::check())

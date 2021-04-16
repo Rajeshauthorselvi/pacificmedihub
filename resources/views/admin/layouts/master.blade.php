@@ -147,8 +147,8 @@ function notificationSec() {
               html += '</a>';
               html += '<div class="dropdown-divider"></div>';
               $('.notification-append-sec').append(html);
-              var count=$('.notificaion_count').text();
-              $('.notificaion_count').text(parseInt(count)+1);
+              var count = response.length;
+              $('.notificaion_count').text(parseInt(count));
           }
           else{
             $("[notification-id="+val['notification_id']+"]").find('.text-muted').text(val['created_time']);
