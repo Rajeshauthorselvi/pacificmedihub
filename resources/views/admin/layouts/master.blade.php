@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>PACIFIC MEDIHUB | ADMIN DASHBOARD</title>
+  <title>MTC U TRADING | ADMIN DASHBOARD</title>
   <link rel="icon" type="image/png" href="{{ asset('theme/images/fav_icon.png') }}" />
 
   <!-- Google Font: Source Sans Pro -->

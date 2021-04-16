@@ -341,29 +341,24 @@
                               <select class="form-control no-search select2bs4" name="currency" id="currency_rate">
                                 <option value="">Please Select</option>
                                 @foreach($currencies as $currency)
-
-                                @if(isset($rfqs->currency) && $rfqs->currency==$currency->id)
-                                  <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($rfqs->currency==$currency->id)  selected="selected" @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
-                                    {{$currency->currency_code}} - {{$currency->currency_name}}
-                                  </option>
-                                @elseif(!isset($rfqs->currency))
-                                  <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($currency->id==3)  selected="selected" @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
+                                  @if(isset($rfqs->currency) && $rfqs->currency==$currency->id)
+                                    <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($rfqs->currency==$currency->id)  selected @endif {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
                                       {{$currency->currency_code}} - {{$currency->currency_name}}
-                                  </option>
-                                @endif
-                                  <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" {{ (collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
-                                    {{$currency->currency_code}} - {{$currency->currency_name}}
-                                  </option>
+                                    </option>
+                                  @elseif(!isset($rfqs->currency))
+                                    <option currency-rate="{{$currency->exchange_rate}}" currency-code="{{$currency->currency_code}}" value="{{$currency->id}}" @if($currency->id==1) selected @endif {{(collect(old('currency'))->contains($currency->id)) ? 'selected':'' }}>
+                                        {{$currency->currency_code}} - {{$currency->currency_name}}
+                                    </option>
+                                  @endif
                                 @endforeach
                               </select>
                             </td>
                             <td>
                               <?php 
                                 if(!isset($rfqs->currency)){
-                                    $total=$sgd_total;
-                                }
-                                else{
-                                   $total=$rfqs->exchange_total_amount;
+                                  $total = '0.00';
+                                }else{
+                                  $total=$rfqs->exchange_total_amount;
                                 }
                               ?>
                               <input type="text" name="exchange_rate" class="form-control" id="toatl_exchange_rate" value="{{$total}}" onkeyup="validateNum(event,this);" autocomplete="off">

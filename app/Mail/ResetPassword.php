@@ -29,6 +29,6 @@ class ResetPassword extends Mailable
      */
     public function build()
     {
-        return $this->from('admin@authorselvi.com')->view('front.emails.passwordReset',['code'=>$this->code])->subject('Pacific Medihub - Password Rest Code | '.date('d-m-Y'));
+        return $this->from('admin@authorselvi.com')->view('front.emails.passwordReset',['code'=>$this->code])->subject('MTC U TRADING - Password Rest Code | '.date('d-m-Y'));
     }
 }

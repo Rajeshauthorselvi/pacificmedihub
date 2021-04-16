@@ -30,6 +30,6 @@ class NewRegister extends Mailable
      */
     public function build()
     {
-        return $this->from('admin@authorselvi.com')->view('admin.emails.newAccount',['first_name'=>$this->name,'email'=>$this->email,'password'=>$this->password])->subject('Pacific Medihub - New Accout Register | '.date('d-m-Y'));
+        return $this->from('admin@authorselvi.com')->view('admin.emails.newAccount',['first_name'=>$this->name,'email'=>$this->email,'password'=>$this->password])->subject('MTC U TRADING - New Accout Register | '.date('d-m-Y'));
     }
 }
