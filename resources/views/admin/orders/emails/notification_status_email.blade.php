@@ -21,7 +21,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="header-logo"><img src="{{ asset('theme/images/logo.png') }}"></div>
+    <div class="header-logo"><img src="{{ asset('theme/images/logo_mtcu.png') }}"></div>
     <h3>Pacific Medihub</h3>
     <div class="mail-content">
         @if (isset($order_details->statusName->email_content))

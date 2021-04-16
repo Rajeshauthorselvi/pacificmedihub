@@ -12,7 +12,8 @@
 <body>
   <div style="width: 700px;margin: auto;">
                     <div class="header" style="width: 100%;text-align:center;">
-                        <img src="http://selvisoftware.in/pacificmedihub/front/img/pacificmedihub_logo.png">
+                        {{-- <img src="http://selvisoftware.in/pacificmedihub/front/img/pacificmedihub_logo.png"> --}}
+                        <img src="{{ asset('theme/images/logo_mtcu.png') }}">
                         <br> <br>
                     </div>
                     <div class="address-sec">

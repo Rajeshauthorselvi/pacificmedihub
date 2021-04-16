@@ -798,6 +798,7 @@ class OrderController extends Controller
       Notification::insert([
         'type'                => 'order',
         'ref_id'              => $order_details->id,
+        'customer_id'         => $order_details->customer_id,
         'content'             => $creater_name.' added new comment to '.$order_details->order_no,
         'url'                 => url('my-orders/'.base64_encode($order_id)),
         'created_at'          => date('Y-m-d H:i:s'),
