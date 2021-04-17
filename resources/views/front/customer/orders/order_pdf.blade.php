@@ -2,12 +2,12 @@
     <div class="address-sec">
       <div style="width:30%;float: left;">
         <ul class="list-unstyled order-no-sec"  style="font-size: 14px;padding-left: 0;list-style: none;">
-          <li><h5>RFQ Code: <small>{{ $rfqs->order_no }}</small></h5></li>
-          <li><strong>Date: </strong>{{date('d F, Y',strtotime($rfqs->created_at))}}</li>
-          <li><strong>Status: </strong>{{$rfqs->statusName->status_name}}</li>
-          <li><strong>Sales Rep: </strong>{{$rfqs->salesrep->emp_name}}</li>
-          @if(isset($rfqs->payTerm->name))
-            <li><strong>Payment Term: </strong>{{$rfqs->payTerm->name}}</li>
+          <li><h5>Order Code: <small>{{ $orders->order_no }}</small></h5></li>
+          <li><strong>Date: </strong>{{date('d F, Y',strtotime($orders->created_at))}}</li>
+          <li><strong>Status: </strong>{{$orders->statusName->status_name}}</li>
+          <li><strong>Sales Rep: </strong>{{$orders->salesrep->emp_name}}</li>
+          @if(isset($orders->payTerm->name))
+            <li><strong>Payment Term: </strong>{{$orders->payTerm->name}}</li>
           @endif
         </ul>
       </div> 
@@ -139,7 +139,7 @@
                     @foreach($product['product_variant'] as $key=>$variant)
                       <?php 
                         $option_count=$product['option_count'];
-                        $variation_details=\App\Models\RFQProducts::where('product_id',$product['product_id'])->where('product_variant_id',$variant['variant_id'])->first();
+                        $variation_details=\App\Models\OrderProducts::where('product_id',$product['product_id'])->where('product_variation_id',$variant['variant_id'])->first();
                         
                       ?>
                      
@@ -160,7 +160,7 @@
                           </td>
                         @endif
                         <td style="border: 1px solid #000">
-                           {{$variation_details['rfq_price']}}
+                           {{$variation_details['price']}}
                         </td>
                         <td style="border: 1px solid #000">
                           @if($variation_details['discount_type']=='amount') $ @endif
@@ -199,23 +199,23 @@
     <table style="width: 50%;float: right;padding: 4px;">
       <tr class="total-calculation first_calculation">
         <td style="text-align: right;">Total :</td>
-        <td style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{ $rfqs->total_amount }}</td>
+        <td style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{ $orders->total_amount }}</td>
       </tr>
       <tr class="total-calculation">
         <td style="font-size: 14px;text-align: right;">Order Tax : </td>
-        <td  style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{$rfqs->order_tax_amount}}</td>
+        <td  style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{$orders->order_tax_amount}}</td>
       </tr>
       <tr class="total-calculation">
         <td  style="font-size: 14px;text-align: right;" class="title">
-          Delivery Charge @if(isset($rfqs->deliveryMethod)) ({{$rfqs->deliveryMethod->delivery_method }}) @endif: 
+          Delivery Charge @if(isset($orders->deliveryMethod)) ({{$orders->deliveryMethod->delivery_method }}) @endif: 
         </td>
         <td style="font-size: 14px;padding-left: 20px;">
-          &nbsp;&nbsp;{{$rfqs->delivery_charge}}
+          &nbsp;&nbsp;{{$orders->delivery_charge}}
         </td>
       </tr>
       <tr class="total-calculation" style="font-weight: bold;">
         <td style="font-size: 14px;text-align: right;">Total Amount(SGD) : </td>
-        <td  style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{$rfqs->sgd_total_amount}}</td>
+        <td  style="font-size: 14px;padding-left: 20px;">&nbsp;&nbsp;{{$orders->sgd_total_amount}}</td>
       </tr>
     </table>
     <div style="clear: both;"></div>

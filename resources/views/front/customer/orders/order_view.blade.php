@@ -32,7 +32,7 @@
                   </li>
                 @endif
                 <li style="background-color: #216ea7">
-                  <a href="javascript:void(0);" class="pdf">
+                  <a href="{{ route('my.order.pdf',$order->id) }}" class="pdf">
                     <i class="fa fa-download"></i>&nbsp; PDF
                   </a>
                 </li>
@@ -41,11 +41,11 @@
                     <i class="fa fa-envelope"></i>&nbsp; Email
                   </a>
                 </li>
-                <li style="background-color: #23bf79">
+                {{-- <li style="background-color: #23bf79">
                   <a href="javascript:void(0);" class="comment">
                     <i class="fa fa-comment"></i>&nbsp; Comment
                   </a>
-                </li>
+                </li> --}}
               </ul>
             @endif
           </div>
@@ -56,9 +56,11 @@
                 <li><strong>Order Details</strong></li>
                 @if($order->order_status==18)<li><span>Invoice:</span>#{{ $order->invoice_no }}</li>@endif
                 <li><span>Order Code:</span>{{ $order->order_no }}</li>
-                <li><span>Order Date:</span>{{ date('d/m/Y - H:i a',strtotime($order->created_at)) }}</li>
-                @if($order->delivered_at)<li><span>Delivered Date:</span>{{ date('d/m/Y - H:i a',strtotime($order->delivered_at))}}</li>@endif
-                <li><span>Order Status:</span>{{ $order->statusName->status_name }}</li>
+                <li><span>Order Date:</span>{{ date('d/m/Y',strtotime($order->created_at)) }}</li>
+                @if($order->approximate_delivery_date)<li><span>Delivered Date:</span>{{ date('d/m/Y',strtotime($order->approximate_delivery_date))}}</li>@endif
+                <li>
+                  <span>Status</span>: <span class="badge" style="background:{{$order->statusName->color_codes}};color:#fff;padding: 5px">{{ $order->statusName->status_name }}</span>
+                </li>
                 <?php 
                   if($order->payment_status==1) $pay_status = 'Paid';
                   elseif($order->payment_status==2) $pay_status = 'Partly Paid';
@@ -133,7 +135,13 @@
             <div class="table-responsive">
               <table class="table">
                 <thead>
-                  <tr><th>No.</th><th>Product Name</th><th>Quantity</th><th>Price</th><th>Sub Total</th></tr>
+                  <th>No.</th>
+                    <th>Product Name</th>
+                    <th class="text-center width">Price</th>
+                    <th class="text-center width">Discount</th>
+                    <th class="text-center width">Discount Price <br><small>(a)</small></th>
+                    <th class="text-center width">QTY <br><small>(b)</small></th>
+                    <th class="text-center width">Total <br><small>(a x b)</small></th>
                 </thead>
                 <tbody>
                   @php $s_no = 1 @endphp
@@ -165,29 +173,32 @@
                         </div>
                       </div>
                     </td>
-                    <td>{{ $products['quantity'] }}</td>
-                    <td>{{ number_format($products['final_price'],2,'.','') }}</td>
-                    <td>{{ number_format($products['sub_total'],2,'.','') }}</td>
+                    <td class="text-center">{{ number_format($products['price'],2,'.','') }}</td>
+                    <td class="text-center">@if($products['discount_type']=='amount') $ @endif {{ $products['discount_value'] }} @if($products['discount_type']=='percentage') % @endif </td>
+                    <td class="text-center">{{ number_format($products['final_price'],2,'.','') }}</td>
+                    <td class="text-center">{{ $products['quantity'] }}</td>
+                    <td class="text-center">{{ number_format($products['sub_total'],2,'.','') }}</td>
                   </tr>
                   @php $s_no++ @endphp
                   @endforeach
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Total</td><td>{{ number_format($order_data['total'],2,'.','') }}</td>
+                    <td colspan="6" class="text-right">Total</td><td>{{ number_format($order_data['total'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Order Discount</td><td>{{ number_format($order_data['discount'],2,'.','') }}</td>
+                    <td colspan="6" class="text-right">Order Tax</td><td>{{ number_format($order_data['tax'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Order Tax</td><td>{{ number_format($order_data['tax'],2,'.','') }}</td>
+                    <td colspan="6" class="text-right">Delivery Charge @if(isset($order->deliveryMethod))({{ $order->deliveryMethod->delivery_method }}) @endif</td>
+                    <td>{{number_format($order->delivery_charge,2,'.','')}}</td>
                   </tr>
                   <tr class="outer grand">
-                    <th colspan="4" class="text-right">Total Amount (SGD)</th><th>{{ number_format($order_data['grand_total'],2,'.','') }}</th>
+                    <th colspan="6" class="text-right">Total Amount (SGD)</th><th>{{ number_format($order_data['grand_total'],2,'.','') }}</th>
                   </tr>
                   <tr class="outer">
-                    <td colspan="4" class="text-right">Paid Amount (SGD)</td><td>{{ number_format($order_data['paid_amount'],2,'.','') }}</td>
+                    <td colspan="6" class="text-right">Paid Amount (SGD)</td><td>{{ number_format($order_data['paid_amount'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer" style="border-bottom:1px solid #ddd">
-                    <th colspan="4" class="text-right">Due Amount (SGD)</th><th>{{ number_format($order_data['due_amount'],2,'.','') }}</th>
+                    <th colspan="6" class="text-right">Due Amount (SGD)</th><th>{{ number_format($order_data['due_amount'],2,'.','') }}</th>
                   </tr>
                 </tbody>
               </table>

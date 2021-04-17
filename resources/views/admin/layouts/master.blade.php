@@ -68,7 +68,13 @@
     <!-- End of Main Content -->
   </div>
 <!-- ./wrapper -->
-
+<footer class="main-footer">
+    <strong>Copyright &copy; {{ date('Y') }} <a href="{{ route('admin.login') }}">mtc u trading</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 1.0.0
+    </div>
+  </footer>
 <!-- jQuery -->
 <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
 <!-- jQuery UI 1.11.4 -->

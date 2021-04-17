@@ -46,13 +46,13 @@
                     <span>Order Date</span>: {{ $order['create_date'] }}<br>
                     <span>Payment Method</span>: {{ $pay_status }}
                   </div>
-                  <div class="col-sm-3 text-center">
-                    <span>Total Items</span>: {{ $order['item_count'] }}<br>
+                  <div class="col-sm-4 text-left">
+                    <span>Total Items</span>: {{ $order['item_count'] }}&nbsp;&nbsp;
                     <span>Total Qty</span>: {{ $order['toatl_qty'] }}
                   </div>
-                  <div class="col-sm-4 text-right">
+                  <div class="col-sm-3 text-right">
                     <?php $order_id = base64_encode($order['id']);?>
-                    <a href="javascript:void(0);" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>&nbsp;&nbsp;
+                    {{-- <a href="javascript:void(0);" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>&nbsp;&nbsp; --}}
                     <a href="{{ route('my-orders.show',$order_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
                   </div>
                 </div>
