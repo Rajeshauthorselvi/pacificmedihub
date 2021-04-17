@@ -154,7 +154,7 @@
   <style>
     #myMap {height: 350px;width: 100%;}
   </style>
-  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDNi6888yh6v93KRXKYeHfMv59kQHw-XPQ&libraries=places&v=weekly">
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyA7WMFKWkvwBnf3DCeMyepx19UW_Mez_Js&libraries=places">
   </script>
 
   <script type="text/javascript"> 

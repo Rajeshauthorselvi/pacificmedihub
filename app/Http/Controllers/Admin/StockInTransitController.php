@@ -249,7 +249,7 @@ class StockInTransitController extends Controller
                   DB::table('product_variant_vendors')
                   ->where('product_variant_id',$purchase_data->product_variation_id)
                   ->where('vendor_id',$vendor_id)
-                  ->where('product_id',$product_id)
+                  ->where('product_id',$product_id[$key])
                   ->update(['stock_quantity'=>$total_quantity]);
 
                   /*Update Return quantity to purchase products table*/
