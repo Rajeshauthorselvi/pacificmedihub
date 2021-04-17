@@ -1081,7 +1081,9 @@ class OrderController extends Controller
     public function Variants($product_id,$variation_id=0)
     {
 
-        $variant = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->first();
+        $variant = ProductVariant::where('product_id',$product_id)
+        // ->where('disabled',0)->where('is_deleted',0)
+        ->first();
 /* $productVariants=ProductVariant::select('product_variants.*')
                                ->select('product_variants.*')
                                ->leftjoin('product_variant_vendors as pvv','pvv.product_variant_id','product_variants.id')
@@ -1103,13 +1105,13 @@ $productVariants=ProductVariant::select('product_variants.*')
                                
         if ($variation_id!=0) {
              $productVariants = ProductVariant::where('product_id',$product_id)
-                            ->where('disabled',0)->where('is_deleted',0)
+                            // ->where('disabled',0)->where('is_deleted',0)
                             ->whereIn('id',$variation_id)
                             ->get();
         }
         else{
             $productVariants = ProductVariant::where('product_id',$product_id)
-                               ->where('disabled',0)->where('is_deleted',0)
+                               // ->where('disabled',0)->where('is_deleted',0)
                                ->get();
         }
 
@@ -1198,7 +1200,9 @@ $productVariants=ProductVariant::select('product_variants.*')
     }
     public function Options($id)
     {
-        $variant = ProductVariant::where('product_id',$id)->where('disabled',0)->where('is_deleted',0)->first();
+        $variant = ProductVariant::where('product_id',$id)
+        // ->where('disabled',0)->where('is_deleted',0)
+        ->first();
 
         $options = array();
         

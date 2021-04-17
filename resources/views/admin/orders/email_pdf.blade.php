@@ -130,9 +130,9 @@
                                           @foreach ($product['options'] as $option)
                                             <th style="border: 1px solid #000;">{{ $option }}</th>
                                           @endforeach
-                                          <th style="border: 1px solid #000;">Base Price</th>
-                                          <th style="border: 1px solid #000;">Retail Price</th>
-                                          <th style="border: 1px solid #000;">Minimum Selling Price</th>
+                                          {{-- <th style="border: 1px solid #000;">Base Price</th> --}}
+                                          {{-- <th style="border: 1px solid #000;">Retail Price</th> --}}
+                                          {{-- <th style="border: 1px solid #000;">Minimum Selling Price</th> --}}
                                           <th style="border: 1px solid #000;">Quantity</th>
                                           <th style="border: 1px solid #000;">Price</th>
                                           <th style="border: 1px solid #000;">Subtotal</th>
@@ -159,9 +159,9 @@
                                             @if($option_count==5)
                                               <td style="border: 1px solid #000"> {{$variant['option_value5']}} </td>
                                             @endif
-                                            <td class="base_price"> {{$variant['base_price']}} </td>
-                                            <td style="border: 1px solid #000"> {{$variant['retail_price']}}</td>
-                                            <td style="border: 1px solid #000"> {{$variant['minimum_selling_price']}} </td>
+                                            {{-- <td class="base_price"> {{$variant['base_price']}} </td> --}}
+                                            {{-- <td style="border: 1px solid #000"> {{$variant['retail_price']}}</td> --}}
+                                            {{-- <td style="border: 1px solid #000"> {{$variant['minimum_selling_price']}} </td> --}}
                                             <td style="border: 1px solid #000">
                                               <div class="form-group">{{ $variation_details['quantity'] }}</div>
                                             </td>
@@ -178,7 +178,7 @@
                                           <?php $total_quantity +=$variation_details['quantity']; ?>
                                         @endforeach
                                         <tr>
-                                          <td colspan="{{ count($product['options'])+3 }}" style="text-align: right;border: 1px solid #000">Total:</td>
+                                          <td colspan="{{ count($product['options']) }}" style="text-align: right;border: 1px solid #000">Total:</td>
                                           <td style="border: 1px solid #000">{{ $total_quantity }}</td>
                                           <td style="border: 1px solid #000">{{ $final_price }}</td>
                                           <td style="border: 1px solid #000">{{ $total_amount }}</td>
