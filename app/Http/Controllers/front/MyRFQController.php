@@ -183,7 +183,7 @@ class MyRFQController extends Controller
         $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();
         Notification::insert([
             'type'                => 'orders',
-            'ref_id'              => $order_id,
+            'ref_id'              => $rfq_id,
             'customer_id'         => $auth_id,
             'content'             => $creater_name.' added new rfq to '.$rfq_details->order_no,
             'url'                 => url('admin/rfq/'.$rfq_id),
