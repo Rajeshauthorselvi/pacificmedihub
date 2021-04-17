@@ -70,7 +70,7 @@
 							$sku = $sku_prefix.'-'.$options->optionValueCode1.'-'.$options->optionValueCode2.'-'.$options->optionValueCode3.'-'.$options->optionValueCode4.'-'.$options->optionValueCode5;
 						}
 
-						if($k<=0){
+						if($count==1){
 							$base_price_row_id 	  = 'base_price_row1';
 							$retail_price_row_id  = 'retail_price_row1';
 							$minimum_price_row_id = 'minimum_price_row1';
