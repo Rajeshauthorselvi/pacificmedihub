@@ -447,16 +447,20 @@
         if(!confirm("Are you sure want to change discount type.?")){
           return false;
         }else{
-          $('.collapse.show').find('.price').val(0);
+          $.each($('.collapse.show').find('.stock_qty'), function(index, val) {
+            $(this).trigger('keyup');
+          });
+
+          /*$('.collapse.show').find('.price').val(0);
           $('.collapse.show').find('.price').text(0);
-          $('.collapse.show').find('.stock_qty').val(0);
+          //$('.collapse.show').find('.stock_qty').val(0);
           $('.collapse.show').find('.discount-value').val(0);
           $('.collapse.show').find('.dis-price').val(0);
           $('.collapse.show').find('.dis-price').text(0);
           $('.collapse.show').find('.sub_total').text('0.00');
           $('.collapse.show').find('.subtotal_hidden').val(0);
           $('.collapse.show').find('.total_quantity').text(0);
-          $('.collapse.show').find('.total_amount').text('0.00');
+          $('.collapse.show').find('.total_amount').text('0.00');*/
           $('.all_quantity').text(SumAllTotal('.total_quantity'));
           $('.all_amount').text(SumAllTotal('.total_amount'));
           var all_amount = $('#allAmount').text();
