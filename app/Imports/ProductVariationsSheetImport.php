@@ -98,7 +98,7 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
 
     public function OptionId($option)
     {
-    	$check_options=Option::where('option_name',$option)->first();
+    	$check_options=Option::where('published',1)->where('option_name',$option)->first();
     	if($check_options){
     		$option_id=$check_options->id;
     	}
@@ -122,7 +122,7 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
     }
     public function OptionValueId($option_id,$option_value)
     {
-    	$option_value_exists=OptionValue::where('option_value',$option_value)
+    	$option_value_exists=OptionValue::where('is_deleted',0)->where('option_value',$option_value)
     						 ->where('option_id',$option_id)
     						 ->first();
 
