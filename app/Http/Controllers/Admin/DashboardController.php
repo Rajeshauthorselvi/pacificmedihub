@@ -25,6 +25,7 @@ class DashboardController extends Controller
         $data = array();
         $data['rfq_count'] = RFQ::where('status',22)->count();
         $data['delivery_completed'] = Orders::where('order_status',13)->count();
+        $data['delivery_inprocess'] = Orders::where('order_status',15)->count();
         $data['pending_order_count'] = Orders::where('order_status',19)->count();
         $data['vendor_count'] = Vendor::where('is_deleted',0)->count();
         $data['customer_count'] = User::where('role_id',7)->where('is_deleted',0)->count();

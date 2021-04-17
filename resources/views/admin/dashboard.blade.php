@@ -66,8 +66,21 @@
               <a href="{{route('completed-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
+          <!-- ./col -->
           <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Delivery InProcess</h4>
+                <p>InProcess</p>
+              </div>
+              <div class="icon">
+                <span>{{$delivery_inprocess}}</span>
+              </div>
+              <a href="{{route('assign-delivery.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
           </div>
+          
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
