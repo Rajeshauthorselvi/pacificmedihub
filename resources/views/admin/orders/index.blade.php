@@ -114,7 +114,6 @@
                             </ul>
                   </div> --}}
                   <div class="clearfix"></div>
-                  <br>
                   <div class="table-responsive">
                     
                   <table id="order-list" class="table table-bordered">
@@ -124,7 +123,7 @@
                         <th>Region</th>
                         <th>Postcode</th>
                         <th>Ordered Date</th>
-                        @if ($active_menu[0]!="new-orders") {
+                        @if ($active_menu[0]!="new-orders") 
                         <th>Delivered Date</th>
                         @endif
                         <th>Order Code</th>
@@ -161,7 +160,7 @@
                           <td>{{ isset($region)?$region:'-' }}</td>
                           <td>{{ $order->address->post_code }}</td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
-                          @if ($active_menu[0]!="new-orders") {
+                          @if ($active_menu[0]!="new-orders") 
                           <td>
                             {{ isset($order->delivered_at)?date('m/d/Y',strtotime($order->delivered_at)):'-' }}
                           </td>
