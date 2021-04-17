@@ -279,7 +279,7 @@
           <div class="modal-body">
               <div class="form-group">
                 <div class="col-sm-6">
-                  <label>Payment Type *</label>
+                  <label>Payment Attachment *</label>
                   <input type="file" name="attachments" class="form-control" required>
                 </div>
               </div>
