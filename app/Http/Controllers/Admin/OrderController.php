@@ -1456,12 +1456,33 @@ $productVariants=ProductVariant::select('product_variants.*')
     return ['data'=>$data];
     }
 
+    public function ListOutOfStockProducts($order_id)
+    {
+            $order_details=Orders::where('id',$order_id)->first();
+            $order_products=OrderProducts::where('order_id',$order_id)->get();
+
+            $product_data=$all_product_ids=array();
+            foreach ($order_products as $key => $product) {
+              $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
+              if ($check_product_quantity < $product->quantity) {
+                  array_push($all_product_ids, $product->product_id);
+              }
+            } 
+            $data['out_stock_products']=Product::whereIn('id',$all_product_ids)->get();
+
+            $data['all_product_ids']=implode(',', array_unique($all_product_ids));
+            $data['order_id']=$order_id;
+
+            return view('admin.orders.out_stock_products',$data);
+    }
     public function OrderPurchase(Request $request,$order_id)
     {
 
       $data=array();
 
           $product_id=$request->product_id;
+          $product_ids_all=explode(',',$request->product_id);
+
           $variant_id=$request->product_variant_id;
           $vendor_id=$request->vendor_id;
 
@@ -1501,8 +1522,7 @@ $productVariants=ProductVariant::select('product_variants.*')
 
             $order_details=Orders::where('id',$order_id)->first();
             $order_products=OrderProducts::where('order_id',$order_id)
-            ->whereIn('product_id',$product_ids)
-            // ->groupBy('product_id')
+            ->whereIn('product_id',$product_ids_all)
             ->get();
             $product_data=$all_product_ids=array();
             foreach ($order_products as $key => $product) {

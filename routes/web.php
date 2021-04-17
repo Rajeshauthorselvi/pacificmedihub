@@ -104,6 +104,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 
 
 	//Orders
+	Route::get('order-low-stock/{order_id}','Admin\OrderController@ListOutOfStockProducts');
+	
 	Route::get('order-email/{order_id}','Admin\OrderController@OrderEmail');
 	Route::get('order-summary',['as'=>'order.summary','uses'=>'Admin\OrderController@SummaryReport']);
 	Route::get('orders-product',['as'=>'orders.product','uses'=>'Admin\OrderController@ProductSearch']);
