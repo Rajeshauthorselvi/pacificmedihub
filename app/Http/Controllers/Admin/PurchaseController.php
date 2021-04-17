@@ -560,20 +560,22 @@ class PurchaseController extends Controller
     public function Variants($product_id,$variation_id=0)
     {
 
-        $variant = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->first();
+        $variant = ProductVariant::where('product_id',$product_id)
+        // ->where('disabled',0)->where('is_deleted',0)
+        ->first();
 
         if ($variation_id!=0) {
 
              $productVariants = ProductVariant::where('product_id',$product_id)
-                                  ->where('is_deleted',0)
+                                  // ->where('is_deleted',0)
                                   ->whereIn('id',$variation_id)
-                                  ->where('disabled',0)
+                                  // ->where('disabled',0)
                                   ->get();
         }
         else{
             $productVariants = ProductVariant::where('product_id',$product_id)
-                               ->where('is_deleted',0)
-                               ->where('disabled',0)
+                               // ->where('is_deleted',0)
+                               // ->where('disabled',0)
                                ->get();
         }
 
@@ -661,7 +663,9 @@ class PurchaseController extends Controller
     }
     public function Options($id)
     {
-        $variant = ProductVariant::where('product_id',$id)->where('disabled',0)->where('is_deleted',0)->first();
+        $variant = ProductVariant::where('product_id',$id)
+        // ->where('disabled',0)->where('is_deleted',0)
+        ->first();
 
         $options = array();
         
