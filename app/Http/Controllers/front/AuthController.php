@@ -12,6 +12,7 @@ use App\Models\UserCompanyDetails;
 use App\Models\UserBankAcccount;
 use App\Models\UserPoc;
 use App\Models\NewsLetter;
+use App\Models\Notification;
 use App\User;
 use Auth;
 use Redirect;
@@ -222,6 +223,24 @@ class AuthController extends Controller
                 'timestamps'      => false
             ]);
         }
+
+
+   
+      Notification::insert([
+        'type'                => 'register',
+        'ref_id'              => $add_user->id,
+        // 'customer_id'         => $add_user->id,
+        'content'             => $request->name.' requested as a customer' ,
+        'url'                 => url('admin/customers/'.$add_user->id.'/edit?from=approve'),
+        'created_at'          => date('Y-m-d H:i:s'),
+        'created_by'          => $add_user->id,
+        'created_user_type'   => 3,
+      ]);
+
+
+// new-customer-request
+
+
         return view('front/customer/new_register_success');
     }
 
