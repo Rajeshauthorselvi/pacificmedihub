@@ -276,6 +276,7 @@ Route::group(['middleware' => 'customer'], function () {
 
 	//My Order
 	Route::resource('my-orders','front\MyOrdersController');
+	Route::get('my-order-pdf/{order_id}','front\MyOrdersController@orderPDF')->name('my.order.pdf');
 });
 
 //Home Page

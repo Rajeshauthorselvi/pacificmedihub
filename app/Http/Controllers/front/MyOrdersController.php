@@ -12,12 +12,18 @@ use App\Models\Countries;
 use App\Models\Orders;
 use App\Models\OrderProducts;
 use App\Models\PaymentHistory;
+use App\Models\Currency;
+use App\Models\Tax;
+use App\Models\PaymentTerm;
 use App\User;
 use Auth;
 use Str;
 use Session;
 use Redirect;
 use DB;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\View;
+use PDF;
 
 class MyOrdersController extends Controller
 {
@@ -40,8 +46,8 @@ class MyOrdersController extends Controller
             $item_count  = OrderProducts::where('order_id',$item->id)->count();
             $toatl_qty   = OrderProducts::where('order_id',$item->id)->sum('quantity');
             $order_data[$key]['id'] = $item->id;
-            $order_data[$key]['create_date']    = date('d/m/Y - H:i a',strtotime($item->created_at));
-            $order_data[$key]['delivered_at']   = $item->delivered_at;
+            $order_data[$key]['create_date']    = date('d/m/Y',strtotime($item->created_at));
+            $order_data[$key]['delivered_at']   = $item->approximate_delivery_date;
             $order_data[$key]['status']         = $item->statusName->status_name;
             $order_data[$key]['color_code']     = $item->statusName->color_codes;
             $order_data[$key]['code']           = $item->order_no;
@@ -110,6 +116,7 @@ class MyOrdersController extends Controller
         $order_products = OrderProducts::with('product','variant')->where('order_id',$id)->orderBy('id','desc')->get();
         $order_data = $order_items = array();
         foreach ($order_products as $key => $item) {
+            $order_items[$key]['product_id'] =  $item->product->id;
             $order_items[$key]['product_name'] =  $item->product->name;
             $order_items[$key]['variant_sku'] = $item->variant->sku;
             $order_items[$key]['variant_option1'] = isset($item->variant->optionName1->option_name)?$item->variant->optionName1->option_name:null;
@@ -123,23 +130,25 @@ class MyOrdersController extends Controller
             $order_items[$key]['variant_option5'] = isset($item->variant->optionName5->option_name)?$item->variant->optionName5->option_name:null;
             $order_items[$key]['variant_option_value5'] = isset($item->variant->optionValue5->option_value)?$item->variant->optionValue5->option_value:null;
             $order_items[$key]['quantity'] = $item->quantity;
+            $order_items[$key]['price'] = isset($item->price)?(float)$item->price:'0.00';
+            $order_items[$key]['discount_value'] = isset($item->discount_value)?(float)$item->discount_value:'0.00';
+            $order_items[$key]['discount_type'] = isset($item->discount_type)?$item->discount_type:'';
             $order_items[$key]['final_price'] = isset($item->final_price)?(float)$item->final_price:'0.00';
-            $order_items[$key]['sub_total'] = isset($item->sub_total)?(float)$item->sub_total:'0.00';
+            $order_items[$key]['sub_total'] = isset($item->sub_total)?(float)$item->sub_total:'0.00';            
         }
-
-        $paid_amount = PaymentHistory::where('ref_id',$id)->where('payment_from',2)->sum('amount');
         
+        $paid_amount = PaymentHistory::where('ref_id',$id)->where('payment_from',2)->sum('amount');
+
         $order_data['total']       = isset($order->total_amount)?(float)$order->total_amount:'0.00';
-        $order_data['discount']    = isset($order->order_discount)?(float)$order->order_discount:'0.00';
         $order_data['tax']         = isset($order->order_tax_amount)?(float)$order->order_tax_amount:'0.00';
         $order_data['grand_total'] = isset($order->sgd_total_amount)?(float)$order->sgd_total_amount:'0.00';
-
         $order_data['paid_amount'] = (float)$paid_amount;
         $order_data['due_amount']  = (float)$order->sgd_total_amount - (float)$paid_amount;
+        $order_data['notes']       = isset($order->notes)?$order->notes:'';
 
         $data['order_data']     = $order_data;
         $data['order_products'] = $order_items;
-        //dd($data);
+        
         return view('front/customer/orders/order_view',$data);
     }
 
@@ -175,5 +184,199 @@ class MyOrdersController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function orderPDF($id)
+    {
+        if(!Auth::check()){
+            return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+        }
+
+        $data = array();
+        $products = OrderProducts::where('order_id',$id)->groupBy('product_id')->get();
+        $product_data = $product_variant = array();
+        foreach ($products as $key => $product) {
+            $product_name    = Product::where('id',$product->product_id)->value('name');
+            $all_variants    = OrderProducts::where('order_id',$id)->where('product_id',$product->product_id)
+                                ->pluck('product_variation_id')->toArray();
+            $options         = $this->Options($product->product_id);
+            $product_variant = $this->Variants($product->product_id,$all_variants);
+
+            $product_data[$product->product_id]=[
+              'order_id'        => $id,
+              'product_id'      => $product->product_id,
+              'product_name'    => $product_name,
+              'options'         => $options['options'],
+              'option_count'    => $options['option_count'],
+              'product_variant' => $product_variant
+            ];
+        }
+        $order = Orders::where('id',$id)->first();
+
+        if ($order->created_user_type==2) {
+            $creater_name=Employee::where('id',$order->user_id)->first();
+            $creater_name=$creater_name->emp_name;
+        }
+        else{
+            $creater_name=User::where('id',$order->user_id)->first();
+            $creater_name=$creater_name->name;
+        }
+        $data['creater_name']=$creater_name;
+
+        $data['orders']           = $order;
+        $data['admin_address']    = User::where('id',1)->first();
+        $data['customer_address'] = User::with('address')->where('id',$order->customer_id)->first();
+        $data['product_datas']    = $product_data;
+        $data['order_id']         = $id;
+        $data['taxes']            = Tax::where('published',1)->where('is_deleted',0)->get();
+        $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                        ->pluck('name','id')->toArray();  
+        $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
+
+        //return view('front/customer/orders/order_pdf',$data);
+
+        $layout = View::make('front.customer.orders.order_pdf',$data);
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($layout->render());
+        return $pdf->download('RFQ-'.$order->order_no.'.pdf');
+    }
+
+
+    public function Variants($product_id,$variation_id=0)
+    {
+      $variant = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->first();
+
+      if ($variation_id!=0) {
+        $productVariants = ProductVariant::where('product_id',$product_id)->where('disabled',0)
+                            ->where('is_deleted',0)
+                            ->whereIn('id',$variation_id)->get();
+      }
+      else{
+        $productVariants = ProductVariant::where('product_id',$product_id)->where('disabled',0)->where('is_deleted',0)->get();
+      }
+      $product_variants = array();
+      foreach ($productVariants as $key => $variants) {            
+        $variant_details = ProductVariantVendor::where('product_id',$variants->product_id)
+                            ->where('product_variant_id',$variants->id)
+                            ->where('display_variant',1)
+                            ->first();
+        $product_variants[$key]['variant_id'] = $variants->id;
+        $product_variants[$key]['product_name']=Product::where('id',$variants->product_id)->value('name');
+        $product_variants[$key]['product_id']=$product_id;
+
+        if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = $variants->option_id2;
+          $product_variants[$key]['option_value_id2'] = $variants->option_value_id2;
+          $product_variants[$key]['option_value2'] = $variants->optionValue2->option_value;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+          $product_variants[$key]['option_value_id2']=isset($variants->option_value_id2)?$variants->option_value_id2:'';
+          $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+          $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+          $product_variants[$key]['option_value_id3']=isset($variants->option_value_id3)?$variants->option_value_id3:'';
+          $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5==NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+          $product_variants[$key]['option_value_id2']=isset($variants->option_value_id2)?$variants->option_value_id2:'';
+          $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+          $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+          $product_variants[$key]['option_value_id3']=isset($variants->option_value_id3)?$variants->option_value_id3:'';
+          $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+          $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
+          $product_variants[$key]['option_value_id4']=isset($variants->option_value_id4)?$variants->option_value_id4:'';
+          $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5!=NULL))
+        {
+          $product_variants[$key]['option_id1'] = $variants->option_id;
+          $product_variants[$key]['option_value_id1'] = $variants->option_value_id;
+          $product_variants[$key]['option_value1'] = $variants->optionValue1->option_value;
+          $product_variants[$key]['option_id2'] = isset($variants->option_id2)?$variants->option_id2:'';
+          $product_variants[$key]['option_value_id2']=isset($variants->option_value_id2)?$variants->option_value_id2:'';
+          $product_variants[$key]['option_value2'] = isset($variants->optionValue2->option_value)?$variants->optionValue2->option_value:'';
+          $product_variants[$key]['option_id3'] = isset($variants->option_id3)?$variants->option_id3:'';
+          $product_variants[$key]['option_value_id3']=isset($variants->option_value_id3)?$variants->option_value_id3:'';
+          $product_variants[$key]['option_value3'] = isset($variants->optionValue3->option_value)?$variants->optionValue3->option_value:'';
+          $product_variants[$key]['option_id4'] = isset($variants->option_id4)?$variants->option_id4:'';
+          $product_variants[$key]['option_value_id4']=isset($variants->option_value_id4)?$variants->option_value_id4:'';
+          $product_variants[$key]['option_value4'] = isset($variants->optionValue4->option_value)?$variants->optionValue4->option_value:'';
+          $product_variants[$key]['option_id5'] = isset($variants->option_id5)?$variants->option_id5:'';
+          $product_variants[$key]['option_value_id5']=isset($variants->option_value_id5)?$variants->option_value_id5:'';
+          $product_variants[$key]['option_value5'] = isset($variants->optionValue5->option_value)?$variants->optionValue5->option_value:'';
+        }
+
+        $product_variants[$key]['base_price'] = $variant_details->base_price;
+        $product_variants[$key]['retail_price'] = $variant_details->retail_price;
+        $product_variants[$key]['minimum_selling_price'] = $variant_details->minimum_selling_price;
+        $product_variants[$key]['display_order'] = $variant_details->display_order;
+        $product_variants[$key]['stock_quantity'] = $variant_details->stock_quantity;
+        $product_variants[$key]['display_variant'] = $variant_details->display_variant;
+        $product_variants[$key]['vendor_id'] = $variant_details->vendor_id;
+        $product_variants[$key]['vendor_name'] = $variant_details->vendorName->name;
+      }
+      return $product_variants;
+    }
+    public function Options($id)
+    {
+        $variant = ProductVariant::where('product_id',$id)->where('disabled',0)->where('is_deleted',0)->first();
+
+        $options = array();
+        
+        if(($variant->option_id!=NULL)&&($variant->option_id2==NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+            $options[] = $variant->optionName1->option_name;
+            $option_count = 1;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3==NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+            $options[] = $variant->optionName1->option_name;
+            $options[] = $variant->optionName2->option_name;
+            $option_count = 2;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4==NULL)&&($variant->option_id5==NULL))
+        {
+            $options[] = $variant->optionName1->option_name;
+            $options[] = $variant->optionName2->option_name;
+            $options[] = $variant->optionName3->option_name;
+            $option_count = 3;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5==NULL))
+        {
+            $options[] = $variant->optionName1->option_name;
+            $options[] = $variant->optionName2->option_name;
+            $options[] = $variant->optionName3->option_name;
+            $options[] = $variant->optionName4->option_name;
+            $option_count = 4;
+        }
+        elseif(($variant->option_id!=NULL)&&($variant->option_id2!=NULL)&&($variant->option_id3!=NULL)&&($variant->option_id4!=NULL)&&($variant->option_id5!=NULL))
+        {
+            $options[] = $variant->optionName1->option_name;
+            $options[] = $variant->optionName2->option_name;
+            $options[] = $variant->optionName3->option_name;
+            $options[] = $variant->optionName4->option_name;
+            $option_count = 5;
+        }
+
+        return ['options'=>$options,'option_count'=>$option_count];
     }
 }
