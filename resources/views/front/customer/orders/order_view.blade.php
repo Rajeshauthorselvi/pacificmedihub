@@ -99,7 +99,7 @@
                     <span><i class="far fa-building"></i></span>
                   </div>
                   <div class="col-sm-10 details">
-                    <strong>{{$admin_address->company_name}}</strong>
+                    <strong>{{$admin_address->name}}</strong>
                     <p>
                       <span>
                         {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}

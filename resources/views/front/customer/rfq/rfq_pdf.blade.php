@@ -47,7 +47,7 @@
               <span><i class="fas fa-people-carry"></i></span>
             </div>
             <div class="col-sm-10">
-              <h4>{{$admin_address->company_name}}</h4>
+              <h4>{{$admin_address->name}}</h4>
               <p>
                 <span>
                   {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}

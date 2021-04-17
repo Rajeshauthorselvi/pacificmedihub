@@ -727,10 +727,10 @@ class OrderController extends Controller
 
       $notification_status=[20,18,13,16,17];
       if ($order_details->order_status!=$request->order_status && in_array($request->order_status, $notification_status)) {
-        //$this->EmailNotification($id);
+        $this->EmailNotification($id);
       }
       if ($order_details->delivery_status!=$request->delivery_status && in_array($request->delivery_status, $notification_status)) {
-        //$this->EmailNotification($id);
+        $this->EmailNotification($id);
       }
       $route=$this->RouteLinks();
       return Redirect::route($route['back_route'])->with('success','Order details updated successfully');

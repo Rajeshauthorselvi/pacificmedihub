@@ -68,21 +68,23 @@
                       </td>
                       <td>
                         <div class="number">
+                          <input type="hidden" class="final-price" value="{{ $products['final_price'] }}">
+                          <input type="hidden" name="item[sub_total][]" class="total" value="{{ $products['sub_total'] }}">
                           <span class="minus">-</span><input type="text" name="item[qty][]" class="qty-count" value="{{ $products['quantity'] }}" /><span class="plus">+</span>
                         </div>
                       </td>
                       <td>
-                        {{-- <form method="POST" action="{{ route('my-rfq.destroy',$products['rfq_items_id']) }}" id="deleteItem" onclick="deleteData()"> @csrf 
-                          <input name="_method" type="hidden" value="DELETE">
-                          <input name="rfq_id" type="hidden" value="{{ $products['rfq_id'] }}"> --}}
-                          <button class="btn delete-item" type="button" ><i class="far fa-trash-alt"></i></button>
-                        {{-- </form> --}}
+                        <button class="btn delete-item" type="button" ><i class="far fa-trash-alt"></i></button>
                       </td>
                     </tr>
                     @php $s_no++ @endphp
                     @endforeach
                   </tbody>
                 </table>
+                <input type="hidden" class="sub-total" name="total_amount" value="{{ $rfq_data['total'] }}">
+                <input type="hidden" class="grand-total" name="grand_total" value="{{ $rfq_data['grand_total'] }}">
+                <input type="hidden" class="delivery-charge" name="delivery_charge" value="{{ $rfq_data['delivery_charge'] }}">
+                <input type="hidden" class="tax" value="{{ $rfq_data['tax'] }}">
               </div>
             </div>
           
@@ -164,7 +166,7 @@
     });
 
     $('.minus').click(function () {
-      var $input = $(this).parent().find('input');
+      var $input = $(this).parent().find('.qty-count');
       var count = parseInt($input.val()) - 1;
       count = count < 1 ? 1 : count;
       $input.val(count);
@@ -173,7 +175,7 @@
     });
 
     $('.plus').click(function () {
-      var $input = $(this).parent().find('input');
+      var $input = $(this).parent().find('.qty-count');
       $input.val(parseInt($input.val()) + 1);
       $input.change();
       return false;
@@ -219,6 +221,36 @@
       .fail(function() {
         console.log("error");
       });
+    }
+
+    $(document).on('keyup', '.qty-count', function(event) {
+      var qty         = $(this).val();
+      var final_price = $(this).parent().find('.final-price').val();
+      var total       = qty*final_price;
+      $(this).parent().find('.total').val(total);
+      var total_amount = SumTotal();
+      var tax_rate = $('.tax').val();
+      var deliverCharge = $('.delivery-charge').val();
+      var grandTotalAmount = overallCalculation(total_amount,tax_rate,deliverCharge);
+      console.log(total_amount,grandTotalAmount);
+      $('.sub-total').val(total_amount);
+      $('.grand-total').val(grandTotalAmount);
+    });
+
+    function SumTotal() {
+      var sum = 0;
+      $('.qty-count').parents('tbody').find('.total').each(function(){
+        inputVal = this.value;
+        sum += parseFloat(inputVal);
+      });
+
+      return sum;
+    }
+
+    function overallCalculation(total_amount,tax_rate,deliverCharge)
+    {
+      var grandTotal = parseFloat(total_amount)+parseFloat(tax_rate)+parseFloat(deliverCharge);
+      return grandTotal;
     }
 
   </script>
