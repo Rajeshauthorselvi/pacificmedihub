@@ -178,6 +178,20 @@ class MyRFQController extends Controller
             Cart::instance('cart')->store('userID_'.$user_id);
         }
 
+        $creater_name=Auth::user()->name;
+        $auth_id=Auth::id();
+        $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();
+        Notification::insert([
+            'type'                => 'orders',
+            'ref_id'              => $order_id,
+            'customer_id'         => $auth_id,
+            'content'             => $creater_name.' added new rfq to '.$rfq_details->order_no,
+            'url'                 => url('admin/rfq/'.$rfq_id),
+            'created_at'          => date('Y-m-d H:i:s'),
+            'created_by'          => $auth_id,
+            'created_user_type'   => 3,
+        ]);
+
         $added_rfq_data = RFQ::find($rfq_id);
         $data = $added_rfq_data->order_no;
         return redirect()->route('rfq.status')->with('message',$data);
@@ -231,7 +245,6 @@ class MyRFQController extends Controller
             $rfq_items[$key]['total_price'] = isset($item->total_price)?(float)$item->total_price:'0.00';
             $rfq_items[$key]['sub_total'] = isset($item->sub_total)?(float)$item->sub_total:'0.00';
         }
-
         $rfq_data['total']       = isset($rfq->total_amount)?(float)$rfq->total_amount:'0.00';
         $rfq_data['discount']    = isset($rfq->order_discount)?(float)$rfq->order_discount:'0.00';
         $rfq_data['tax']         = isset($rfq->order_tax_amount)?(float)$rfq->order_tax_amount:'0.00';
@@ -653,11 +666,15 @@ class MyRFQController extends Controller
         } 
         $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$request->rfq_id)->first();
         Notification::insert([
+            'type'                => 'orders',
+            'ref_id'              => $request->rfq_id,
+            'customer_id'         => Auth::id(),
             'content'             => $creater_name.' added new comment to '.$rfq_details->order_no,
             'url'                 => url('admin/rfq-comments/'.$request->rfq_id),
             'created_at'          => date('Y-m-d H:i:s'),
             'created_by'          => $auth_id,
-            'created_user_type'   => $created_user_type,
+            'created_user_type'   => 3,
+
         ]);
         return Redirect::back();
     }
@@ -808,10 +825,22 @@ class MyRFQController extends Controller
                 'minimum_selling_price' => $products->minimum_selling_price,
                 'quantity'              => $products->quantity,
                 'sub_total'             => $products->sub_total,
-                'final_price'           => $products->rfq_price
+                'final_price'           => $products->final_price
             ]);
         }
-
+        $creater_name=Auth::user()->name;
+        $auth_id=Auth::id();
+        $order_details=Orders::with('customer','salesrep','statusName')->where('orders.id',$order_id)->first();
+        Notification::insert([
+            'type'                => 'orders',
+            'ref_id'              => $order_id,
+            'customer_id'         => $order_details->customer_id,
+            'content'             => $creater_name.' added new rfq to '.$order_details->order_no,
+            'url'                 => url('admin/new-orders/'.$order_id),
+            'created_at'          => date('Y-m-d H:i:s'),
+            'created_by'          => $auth_id,
+            'created_user_type'   => 3,
+        ]);
         RFQ::where('id',$rfq->id)->update(['status'=>10]);
         $orders_data = Orders::find($order_id);
         $data['order_number'] = $orders_data->order_no;

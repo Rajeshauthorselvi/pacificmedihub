@@ -3,7 +3,7 @@
     <table class="table table-bordered" style="width: 100%">
       <tr class="accordion-toggle collapsed" id="accordion{{ $product_id }}" data-toggle="collapse" data-parent="#accordion{{ $product_id }}" href="#collapse{{ $product_id }}">
         <td class="expand-button" style="width:2rem;"></td>
-        <td colspan="{{ count($options)+8 }}" class="prod-name">{{ $product_name }}</td>
+        <td colspan="{{ count($options)+7 }}" class="prod-name">{{ $product_name }}</td>
         <td style="width: 5%;">
           <a href="javascript:void(0)" class="btn btn-danger remove-product-row"><i class="fa fa-trash"></i></a>
         </td>
@@ -18,8 +18,7 @@
           <th class="width">Base Price</th>
           <th class="width">Retail Price</th>
           <th class="width">Minimum Selling Price</th>
-          <th class="width">Price <br><small>(a)</small></th>
-          <th class="width">QTY <br><small>(b)</small></th>
+          <th class="width">Price</th>
           <th class="width">Discount
             <div class="discount-type">
               <div class="icheck-info d-inline">
@@ -30,9 +29,9 @@
               </div>
             </div>
           </th>
-          <th class="width">Discount Price <br><small>(c)</small></th>
+          <th class="width">Discount Price <br><small>(a)</small></th>
+          <th class="width">QTY <br><small>(b)</small></th>
           <th class="width">Total <br><small>(a x b)</small></th>
-          <th class="width">Subtotal <br><small>(b x c)</small></th>
         </tr>
         <?php $total_amount=$total_quantity=0 ?>
         @foreach($product_variant as $key=>$variant)
@@ -92,9 +91,6 @@
               <input type="text" name="new_variant[rfq_price][]" class="form-control rfq_price" autocomplete="off" value="{{$high_value}}">
             </td>
             <td>
-              <input type="text" class="form-control stock_qty" name="new_variant[stock_qty][]" autocomplete="off" value="{{$quantity}}">
-            </td>
-            <td>
               <input type="text" name="new_variant[discount_value][]" class="form-control discount-value" autocomplete="off" value="{{$dummy_value}}">
             </td>
             <td>
@@ -102,8 +98,7 @@
               <input type="hidden" name="new_variant[final_price][]" class="form-control dis-price" value="0">
             </td>
             <td>
-              <span class="price">0</span>
-              <input type="hidden" name="new_variant[price][]" class="form-control price" value="0">
+              <input type="text" class="form-control stock_qty" name="new_variant[stock_qty][]" autocomplete="off" value="{{$quantity}}">
             </td>
             <td>
               <span class="sub_total">0.00</span>
@@ -115,9 +110,8 @@
           <td colspan="{{ count($options)+3 }}">
             <input type="text" class="form-control" name="product_description[{{ $product_id }}]" placeholder="Notes">
           </td>
-          <td colspan="2" class="text-right">Total Qty:</td>
+          <td colspan="4" class="text-right">Total's:</td>
           <td class="total_quantity">0</td>
-          <td colspan="3" class="text-right">Grand Total:</td>
           <td class="total_amount">0.00</td>
         </tr>
       </tbody>

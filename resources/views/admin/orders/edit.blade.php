@@ -106,7 +106,7 @@
                                   <span class="all_quantity">{{ $total_products['quantity'] }}</span>   
                                 </th>
                                 <th>
-                                  Total Amount:&nbsp;
+                                  Sub Total:&nbsp;
                                   <span class="all_amount" id="allAmount">{{ $total_products['sub_total'] }}</span>
                                 </th>
                               </tr>
@@ -119,7 +119,7 @@
                                       <tr class="accordion-toggle collapsed" id="accordion{{ $product['product_id'] }}" data-toggle="collapse" data-parent="#accordion{{ $product['product_id'] }}" href="#collapse{{ $product['product_id'] }}">
                                         <td class="expand-button" style="width:2rem;"></td>
 
-                                        <td colspan="{{ count($product['options'])+8 }}" class="prod-name">{{ $product['product_name'] }}</td>
+                                        <td colspan="{{ count($product['options'])+7 }}" class="prod-name">{{ $product['product_name'] }}</td>
                                         <td style="width: 5%;">
                                           <a href="javascript:void(0)" class="btn btn-danger remove-product-row"><i class="fa fa-trash"></i></a>
                                         </td>
@@ -134,8 +134,7 @@
                                           <th class="width">Base Price</th>
                                           <th class="width">Retail Price</th>
                                           <th class="width">Minimum Selling Price</th>
-                                          <th class="width">RFQ Price <br><small>(a)</small></th>
-                                          <th class="width">QTY <br><small>(b)</small></th>
+                                          <th class="width">Price</th>
                                           <th class="width">Discount
                                             <div class="discount-type">
                                               <div class="icheck-info d-inline">
@@ -146,9 +145,9 @@
                                               </div>
                                             </div>
                                           </th>
-                                          <th class="width">Discount Price <br><small>(c)</small></th>
+                                          <th class="width">Discount Price <br><small>(a)</small></th>
+                                          <th class="width">QTY <br><small>(b)</small></th>
                                           <th class="width">Total <br><small>(a x b)</small></th>
-                                          <th class="width">Subtotal <br><small>(b x c)</small></th>
                                         </tr>
                                         <?php $total_amount=$total_quantity=0 ?>
                                           @foreach($product['product_variant'] as $key=>$variant)
@@ -219,10 +218,6 @@
                                                 <input type="text" name="variant[rfq_price][]" class="form-control rfq_price" value="{{ $high_value }}" autocomplete="off">
                                               </td>
                                               <td>
-                                                <?php $quantity=1; ?>
-                                                <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" autocomplete="off" value="{{ $variation_details['quantity'] }}">
-                                              </td>
-                                              <td>
                                                 <input type="text" name="variant[discount_value][]" class="form-control discount-value" autocomplete="off" value="{{ (int)$variation_details['discount_value'] }}">
                                               </td>
                                               <td>
@@ -230,8 +225,7 @@
                                                 <input type="hidden" name="variant[final_price][]" class="form-control dis-price" value="{{ $variation_details['final_price'] }}">
                                               </td>
                                               <td>
-                                                <span class="price">{{ $variation_details['total_price'] }}</span>
-                                                <input type="hidden" name="variant[price][]" class="form-control price" value="{{ $variation_details['total_price'] }}">
+                                                <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" autocomplete="off" value="{{ $variation_details['quantity'] }}">
                                               </td>
                                               <td>
                                                 <?php $sub_total =  $variation_details['sub_total']; ?>
@@ -246,9 +240,8 @@
                                             <td colspan="{{ count($product['options'])+3 }}">
                                               <input type="text" class="form-control" name="product_description[{{ $product['product_id'] }}]" placeholder="Notes" value="{{ isset($product_description_notes[$product['product_id']])?$product_description_notes[$product['product_id']]:'' }}">
                                             </td>
-                                            <td colspan="2" class="text-right">Total Qty:</td>
+                                            <td colspan="4" class="text-right">Total's:</td>
                                             <td class="total_quantity">{{ $total_quantity }}</td>
-                                            <td colspan="3" class="text-right">Grand Total:</td>
                                             <td class="total_amount">{{ $total_amount }}</td>
                                           </tr>
                                         </tbody>
@@ -313,7 +306,7 @@
                       <table>
                         <tbody>
                           <tr class="total-calculation">
-                            <td class="title">Total</td>
+                            <td class="title">Sub Total</td>
                             <input type="hidden" name="total_amount" id="total_amount_hidden" value="{{$order->total_amount}}">
                             <td><span class="all_amount">{{$order->total_amount}}</span></td>
                           </tr>
@@ -446,7 +439,7 @@
       $('#prodct-add-sec').autocomplete({
         source: function( request, response) {
           $.ajax({
-            url: "{{ url('admin/rfq-product') }}",
+            url: "{{ url('admin/orders-product') }}",
             data: {
               name: request.term,
               product_search_type:'product'
@@ -467,7 +460,7 @@
           }
 
           $.ajax({
-            url: "{{ url('admin/rfq-product') }}",
+            url: "{{ url('admin/orders-product') }}",
             data: {
               product_search_type: 'product_options',
               product_id:ui.item.value,
@@ -520,8 +513,16 @@
         if(current_price==''){
           $(this).val(minimum_price);
           if(discountType=='amount'){
+            if(discount>parseInt(current_price)){
+              discount = current_price;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = current_price-discount;
           }else if(discountType=='percentage'){
+            if(discount>100){
+              discount=100;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = (current_price - (current_price * discount/100));
           }
           $(this).parents('.parent_tr').find('.dis-price').val(dis_price)
@@ -533,8 +534,16 @@
             var current_price = Math.max(Math.max(current_price, parseInt(minimum_price)), -90);
             $(this).val(current_price);
             if(discountType=='amount'){
+              if(discount>parseInt(current_price)){
+                discount = current_price;
+                $(this).parents('.parent_tr').find('.discount-value').val(discount);
+              }
               dis_price = current_price-discount;
             }else if(discountType=='percentage'){
+              if(discount>100){
+                discount=100;
+                $(this).parents('.parent_tr').find('.discount-value').val(discount);
+              }
               dis_price = (current_price - (current_price * discount/100));
             }
             $(this).parents('.parent_tr').find('.dis-price').val(dis_price);
@@ -570,8 +579,16 @@
           var discount     = $(this).parents('.parent_tr').find('.discount-value').val();
           var dis_price = current_price;
           if(discountType=='amount'){
+            if(discount>parseInt(current_price)){
+              discount = current_price;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = current_price-discount;
           }else if(discountType=='percentage'){
+            if(discount>100){
+              discount=100;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = (current_price - (current_price * discount/100));
           }
           var subTotal = singeSubtotal(qty,dis_price);
@@ -645,8 +662,16 @@
           var final_amount = price;
           var qty = $(this).parents('.parent_tr').find('.stock_qty').val();
           if(discountType=='amount'){
+            if(discount>parseInt(price)){
+              discount = price;
+              $(this).val(discount);
+            }
             final_amount = price-discount;
           }else if(discountType=='percentage'){
+            if(discount>100){
+              discount=100;
+              $(this).val(discount);
+            }
             final_amount = (price - (price * discount/100));
           }
           var subTotal = singeSubtotal(qty,final_amount);
@@ -695,6 +720,19 @@
           if(discountType=='amount'){
             dis_price = real_price-discount;
           }else if(discountType=='percentage'){
+            dis_price = (real_price - (real_price * discount/100));
+          }
+          if(discountType=='amount'){
+            if(discount>parseInt(real_price)){
+              discount = real_price;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
+            dis_price = real_price-discount;
+          }else if(discountType=='percentage'){
+            if(discount>100){
+              discount=100;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = (real_price - (real_price * discount/100));
           }
           var subTotal = singeSubtotal(qty,dis_price);

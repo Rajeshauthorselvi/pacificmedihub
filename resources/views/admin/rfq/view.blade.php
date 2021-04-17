@@ -181,7 +181,7 @@
                                   <span class="all_quantity">{{ $total_products['total_qty'] }}</span>   
                               </th>
                               <th>
-                                  Total Amount:&nbsp;
+                                  Sub Total:&nbsp;
                                   <span class="all_amount">{{ $total_products['total_amount'] }}</span>
                               </th>
                             </tr>
@@ -213,8 +213,7 @@
                                           @if ($product['check_rfq_price_exists'])
                                             <th class="width">Last RFQ Price</th>
                                           @endif
-                                          <th class="width">RFQ Price <br><small>(a)</small></th>
-                                          <th class="width">QTY <br><small>(b)</small></th>
+                                          <th class="width">RFQ Price</th>
                                           <th class="width">Discount
                                             <div class="discount-type">
                                               <div class="icheck-info d-inline">
@@ -225,9 +224,9 @@
                                               </div>
                                             </div>
                                           </th>
-                                          <th class="width">Discount Price <br><small>(c)</small></th>
+                                          <th class="width">Discount Price <br><small>(a)</small></th>
+                                          <th class="width">QTY <br><small>(b)</small></th>
                                           <th class="width">Total <br><small>(a x b)</small></th>
-                                          <th class="width">Subtotal <br><small>(b x c)</small></th>
                                         </tr>
                                       </thead>
                                       <tbody>
@@ -265,16 +264,13 @@
                                               {{ $rfq_price }}
                                             </td>
                                             <td>
-                                              <div class="form-group">{{ $variation_details['quantity'] }}</div>
-                                            </td>
-                                            <td>
                                               <div class="form-group">{{ (int)$variation_details['discount_value'] }}</div>
                                             </td>
                                             <td>
                                               <div class="form-group">{{ $variation_details['final_price'] }}</div>
                                             </td>
                                             <td>
-                                              <div class="form-group">{{ $variation_details['total_price'] }}</div>
+                                              <div class="form-group">{{ $variation_details['quantity'] }}</div>
                                             </td>
                                             <td>
                                               <div class="form-group">{{ $variation_details['sub_total'] }}</div>
@@ -287,9 +283,8 @@
                                           <td colspan="{{ count($product['options'])+2 }}">
                                             <input type="text" class="form-control" name="product_description[{{ $product['product_id'] }}]" placeholder="Notes" value="{{ isset($product_description_notes[$product['product_id']])?$product_description_notes[$product['product_id']]:'' }}">
                                           </td>
-                                          <td colspan="{{ $last_rfq_pr+2 }}" class="text-right">Total Qty:</td>
+                                          <td colspan="{{ $last_rfq_pr+4 }}" class="text-right">Total's :</td>
                                           <td class="total_quantity">{{ $total_quantity }}</td>
-                                          <td colspan="3" class="text-right">Grand Total:</td>
                                           <td class="total_amount">{{ $total_amount }}</td>
                                         </tr>
                                       </tbody>
@@ -299,7 +294,7 @@
                               </tr>
                             @endforeach
                             <tr class="total-calculation">
-                              <td colspan="4" class="title">Total</td>
+                              <td colspan="4" class="title">Sub Total</td>
                               <td><span class="all_amount">{{number_format($rfqs->total_amount,2,'.','')}}</span></td>
                             </tr>
                             <tr class="total-calculation">
