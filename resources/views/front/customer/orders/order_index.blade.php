@@ -22,27 +22,32 @@
           @if(count($order_data)!=0)
             @foreach($order_data as $order)
               <div class="order rfq-block">
-                <?php 
-                  if($order['status']=='Rejected') $head_class = 'cancelled';
-                  else $head_class = '';
-                ?>
-                <div class="header {{ $head_class }}">
-                  <div class="col-sm-6 text-left">
-                    <span>Order Date</span>: {{$order['create_date']}}&nbsp;@if(isset($order['delivered_at']))-&nbsp;<span>Delivered Date</span>: {{ date('d/m/Y',strtotime($order['delivered_at'])) }}@endif
-                  </div>
-                  <div class="col-sm-3 text-center">
-                    <span>Status</span>: {{ $order['status'] }}
-                  </div>
-                  <div class="col-sm-3 text-right">
+                <div class="header">
+                  <div class="col-sm-4 text-left">
                     <span>Order Code</span>: #{{ $order['code'] }}
                   </div>
-                </div>
-
-                <div class="body {{ $head_class }}">
-                  <div class="col-sm-4 text-left">
-                    <span>Total Items</span>: {{ $order['item_count'] }}
-                  </div>
                   <div class="col-sm-4 text-center">
+                    <span>Status</span>: <span class="badge" style="background:{{$order['color_code']}};color:#fff;padding: 5px">{{ $order['status'] }}</span>
+                  </div>
+                  <div class="col-sm-4 text-right">
+                    @if(isset($order['delivered_at'])&& $order['delivered_at']!=null)
+                      <span>Delivered Date</span>: {{ date('d/m/Y',strtotime($order['delivered_at'])) }}
+                    @endif
+                  </div>
+                  
+                </div>
+                <?php 
+                  if($order['payment_status']==1) $pay_status = 'Paid';
+                  elseif($order['payment_status']==2) $pay_status = 'Partly Paid';
+                  elseif($order['payment_status']==3) $pay_status = 'Not Paid';
+                ?>
+                <div class="body">
+                  <div class="col-sm-5 text-left">
+                    <span>Order Date</span>: {{ $order['create_date'] }}<br>
+                    <span>Payment Method</span>: {{ $pay_status }}
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <span>Total Items</span>: {{ $order['item_count'] }}<br>
                     <span>Total Qty</span>: {{ $order['toatl_qty'] }}
                   </div>
                   <div class="col-sm-4 text-right">

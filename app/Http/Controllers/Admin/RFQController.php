@@ -187,7 +187,6 @@ class RFQController extends Controller
       $last_rfq_price        = $variant['last_rfq_price'];
       $discount_value        = $variant['discount_value'];
       $final_price           = $variant['final_price'];
-      $total_price           = $variant['price'];
       $sub_total             = $variant['sub_total'];
 
       foreach ($product_ids as $key => $product_id) {
@@ -204,7 +203,6 @@ class RFQController extends Controller
             'discount_type'             => $variant['discount_type'][$product_id],
             'discount_value'            => $discount_value[$key],
             'final_price'               => $final_price[$key],
-            'total_price'               => $total_price[$key],
             'sub_total'                 => $sub_total[$key],
             'last_rfq_price'            => $last_rfq_price[$key]
           ];
@@ -434,7 +432,6 @@ class RFQController extends Controller
       $stock_qty      = $variant['stock_qty'];
       $discount_value = $variant['discount_value'];
       $final_price    = $variant['final_price'];
-      $total_price    = $variant['price'];
       $sub_total      = $variant['sub_total'];
 
       foreach ($row_ids as $key => $row_id) {
@@ -445,7 +442,6 @@ class RFQController extends Controller
           'discount_type'             => $variant['discount_type'][$variant['product_id'][$key]],
           'discount_value'            => $discount_value[$key],
           'final_price'               => $final_price[$key],
-          'total_price'               => $total_price[$key],
           'sub_total'                 => $sub_total[$key],
         ];
         RFQProducts::where('id',$row_id)->update($data);
@@ -461,7 +457,6 @@ class RFQController extends Controller
           $stock_qty             = $variant['stock_qty'];
           $discount_value        = $variant['discount_value'];
           $final_price           = $variant['final_price'];
-          $total_price           = $variant['price'];
           $sub_total             = $variant['sub_total'];
 
         foreach ($product_ids as $key => $product_id) {
@@ -478,15 +473,12 @@ class RFQController extends Controller
               'discount_type'             => $variant['discount_type'][$product_id],
               'discount_value'            => $discount_value[$key],
               'final_price'               => $final_price[$key],
-              'total_price'               => $total_price[$key],
               'sub_total'                 => $sub_total[$key]
             ];
             RFQProducts::insert($data);
           }
         }
       }
-
-
 
        if (!Auth::check() && Auth::guard('employee')->check()) {
           $created_user_type=2;

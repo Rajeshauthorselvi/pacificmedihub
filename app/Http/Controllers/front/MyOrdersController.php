@@ -40,12 +40,14 @@ class MyOrdersController extends Controller
             $item_count  = OrderProducts::where('order_id',$item->id)->count();
             $toatl_qty   = OrderProducts::where('order_id',$item->id)->sum('quantity');
             $order_data[$key]['id'] = $item->id;
-            $order_data[$key]['create_date']  = date('d/m/Y',strtotime($item->created_at));
-            $order_data[$key]['delivered_at'] = $item->delivered_at;
-            $order_data[$key]['status']       = $item->statusName->status_name;
-            $order_data[$key]['code']         = $item->order_no;
-            $order_data[$key]['item_count']   = $item_count;
-            $order_data[$key]['toatl_qty']    = $toatl_qty;
+            $order_data[$key]['create_date']    = date('d/m/Y - H:i a',strtotime($item->created_at));
+            $order_data[$key]['delivered_at']   = $item->delivered_at;
+            $order_data[$key]['status']         = $item->statusName->status_name;
+            $order_data[$key]['color_code']     = $item->statusName->color_codes;
+            $order_data[$key]['code']           = $item->order_no;
+            $order_data[$key]['item_count']     = $item_count;
+            $order_data[$key]['toatl_qty']      = $toatl_qty;
+            $order_data[$key]['payment_status'] = $item->payment_status;
         }
         $pagination = array();
         $pagination['firstItem']   = $all_data->firstItem();

@@ -146,7 +146,7 @@
                       <table>
                         <tbody>
                           <tr class="total-calculation">
-                            <td class="title">Total</td>
+                            <td class="title">Sub Total</td>
                             <td><span class="all_amount"></span></td>
                           </tr>
                           <tr class="total-calculation">
@@ -397,8 +397,16 @@
         if(current_price==''){
           $(this).val(minimum_price);
           if(discountType=='amount'){
+            if(discount>parseInt(current_price)){
+              discount = current_price;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = current_price-discount;
           }else if(discountType=='percentage'){
+            if(discount>100){
+              discount=100;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = (current_price - (current_price * discount/100));
           }
           $(this).parents('.parent_tr').find('.dis-price').val(dis_price)
@@ -410,8 +418,16 @@
             var current_price = Math.max(Math.max(current_price, parseInt(minimum_price)), -90);
             $(this).val(current_price);
             if(discountType=='amount'){
+            if(discount>parseInt(current_price)){
+                discount = current_price;
+                $(this).parents('.parent_tr').find('.discount-value').val(discount);
+              }
               dis_price = current_price-discount;
             }else if(discountType=='percentage'){
+              if(discount>100){
+                discount=100;
+                $(this).parents('.parent_tr').find('.discount-value').val(discount);
+              }
               dis_price = (current_price - (current_price * discount/100));
             }
             $(this).parents('.parent_tr').find('.dis-price').val(dis_price);
@@ -447,8 +463,16 @@
           var discount     = $(this).parents('.parent_tr').find('.discount-value').val();
           var dis_price = current_price;
           if(discountType=='amount'){
+            if(discount>parseInt(current_price)){
+              discount = current_price;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = current_price-discount;
           }else if(discountType=='percentage'){
+            if(discount>100){
+              discount=100;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = (current_price - (current_price * discount/100));
           }
           var subTotal = singeSubtotal(qty,dis_price);
@@ -488,16 +512,6 @@
           $.each($('.collapse.show').find('.stock_qty'), function(index, val) {
             $(this).trigger('keyup');
           });
-          /*$('.collapse.show').find('.price').val(0);
-          $('.collapse.show').find('.price').text(0);
-          $('.collapse.show').find('.stock_qty').val(0);
-          $('.collapse.show').find('.discount-value').val(0);
-          $('.collapse.show').find('.dis-price').val(0);
-          $('.collapse.show').find('.dis-price').text(0);
-          $('.collapse.show').find('.sub_total').text('0.00');
-          $('.collapse.show').find('.subtotal_hidden').val(0);
-          $('.collapse.show').find('.total_quantity').text(0);
-          $('.collapse.show').find('.total_amount').text('0.00');*/
           $('.all_quantity').text(SumAllTotal('.total_quantity'));
           $('.all_amount').text(SumAllTotal('.total_amount'));
           var all_amount = $('#allAmount').text();
@@ -513,17 +527,22 @@
           this.value = this.value.replace(/\D/g, '');
         }
         else{
-          /*if($(this).val()==''){
-            $(this).val(0);
-          }*/
           var discountType = $(this).parents('.parent_tr').parent().find('.discount-type').find('input[type=radio]:checked').val();
           var price = $(this).parents('.parent_tr').find('.rfq_price').val();
           var discount = $(this).val();
           var final_amount = price;
           var qty = $(this).parents('.parent_tr').find('.stock_qty').val();
           if(discountType=='amount'){
+            if(discount>parseInt(price)){
+              discount = price;
+              $(this).val(discount);
+            }
             final_amount = price-discount;
           }else if(discountType=='percentage'){
+            if(discount>100){
+              discount=100;
+              $(this).val(discount);
+            }
             final_amount = (price - (price * discount/100));
           }
           var subTotal = singeSubtotal(qty,final_amount);
@@ -570,8 +589,16 @@
           var discount     = $(this).parents('.parent_tr').find('.discount-value').val();
           var dis_price=real_price;
           if(discountType=='amount'){
+            if(discount>parseInt(real_price)){
+              discount = real_price;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = real_price-discount;
           }else if(discountType=='percentage'){
+            if(discount>100){
+              discount=100;
+              $(this).parents('.parent_tr').find('.discount-value').val(discount);
+            }
             dis_price = (real_price - (real_price * discount/100));
           }
           var subTotal = singeSubtotal(qty,dis_price);
@@ -683,7 +710,7 @@
           data +='<td style="width:2rem">#</td>';
           data +='<th scope="col">Product Name</th>';
           data +='<th>Total Quantity:&nbsp;<span class="all_quantity"></span></th>';
-          data +='<th class="text-center">Total Amount:&nbsp<span class="all_amount" id="allAmount"></span></th>'; 
+          data +='<th class="text-center">Sub Total:&nbsp<span class="all_amount" id="allAmount"></span></th>'; 
           data +='</tr>';
           data +='</thead>';
           data +='<tbody class="parent_tbody">';

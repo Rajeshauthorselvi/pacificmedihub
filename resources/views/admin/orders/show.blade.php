@@ -158,7 +158,7 @@
                               </th>
                               <th scope="col"></th>
                               <th>
-                                  Total Amount:&nbsp;
+                                  Sub Total:&nbsp;
                                   <span class="all_amount">{{ $total_products->sub_total }}</span>
                               </th>
                             </tr>
@@ -189,8 +189,7 @@
                                           <th class="width">Base Price</th>
                                           <th class="width">Retail Price</th>
                                           <th class="width">Minimum Selling Price</th>
-                                          <th class="width">Price <br><small>(a)</small></th>
-                                          <th class="width">QTY <br><small>(b)</small></th>
+                                          <th class="width">Price</th>
                                           <th class="width">Discount
                                             <div class="discount-type">
                                               <div class="icheck-info d-inline">
@@ -201,9 +200,9 @@
                                               </div>
                                             </div>
                                           </th>
-                                          <th class="width">Discount Price <br><small>(c)</small></th>
+                                          <th class="width">Discount Price <br><small>(a)</small></th>
+                                          <th class="width">QTY <br><small>(b)</small></th>
                                           <th class="width">Total <br><small>(a x b)</small></th>
-                                          <th class="width">Subtotal <br><small>(b x c)</small></th>
                                         </tr>
                                       </thead>
                                       <tbody>
@@ -231,10 +230,9 @@
                                             <td>{{$variant['retail_price']}}</td>
                                             <td>{{$variant['minimum_selling_price']}} </td>
                                             <td>{{$variation_details['price']}}</td>
-                                            <td>{{$variation_details['quantity']}}</td>
                                             <td>{{$variation_details['discount_value']}}</td>
                                             <td>{{$variation_details['final_price']}}</td>
-                                            <td>{{$variation_details['total_price']}}</td>
+                                            <td>{{$variation_details['quantity']}}</td>
                                             <td>{{$variation_details['sub_total']}}</td>
                                           </tr>
                                           <?php $total_amount +=$variation_details['sub_total']; ?>
@@ -244,9 +242,8 @@
                                           <td colspan="{{ count($product['options'])+3 }}">
                                             <input type="text" class="form-control" placeholder="Notes" value="{{ isset($product_description_notes[$product['product_id']])?$product_description_notes[$product['product_id']]:'' }}">
                                           </td>
-                                          <td colspan="2" class="text-right">Total Qty:</td>
+                                          <td colspan="3" class="text-right">Total's:</td>
                                           <td class="total_quantity">{{ $total_quantity }}</td>
-                                          <td colspan="2" class="text-right">Grand Total:</td>
                                           <td class="total_amount total">{{ $total_amount }}</td>
                                         </tr>
                                       </tbody>

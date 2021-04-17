@@ -288,7 +288,6 @@ class OrderController extends Controller
       $price                 = $variant['rfq_price'];
       $discount_value        = $variant['discount_value'];
       $final_price           = $variant['final_price'];
-      $total_price           = $variant['price'];
       $sub_total             = $variant['sub_total'];
 
       foreach ($product_ids as $key => $product_id) {
@@ -305,7 +304,6 @@ class OrderController extends Controller
             'discount_type'             => $variant['discount_type'][$product_id],
             'discount_value'            => $discount_value[$key],
             'final_price'               => $final_price[$key],
-            'total_price'               => $total_price[$key],
             'sub_total'                 => $sub_total[$key]
           ];
           OrderProducts::insert($data);
@@ -654,7 +652,6 @@ class OrderController extends Controller
         $stock_qty      = $variant['stock_qty'];
         $discount_value = $variant['discount_value'];
         $final_price    = $variant['final_price'];
-        $total_price    = $variant['price'];
         $sub_total      = $variant['sub_total'];
 
         foreach ($row_ids as $key => $row_id) {
@@ -664,7 +661,6 @@ class OrderController extends Controller
             'discount_type'             => $variant['discount_type'][$variant['product_id'][$key]],
             'discount_value'            => $discount_value[$key],
             'final_price'               => $final_price[$key],
-            'total_price'               => $total_price[$key],
             'sub_total'                 => $sub_total[$key],
           ];
           OrderProducts::where('id',$row_id)->update($data);
@@ -680,7 +676,6 @@ class OrderController extends Controller
           $stock_qty             = $variant['stock_qty'];
           $discount_value        = $variant['discount_value'];
           $final_price           = $variant['final_price'];
-          $total_price           = $variant['price'];
           $sub_total             = $variant['sub_total'];
           foreach ($product_ids as $key => $product_id) {
             if ($stock_qty[$key]!=0 && $stock_qty[$key]!="") {
@@ -696,7 +691,6 @@ class OrderController extends Controller
                 'discount_type'             => $variant['discount_type'][$product_id],
                 'discount_value'            => $discount_value[$key],
                 'final_price'               => $final_price[$key],
-                'total_price'               => $total_price[$key],
                 'sub_total'                 => $sub_total[$key]
               ];
               OrderProducts::insert($data);
@@ -733,10 +727,10 @@ class OrderController extends Controller
 
       $notification_status=[20,18,13,16,17];
       if ($order_details->order_status!=$request->order_status && in_array($request->order_status, $notification_status)) {
-        $this->EmailNotification($id);
+        //$this->EmailNotification($id);
       }
       if ($order_details->delivery_status!=$request->delivery_status && in_array($request->delivery_status, $notification_status)) {
-        $this->EmailNotification($id);
+        //$this->EmailNotification($id);
       }
       $route=$this->RouteLinks();
       return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
