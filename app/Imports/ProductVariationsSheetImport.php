@@ -56,7 +56,6 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
         			'option_value_id4'	=> $option_4_value_id,
         			'option_id5'		=> $option_5_id,
         			'option_value_id5'	=> $option_5_value_id,
-                    'sku'               => $this->Sku($row),
         			'is_deleted'		=> 0,
         			'created_at'		=> date('Y-m-d H:i:s'),
         			'disabled'			=> 0
@@ -73,6 +72,7 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
 	        		'display_variant'		=> ($row['display']=="yes")?1:0,
 	        		'display_order'			=> $row['orderby'],
 	        		'stock_quantity'		=> $row['stockqty'],
+                    'sku'                   => $this->Sku($row),
 	        		'vendor_id'				=> $vendor_details->id
 	        	];
 	        	ProductVariantVendor::insert($variant_vendor_details);
@@ -200,6 +200,7 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
             $sku=$sku_prefix.'-'.$option_value2;
         }
 
+        Log::info($sku);
         return $sku;
     }
     
