@@ -33,11 +33,11 @@
           </li>
           @endif
         </ul>
-
       	<div class="tab-content py-2">
           <div class="tab-pane company-tabs active" tab-count="1" role="tabpanel" id="step1">
             <?php 
-              if(!empty($customer->logo)){$image = 'theme/images/customer/company/'.$customer->id.'/'.$customer->logo;}
+              if((!empty($customer->logo)) && ($customer->role_id!=1)){$image = 'theme/images/customer/company/'.$customer->id.'/'.$customer->logo;}
+              elseif((!empty($customer->logo)) && ($customer->role_id==1)){$image = 'theme/images/profile/'.$customer->logo;}
               else {$image = "theme/images/no_image.jpg";}
             ?>
             <div class="form-group">
@@ -46,11 +46,13 @@
                 <div><img class="img-company" style="width:110px;height:100px;" src="{{asset($image)}}"></div>
               </div>
               <div class="col-sm-6">
-                <div class="edit-customer">
-                  <a class="btn btn-primary" href="{{route('my-profile.edit',$customer->id)}}">
-                    <i class="far fa-edit"></i> Edit
-                  </a>
-                </div>
+                @if($customer->role_id!=1)
+                  <div class="edit-customer">
+                    <a class="btn btn-primary" href="{{route('my-profile.edit',$customer->id)}}">
+                      <i class="far fa-edit"></i> Edit
+                    </a>
+                  </div>
+                @endif
               </div>
             </div>
             <div class="form-group">
@@ -114,7 +116,7 @@
               </div>
               <div class="col-sm-6">
                 <label for="">Sales Ref</label>
-                {!! Form::text('company[company_gst]', $customer->getSalesRep->emp_name,['class'=>'form-control','readonly']) !!}
+                {!! Form::text('company[company_gst]', isset($customer->getSalesRep->emp_name)?$customer->getSalesRep->emp_name:'',['class'=>'form-control','readonly']) !!}
               </div>
             </div>
           </div>

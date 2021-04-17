@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PACIFIC MEDIHUB | ADMIN LOGIN</title>
+  <title>MTC U TRADING | ADMIN LOGIN</title>
    <link rel="icon" type="image/png" href="{{ asset('theme/images/fav.png') }}" />
 
   <!-- Google Font: Source Sans Pro -->

@@ -52,8 +52,15 @@ class StaticPageController extends Controller
             $data['category_block_status'] = isset($statuses['category_block_status'])?$statuses['category_block_status']:0;
 
             return view('admin/static_page/pages/home',$data);
-        }else{
-
+        }elseif($request->has('header')){
+            $setting = Settings::where('key','front-end')->pluck('content','code')->toArray();
+            if(isset($setting['header'])){
+                $get_datas = unserialize($setting['header']);
+            }
+            $data['datas'] = $get_datas;
+            return view('admin/static_page/pages/header',$data);
+        }
+        else{
             return view('admin/static_page/pages/create',$data);
         }
     }
@@ -66,7 +73,6 @@ class StaticPageController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
         $data=array();
         if($request->from=='home'){
 
@@ -86,6 +92,24 @@ class StaticPageController extends Controller
                 'new_arrival_status'    => $request->new_arrival_status,
                 'category_block_status' => $request->category_block_status
             ];
+        }
+        if($request->from=='header'){
+            $image = $request->hasFile('main_image');
+            if($image){
+                $photo          = $request->file('main_image');            
+                $filename       = $photo->getClientOriginalName();            
+                $file_extension = $request->file('main_image')->getClientOriginalExtension();
+                $image_name     = strtotime("now").".".$file_extension;
+                $request->main_image->move(public_path('front/img/'), $image_name);
+            }
+            else{
+                $image_name = 'logo_mtcu.png';
+            }
+            $content=[
+                'image'     => $image_name,
+                'email'     => $request->email,
+                'helpline'  => $request->helpline
+            ];  
         }
 
         $data['content']      = serialize($content);

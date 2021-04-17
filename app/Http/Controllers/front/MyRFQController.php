@@ -776,6 +776,8 @@ class MyRFQController extends Controller
             'sales_rep_id'          => $rfq->sales_rep_id,
             'customer_id'           => $rfq->customer_id,
             'order_no'              => $order_no,
+            'delivery_method_id'    => $rfq->delivery_method_id,
+            'delivery_charge'       => $rfq->delivery_charge,
             'order_status'          => 19,
             'order_tax'             => $rfq->order_tax,
             'order_discount'        => $rfq->order_discount,

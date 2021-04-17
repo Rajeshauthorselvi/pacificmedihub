@@ -52,6 +52,10 @@
                     </thead>
                     <tbody>
                       <tr>
+                        <td>Header Block</td><td><i class="fas fa-check"></i></td>
+                        <td><a href="{{ route('static-page.create','header') }}" class="btn btn-primary">Edit</a></td>
+                      </tr>
+                      <tr>
                         <td>Home Page</td><td><i class="fas fa-check"></i></td>
                         <td><a href="{{ route('static-page.create','home') }}" class="btn btn-primary">Edit</a></td>
                       </tr>

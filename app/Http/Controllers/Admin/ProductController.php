@@ -1271,7 +1271,7 @@ class ProductController extends Controller
         $options = json_decode($request->options,true);
         $vendors = json_decode($request->vendors,true);
         $product_code = $request->product_code;
-
+        //dd($product_code);
         if ($request->has('existOption')) {
             $existOption = json_decode($request->existOption,true);
             $diff_options=array_diff($options, $existOption);
@@ -1322,7 +1322,8 @@ class ProductController extends Controller
             $variant_options[] = DB::select($sql);
         }
 
-        $data['product_code'] = str_replace(date('Y'),'00', $product_code);
+        // $data['product_code'] = str_replace(date('Y'),'00', $product_code);
+         $data['product_code'] = $product_code;
 
         $data['vendors'] = $vendor_data;
         $data['option_values'] = $variant_options;

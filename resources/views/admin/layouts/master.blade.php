@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>PACIFIC MEDIHUB | ADMIN DASHBOARD</title>
+  <title>MTC U TRADING | ADMIN DASHBOARD</title>
   <link rel="icon" type="image/png" href="{{ asset('theme/images/fav_icon.png') }}" />
 
   <!-- Google Font: Source Sans Pro -->
@@ -147,8 +147,8 @@ function notificationSec() {
               html += '</a>';
               html += '<div class="dropdown-divider"></div>';
               $('.notification-append-sec').append(html);
-              var count=$('.notificaion_count').text();
-              $('.notificaion_count').text(parseInt(count)+1);
+              var count = response.length;
+              $('.notificaion_count').text(parseInt(count));
           }
           else{
             $("[notification-id="+val['notification_id']+"]").find('.text-muted').text(val['created_time']);
