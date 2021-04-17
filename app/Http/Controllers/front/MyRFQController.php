@@ -185,7 +185,7 @@ class MyRFQController extends Controller
             'type'                => 'orders',
             'ref_id'              => $rfq_id,
             'customer_id'         => $auth_id,
-            'content'             => $creater_name.' added new rfq to '.$rfq_details->order_no,
+            'content'             => $creater_name."'s new RFQ request for ".$rfq_details->order_no,
             'url'                 => url('admin/rfq/'.$rfq_id),
             'created_at'          => date('Y-m-d H:i:s'),
             'created_by'          => $auth_id,
@@ -327,18 +327,18 @@ class MyRFQController extends Controller
             $rfq_items[$key]['variant_option_value5'] = isset($item->variant->optionValue5->option_value)?$item->variant->optionValue5->option_value:null;
             $rfq_items[$key]['quantity'] = $item->quantity;
             $rfq_items[$key]['rfq_price'] = isset($item->rfq_price)?(float)$item->rfq_price:'0.00';
+            $rfq_items[$key]['final_price'] = isset($item->final_price)?(float)$item->final_price:'0.00';
             $rfq_items[$key]['sub_total'] = isset($item->sub_total)?(float)$item->sub_total:'0.00';
         }
 
         $rfq_data['total']       = isset($rfq->total_amount)?(float)$rfq->total_amount:'0.00';
-        $rfq_data['discount']    = isset($rfq->order_discount)?(float)$rfq->order_discount:'0.00';
         $rfq_data['tax']         = isset($rfq->order_tax_amount)?(float)$rfq->order_tax_amount:'0.00';
+        $rfq_data['delivery_charge'] = isset($rfq->delivery_charge)?(float)$rfq->delivery_charge:'0.00';
         $rfq_data['grand_total'] = isset($rfq->sgd_total_amount)?(float)$rfq->sgd_total_amount:'0.00';
         $rfq_data['notes']       = isset($rfq->notes)?$rfq->notes:'';
 
         $data['rfq_data']     = $rfq_data;
         $data['rfq_products'] = $rfq_items;
-        //dd($data);
         return view('front/customer/rfq/rfq_edit',$data);
     }
 
@@ -361,18 +361,22 @@ class MyRFQController extends Controller
         $old_rfq_data = array('delivery_method_id'=>$rfq->delivery_method_id,'delivery_address_id'=>$rfq->delivery_address_id);
         $rfq_diff = array_diff($new_rfq_data,$old_rfq_data);
 
+        $rfq->total_amount     = $request->total_amount;
+        $rfq->sgd_total_amount = $request->grand_total;
+        $rfq->save();
 
         $rfq_products = $request->item;
 
         $rfq_items = RFQProducts::where('rfq_id',$id)->orderBy('id','desc')->get();
         foreach($rfq_items as $item) {
-            $old_item['id'][] = $item->id;
+            $old_item['id'][]  = $item->id;
             $old_item['qty'][] = $item->quantity;
         }
 
         foreach($rfq_products['id'] as $key => $value) {
             $add = RFQProducts::find($value);
-            $add->quantity = $rfq_products['qty'][$key];
+            $add->quantity  = $rfq_products['qty'][$key];
+            $add->sub_total = $rfq_products['sub_total'][$key];
             $add->update();
         }
         $rfq_item_diff = array_diff($rfq_products['qty'],$old_item['qty']);
@@ -385,6 +389,20 @@ class MyRFQController extends Controller
         $rfq->delivery_method_id  = $request->delevery_method;
         $rfq->notes               = $request->notes;
         $rfq->save();
+
+        $creater_name=Auth::user()->name;
+        $auth_id=Auth::id();
+        $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
+        Notification::insert([
+            'type'                => 'orders',
+            'ref_id'              => $id,
+            'customer_id'         => $auth_id,
+            'content'             => $creater_name."'s RFQ changes and requested for ".$rfq_details->order_no,
+            'url'                 => url('admin/rfq/'.$id),
+            'created_at'          => date('Y-m-d H:i:s'),
+            'created_by'          => $auth_id,
+            'created_user_type'   => 3,
+        ]);
 
         return redirect()->route('my-rfq.index')->with('info', 'Your RFQ data updated successfully!');
     }
@@ -625,9 +643,10 @@ class MyRFQController extends Controller
 
         $id = base64_decode($rfq_id);
         $data=array();
-        $data['rfq_details'] = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
-        $data['rfq_id']      = $id;
-        $data['comments']    = RFQComments::where('rfq_id',$id)->get();
+        $data['check_parent'] = User::where('id',Auth::id())->first();
+        $data['rfq_details']  = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
+        $data['rfq_id']       = $id;
+        $data['comments']     = RFQComments::where('rfq_id',$id)->get();
         return view('front.customer.rfq.rfq_comments',$data);  
     }
 
@@ -824,8 +843,11 @@ class MyRFQController extends Controller
                 'retail_price'          => $products->retail_price,
                 'minimum_selling_price' => $products->minimum_selling_price,
                 'quantity'              => $products->quantity,
+                'price'                 => $products->rfq_price,
+                'discount_type'         => $products->discount_type,
+                'discount_value'        => $products->discount_value,
+                'final_price'           => $products->final_price,
                 'sub_total'             => $products->sub_total,
-                'final_price'           => $products->final_price
             ]);
         }
         $creater_name=Auth::user()->name;

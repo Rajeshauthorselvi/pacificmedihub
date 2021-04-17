@@ -653,13 +653,13 @@
               discount = price;
               $(this).val(discount);
             }
-            dis_price = price-discount;
+            final_amount = price-discount;
           }else if(discountType=='percentage'){
             if(discount>100){
               discount=100;
               $(this).val(discount);
             }
-            dis_price = (price - (price * discount/100));
+            final_amount = (price - (price * discount/100));
           }
           var subTotal = singeSubtotal(qty,final_amount);
           $(this).parents('.parent_tr').find('.dis-price').val(final_amount);
