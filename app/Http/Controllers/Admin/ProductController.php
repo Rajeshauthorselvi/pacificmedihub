@@ -380,11 +380,15 @@ class ProductController extends Controller
         $options=$options_val['options'];
         $options_id=$options_val['options_id'];
 
+
         $data['option_count'] = $option_count;
         $data['get_options'] = $options;
         $data['options_id'] = $options_id;
         $data['vendors_id'] = $vendor_id;
+
+        // dd($data);
         $product_variants=$this->Variants($id);
+
         $data['product_variant'] =$product_variants;
         Session::put('existing_vendors',$vendor_id);
 
@@ -1349,6 +1353,10 @@ class ProductController extends Controller
                 $variant->timestamps= false;
                 $variant->update();     
             }
+            ProductVariantVendor::where('product_variant_id',$variant->id)
+            ->update([
+                'display_variant'=>0
+            ]);
         }
     }
 
