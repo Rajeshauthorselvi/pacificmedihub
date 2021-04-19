@@ -35,7 +35,7 @@
     <section class="content">
       <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item active">
-          <a href="{{route('new-orders.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+          <a href="{{url('admin/order-low-stock/'.$order_id)}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
         </li>
       </ol>
       <div class="container-fluid product">
@@ -334,6 +334,12 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
+      $(document).ready(function() {
+          $.each($('.stock_qty'), function(index, val) {
+             StockQuantityKeyUp($(this));
+          });
+      });
+
       $(document).on('click', '.remove-product-row', function(event) {
         event.preventDefault();
         $(this).closest('tr').next('tr').remove();
@@ -460,7 +466,6 @@
           var attr_id=$this.parents('tbody').find('.collapse.show').attr('id');
           var attr=$this.parents('tbody').find('.collapse.show');
           var total_quantity=SumTotal('.collapse.show .stock_qty');
-          console.log(total_quantity);
 
           $('.collapse.show').find('.total-quantity').text(total_quantity);
           $('[href="#'+attr_id+'"]').find('.total-quantity').text(total_quantity);
@@ -517,7 +522,6 @@
         var calculateSGD = parseFloat(allAmount)+parseFloat(taxAmount);
         var totalSGD     = parseFloat(calculateSGD)-parseFloat(discount);
 
-        console.log(totalSGD);
 
         $('#orderTax').text(taxAmount);
         $('#total_amount_sgd').text(totalSGD.toFixed(2));

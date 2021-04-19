@@ -216,7 +216,12 @@
                                 @endif
 
                                 @if($low_stock=="yes")
-                                  <a href="{{ url('admin/order-purchase/'.$order->id) }}">
+                                  {{-- <a href="{{ url('admin/order-purchase/'.$order->id) }}">
+                                    <li class="dropdown-item">
+                                      <i class="far fa-star"></i>&nbsp;&nbsp;Create Purchase
+                                    </li>
+                                  </a> --}}
+                                  <a href="{{ url('admin/order-low-stock/'.$order->id) }}">
                                     <li class="dropdown-item">
                                       <i class="far fa-star"></i>&nbsp;&nbsp;Create Purchase
                                     </li>

@@ -588,6 +588,14 @@ class OrderController extends Controller
               $order_data['order_status']=14;
           }
 
+          if ($request->delivery_status==17) {
+              $order_data['order_status']=17;
+              $order_data['delivery_status']=0;
+              $order_data['approximate_delivery_date']=null;
+              $order_data['delivery_person_id']=0;
+              $order_data['quantity_deducted']=null;
+          }
+
           if (isset($batch_ids) && count($batch_ids)>0) {
             foreach ($batch_ids as $product_id => $batchs) {
                   OrderProducts::where('order_id',$id)
@@ -723,6 +731,7 @@ class OrderController extends Controller
       }
       elseif ($request->delivery_status==17) {
         $this->UpdateQuantityToStock($id);
+        OrderHistory::where('order_id',$id)->delete();
       }
 
       $notification_status=[20,18,13,16,17];
@@ -1456,12 +1465,33 @@ $productVariants=ProductVariant::select('product_variants.*')
     return ['data'=>$data];
     }
 
+    public function ListOutOfStockProducts($order_id)
+    {
+            $order_details=Orders::where('id',$order_id)->first();
+            $order_products=OrderProducts::where('order_id',$order_id)->get();
+
+            $product_data=$all_product_ids=array();
+            foreach ($order_products as $key => $product) {
+              $check_product_quantity=ProductVariantVendor::where('product_id',$product->product_id)->where('product_variant_id',$product->product_variation_id)->sum('stock_quantity');
+              if ($check_product_quantity < $product->quantity) {
+                  array_push($all_product_ids, $product->product_id);
+              }
+            } 
+            $data['out_stock_products']=Product::whereIn('id',$all_product_ids)->get();
+
+            $data['all_product_ids']=implode(',', array_unique($all_product_ids));
+            $data['order_id']=$order_id;
+
+            return view('admin.orders.out_stock_products',$data);
+    }
     public function OrderPurchase(Request $request,$order_id)
     {
 
       $data=array();
 
           $product_id=$request->product_id;
+          $product_ids_all=explode(',',$request->product_id);
+
           $variant_id=$request->product_variant_id;
           $vendor_id=$request->vendor_id;
 
@@ -1501,8 +1531,7 @@ $productVariants=ProductVariant::select('product_variants.*')
 
             $order_details=Orders::where('id',$order_id)->first();
             $order_products=OrderProducts::where('order_id',$order_id)
-            ->whereIn('product_id',$product_ids)
-            // ->groupBy('product_id')
+            ->whereIn('product_id',$product_ids_all)
             ->get();
             $product_data=$all_product_ids=array();
             foreach ($order_products as $key => $product) {
@@ -1672,7 +1701,14 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
         }
         if ($status_id==17) {
           $this->UpdateQuantityToStock($order_no);
-          Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
+            $order_data=array();
+              $order_data['order_status']=17;
+              $order_data['delivery_status']=0;
+              $order_data['approximate_delivery_date']=null;
+              $order_data['delivery_person_id']=0;
+              $order_data['quantity_deducted']=null;
+            Orders::where('id',$order_no)->update($order_data);
+            OrderHistory::where('order_id',$order_no)->delete();
         }
         if ($status_id==13) {
           Orders::where('id',$order_no)->update([

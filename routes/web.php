@@ -104,6 +104,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 
 
 	//Orders
+	Route::get('order-low-stock/{order_id}','Admin\OrderController@ListOutOfStockProducts');
+	
 	Route::get('order-email/{order_id}','Admin\OrderController@OrderEmail');
 	Route::get('order-summary',['as'=>'order.summary','uses'=>'Admin\OrderController@SummaryReport']);
 	Route::get('orders-product',['as'=>'orders.product','uses'=>'Admin\OrderController@ProductSearch']);
@@ -130,7 +132,9 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('cancelled-orders','Admin\OrderController');
 
 	//Customer
-	Route::resource('customers','Admin\CustomerController');
+	Route::get('customer-sample-sheet','Admin\CustomerController@DownloadSampleImportSheet');
+	Route::get('customer-import', 'Admin\CustomerController@CustomerImport');
+	Route::post('customer-import-post', 'Admin\CustomerController@CustomerImportPost');
 	Route::get('edit-address-form','Admin\CustomerController@editAddressForm');
 	Route::post('save-address-form','Admin\CustomerController@saveAddressForm')->name('save.address');
 	Route::resource('vendor-products','Admin\VendorProdcutsController');
@@ -138,6 +142,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('reject-or-block','Admin\CustomerController@rejectOrBlock')->name('reject.block');
 	Route::get('new-customer-request','Admin\CustomerController@newCustomerList')->name('new.customer');
 	Route::get('reject-customers','Admin\CustomerController@rejectCustomerList')->name('reject.customer');
+	Route::resource('customers','Admin\CustomerController');
 
 	//Vendor
 	Route::resource('vendor','Admin\VendorController');
@@ -219,7 +224,9 @@ Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');
 Route::get('customer-login','front\AuthController@index')->name('customer.login');
 Route::post('customer-login','front\AuthController@store')->name('customer.store');
 Route::get('forget-password','front\AuthController@forgetPassword')->name('forget.password');
-Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
+
+// Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
+Route::get('reset-password','front\AuthController@resetPassword')->name('reset.password');
 
 Route::get('new-customer','front\AuthController@newCustomerPage')->name('register.new.customer');
 Route::post('new-customer','front\AuthController@newCustomerStore')->name('store.new.customer');

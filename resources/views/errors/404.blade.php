@@ -38,34 +38,27 @@ body{
 	margin: 18px 0px 45px 0px;
 }
 .content p{
-	font-family: "Century Gothic";
+	/*font-family: "Century Gothic";*/
 	font-size:2em;
 	color:#666;
 	text-align:center;
 }
 .content p span,.logo h1 a{
-	color:#e54040;
+	color:#3091b0;
 }
 .content{
 	text-align:center;
-	padding:115px 0px 0px 0px;
 }
 .content a{
 	color:#fff;
-	font-family: "Century Gothic";
-	background: #666666; /* Old browsers */
-	background: -moz-linear-gradient(top,  #666666 0%, #666666 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#666666), color-stop(100%,#666666)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  #666666 0%,#666666 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  #666666 0%,#666666 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  #666666 0%,#666666 100%); /* IE10+ */
-	background: linear-gradient(to bottom,  #666666 0%,#666666 100%); /* W3C */
+	/*font-family: "Century Gothic";*/
+	background:#3091b0;
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#666666',GradientType=0 ); /* IE6-9 */
 	padding: 15px 20px;
 	border-radius: 1em;
 }
 .content a:hover{
-	color:#e54040;
+	color:#fff;
 }
 .logo{
 	text-align:center;
@@ -107,17 +100,17 @@ body{
 /*------responive-design--------*/
 @media screen and (max-width: 1366px)	{
 	.content {
-		padding: 58px 0px 0px 0px;
+		/*padding: 58px 0px 0px 0px;*/
 	}
 }
 @media screen and (max-width:1280px)	{
 	.content {
-		padding: 58px 0px 0px 0px;
+		/*padding: 58px 0px 0px 0px;*/
 	}
 }
 @media screen and (max-width:1024px)	{
 	.content {
-		padding: 58px 0px 0px 0px;
+		/*padding: 58px 0px 0px 0px;*/
 	}
 	.content p {
 		font-size: 1.5em;
@@ -128,7 +121,7 @@ body{
 }
 @media screen and (max-width:640px)	{
 	.content {
-		padding: 58px 0px 0px 0px;
+		/*padding: 58px 0px 0px 0px;*/
 	}
 	.content p {
 		font-size: 1.3em;
@@ -167,18 +160,11 @@ body{
 	<body>
 		<!--start-wrap--->
 		<div class="wrap">
-			<!---start-header---->
-				<div class="header">
-					<div class="logo">
-						<h1><a href="#">Ohh</a></h1>
-					</div>
-				</div>
-			<!---End-header---->
 			<!--start-content------>
 			<div class="content">
-				<img src="https://p.w3layouts.com/demos/ohh/web/images/error-img.png" title="error" />
+				<img src="{{ asset('theme/images/404.png') }}" title="error" />
 				<p><span><label>O</label>hh.....</span>You Requested the page that is no longer There.</p>
-				<a href="/">Back To Home</a>
+				<a href="{{ url()->previous() }}">Back To Home</a>
    			</div>
 			<!--End-Cotent------>
 		</div>
