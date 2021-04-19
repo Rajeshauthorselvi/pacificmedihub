@@ -15,6 +15,9 @@ use App\Models\PaymentHistory;
 use App\Models\Currency;
 use App\Models\Tax;
 use App\Models\PaymentTerm;
+use App\Models\CustomerOrderReturn;
+use App\Models\CustomerOrderReturnProducts;
+use Carbon\Carbon;
 use App\User;
 use Auth;
 use Str;
@@ -43,18 +46,28 @@ class MyOrdersController extends Controller
         
         $order_data = array();
         foreach ($all_data as $key => $item) {
-            $item_count  = OrderProducts::where('order_id',$item->id)->count();
-            $toatl_qty   = OrderProducts::where('order_id',$item->id)->sum('quantity');
-            $order_data[$key]['id'] = $item->id;
-            $order_data[$key]['create_date']    = date('d/m/Y',strtotime($item->created_at));
-            $order_data[$key]['delivered_at']   = $item->approximate_delivery_date;
-            $order_data[$key]['status']         = $item->statusName->status_name;
-            $order_data[$key]['color_code']     = $item->statusName->color_codes;
-            $order_data[$key]['code']           = $item->order_no;
-            $order_data[$key]['item_count']     = $item_count;
-            $order_data[$key]['toatl_qty']      = $toatl_qty;
-            $order_data[$key]['payment_status'] = $item->payment_status;
+          $item_count  = OrderProducts::where('order_id',$item->id)->count();
+          $toatl_qty   = OrderProducts::where('order_id',$item->id)->sum('quantity');
+          $order_data[$key]['id'] = $item->id;
+          $order_data[$key]['create_date']    = date('d/m/Y',strtotime($item->created_at));
+          $order_data[$key]['delivered_at']   = $item->approximate_delivery_date;
+          $order_data[$key]['status_id']      = $item->order_status;
+          $order_data[$key]['status']         = $item->statusName->status_name;
+          $order_data[$key]['color_code']     = $item->statusName->color_codes;
+          $order_data[$key]['code']           = $item->order_no;
+          $order_data[$key]['item_count']     = $item_count;
+          $order_data[$key]['toatl_qty']      = $toatl_qty;
+          $order_data[$key]['payment_status'] = $item->payment_status;
+          if($item->order_completed_at){
+            $from = Carbon::parse($item->order_completed_at)->format('Y-m-d');
+            $to   = Carbon::today();
+            $diff_in_days = $to->diffInDays($from);
+          }else{
+            $diff_in_days = 0;
+          }
+          $order_data[$key]['days_count'] = $diff_in_days;
         }
+
         $pagination = array();
         $pagination['firstItem']   = $all_data->firstItem();
         $pagination['lastItem']    = $all_data->lastItem();
@@ -86,7 +99,30 @@ class MyOrdersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $add_return = new CustomerOrderReturn;
+      $add_return->order_id   = $request->order_id;
+      $add_return->order_return_status = 5;
+      $add_return->notes      = $request->notes;
+      $add_return->created_at = date('Y-m-d H:i:s');
+      $add_return->save();
+
+      if($add_return){
+        $item_details = $request->item;
+        foreach($item_details['order_product_id'] as $key => $items) {
+          $add_rtn_prod = new CustomerOrderReturnProducts;
+          $add_rtn_prod->customer_order_return_id = $add_return->id;
+          $add_rtn_prod->order_id         = $request->order_id;
+          $add_rtn_prod->order_product_id = $item_details['order_product_id'][$key];
+          $add_rtn_prod->qty_received     = $item_details['recived_qty'][$key];
+          $add_rtn_prod->damage_quantity  = $item_details['damaged_qty'][$key];
+          $add_rtn_prod->missed_quantity  = $item_details['missed_qty'][$key];
+          $add_rtn_prod->return_quantity  = $item_details['return_qty'][$key];
+          $add_rtn_prod->stock_quantity   = $item_details['stock_qty'][$key];
+          $add_rtn_prod->timestamps       = false;
+          $add_rtn_prod->save();
+        }
+      }
+      return redirect()->route('my-orders.index')->with('info', 'return created successfully.!');
     }
 
     /**
@@ -136,7 +172,16 @@ class MyOrdersController extends Controller
             $order_items[$key]['final_price'] = isset($item->final_price)?(float)$item->final_price:'0.00';
             $order_items[$key]['sub_total'] = isset($item->sub_total)?(float)$item->sub_total:'0.00';            
         }
-        
+
+        if($order->order_completed_at){
+            $from = Carbon::parse($order->order_completed_at)->format('Y-m-d');
+            $to   = Carbon::today();
+            $diff_in_days = $to->diffInDays($from);
+          }else{
+            $diff_in_days = 0;
+          }
+          $order_data['days_count'] = $diff_in_days;
+
         $paid_amount = PaymentHistory::where('ref_id',$id)->where('payment_from',2)->sum('amount');
 
         $order_data['total']       = isset($order->total_amount)?(float)$order->total_amount:'0.00';
@@ -184,6 +229,49 @@ class MyOrdersController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function orderReturnIndex($id)
+    {
+      if(!Auth::check()){
+        return redirect()->route('customer.login')->with('info', 'You must be logged in!');
+      }
+      $id = base64_decode($id);
+      $order = $data['order'] = Orders::find($id);
+      
+      $user = User::find($order->customer_id);
+      if(isset($order->delivery_address_id)&& $order->delivery_address_id!=null){
+          $del_add_id = $order->delivery_address_id;
+      }else{
+          $del_add_id = $user->address_id;
+      }
+      $data['cus_email']        = $user->email;
+      $data['delivery_address'] = UserAddress::find($del_add_id);
+      $data['admin_address']    = User::where('id',1)->first();
+      
+      $order_products = OrderProducts::with('product','variant')->where('order_id',$id)->orderBy('id','desc')->get();
+      $order_data = $order_items = array();
+      foreach ($order_products as $key => $item) {
+          $order_items[$key]['id'] =  $item->id;
+          $order_items[$key]['product_id'] =  $item->product->id;
+          $order_items[$key]['product_name'] =  $item->product->name;
+          $order_items[$key]['variant_sku'] = $item->variant->sku;
+          $order_items[$key]['variant_option1'] = isset($item->variant->optionName1->option_name)?$item->variant->optionName1->option_name:null;
+          $order_items[$key]['variant_option_value1'] = isset($item->variant->optionValue1->option_value)?$item->variant->optionValue1->option_value:null;
+          $order_items[$key]['variant_option2'] = isset($item->variant->optionName2->option_name)?$item->variant->optionName2->option_name:null;
+          $order_items[$key]['variant_option_value2'] = isset($item->variant->optionValue2->option_value)?$item->variant->optionValue2->option_value:null;
+          $order_items[$key]['variant_option3'] = isset($item->variant->optionName3->option_name)?$item->variant->optionName3->option_name:null;
+          $order_items[$key]['variant_option_value3'] = isset($item->variant->optionValue3->option_value)?$item->variant->optionValue3->option_value:null;
+          $order_items[$key]['variant_option4'] = isset($item->variant->optionName4->option_name)?$item->variant->optionName4->option_name:null;
+          $order_items[$key]['variant_option_value4'] = isset($item->variant->optionValue4->option_value)?$item->variant->optionValue4->option_value:null;
+          $order_items[$key]['variant_option5'] = isset($item->variant->optionName5->option_name)?$item->variant->optionName5->option_name:null;
+          $order_items[$key]['variant_option_value5'] = isset($item->variant->optionValue5->option_value)?$item->variant->optionValue5->option_value:null;
+          $order_items[$key]['quantity'] = $item->quantity;
+      }
+      
+      $data['order_data']     = $order_data;
+      $data['order_products'] = $order_items;
+      return view('front/customer/orders/order_return',$data);
     }
 
     public function orderPDF($id)

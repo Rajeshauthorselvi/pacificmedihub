@@ -51,8 +51,10 @@
                     <span>Total Qty</span>: {{ $order['toatl_qty'] }}
                   </div>
                   <div class="col-sm-3 text-right">
-                    <?php $order_id = base64_encode($order['id']);?>
-                    {{-- <a href="javascript:void(0);" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>&nbsp;&nbsp; --}}
+                    <?php $order_id = base64_encode($order['id']); ?>
+                    @if($order['days_count']<=14 && $order['status_id']==13)
+                      <a href="{{ route('myorder.return.index',$order_id) }}" class="btn comment return"><i class="fas fa-reply-all"></i>&nbsp;Return</a>&nbsp;&nbsp;
+                    @endif
                     <a href="{{ route('my-orders.show',$order_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
                   </div>
                 </div>

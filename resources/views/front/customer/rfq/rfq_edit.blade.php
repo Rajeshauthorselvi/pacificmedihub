@@ -43,7 +43,7 @@
                       <td>{{ $s_no }}</td>
                       <td>
                         <div class="product-details">
-                          <div class="name">{{ $products['product_name'] }}</div>
+                          <div class="name" title="{{ $products['product_name'] }}">{{ Str::limit($products['product_name'],40) }}</div>
                           <div class="sku">{{ $products['variant_sku'] }}</div>
                           <div class="variant">
                             <p>[

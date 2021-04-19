@@ -55,75 +55,74 @@
 				<input type="hidden" class="product-img" value="{{ isset($product->main_image)?$product->main_image:'placeholder.jpg' }}">
 
 				@if(isset($product))
-				<div class="col-md-6">
-					<h2>{{ $product->name }}</h2>
-					<div class="product-details">
-						@if(isset($product->brand->name))
-							<div class="data">
-								<span class="title">Brand Name</span><p>: {{$product->brand->name}}</p>
-							</div>
-						@endif
-						@if(isset($default_sku))
-							<div class="data">
-								<span class="title">SKU</span><p id="printSku">: {{$default_sku}}</p> 
-							</div>
-						@endif
-						@if(isset($product->code))
-							<div class="data">
-								<span class="title">Product Code</span><p>: {{ $product->code }}</p> 
-							</div>
-						@endif
-					</div>
-
-					<div class="variants-config">
-		                @foreach($product->product_variant as $key=> $variant)
-		                <?php $get_sku = DB::table('product_variant_vendors')
-                                    ->where('product_id',$variant->product_id)
-                                    ->where('product_variant_id',$variant->id)
-                                    ->orderBy('retail_price','desc')
-                                    ->first();
-                        ?>
-		                <div class="variant-config" data-optionID1="{{$variant->option_id}}" data-optionVID1="{{$variant->option_value_id}}" data-optionID2="{{$variant->option_id2}}" data-optionVID2="{{$variant->option_value_id2}}" data-optionID3="{{$variant->option_id3}}" data-optionVID3="{{$variant->option_value_id3}}" data-optionID4="{{$variant->option_id4}}" data-optionVID4="{{$variant->option_value_id4}}" data-optionID5="{{$variant->option_id5}}" data-optionVID5="{{$variant->option_value_id5}}" data-variantID="{{$variant->id}}" data-sku="{{$get_sku->sku}}"></div>
-		                @endforeach
-              		</div>
-
-					@if($product->product_variant->count() > 0)
-						<div id="product-variants" class="product-options">
-							<div class="variant-title">Select Variant</div>
-							<?php $optCount=1;?>
-				    		@foreach($options as $key => $option)
-				  				<div class="swatch clearfix" data-optionID={{$option->id}}>
-				  					<div class="header">{{$option->option_name}}</div>
-			  						<div class="variant-items">
-			  			  				@foreach($option->getoptionvalues as $k => $value)
-			  			  					<?php 
-			  			  						$default_variant = $allowed_options[$option->id][$k]['id']; 
-			  			  					?>
-		  			       					<div class="swatch-element square">
-		  										<input id="swatch-{{$value->id}}" @if($default_variant==$default_variant_id) checked @endif class="swatch-variant" type="radio" data-optionID="{{$option->id}}" name="option-{{$optCount}}" value="{{$value->id}}" option-count="{{$optCount}}">
-		  										<label for="swatch-{{$value->id}}">{{$value->option_value}}
-		  										</label>
-		  									</div>
-			          					@endforeach
-			  						</div>
-			  					</div>
-				  				<?php $optCount++;?>
-				    		@endforeach
+					<div class="col-md-6">
+						<h2>{{ $product->name }}</h2>
+						<div class="product-details">
+							@if(isset($product->brand->name))
+								<div class="data">
+									<span class="title">Brand Name</span><p>: {{$product->brand->name}}</p>
+								</div>
+							@endif
+							@if(isset($default_sku))
+								<div class="data">
+									<span class="title">SKU</span><p id="printSku">: {{$default_sku}}</p> 
+								</div>
+							@endif
+							@if(isset($product->code))
+								<div class="data">
+									<span class="title">Product Code</span><p>: {{ $product->code }}</p> 
+								</div>
+							@endif
 						</div>
-					@endif
 
-					<div class="number">
-						<span class="minus">-</span><input type="text" class="qty-count" value="1"/><span class="plus">+</span>
-					</div>
+						<div class="variants-config">
+	            @foreach($product->product_variant as $key=> $variant)
+	            <?php $get_sku = DB::table('product_variant_vendors')
+	                            ->where('product_id',$variant->product_id)
+	                            ->where('product_variant_id',$variant->id)
+	                            ->orderBy('retail_price','desc')
+	                            ->first();
+	                ?>
+	            <div class="variant-config" data-optionID1="{{$variant->option_id}}" data-optionVID1="{{$variant->option_value_id}}" data-optionID2="{{$variant->option_id2}}" data-optionVID2="{{$variant->option_value_id2}}" data-optionID3="{{$variant->option_id3}}" data-optionVID3="{{$variant->option_value_id3}}" data-optionID4="{{$variant->option_id4}}" data-optionVID4="{{$variant->option_value_id4}}" data-optionID5="{{$variant->option_id5}}" data-optionVID5="{{$variant->option_value_id5}}" data-variantID="{{$variant->id}}" data-sku="{{$get_sku->sku}}"></div>
+	            @endforeach
+	      		</div>
 
-					<div class="buttons">
-						<a class="rfq-btn" href="javascript:void(0);" variant-id={{ $default_variant_id }}>RFQ</a>
-                      	<a class="cart-btn" href="javascript:void(0);" variant-id={{ $default_variant_id }}>Add to Cart</a>
-					</div>
+						@if($product->product_variant->count() > 0)
+							<div id="product-variants" class="product-options">
+								<div class="variant-title">Select Variant</div>
+								<?php $optCount=1;?>
+					    		@foreach($options as $key => $option)
+					  				<div class="swatch clearfix" data-optionID={{$option->id}}>
+					  					<div class="header">{{$option->option_name}}</div>
+				  						<div class="variant-items">
+				  			  				@foreach($option->getoptionvalues as $k => $value)
+				  			  					<?php 
+				  			  						$default_variant = $allowed_options[$option->id][$k]['id']; 
+				  			  					?>
+			  			       					<div class="swatch-element square">
+			  										<input id="swatch-{{$value->id}}" @if($default_variant==$default_variant_id) checked @endif class="swatch-variant" type="radio" data-optionID="{{$option->id}}" name="option-{{$optCount}}" value="{{$value->id}}" option-count="{{$optCount}}">
+			  										<label for="swatch-{{$value->id}}">{{$value->option_value}}
+			  										</label>
+			  									</div>
+				          					@endforeach
+				  						</div>
+				  					</div>
+					  				<?php $optCount++;?>
+					    		@endforeach
+							</div>
+						@endif
 
-					<div class="social-links">
+						<div class="number">
+							<span class="minus">-</span><input type="text" class="qty-count" value="1"/><span class="plus">+</span>
+						</div>
 
-						<?php 
+						<div class="buttons">
+							<a class="rfq-btn" href="javascript:void(0);" variant-id={{ $default_variant_id }}>RFQ</a>
+	            <a class="cart-btn" href="javascript:void(0);" variant-id={{ $default_variant_id }}>Add to Cart</a>
+						</div>
+
+						<div class="social-links">
+							<?php 
 	    					$wish_list = 0;
 	    					$wish_list = array_search($product->id, array_column($wishlist, 'product_id'));
 	    					$row = $wish_list+1;
@@ -139,35 +138,87 @@
 	    					}
 	    					$product_id = base64_encode($product->id);
 	    				?>
-	    				<a productID="{{$product_id}}" check="{{$check}}" rowID="{{ $row_id }}" class="wishlist-action"><i class="{{ $icon }} fa-heart"></i></a>
-						<a class="wishlist true" href="javascript:void(0);" style="display:none"><i class="fas fa-heart"></i></a>
-						<a class="share" href="javascript:void(0);"><i class="fas fa-share-alt"></i></a>
+		    			<a productID="{{$product_id}}" check="{{$check}}" rowID="{{ $row_id }}" class="wishlist-action"><i class="{{ $icon }} fa-heart"></i></a>
+							<a class="wishlist true" href="javascript:void(0);" style="display:none"><i class="fas fa-heart"></i></a>
+							<a class="share" href="javascript:void(0);"><i class="fas fa-share-alt"></i></a>
+						</div>
 					</div>
-				</div>
 				@endif
 			</div>
 
 			<div class="sec2 row">
 				<div class="col-sm-12">
 					<div class="product-page-content">
-                  		<ul id="myTab" class="nav nav-tabs">
-                  			<li class="active">Description</li>
-                    		{{-- <li class="active"><a href="#Description" data-toggle="tab" aria-expanded="true">Description</a></li>
-                    		<li class=""><a href="#Information" data-toggle="tab" aria-expanded="false">Information</a></li> --}}
-                  		</ul>
-                  		<div id="myTabContent" class="tab-content">
-                    		<div class="tab-pane fade active in show" id="Description">
-                    			@if(isset($product->long_description))
-                      				<p>{!! $product->long_description !!}</p>
-                      			@else
-                      				<p>{!! isset($product->short_description)?$product->short_description:'' !!}</p>
-                      			@endif
-                    		</div>
-                    		<div class="tab-pane fade" id="Information">
-                      			Test 2
-                    		</div>
-                  		</div>
-                	</div>
+        		<ul id="myTab" class="nav nav-tabs">
+        			<li class="active">Description</li>
+          		{{-- <li class="active"><a href="#Description" data-toggle="tab" aria-expanded="true">Description</a></li>
+          		<li class=""><a href="#Information" data-toggle="tab" aria-expanded="false">Information</a></li> --}}
+        		</ul>
+        		<div id="myTabContent" class="tab-content">
+          		<div class="tab-pane fade active in show" id="Description">
+          			@if(isset($product->long_description))
+            				<p>{!! $product->long_description !!}</p>
+            			@else
+            				<p>{!! isset($product->short_description)?$product->short_description:'' !!}</p>
+            			@endif
+          		</div>
+          		<div class="tab-pane fade" id="Information">
+            			
+          		</div>
+        		</div>
+
+						@if(count($related_products)!=0)
+							<div class="slide-products">
+								<div class="container">
+									<div class="slider-title">
+										<h4><strong>Related</strong> Products</h4>
+									</div>
+									<div id="product-scroll" class="owl-carousel product-scroll owl-theme">
+										@foreach($related_products as $product)
+											<?php 
+	                      if(!empty($product->main_image)){$image = "theme/images/products/main/".$product->main_image;}
+	                      else {$image = "theme/images/products/placeholder.jpg";}
+
+	                      $category_slug = $product->category->search_engine_name;
+	                      $product_id = base64_encode($product->id);
+						          ?>
+										
+										  <div class="item">
+									    	<div class="product-inner">
+									    		<div class="product-thumb">
+									    			<a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}"><img src="{{asset($image)}}" alt="{{ $product->name }}" width="269" height="232" /></a>
+									    			<div class="pro-tag"><span class="new-label">NEW</span></div>
+									    			<div class="pro-fav">
+									    				<?php 
+									    					$wish_list = 0;
+									    					$wish_list = array_search($product->id, array_column($wishlist, 'product_id'));
+									    					$row = $wish_list+1;
+									    					$check_wish = (string)$wish_list;
+									    					if((count($wishlist)!=0)&&$check_wish!=""){
+									    						$row_id = $wishlist[$row]['row_id'];
+									    						$icon = 'fas';
+									    						$check = true;
+									    					}else{
+									    						$row_id = 1;
+									    						$icon = 'far';
+									    						$check = false;
+									    					}
+									    				?>
+									    				<a productID="{{$product_id}}" check="{{$check}}" rowID="{{ $row_id }}" class="wishlist-action"><i class="{{ $icon }} fa-heart"></i></a>
+								    				</div>
+									    		</div>
+									    		<div class="product-info">
+									    			<a class="btn" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a>
+									    			<h3><a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">{{ Str::limit($product->name, 30) }}</a></h3>
+									    		</div>
+									    	</div>
+										  </div>
+										@endforeach
+									</div>
+								</div>
+							</div>
+						@endif
+          </div>
 				</div>
 			</div>
 		</div>
@@ -181,10 +232,8 @@
 	$(document).find('.wishlist-action').click(function () {
 		var userID = $('.user-id').val();
 		if(userID!=''){
-
 			var prodID  = $(this).attr('productID');
 			var rowID = $(this).attr('rowID');
-
 			var toastr = new Toastr({
 				theme: 'ocean',
 				animation: 'slide',
@@ -205,50 +254,50 @@
 			}
 			
 			$.ajax({
-	            url:"{{ route('wishlist.store') }}",
-	            type:"POST",
-	            data:{
-	            	"_token": "{{ csrf_token() }}",
-	            	product_id:prodID,
-	            	row_id:rowID
-	            },
-	            success:function(res){
-	            	if(res=='removed'){
-	            		$(this).children('.fa-heart').attr('class','far fa-heart');
-	            	}else if(res=='added'){
-	            		$(this).children('.fa-heart').attr('class','fas fa-heart');
-	            	}else if(res==false){
-	            		window.location.href = "{{ route('customer.login') }}";
-	            	}
-	            }
-	        })
-	    }else{
+        url:"{{ route('wishlist.store') }}",
+        type:"POST",
+        data:{
+        	"_token": "{{ csrf_token() }}",
+        	product_id:prodID,
+        	row_id:rowID
+        },
+        success:function(res){
+        	if(res=='removed'){
+        		$(this).children('.fa-heart').attr('class','far fa-heart');
+        	}else if(res=='added'){
+        		$(this).children('.fa-heart').attr('class','fas fa-heart');
+        	}else if(res==false){
+        		window.location.href = "{{ route('customer.login') }}";
+        	}
+        }
+    	})
+	  }else{
 			window.location.href = "{{ route('customer.login')}}";
 		}
 	});
 
 	$(document).ready(function(){
-      	$(".swatch-variant").change(onSelectChange);
-       	function onSelectChange(){
-          	var selector='';
-          	var selectedVariant ='';
-          	$(".swatch-variant").each(function(index,elem){
-	            if ($(this).prop("checked")) {
-	            	var attributes = $(this).data();
-	            	var option_count=$(this).attr('option-count');
-	            	var optionId=parseInt(attributes.optionid);
-		            selector += "[data-optionid"+(option_count)+"='"+optionId+"']";
-		            selector += "[data-optionvid"+(option_count)+"='"+$(this).val()+"']";
-	            }
-	            if($('.variant-config'+selector).length > 0 ){
-		            selectedVariant = $('.variant-config'+selector).data();
-		            $('#printSku').text(selectedVariant.sku);
-		            $('.rfq-btn').attr('variant-id',selectedVariant.variantid);
-		            $('.cart-btn').attr('variant-id',selectedVariant.variantid);
-		        }
-        	});
+  	$(".swatch-variant").change(onSelectChange);
+   	function onSelectChange(){
+    	var selector='';
+    	var selectedVariant ='';
+    	$(".swatch-variant").each(function(index,elem){
+        if ($(this).prop("checked")) {
+        	var attributes = $(this).data();
+        	var option_count=$(this).attr('option-count');
+        	var optionId=parseInt(attributes.optionid);
+          selector += "[data-optionid"+(option_count)+"='"+optionId+"']";
+          selector += "[data-optionvid"+(option_count)+"='"+$(this).val()+"']";
         }
-    })
+        if($('.variant-config'+selector).length > 0 ){
+          selectedVariant = $('.variant-config'+selector).data();
+          $('#printSku').text(selectedVariant.sku);
+          $('.rfq-btn').attr('variant-id',selectedVariant.variantid);
+          $('.cart-btn').attr('variant-id',selectedVariant.variantid);
+      	}
+  		});
+    }
+  })
 </script>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -358,78 +407,116 @@
 		});
 
 		
-  		$(".qty-count").on('keyup',function(e) {
-  			if (/\D/g.test(this.value))
-		  	{
-		    	this.value = this.value.replace(/\D/g, '');
-		  	}
-		  	if(this.value==''){
-		  		$(this).val(1);	
-		  	}
+		$(".qty-count").on('keyup',function(e) {
+			if (/\D/g.test(this.value))
+	  	{
+	    	this.value = this.value.replace(/\D/g, '');
+	  	}
+	  	if(this.value==''){
+	  		$(this).val(1);	
+	  	}
 		});
 	});
 
-        $('.cart-btn').on('click',function() {
-       		var variantId = $(this).attr('variant-id');
-       		var productId = <?php echo isset($product->id)?$product->id:''; ?>;
-       		var productImg = $('.product-img').val();
-       		var qty = $('.qty-count').val();
-       		var variantSku = $('#printSku').text();
+	var toastr = new Toastr({
+		theme: 'ocean',
+		animation: 'slide',
+		timeout: 5000
+	});
+	@if(Session::has('item'))
+ 		toastr.show('Item added to Cart Successfully.!');
+ 	@endif
 
-       		$.ajax({
-	            url:"{{ route('cart.store') }}",
-	            type:"POST",
-	            data:{
-	            	"_token": "{{ csrf_token() }}",
-	            	variant_id: variantId,
-		            variant_sku: variantSku,
-		            product_id: productId,
-		            product_img: productImg,
-		            qty_count: qty,
-		            price: 0
-	            },
-	        })
-       		.done(function() {
-	        	window.location.href = "{{ route('cart.index') }}";
-	        })
-	        .fail(function() {
-	        	console.log("error");
-	        })
-       	});
+  $('.cart-btn').on('click',function() {
+ 		var variantId = $(this).attr('variant-id');
+ 		var productId = <?php echo isset($product->id)?$product->id:''; ?>;
+ 		var productImg = $('.product-img').val();
+ 		var qty = $('.qty-count').val();
+ 		var variantSku = $('#printSku').text();
+ 		$.ajax({
+        url:"{{ route('cart.store') }}",
+        type:"POST",
+        data:{
+        	"_token": "{{ csrf_token() }}",
+        	variant_id: variantId,
+          variant_sku: variantSku,
+          product_id: productId,
+          product_img: productImg,
+          qty_count: qty,
+          price: 0
+        },
+    })
+ 		.done(function() {
+ 			location.reload();
+    })
+    .fail(function() {
+    	console.log("error");
+    })
+ 	});
         
 
-        $('.rfq-btn').on('click',function() {
-       		var variantId = $(this).attr('variant-id');
-       		var productId = <?php echo isset($product->id)?$product->id:''; ?>;
-       		var productImg = $('.product-img').val();
-       		var qty = $('.qty-count').val();
-       		var variantSku = $('#printSku').text();
+  $('.rfq-btn').on('click',function() {
+ 		var variantId = $(this).attr('variant-id');
+ 		var productId = <?php echo isset($product->id)?$product->id:''; ?>;
+ 		var productImg = $('.product-img').val();
+ 		var qty = $('.qty-count').val();
+ 		var variantSku = $('#printSku').text();
 
-       		$.ajax({
-	            url:"{{ route('proceed.rfq') }}",
-	            type:"POST",
-	            data:{
-	            	"_token": "{{ csrf_token() }}",
-	            	variant_id: variantId,
-		            variant_sku: variantSku,
-		            product_id: productId,
-		            product_img: productImg,
-		            qty_count: qty,
-		            price: 0
-	            },
-	        })
-       		.done(function(data) {
-       			if(data['status']==true){
-	        		window.location.href = "{{ url('proceed-rfq') }}"+'/'+data['cartID'];
-       			}else{
-       				window.location.href = "{{ route('customer.login')}}";
-       			}
-	        })
-	        .fail(function() {
-	        	console.log("error");
-	        })
-       	});
+ 		$.ajax({
+        url:"{{ route('proceed.rfq') }}",
+        type:"POST",
+        data:{
+        	"_token": "{{ csrf_token() }}",
+        	variant_id: variantId,
+          variant_sku: variantSku,
+          product_id: productId,
+          product_img: productImg,
+          qty_count: qty,
+          price: 0
+        },
+    })
+ 		.done(function(data) {
+ 			if(data['status']==true){
+    		window.location.href = "{{ url('proceed-rfq') }}"+'/'+data['cartID'];
+ 			}else{
+ 				window.location.href = "{{ route('customer.login')}}";
+ 			}
+    })
+    .fail(function() {
+    	console.log("error");
+    })
+ 	});
 
+  $ (document).ready(function() {
+		$('#home_slider').owlCarousel({
+	    loop:true,
+	    lazyLoad:true,
+	    nav:false,
+	    items:1,
+	    autoplay:true,
+    	autoplayTimeout:5000,
+    	autoplayHoverPause:true
+		});
+		$(".product-scroll").each(function(){
+			$(this).owlCarousel({
+		    loop:false,
+		    margin:30,
+		    dots:false,
+		    nav:true,
+		    navText : ['<i class="fas fa-chevron-left"></i>','<i class="fa fa-chevron-right" aria-hidden="true"></i>'],
+		    responsive:{
+	        0:{
+	          items:1
+	        },
+	        600:{
+	          items:3
+	        },
+	        1000:{
+	          items:4
+	        }
+		    }
+			});
+		});
+	});
 </script>
-
 @endpush

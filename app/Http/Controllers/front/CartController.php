@@ -109,6 +109,7 @@ class CartController extends Controller
                 'variant_sku' => $request->variant_sku
             ]);
         }
+        Session::flash('item','added');
         return true;
     }
 
@@ -168,7 +169,6 @@ class CartController extends Controller
             ]);
             Cart::store('userID_'.$user_id);
         }
-
         return true;
     }
 

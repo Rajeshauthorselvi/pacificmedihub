@@ -140,7 +140,7 @@ class ShopController extends Controller
             $data['default_variant_id'] = $default_variant_id;
             $data['default_sku'] = $default_sku;
         }
-        //dd($data);
+        $data['related_products'] = Product::with('product_images','product_variant')->where('category_id',$product->category_id)->whereNotIn('id',[$product->id])->where('is_deleted',0)->orderBy('id','desc')->get();
         $data['product'] = $product;
     	return view('front.shop.single_product',$data);
     }

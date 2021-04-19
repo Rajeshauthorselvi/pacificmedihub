@@ -41,11 +41,13 @@
                     <i class="fa fa-envelope"></i>&nbsp; Email
                   </a>
                 </li>
-                {{-- <li style="background-color: #23bf79">
-                  <a href="javascript:void(0);" class="comment">
-                    <i class="fa fa-comment"></i>&nbsp; Comment
-                  </a>
-                </li> --}}
+                @if($order_data['days_count']<=14 && $order->order_status==13)
+                  <li style="background-color: #23bf79">
+                    <a href="{{ route('myorder.return.index',base64_encode($order->id)) }}" class="comment">
+                      <i class="fas fa-reply-all"></i>&nbsp; Return
+                    </a>
+                  </li>
+                @endif
               </ul>
             @endif
           </div>
@@ -57,7 +59,7 @@
                 @if($order->order_status==18)<li><span>Invoice:</span>#{{ $order->invoice_no }}</li>@endif
                 <li><span>Order Code:</span>{{ $order->order_no }}</li>
                 <li><span>Order Date:</span>{{ date('d/m/Y',strtotime($order->created_at)) }}</li>
-                @if($order->approximate_delivery_date)<li><span>Delivered Date:</span>{{ date('d/m/Y',strtotime($order->approximate_delivery_date))}}</li>@endif
+                @if($order->approximate_delivery_date)<li><span>Delivery Date:</span>{{ date('d/m/Y',strtotime($order->approximate_delivery_date))}}</li>@endif
                 <li>
                   <span>Status</span>: <span class="badge" style="background:{{$order->statusName->color_codes}};color:#fff;padding: 5px">{{ $order->statusName->status_name }}</span>
                 </li>
@@ -150,7 +152,7 @@
                     <td>{{ $s_no }}</td>
                     <td>
                       <div class="product-details">
-                        <div class="name">{{ $products['product_name'] }}</div>
+                        <div class="name" title="{{ $products['product_name'] }}">{{ Str::limit($products['product_name'],40) }}</div>
                         <div class="sku">{{ $products['variant_sku'] }}</div>
                         <div class="variant">
                           <p>[
