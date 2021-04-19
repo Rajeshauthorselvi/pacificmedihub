@@ -588,6 +588,14 @@ class OrderController extends Controller
               $order_data['order_status']=14;
           }
 
+          if ($request->delivery_status==17) {
+              $order_data['order_status']=17;
+              $order_data['delivery_status']=0;
+              $order_data['approximate_delivery_date']=null;
+              $order_data['delivery_person_id']=0;
+              $order_data['quantity_deducted']=null;
+          }
+
           if (isset($batch_ids) && count($batch_ids)>0) {
             foreach ($batch_ids as $product_id => $batchs) {
                   OrderProducts::where('order_id',$id)
@@ -1692,7 +1700,13 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
         }
         if ($status_id==17) {
           $this->UpdateQuantityToStock($order_no);
-          Orders::where('id',$order_no)->update(['order_status'=>$status_id]);
+            $order_data=array();
+              $order_data['order_status']=17;
+              $order_data['delivery_status']=0;
+              $order_data['approximate_delivery_date']=null;
+              $order_data['delivery_person_id']=0;
+              $order_data['quantity_deducted']=null;
+            Orders::where('id',$order_no)->update($order_data);
         }
         if ($status_id==13) {
           Orders::where('id',$order_no)->update([
