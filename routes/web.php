@@ -221,7 +221,9 @@ Route::get('oops','Admin\DashboardController@errorPage')->name('error.page');
 Route::get('customer-login','front\AuthController@index')->name('customer.login');
 Route::post('customer-login','front\AuthController@store')->name('customer.store');
 Route::get('forget-password','front\AuthController@forgetPassword')->name('forget.password');
-Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
+
+// Route::post('reset-password','front\AuthController@resetPassword')->name('reset.password');
+Route::get('reset-password','front\AuthController@resetPassword')->name('reset.password');
 
 Route::get('new-customer','front\AuthController@newCustomerPage')->name('register.new.customer');
 Route::post('new-customer','front\AuthController@newCustomerStore')->name('store.new.customer');

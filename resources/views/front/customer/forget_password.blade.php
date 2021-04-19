@@ -22,7 +22,7 @@
     		</div>
 
     		<div class="card-body reset-block" style="display:none;">
-    			<form action="{{ route('reset.password') }}" method="post">
+    			<form action="{{ route('reset.password') }}" method="get">
     				@csrf
 	      			<div class="login-header">
 	        			<h4>Rest Password</h4>
@@ -87,9 +87,9 @@
 	    			$('.text-danger.email').hide();
 	    			$.ajax({
 						url: '{{ url('reset-password') }}',
-						type: 'POST',
+						//type: 'POST',
 						data: {
-							"_token": "{{ csrf_token() }}",
+							//"_token": "{{ csrf_token() }}",
 							email: emailID
 						},
 					})

@@ -100,7 +100,7 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         if ($request->ajax()){
-            $this->validate(request(), ['email' => 'required']);
+            // $this->validate(request(), ['email' => 'required']);
 
             $check = User::where('email',$request->email)->where('role_id',7)->first();
 
