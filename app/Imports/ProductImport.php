@@ -4,7 +4,6 @@ namespace App\Imports;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
- use App\Models\Brand;
 class ProductImport implements WithMultipleSheets
 {
     /**

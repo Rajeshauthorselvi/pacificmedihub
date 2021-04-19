@@ -168,7 +168,6 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
         $sku_prefix = $product_code.'-'.$vendor_code;
 
         $sku = $sku_prefix=$sku_prefix.'-'.$this->OptionValueCode($row['optionvalue1']);
-        Log::info($sku_prefix);
         if ($row['optionvalue5']!="" && $row['optionvalue4']!="" && $row['optionvalue3']!="" && $row['optionvalue2'] && $row['optionvalue1']) {
             $option_value1 = $this->OptionValueCode($row['optionvalue1']);
             $option_value2 = $this->OptionValueCode($row['optionvalue2']);
@@ -200,7 +199,6 @@ class ProductVariationsSheetImport implements ToCollection, WithValidation, With
             $sku=$sku_prefix.'-'.$option_value2;
         }
 
-        Log::info($sku);
         return $sku;
     }
     

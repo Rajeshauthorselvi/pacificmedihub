@@ -20,7 +20,9 @@ use Auth;
 use Hash;
 use Mail;
 use Str;
-
+use Excel;
+use Response;
+use App\Imports\CustomerImport;
 class CustomerController extends Controller
 {
     /**
@@ -244,6 +246,7 @@ class CustomerController extends Controller
         $data['sales_rep']    = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
                                   ->where('emp_department',1)->pluck('emp_name','id')->toArray();
         $data['countries']    = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
+
         $data['from']         = isset($request->from)?$request->from:'';
         return view('admin.customer.edit',$data);
     }
@@ -473,5 +476,36 @@ class CustomerController extends Controller
         $data=array();
         $data['rejected_customers'] = User::where('users.role_id',7)->where('appoved_status',2)->where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.customer.rejected_index',$data);
+    }
+
+    public function CustomerImport()
+    {
+        $data=array();
+        $data['last_customer_id']=User::orderBy('id','DESC')->latest()->value('id');
+        return view('admin.customer.customer_import',$data);
+    }
+    public function CustomerImportPost(Request $request)
+    {
+        // dd($request->all());
+        try {
+             Excel::import(new CustomerImport, $request->file('customer_import')); 
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errors=[];
+            foreach ($e->failures() as $failure) {
+                $errors[] = "Error(s) in column " . $failure->attribute() . " at row " . $failure->row() . " with the message : <strong>" . implode($failure->errors()) ."</strong>";
+            }
+            return redirect()->back()->withErrors($errors);
+
+        }
+
+        return Redirect::back()->with('success','Customer imported successfully');
+    }
+
+    public function DownloadSampleImportSheet()
+    {
+        $attachment="CustomerImport.xls";
+        $path=public_path('theme/sample_datas/').$attachment;
+        return Response::download($path, $attachment);
     }
 }

@@ -132,7 +132,9 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('cancelled-orders','Admin\OrderController');
 
 	//Customer
-	Route::resource('customers','Admin\CustomerController');
+	Route::get('customer-sample-sheet','Admin\CustomerController@DownloadSampleImportSheet');
+	Route::get('customer-import', 'Admin\CustomerController@CustomerImport');
+	Route::post('customer-import-post', 'Admin\CustomerController@CustomerImportPost');
 	Route::get('edit-address-form','Admin\CustomerController@editAddressForm');
 	Route::post('save-address-form','Admin\CustomerController@saveAddressForm')->name('save.address');
 	Route::resource('vendor-products','Admin\VendorProdcutsController');
@@ -140,6 +142,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::get('reject-or-block','Admin\CustomerController@rejectOrBlock')->name('reject.block');
 	Route::get('new-customer-request','Admin\CustomerController@newCustomerList')->name('new.customer');
 	Route::get('reject-customers','Admin\CustomerController@rejectCustomerList')->name('reject.customer');
+	Route::resource('customers','Admin\CustomerController');
 
 	//Vendor
 	Route::resource('vendor','Admin\VendorController');
