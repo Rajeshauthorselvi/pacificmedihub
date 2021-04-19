@@ -731,6 +731,7 @@ class OrderController extends Controller
       }
       elseif ($request->delivery_status==17) {
         $this->UpdateQuantityToStock($id);
+        OrderHistory::where('order_id',$id)->delete();
       }
 
       $notification_status=[20,18,13,16,17];
@@ -1707,6 +1708,7 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
               $order_data['delivery_person_id']=0;
               $order_data['quantity_deducted']=null;
             Orders::where('id',$order_no)->update($order_data);
+            OrderHistory::where('order_id',$order_no)->delete();
         }
         if ($status_id==13) {
           Orders::where('id',$order_no)->update([
