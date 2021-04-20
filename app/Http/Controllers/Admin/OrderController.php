@@ -46,96 +46,95 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $currenct_route=Route::currentRouteName();
-        $currenct_route=explode('.',$currenct_route);
-        $data=array();
-        $data=$this->RouteLinks();
-        $data['edit_permission']=$data['delete_permission']="yes";
-        if (!Auth::check() && Auth::guard('employee')->check()) {
-          $this->CheckPermission('read',$currenct_route[0]);
-          $data['edit_permission']=$this->CheckPermission('update',$currenct_route[0],'yes')['status'];
-          $data['delete_permission']=$this->CheckPermission('delete',$currenct_route[0],'yes')['status'];
-        }
+      $currenct_route=Route::currentRouteName();
+      $currenct_route=explode('.',$currenct_route);
+      $data=array();
+      $data=$this->RouteLinks();
+      $data['edit_permission']=$data['delete_permission']="yes";
+      if (!Auth::check() && Auth::guard('employee')->check()) {
+        $this->CheckPermission('read',$currenct_route[0]);
+        $data['edit_permission']=$this->CheckPermission('update',$currenct_route[0],'yes')['status'];
+        $data['delete_permission']=$this->CheckPermission('delete',$currenct_route[0],'yes')['status'];
+      }
 
-        $data['all_drivers']=[''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
-                                  ->where('emp_department',3)->pluck('emp_name','id')->toArray();
-        $orders=Orders::with('customer','salesrep','statusName','deliveryStatus','address');
-        if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
-            $orders->where('sales_rep_id',Auth::guard('employee')->user()->id);
-        }
-        if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==3) {
-            $orders->where('delivery_person_id',Auth::guard('employee')->user()->id);
-        }
-        
-        $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
-                                  ->pluck('payment_method','id')
-                                  ->toArray();
+      $data['all_drivers']=[''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                ->where('emp_department',3)->pluck('emp_name','id')->toArray();
+      $orders=Orders::with('customer','salesrep','statusName','deliveryStatus','address');
+      if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
+          $orders->where('sales_rep_id',Auth::guard('employee')->user()->id);
+      }
+      if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==3) {
+          $orders->where('delivery_person_id',Auth::guard('employee')->user()->id);
+      }
+      
+      $data['payment_method'] = [''=>'Please Select']+PaymentMethod::where('status',1)
+                                ->pluck('payment_method','id')
+                                ->toArray();
 
-        $data['type']=$currenct_route[0];
+      $data['type']=$currenct_route[0];
 
-        if (isset($data['view'])) {
-          $view=$data['view'];
+      if (isset($data['view'])) {
+        $view=$data['view'];
+      }
+      else{
+        $view='admin.orders.index';
+      }
+
+      $data['data_title']="List Orders";
+      if ($currenct_route[0]=="new-orders") {
+        $orders->whereIn('order_status',[19,20]);
+        $data['data_title']='New Orders';
+      }
+      elseif($currenct_route[0]=="assign-shippment"){
+        $orders->whereIn('order_status',[18,15,14]);
+        $data['data_title']='Assign for Delivery';
+      }
+      elseif($currenct_route[0]=="assign-delivery"){
+        $orders->whereIn('order_status',[14,15]);
+        $data['data_title']='Delivery  In Progress';
+        if ($request->ajax()) {
+          $orders->whereDate('approximate_delivery_date',date('Y-m-d',strtotime($request->date)));
         }
         else{
-          $view='admin.orders.index';
+          $orders->where('approximate_delivery_date',date('Y-m-d'));
         }
-
-        $data['data_title']="List Orders";
-        if ($currenct_route[0]=="new-orders") {
-          $orders->whereIn('order_status',[19,20]);
-          $data['data_title']='New Orders';
-        }
-        elseif($currenct_route[0]=="assign-shippment"){
-          $orders->whereIn('order_status',[18,15,14]);
-          $data['data_title']='Assign for Delivery';
-        }
-        elseif($currenct_route[0]=="assign-delivery"){
-          $orders->whereIn('order_status',[14,15]);
-          $data['data_title']='Delivery  In Progress';
-          if ($request->ajax()) {
-            $orders->whereDate('approximate_delivery_date',date('Y-m-d',strtotime($request->date)));
-          }
-          else{
-            $orders->where('approximate_delivery_date',date('Y-m-d'));
-          }
-        }
-        elseif($currenct_route[0]=="completed-orders"){
-          $orders->where('order_status',13);
-          $data['data_title']='Completed Orders';
-        }
-        elseif($currenct_route[0]=="cancelled-orders"){
-          $orders->whereIn('order_status',[21,17,11]);
-          $data['data_title']='Cancelled/Missed Orders';
-        }
+      }
+      elseif($currenct_route[0]=="completed-orders"){
+        $orders->where('order_status',13);
+        $data['data_title']='Completed Orders';
+      }
+      elseif($currenct_route[0]=="cancelled-orders"){
+        $orders->whereIn('order_status',[21,17,11]);
+        $data['data_title']='Cancelled/Missed Orders';
+      }
 
 
 
       $orders=$orders->orderBy('orders.id','desc')->get();
       $data['orders']=$orders;
 
-        if($currenct_route[0]=="assign-delivery"){
-            $base_location=User::where('id',1)->first();
-            $base_location = array('lat'=>$base_location->latitude,'lng' => $base_location->longitude);
-            $total_orders = array();
+      if($currenct_route[0]=="assign-delivery"){
+        $base_location=User::where('id',1)->first();
+        $base_location = array('lat'=>$base_location->latitude,'lng' => $base_location->longitude);
+        $total_orders = array();
 
-            foreach ($orders as $key => $order)
-            {
-              $a = $base_location['lat'] - $order->address->latitude;
-              $b = $base_location['lng'] - $order->address->longitude;
-              $distance = sqrt(($a**2) + ($b**2));
+        foreach ($orders as $key => $order)
+        {
+          $a = $base_location['lat'] - $order->address->latitude;
+          $b = $base_location['lng'] - $order->address->longitude;
+          $distance = sqrt(($a**2) + ($b**2));
 
-              $total_orders[$order->id] = [
-                  'distance'=>$distance,
-                  'orders'  => $order
-              ];
-            }
-            asort($total_orders);
-            $data['orders']=$total_orders;
-            if ($request->ajax()) {
-              return view('admin.orders.assign_shippment_delivery.delivery_filter_index',$data);  
-            }
+          $total_orders[$order->id] = [
+              'distance'=>$distance,
+              'orders'  => $order
+          ];
         }
-
+        asort($total_orders);
+        $data['orders']=$total_orders;
+        if ($request->ajax()) {
+          return view('admin.orders.assign_shippment_delivery.delivery_filter_index',$data);  
+        }
+      }
       return view($view,$data);
     }
 
@@ -147,65 +146,65 @@ class OrderController extends Controller
     public function create(Request $request)
     {
 
-        $currenct_route=Route::currentRouteName();
-        $currenct_route=explode('.',$currenct_route);
+      $currenct_route=Route::currentRouteName();
+      $currenct_route=explode('.',$currenct_route);
 
-        if (!Auth::check() && Auth::guard('employee')->check()) {
-          $this->CheckPermission('create',$currenct_route[0]);
+      if (!Auth::check() && Auth::guard('employee')->check()) {
+        $this->CheckPermission('create',$currenct_route[0]);
+      }
+
+      $rfq_id=$request->rfq_id;
+      $data=array();
+      $data=$this->RouteLinks();
+      $data['rfqs']           = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();     
+      $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
+
+      $customer_details=DB::table('users as u')
+      ->select('u.name','u.id','u.sales_rep','u.address_id')
+      ->where('is_deleted',0)->where('status',1)
+      ->where('role_id',7)->get()
+      ->toArray();
+      $data['customers']      = $customer_details;
+                                      
+      $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
+                                ->where('emp_department',1)->pluck('emp_name','id')->toArray();
+
+      $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[19,18,20,21])->pluck('status_name','id')
+                                      ->toArray();
+      $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
+      $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
+      $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
+                                      ->pluck('name','id')->toArray();
+                                      
+      $data['delivery_methods'] = DeliveryMethod::where('status',1)->get();
+      $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
+      $data['free_delivery_target'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('target_amount');
+
+      $data['order_code']= '';
+      $order_code = Prefix::where('key','prefix')->where('code','order_no')->value('content');
+      if (isset($order_code)) {
+        $value = unserialize($order_code);
+        $char_val = $value['value'];
+        $year = date('Y');
+        $total_datas = Orders::count();
+        $total_datas_count = $total_datas+1;
+
+        if(strlen($total_datas_count)==1){
+            $start_number = '0000'.$total_datas_count;
+        }else if(strlen($total_datas_count)==2){
+            $start_number = '000'.$total_datas_count;
+        }else if(strlen($total_datas_count)==3){
+            $start_number = '00'.$total_datas_count;
+        }else if(strlen($total_datas_count)==4){
+            $start_number = '0'.$total_datas_count;
+        }else{
+            $start_number = $total_datas_count;
         }
-
-        $rfq_id=$request->rfq_id;
-        $data=array();
-        $data=$this->RouteLinks();
-        $data['rfqs']           = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();     
-        $data['taxes']          = Tax::where('published',1)->where('is_deleted',0)->get();
-
-        $customer_details=DB::table('users as u')
-        ->select('u.name','u.id','u.sales_rep','u.address_id')
-        ->where('is_deleted',0)->where('status',1)
-        ->where('role_id',7)->get()
-        ->toArray();
-        $data['customers']      = $customer_details;
-                                        
-        $data['sales_rep']      = [''=>'Please Select']+Employee::where('is_deleted',0)->where('status',1)
-                                  ->where('emp_department',1)->pluck('emp_name','id')->toArray();
-
-        $data['order_status']   = OrderStatus::where('status',1)->whereIn('id',[19,18,20,21])->pluck('status_name','id')
-                                        ->toArray();
-        $data['payment_method'] = PaymentMethod::where('status',1)->pluck('payment_method','id')->toArray();
-        $data['currencies']     = Currency::where('is_deleted',0)->where('published',1)->get();
-        $data['payment_terms']  = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
-                                        ->pluck('name','id')->toArray();
-                                        
-        $data['delivery_methods'] = DeliveryMethod::where('status',1)->get();
-        $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
-        $data['free_delivery_target'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('target_amount');
-
-        $data['order_code']= '';
-        $order_code = Prefix::where('key','prefix')->where('code','order_no')->value('content');
-        if (isset($order_code)) {
-            $value = unserialize($order_code);
-            $char_val = $value['value'];
-            $year = date('Y');
-            $total_datas = Orders::count();
-            $total_datas_count = $total_datas+1;
-
-            if(strlen($total_datas_count)==1){
-                $start_number = '0000'.$total_datas_count;
-            }else if(strlen($total_datas_count)==2){
-                $start_number = '000'.$total_datas_count;
-            }else if(strlen($total_datas_count)==3){
-                $start_number = '00'.$total_datas_count;
-            }else if(strlen($total_datas_count)==4){
-                $start_number = '0'.$total_datas_count;
-            }else{
-                $start_number = $total_datas_count;
-            }
-            $replace_year = str_replace('[yyyy]', $year, $char_val);
-            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
-            $data['order_code']=$replace_number;
-        }
-        return view('admin.orders.create',$data);
+        $replace_year = str_replace('[yyyy]', $year, $char_val);
+        $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+        $data['order_code']=$replace_number;
+      }
+      return view('admin.orders.create',$data);
     }
 
     /**
@@ -951,50 +950,53 @@ class OrderController extends Controller
             $replace_number = str_replace('[Start No]', $start_number, $replace_year);
             $order_no=$replace_number;
         }
-
         $rfq = RFQ::find($id);
-
         $order_data=[
-            'rfq_id'                => $rfq->id,
-            'sales_rep_id'          => $rfq->sales_rep_id,
-            'customer_id'           => $rfq->customer_id,
-            'order_no'              => $order_no,
-            'order_status'          => 19,
-            'order_tax'             => $rfq->order_tax,
-            'order_discount'        => $rfq->order_discount,
-            'currency'              => $rfq->currency,
-            'payment_term'          => $rfq->payment_term,
-            'payment_status'        => 3,
-            'order_tax_amount'      => $rfq->order_tax_amount,
-            'total_amount'          => $rfq->total_amount,
-            'sgd_total_amount'      => $rfq->sgd_total_amount,
-            'exchange_total_amount' => $rfq->exchange_total_amount,
-            'user_id'               => $rfq->user_id,
-            'notes'                 => $rfq->notes,
-            'address_id'            => $rfq->delivery_address_id,
-            'created_at'            => date('Y-m-d H:i:s')
+          'rfq_id'                => $rfq->id,
+          'sales_rep_id'          => $rfq->sales_rep_id,
+          'customer_id'           => $rfq->customer_id,
+          'order_no'              => $order_no,
+          'order_status'          => 19,
+          'order_tax'             => $rfq->order_tax,
+          'order_discount'        => $rfq->order_discount,
+          'delivery_method_id'    => $rfq->delivery_method_id,
+          'delivery_charge'       => $rfq->delivery_charge,
+          'created_user_type'     => $rfq->created_user_type,
+          'currency'              => $rfq->currency,
+          'payment_term'          => $rfq->payment_term,
+          'payment_status'        => 3,
+          'order_tax_amount'      => $rfq->order_tax_amount,
+          'total_amount'          => $rfq->total_amount,
+          'sgd_total_amount'      => $rfq->sgd_total_amount,
+          'exchange_total_amount' => $rfq->exchange_total_amount,
+          'user_id'               => $rfq->user_id,
+          'notes'                 => $rfq->notes,
+          'address_id'            => $rfq->delivery_address_id,
+          'created_at'            => date('Y-m-d H:i:s')
         ];
        
         $order_id = Orders::insertGetId($order_data);
-       
         $rfq_products = RFQProducts::where('rfq_id',$rfq->id)->get();
 
         foreach ($rfq_products as $key => $products) {
-            OrderProducts::insert([
-                'order_id'              => $order_id,
-                'product_id'            => $products->product_id,
-                'product_variation_id'  => $products->product_variant_id,
-                'base_price'            => $products->base_price,
-                'retail_price'          => $products->retail_price,
-                'minimum_selling_price' => $products->minimum_selling_price,
-                'quantity'              => $products->quantity,
-                'sub_total'             => $products->sub_total,
-                'final_price'           => $products->rfq_price
-            ]);
-       }
-
-       RFQ::where('id',$rfq->id)->update(['status'=>10]);
-       return Redirect::route('new-orders.index')->with('success','Order created successfully...!');
+          OrderProducts::insert([
+            'order_id'              => $order_id,
+            'product_id'            => $products->product_id,
+            'product_variation_id'  => $products->product_variant_id,
+            'base_price'            => $products->base_price,
+            'retail_price'          => $products->retail_price,
+            'minimum_selling_price' => $products->minimum_selling_price,
+            'quantity'              => $products->quantity,
+            'price'                 => $products->rfq_price,
+            'discount_value'        => $products->discount_value,
+            'discount_type'         => $products->discount_type,
+            'final_price'           => $products->final_price,
+            'sub_total'             => $products->sub_total                
+          ]);
+        }
+      RFQ::where('id',$rfq->id)->update(['status'=>10]);
+      $this->EmailNotification($order_id);
+      return Redirect::route('new-orders.index')->with('success','Order created successfully...!');
     }
 
     public function CreatePurchasePayment(Request $request)

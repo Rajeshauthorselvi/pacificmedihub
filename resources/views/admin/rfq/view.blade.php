@@ -217,10 +217,10 @@
                                           <th class="width">Discount
                                             <div class="discount-type">
                                               <div class="icheck-info d-inline">
-                                                <input type="radio" class="dis-type" @if($discount_type[$product['product_id']]=='percentage') checked @endif value="percentage"><label for="percentage">%</label>
+                                                <input type="radio" class="dis-type" @if($discount_type[$product['product_id']]=='percentage') checked @endif value="percentage" disabled><label for="percentage">%</label>
                                               </div>&nbsp;&nbsp;&nbsp;
                                               <div class="icheck-info d-inline">
-                                                <input type="radio" class="dis-type" @if($discount_type[$product['product_id']]=='amount') checked @endif id="amount" value="amount"><label for="amount">$</label>
+                                                <input type="radio" class="dis-type" @if($discount_type[$product['product_id']]=='amount') checked @endif id="amount" value="amount" disabled><label for="amount">$</label>
                                               </div>
                                             </div>
                                           </th>

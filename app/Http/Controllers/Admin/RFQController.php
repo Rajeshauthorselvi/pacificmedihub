@@ -44,21 +44,21 @@ class RFQController extends Controller
      */
     public function index()
     {
-        if (!Auth::check() && Auth::guard('employee')->check()) {
-            if (!Auth::guard('employee')->user()->isAuthorized('rfq','read')) {
-                abort(404);
-            }
-        }
+      if (!Auth::check() && Auth::guard('employee')->check()) {
+          if (!Auth::guard('employee')->user()->isAuthorized('rfq','read')) {
+              abort(404);
+          }
+      }
       $data=array();
 
      
-    $rfqs=RFQ::with('customer','salesrep','statusName');
+      $rfqs=RFQ::with('customer','salesrep','statusName');
 
-    if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
+      if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
         $rfqs->where('sales_rep_id',Auth::guard('employee')->user()->id);
-    }
-     $rfqs=$rfqs->orderBy('rfq.id','desc')->get();
-     $data['rfqs']=$rfqs;
+      }
+      $rfqs=$rfqs->orderBy('rfq.id','desc')->get();
+      $data['rfqs']=$rfqs;
 
       return view('admin.rfq.index',$data);
     }
@@ -71,9 +71,9 @@ class RFQController extends Controller
     public function create()
     {
       if (!Auth::check() && Auth::guard('employee')->check()) {
-          if (!Auth::guard('employee')->user()->isAuthorized('rfq','create')) {
-              abort(404);
-          }
+        if (!Auth::guard('employee')->user()->isAuthorized('rfq','create')) {
+          abort(404);
+        }
       }
       $data=array();
       $data['customers']      = User::where('is_deleted',0)->where('status',1)->where('role_id',7)->get()->toArray();

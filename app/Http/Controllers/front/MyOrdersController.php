@@ -66,8 +66,8 @@ class MyOrdersController extends Controller
             $diff_in_days = 0;
           }
           $order_data[$key]['days_count'] = $diff_in_days;
+          $order_data[$key]['order_return'] = CustomerOrderReturn::where('order_id',$item->id)->first();
         }
-
         $pagination = array();
         $pagination['firstItem']   = $all_data->firstItem();
         $pagination['lastItem']    = $all_data->lastItem();
@@ -183,7 +183,7 @@ class MyOrdersController extends Controller
           $order_data['days_count'] = $diff_in_days;
 
         $paid_amount = PaymentHistory::where('ref_id',$id)->where('payment_from',2)->sum('amount');
-
+        $order_data['order_return'] = CustomerOrderReturn::where('order_id',$id)->first();
         $order_data['total']       = isset($order->total_amount)?(float)$order->total_amount:'0.00';
         $order_data['tax']         = isset($order->order_tax_amount)?(float)$order->order_tax_amount:'0.00';
         $order_data['grand_total'] = isset($order->sgd_total_amount)?(float)$order->sgd_total_amount:'0.00';
@@ -231,7 +231,7 @@ class MyOrdersController extends Controller
         //
     }
 
-    public function orderReturnIndex($id)
+    public function orderReturnView($id)
     {
       if(!Auth::check()){
         return redirect()->route('customer.login')->with('info', 'You must be logged in!');
@@ -248,29 +248,43 @@ class MyOrdersController extends Controller
       $data['cus_email']        = $user->email;
       $data['delivery_address'] = UserAddress::find($del_add_id);
       $data['admin_address']    = User::where('id',1)->first();
-      
+
+      $data['order_return'] = $order_return = CustomerOrderReturn::where('order_id',$id)->first();
       $order_products = OrderProducts::with('product','variant')->where('order_id',$id)->orderBy('id','desc')->get();
       $order_data = $order_items = array();
       foreach ($order_products as $key => $item) {
-          $order_items[$key]['id'] =  $item->id;
-          $order_items[$key]['product_id'] =  $item->product->id;
-          $order_items[$key]['product_name'] =  $item->product->name;
-          $order_items[$key]['variant_sku'] = $item->variant->sku;
-          $order_items[$key]['variant_option1'] = isset($item->variant->optionName1->option_name)?$item->variant->optionName1->option_name:null;
-          $order_items[$key]['variant_option_value1'] = isset($item->variant->optionValue1->option_value)?$item->variant->optionValue1->option_value:null;
-          $order_items[$key]['variant_option2'] = isset($item->variant->optionName2->option_name)?$item->variant->optionName2->option_name:null;
-          $order_items[$key]['variant_option_value2'] = isset($item->variant->optionValue2->option_value)?$item->variant->optionValue2->option_value:null;
-          $order_items[$key]['variant_option3'] = isset($item->variant->optionName3->option_name)?$item->variant->optionName3->option_name:null;
-          $order_items[$key]['variant_option_value3'] = isset($item->variant->optionValue3->option_value)?$item->variant->optionValue3->option_value:null;
-          $order_items[$key]['variant_option4'] = isset($item->variant->optionName4->option_name)?$item->variant->optionName4->option_name:null;
-          $order_items[$key]['variant_option_value4'] = isset($item->variant->optionValue4->option_value)?$item->variant->optionValue4->option_value:null;
-          $order_items[$key]['variant_option5'] = isset($item->variant->optionName5->option_name)?$item->variant->optionName5->option_name:null;
-          $order_items[$key]['variant_option_value5'] = isset($item->variant->optionValue5->option_value)?$item->variant->optionValue5->option_value:null;
-          $order_items[$key]['quantity'] = $item->quantity;
+        $order_items[$key]['id'] =  $item->id;
+        $order_items[$key]['product_id'] =  $item->product->id;
+        $order_items[$key]['product_name'] =  $item->product->name;
+        $order_items[$key]['variant_sku'] = $item->variant->sku;
+        $order_items[$key]['variant_option1'] = isset($item->variant->optionName1->option_name)?$item->variant->optionName1->option_name:null;
+        $order_items[$key]['variant_option_value1'] = isset($item->variant->optionValue1->option_value)?$item->variant->optionValue1->option_value:null;
+        $order_items[$key]['variant_option2'] = isset($item->variant->optionName2->option_name)?$item->variant->optionName2->option_name:null;
+        $order_items[$key]['variant_option_value2'] = isset($item->variant->optionValue2->option_value)?$item->variant->optionValue2->option_value:null;
+        $order_items[$key]['variant_option3'] = isset($item->variant->optionName3->option_name)?$item->variant->optionName3->option_name:null;
+        $order_items[$key]['variant_option_value3'] = isset($item->variant->optionValue3->option_value)?$item->variant->optionValue3->option_value:null;
+        $order_items[$key]['variant_option4'] = isset($item->variant->optionName4->option_name)?$item->variant->optionName4->option_name:null;
+        $order_items[$key]['variant_option_value4'] = isset($item->variant->optionValue4->option_value)?$item->variant->optionValue4->option_value:null;
+        $order_items[$key]['variant_option5'] = isset($item->variant->optionName5->option_name)?$item->variant->optionName5->option_name:null;
+        $order_items[$key]['variant_option_value5'] = isset($item->variant->optionValue5->option_value)?$item->variant->optionValue5->option_value:null;
+        $order_items[$key]['quantity'] = $item->quantity;
+        $order_items[$key]['qty_received'] = 0;
+        $order_items[$key]['damaged_qty'] = 0;
+        $order_items[$key]['missed_qty']  = 0;
+        $order_items[$key]['return_qty']  = 0;
+        $order_items[$key]['stock_qty']   = 0;
+        if(isset($order_return)){
+          $return_products = CustomerOrderReturnProducts::where('customer_order_return_id',$order_return->id)->where('order_product_id',$item->product->id)->first();
+          $order_items[$key]['qty_received'] = $return_products->qty_received;
+          $order_items[$key]['damaged_qty']  = $return_products->damage_quantity;
+          $order_items[$key]['missed_qty']   = $return_products->missed_quantity;
+          $order_items[$key]['return_qty']   = $return_products->return_quantity;
+          $order_items[$key]['stock_qty']    = $return_products->stock_quantity;
+        }
       }
-      
       $data['order_data']     = $order_data;
       $data['order_products'] = $order_items;
+      //dd($data);
       return view('front/customer/orders/order_return',$data);
     }
 

@@ -48,12 +48,17 @@
                   </div>
                   <div class="col-sm-4 text-left">
                     <span>Total Items</span>: {{ $order['item_count'] }}&nbsp;&nbsp;
-                    <span>Total Qty</span>: {{ $order['toatl_qty'] }}
+                    <span>Total Qty</span>: {{ $order['toatl_qty'] }}<br>
+                    @if($order['order_return'])
+                      <span>Return Status</span>: <span class="badge" style="background:{{$order['order_return']['statusName']['color_codes']}};color:#fff;padding: 5px">{{ $order['order_return']['statusName']['status_name'] }}</span>
+                    @endif
                   </div>
                   <div class="col-sm-3 text-right">
-                    <?php $order_id = base64_encode($order['id']); ?>
+                    <?php $order_id = base64_encode($order['id']);?>
                     @if($order['days_count']<=14 && $order['status_id']==13)
-                      <a href="{{ route('myorder.return.index',$order_id) }}" class="btn comment return"><i class="fas fa-reply-all"></i>&nbsp;Return</a>&nbsp;&nbsp;
+                      @if(!isset($order['order_return']['order_return_status']) || $order['order_return']['order_return_status']==4)
+                        <a href="{{ route('myorder.return.index',$order_id) }}" class="btn comment return"><i class="fas fa-reply-all"></i>&nbsp;Return</a>&nbsp;&nbsp;
+                      @endif
                     @endif
                     <a href="{{ route('my-orders.show',$order_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
                   </div>

@@ -282,7 +282,7 @@ Route::group(['middleware' => 'customer'], function () {
 	//My Order
 	Route::resource('my-orders','front\MyOrdersController');
 	Route::get('my-order-pdf/{order_id}','front\MyOrdersController@orderPDF')->name('my.order.pdf');
-	Route::get('my-order-return/{order_id}','front\MyOrdersController@orderReturnIndex')->name('myorder.return.index');
+	Route::get('my-order-return/{order_id}','front\MyOrdersController@orderReturnView')->name('myorder.return.index');
 });
 
 //Home Page
