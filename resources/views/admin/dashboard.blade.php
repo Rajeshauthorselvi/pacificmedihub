@@ -25,19 +25,21 @@
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         <div class="row">
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box">
-              <div class="inner">
-                <h4>RFQ</h4>
-                <p>Total New Quotations</p>
+          @if (Auth::check())
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box">
+                <div class="inner">
+                  <h4>RFQ</h4>
+                  <p>Total New Quotations</p>
+                </div>
+                <div class="icon">
+                  <span>{{$rfq_count}}</span>
+                </div>
+                <a href="{{route('rfq.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
               </div>
-              <div class="icon">
-                <span>{{$rfq_count}}</span>
-              </div>
-              <a href="{{route('rfq.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
-          </div>
+          @endif
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
@@ -80,7 +82,7 @@
               <a href="{{route('assign-delivery.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-          
+           @if (Auth::check())
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
@@ -95,6 +97,7 @@
               <a href="{{route('vendor.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
+
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
@@ -109,7 +112,7 @@
               <a href="{{route('customers.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-          <!-- ./col -->
+
           <div class="col-lg-3 col-6">
             <!-- small box -->
             <div class="small-box">
@@ -123,9 +126,12 @@
               <a href="{{route('low-stocks.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
+          @endif
+          <!-- ./col -->
           <!-- ./col -->
         </div>
         <!-- /.row -->
+        @if (Auth::check())
         <h3>Sales Report</h3>
         <div class="row">
           <div class="col-lg-3 col-6">
@@ -173,11 +179,8 @@
           </div>
           <!-- ./col -->
         </div>
+        @endif
         <!-- /.row -->
-        <!-- Main row -->
-        <div class="row">
-         
-        </div>
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
     </section>

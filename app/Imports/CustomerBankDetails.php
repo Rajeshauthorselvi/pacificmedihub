@@ -40,10 +40,10 @@ class CustomerBankDetails implements ToCollection, WithHeadingRow, WithValidatio
     public function rules(): array
     {
 
-    	$rules=
-    		[
+    	$rules=[];
+    		/*[
     			'customerid'	=>'required'
-    	    ];
+    	    ];*/
 
     	return $rules;
     }

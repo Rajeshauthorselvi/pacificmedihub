@@ -12,6 +12,9 @@ use Redirect;
 use File;
 use App\Models\Countries;
 use Auth;
+use Excel;
+use Response;
+use App\Imports\vendor\VendorsImport;
 class VendorController extends Controller
 {
     /**
@@ -367,5 +370,34 @@ class VendorController extends Controller
         }
         if ($request->ajax())  return ['status'=>true];
         else return redirect()->route('vendor.index')->with('error','Vendor deleted successfully...!');
+    }
+
+    public function VendorImport(Request $request)
+    {
+        $data=array();
+        $data['last_vendor_id']=Vendor::orderBy('id','DESC')->latest()->value('id');
+        return view('admin.vendor.vendor_import',$data);
+    }
+    public function VendorImportPost(Request $request)
+    {
+        try {
+             Excel::import(new VendorsImport, $request->file('customer_import')); 
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errors=[];
+            foreach ($e->failures() as $failure) {
+                $errors[] = "Error(s) in column " . $failure->attribute() . " at row " . $failure->row() . " with the message : <strong>" . implode($failure->errors()) ."</strong>";
+            }
+            return redirect()->back()->withErrors($errors);
+
+        }
+
+        return Redirect::back()->with('success','Customer imported successfully');
+    }
+    public function DownloadSampleImportSheet()
+    {
+        $attachment="VendorImport.xls";
+        $path=public_path('theme/sample_datas/').$attachment;
+        return Response::download($path, $attachment);
     }
 }

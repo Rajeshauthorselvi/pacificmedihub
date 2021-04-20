@@ -24,9 +24,30 @@ class DashboardController extends Controller
     
         $data = array();
         $data['rfq_count'] = RFQ::where('status',22)->count();
-        $data['delivery_completed'] = Orders::where('order_status',13)->count();
-        $data['delivery_inprocess'] = Orders::where('order_status',15)->count();
-        $data['pending_order_count'] = Orders::where('order_status',19)->count();
+        /*Delivery Completed Orders*/
+        $delivery_completed = Orders::where('order_status',13);
+        if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==3) {
+            $delivery_completed->where('delivery_person_id',Auth::guard('employee')->user()->id);
+        }
+        $data['delivery_completed']=$delivery_completed->count();
+        /*Delivery Completed Orders*/
+
+        /*Delivery Inprocess*/
+        $delivery_inprocess= Orders::where('order_status',15);
+        if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==3) {
+            $delivery_inprocess->where('delivery_person_id',Auth::guard('employee')->user()->id);
+        }
+        $data['delivery_inprocess']=$delivery_inprocess->count();
+        /*Delivery Inprocess*/
+        
+        /*Pending Order*/
+        $pending_order_count = Orders::where('order_status',19);
+        if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==1) {
+            $pending_order_count->where('sales_rep_id',Auth::guard('employee')->user()->id);
+        }
+        $data['pending_order_count']=$pending_order_count->count();
+        /*Pending Order*/
+
         $data['vendor_count'] = Vendor::where('is_deleted',0)->count();
         $data['customer_count'] = User::where('role_id',7)->where('status',1)->where('is_deleted',0)->count();
         $low_stock_count=Orders::LowStockQuantity();

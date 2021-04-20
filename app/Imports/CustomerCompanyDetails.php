@@ -13,6 +13,10 @@ use App\Models\Employee;
 use App\Models\Prefix;
 use App\User;
 use Illuminate\Validation\Rule;
+use App\Mail\NewRegister;
+use Hash;
+use Mail;
+use Str;
 class CustomerCompanyDetails implements ToCollection, WithHeadingRow, WithValidation
 {
     /**
@@ -47,10 +51,22 @@ class CustomerCompanyDetails implements ToCollection, WithHeadingRow, WithValida
                     'is_deleted'        => 0
         		];
 
-                User::insert($customer);
+                $customerid=User::insertGetId($customer);
+
+                if ($row['published']=="Yes") {
+                    $this->TriggerEmail($customerid);
+                }
         }
     }
-
+    public function TriggerEmail($customerid='')
+    {
+            $password = Str::random(6);
+            $customer = User::find($customerid);
+            $customer->password = Hash::make($password);
+            $customer->mail_sent_status = 1;
+            $customer->save();
+            Mail::to($customer->email)->send(new NewRegister($customer->name, $customer->email,$password));
+    }
     public function SalesRep($sales_rep='')
     {
     	return Employee::where('emp_department',1)->where('emp_name',$sales_rep)->value('id');
@@ -91,22 +107,6 @@ class CustomerCompanyDetails implements ToCollection, WithHeadingRow, WithValida
     	}
     }
 
-    public function rules(): array
-    {
-
-    	$rules=
-    		[
-    			'customerid'	=>'required|unique:users,id',
-    	    	'login_email'	=> 'required|unique:users,email',
-                'sales_rep'     => 'required',
-    	    	'published' 	=>[
-    	    		'required', Rule::in(['Yes', 'No'])
-    	    	],
-    	    ];
-
-    	return $rules;
-    }
-
     public function CustomerCode()
     {
         $customer_unique= '';
@@ -135,6 +135,22 @@ class CustomerCompanyDetails implements ToCollection, WithHeadingRow, WithValida
         }
 
         return $customer_unique;
+    }
+
+    public function rules(): array
+    {
+
+        $rules=
+            [
+                'customerid'    =>'required|unique:users,id',
+                'login_email'   => 'required|unique:users,email',
+                'sales_rep'     => 'required',
+                'published'     =>[
+                    'required', Rule::in(['Yes', 'No'])
+                ],
+            ];
+
+        return $rules;
     }
 
 }
