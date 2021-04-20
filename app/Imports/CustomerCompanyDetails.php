@@ -107,22 +107,6 @@ class CustomerCompanyDetails implements ToCollection, WithHeadingRow, WithValida
     	}
     }
 
-    public function rules(): array
-    {
-
-    	$rules=
-    		[
-    			'customerid'	=>'required|unique:users,id',
-    	    	'login_email'	=> 'required|unique:users,email',
-                'sales_rep'     => 'required',
-    	    	'published' 	=>[
-    	    		'required', Rule::in(['Yes', 'No'])
-    	    	],
-    	    ];
-
-    	return $rules;
-    }
-
     public function CustomerCode()
     {
         $customer_unique= '';
@@ -151,6 +135,22 @@ class CustomerCompanyDetails implements ToCollection, WithHeadingRow, WithValida
         }
 
         return $customer_unique;
+    }
+
+    public function rules(): array
+    {
+
+        $rules=
+            [
+                'customerid'    =>'required|unique:users,id',
+                'login_email'   => 'required|unique:users,email',
+                'sales_rep'     => 'required',
+                'published'     =>[
+                    'required', Rule::in(['Yes', 'No'])
+                ],
+            ];
+
+        return $rules;
     }
 
 }

@@ -6,6 +6,8 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Imports\CustomerCompanyDetails;
 use App\Imports\CustomerPocDetails;
+use App\Imports\CustomerAddressDetails;
+use App\Imports\CustomerBankDetails;
 
 class CustomerImport implements WithMultipleSheets
 {

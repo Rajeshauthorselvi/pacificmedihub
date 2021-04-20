@@ -145,6 +145,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('customers','Admin\CustomerController');
 
 	//Vendor
+	Route::get('vendor-import', 'Admin\VendorController@VendorImport');
+	Route::post('vendor-import-post', 'Admin\VendorController@VendorImportPost');
 	Route::resource('vendor','Admin\VendorController');
 	
 	//Employee	
