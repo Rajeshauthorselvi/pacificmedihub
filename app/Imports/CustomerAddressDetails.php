@@ -73,10 +73,10 @@ class CustomerAddressDetails implements ToCollection, WithHeadingRow, WithValida
     public function rules(): array
     {
 
-    	$rules=
-    		[
+    	$rules=[];
+    		/*[
     			'customerid'	=>'required'
-    	    ];
+    	    ];*/
 
     	return $rules;
     }

@@ -32,10 +32,10 @@ class CustomerPocDetails implements ToCollection, WithValidation, WithHeadingRow
     public function rules(): array
     {
 
-    	$rules=
-    		[
+    	$rules=[];
+    		/*[
     			'customerid'	=>'required'
-    	    ];
+    	    ];*/
 
     	return $rules;
     }
