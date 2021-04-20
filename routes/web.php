@@ -90,6 +90,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	]);
 	Route::resource('wastage','Admin\WastageController');
 
+	Route::resource('stock-in-transit-customer','Admin\StockInTransitCustomerController');
+
 	//RFQ
 	Route::get('check-rfq-existing','Admin\RFQController@CheckRfqExistingPrice');
 	Route::get('rfq-comments/{rfq_id}','Admin\RFQController@RFQComments');

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\User;
 
 class CustomerOrderReturn extends Model
 {
@@ -11,5 +12,10 @@ class CustomerOrderReturn extends Model
     public function statusName()
     {
     	return $this->belongsTo(OrderStatus::class,'order_return_status');
+    }
+
+    public function customer()
+    {
+    	return $this->belongsTo(User::class,'customer_id');
     }
 }

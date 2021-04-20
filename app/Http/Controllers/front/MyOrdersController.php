@@ -101,6 +101,7 @@ class MyOrdersController extends Controller
     {
       $add_return = new CustomerOrderReturn;
       $add_return->order_id   = $request->order_id;
+      $add_return->customer_id = Auth::id();
       $add_return->order_return_status = 5;
       $add_return->notes      = $request->notes;
       $add_return->created_at = date('Y-m-d H:i:s');
