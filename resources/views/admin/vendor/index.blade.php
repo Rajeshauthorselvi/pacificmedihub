@@ -38,8 +38,12 @@
               <a class="btn add-new" href="{{route('vendor.create')}}">
               <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
               </a>
+              <a href="{{ url('admin/vendor-import') }}" class="btn btn-info">
+                <i class="fa fa-file-import"></i>&nbsp; Import Vendors
+              </a>
             </div>
             @endif
+
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">

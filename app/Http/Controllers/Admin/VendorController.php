@@ -13,6 +13,7 @@ use File;
 use App\Models\Countries;
 use Auth;
 use Excel;
+use Response;
 use App\Imports\vendor\VendorsImport;
 class VendorController extends Controller
 {
@@ -393,5 +394,10 @@ class VendorController extends Controller
 
         return Redirect::back()->with('success','Customer imported successfully');
     }
-
+    public function DownloadSampleImportSheet()
+    {
+        $attachment="VendorImport.xls";
+        $path=public_path('theme/sample_datas/').$attachment;
+        return Response::download($path, $attachment);
+    }
 }

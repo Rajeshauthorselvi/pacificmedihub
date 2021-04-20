@@ -38,7 +38,7 @@
               <div class="col-sm-6 pull-left">
                 <ol class="breadcrumb float-sm-right">
                   <li class="breadcrumb-item active">
-                    <a href="{{route('customers.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
+                    <a href="{{route('vendor.index')}}"><i class="fas fa-angle-left"></i>&nbsp;Back</a>
                   </li>
                 </ol>
             </div>
