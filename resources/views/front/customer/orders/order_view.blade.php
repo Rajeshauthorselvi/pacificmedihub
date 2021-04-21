@@ -41,12 +41,14 @@
                     <i class="fa fa-envelope"></i>&nbsp; Email
                   </a>
                 </li>
-                @if($order_data['days_count']<=14 && $order->order_status==13)
-                  <li style="background-color: #23bf79">
-                    <a href="{{ route('myorder.return.index',base64_encode($order->id)) }}" class="comment">
-                      <i class="fas fa-reply-all"></i>&nbsp; Return
-                    </a>
-                  </li>
+                @if($order_data['days_count']<=14 && $order->order_status==13) 
+                  @if(!isset($order_data['order_return']['order_return_status'])||$order_data['order_return']['order_return_status']==4)
+                    <li style="background-color: #23bf79">
+                      <a href="{{ route('myorder.return.index',base64_encode($order->id)) }}" class="comment">
+                        <i class="fas fa-reply-all"></i>&nbsp; Return
+                      </a>
+                    </li>
+                  @endif
                 @endif
               </ul>
             @endif
@@ -69,6 +71,12 @@
                   elseif($order->payment_status==3) $pay_status = 'Not Paid';
                 ?>
                 <li><span>Payment Status:</span>{{ $pay_status }}</li>
+                <br>
+                @if(isset($order_data['order_return']['order_return_status']))
+                  <li>
+                    <span>Return Status</span>: <span class="badge" style="background:{{$order_data['order_return']['statusName']['color_codes']}};color:#fff;padding: 5px">{{ $order_data['order_return']['statusName']['status_name'] }}</span>
+                  </li>
+                @endif
               </ul>
             </div>
             <div class="address-block col-sm-8">

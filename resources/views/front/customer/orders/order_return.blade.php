@@ -31,6 +31,12 @@
                   <li><span>Order Code:</span>{{ $order->order_no }}</li>
                   <li><span>Order Date:</span>{{ date('d/m/Y',strtotime($order->created_at)) }}</li>
                   <li><span>Delivered Date:</span>{{ date('d/m/Y',strtotime($order->order_completed_at))}}</li>
+                  <br>
+                  @if(isset($order_return))
+                    <li>
+                      <span>Return Status</span>: <span class="badge" style="background:{{$order_return['statusName']['color_codes']}};color:#fff;padding: 5px">{{ $order_return['statusName']['status_name'] }}</span>
+                    </li>
+                  @endif
                 </ul>
               </div>
               <div class="address-block col-sm-8">
@@ -150,19 +156,19 @@
                       </td>
                       <td class="text-center"><span class="qty">{{ $products['quantity'] }}</span></td>
                       <td class="text-center">
-                        <input type="text" name="item[recived_qty][]" class="form-control recived-qty" value="0">
+                        <input type="text" name="item[recived_qty][]" class="form-control recived-qty" value="{{ $products['qty_received'] }}">
                       </td>
                       <td class="text-center">
-                        <input type="text" name="item[damaged_qty][]" class="form-control damaged-qty" value="0">
+                        <input type="text" name="item[damaged_qty][]" class="form-control damaged-qty" value="{{ $products['damaged_qty'] }}">
                       </td>
                       <td class="text-center">
-                        <input type="text" name="item[missed_qty][]" class="form-control missed-qty" value="0" readonly>
+                        <input type="text" name="item[missed_qty][]" class="form-control missed-qty" value="{{ $products['missed_qty'] }}" readonly>
                       </td>
                       <td class="text-center">
-                        <input type="text" name="item[return_qty][]" class="form-control return-qty" value="0" readonly>
+                        <input type="text" name="item[return_qty][]" class="form-control return-qty" value="{{ $products['return_qty'] }}" readonly>
                       </td>
                       <td class="text-center">
-                        <input type="text" name="item[stock_qty][]" class="form-control stock-qty" value="0" readonly>
+                        <input type="text" name="item[stock_qty][]" class="form-control stock-qty" value="{{ $products['stock_qty'] }}" readonly>
                       </td>
                     </tr>
                     @php $s_no++ @endphp
@@ -178,7 +184,7 @@
               </div>
             </div>
             <div class="action-box" style="margin-bottom:2rem;">
-              <a href="{{ route('my-rfq.index') }}" class="btn reset-btn"> Cancel</a>
+              <a href="{{ route('my-orders.index') }}" class="btn reset-btn"> Cancel</a>
               <button type="button" class="btn save-btn"> Save</button>
             </div>
           </form>
