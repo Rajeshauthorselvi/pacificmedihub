@@ -115,12 +115,12 @@
                   <thead>
                     <th>No.</th>
                     <th style="width:50%">Product Name</th>
-                    <th class="text-center width">Qty Ordered <br><small>(a)</small></th>
-                    <th class="text-center width">Qty Received <br><small>(b)</small></th>
+                    <th class="text-center width">Qty Ordered</th>
+                    <th class="text-center width">Qty Received <br><small>(a)</small></th>
                     <th class="text-center width">Damaged Qty</th>
-                    <th class="text-center width">Missed Qty <br><small>(a - b)</small></th>
-                    <th class="text-center width">Return Qty <br><small>(c)</small></th>
-                    <th class="text-center width">Qty in Hand <br><small>(b - c)</small></th>
+                    {{-- <th class="text-center width">Missed Qty <br><small>(a - b)</small></th> --}}
+                    <th class="text-center width">Return Qty <br><small>(b)</small></th>
+                    <th class="text-center width">Qty in Hand <br><small>(a - b)</small></th>
                   </thead>
                   <tbody>
                     <input type="hidden" name="order_id" value="{{ $order->id }}">
@@ -153,22 +153,26 @@
                           </div>
                         </div>
                         <input type="hidden" name="item[order_product_id][]" value="{{ $products['product_id'] }}">
+                        <input type="hidden" name="item[order_product_variant_id][]" value="{{$products['variant_id']}}">
                       </td>
-                      <td class="text-center"><span class="qty">{{ $products['quantity'] }}</span></td>
                       <td class="text-center">
-                        <input type="text" name="item[recived_qty][]" class="form-control recived-qty" value="{{ $products['qty_received'] }}">
+                        <span class="qty">{{ $products['quantity'] }}</span>
+                      </td>
+                      <td class="text-center">
+                        <span>{{ $products['quantity'] }}</span>
+                        <input type="hidden" name="item[recived_qty][]" class="form-control recived-qty" value="{{ $products['quantity'] }}">
                       </td>
                       <td class="text-center">
                         <input type="text" name="item[damaged_qty][]" class="form-control damaged-qty" value="{{ $products['damaged_qty'] }}">
                       </td>
-                      <td class="text-center">
+                      {{-- <td class="text-center">
                         <input type="text" name="item[missed_qty][]" class="form-control missed-qty" value="{{ $products['missed_qty'] }}" readonly>
-                      </td>
+                      </td> --}}
                       <td class="text-center">
                         <input type="text" name="item[return_qty][]" class="form-control return-qty" value="{{ $products['return_qty'] }}" readonly>
                       </td>
                       <td class="text-center">
-                        <input type="text" name="item[stock_qty][]" class="form-control stock-qty" value="{{ $products['stock_qty'] }}" readonly>
+                        <input type="text" name="item[stock_qty][]" class="form-control stock-qty" value="{{ $products['quantity'] }}" readonly>
                       </td>
                     </tr>
                     @php $s_no++ @endphp
@@ -244,14 +248,17 @@
       {
         this.value = this.value.replace(/\D/g, '');
       }
-      var recivedQty = $(this).parents('tr').find('.recived-qty').val();
+      /*var recivedQty = $(this).parents('tr').find('.recived-qty').val();*/
       var orderedQty = $(this).parents('tr').find('.qty').text();
       var damagedQty = $(this).val();
-      var missedQty  = parseInt(orderedQty)-parseInt(recivedQty);
+      var stockQty   = parseInt(orderedQty)-parseInt(damagedQty)
+      $(this).parents('tr').find('.return-qty').val(damagedQty);
+      $(this).parents('tr').find('.stock-qty').val(stockQty);
+      /*var missedQty  = parseInt(orderedQty)-parseInt(recivedQty);
       var stockQty   = parseInt(recivedQty)-parseInt(damagedQty);
       $(this).parents('tr').find('.missed-qty').val(missedQty);
       $(this).parents('tr').find('.return-qty').val(damagedQty);
-      $(this).parents('tr').find('.stock-qty').val(stockQty);
+      $(this).parents('tr').find('.stock-qty').val(stockQty);*/
     });
   });
 
@@ -259,14 +266,14 @@
 
   $(document).on('click', '.save-btn', function(event) {
     var sum = 0;
-    $('.recived-qty').each(function(index, el) {
+    $('.damaged-qty').each(function(index, el) {
       inputVal = $(this).val();
       sum += parseFloat(inputVal);
     });
-    if(sum!=0){
+    if(sum!=''){
       $('#returnForm').submit();
     }else{
-      alert("Please enter recived Quantity's");
+      alert("Please enter damaged Quantity's");
       return false;
     }
   });

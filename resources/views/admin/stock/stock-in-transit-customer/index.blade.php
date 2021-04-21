@@ -40,7 +40,6 @@
                         <th>Order Code</th>
                         <th>Customer</th>
                         <th>Ordered Qty</th>
-                        <th>Received Qty</th>
                         <th>Return Qty</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -53,14 +52,17 @@
                           <td>{{ $return['order_number'] }}</td>
                           <td>{{ $return['customer'] }}</td>
                           <td>{{ $return['quantity'] }}</td>
-                          <td>{{ $return['qty_received'] }}</td>
                           <td>{{ $return['return_quantity'] }}</td>
                           <td>
                             <span class="badge" style="background:{{ $return['color_code'] }};color: #fff ">{{ $return['status'] }}</span>
                           </td>
                           <td class="text-center">
                             @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('stock_transist_customer','update'))
-                              <a href="javascritp:void(0);" class="btn btn-primary">Stock Update</a>
+                              @if($return['status_id']!=2)
+                                <a href="{{ route('stock-in-transit-customer.edit',$return['return_id']) }}" class="btn btn-primary">Stock Update</a>
+                              @else
+                                -
+                              @endif
                             @else
                               -
                             @endif
