@@ -108,6 +108,7 @@
                             {!! Form::text('country_id',$vendor->getCountry->name,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
                           </div>
                           <div class="col-sm-5">
+                            
                             <label for="State">State</label>
                             <?php $state=isset($vendor->getState->name)?$vendor->getState->name:'' ?>
                             {!! Form::text('state_id',$state,['readonly','class'=>'form-control', 'id'=>'State']) !!}
