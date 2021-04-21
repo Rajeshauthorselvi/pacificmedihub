@@ -17,6 +17,7 @@ use App\Models\Tax;
 use App\Models\PaymentTerm;
 use App\Models\CustomerOrderReturn;
 use App\Models\CustomerOrderReturnProducts;
+use App\Models\Notification;
 use Carbon\Carbon;
 use App\User;
 use Auth;
@@ -123,6 +124,19 @@ class MyOrdersController extends Controller
           $add_rtn_prod->save();
         }
       }
+      $creater_name=Auth::user()->name;
+      $auth_id=Auth::id();
+      $order_return=Orders::where('id',$request->order_id)->first();
+      Notification::insert([
+        'type'                => 'orders',
+        'ref_id'              => $request->order_id,
+        'customer_id'         => $auth_id,
+        'content'             => $creater_name."'s Order Return request for ".$order_return->order_no,
+        'url'                 => url('admin/stock-in-transit-customer'),
+        'created_at'          => date('Y-m-d H:i:s'),
+        'created_by'          => $auth_id,
+        'created_user_type'   => 3,
+      ]);
       return redirect()->route('my-orders.index')->with('info', 'return created successfully.!');
     }
 
