@@ -57,6 +57,8 @@ class CustomerCompanyDetails implements ToCollection, WithHeadingRow, WithValida
                     $this->TriggerEmail($customerid);
                 }
         }
+
+        // dd($customer);
     }
     public function TriggerEmail($customerid='')
     {
@@ -75,7 +77,13 @@ class CustomerCompanyDetails implements ToCollection, WithHeadingRow, WithValida
     public function ParentCompany($parent_company='')
     {
         if ($parent_company!="" || $parent_company!=null) {
-            return User::where('id',$parent_company)->value('id');
+            $parent=User::where('name',$parent_company)->value('id');
+            if (isset($parent)) {
+                return $parent;
+            }
+            else{
+                return 0;
+            }
         }
         else{ 
             return 0;
