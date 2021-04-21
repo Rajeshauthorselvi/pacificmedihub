@@ -25,7 +25,7 @@ class StockInTransitCustomerController extends Controller
           abort(404);
         }
       }
-      $data = array();
+      $data = $returns = array();
       $order_returns = CustomerOrderReturn::orderBy('id','desc')->get();
       foreach ($order_returns as $value) {
         $order = Orders::find($value->order_id);
