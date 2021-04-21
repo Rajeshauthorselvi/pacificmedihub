@@ -108,15 +108,18 @@
                             {!! Form::text('country_id',$vendor->getCountry->name,['readonly','class'=>'form-control', 'id'=>'Country']) !!}
                           </div>
                           <div class="col-sm-5">
+                            
                             <label for="State">State</label>
-                            {!! Form::text('state_id',$vendor->getState->name,['readonly','class'=>'form-control', 'id'=>'State']) !!}
+                            <?php $state=isset($vendor->getState->name)?$vendor->getState->name:'' ?>
+                            {!! Form::text('state_id',$state,['readonly','class'=>'form-control', 'id'=>'State']) !!}
                           </div>
                         </div>
 
                         <div class="form-group">
                           <div class="col-sm-5">
                             <label for="City">City</label>
-                            {!! Form::text('city_id',$vendor->getCity->name,['readonly','class'=>'form-control', 'id'=>'City']) !!}
+                            <?php $city=isset($vendor->getCity->name)?$vendor->getCity->name:'' ?>
+                            {!! Form::text('city_id',$city,['readonly','class'=>'form-control', 'id'=>'City']) !!}
                           </div>
                           <div class="col-sm-5">
                             <label for="PostCode">Post Code *</label>
