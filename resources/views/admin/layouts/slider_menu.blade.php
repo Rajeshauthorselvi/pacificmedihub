@@ -70,11 +70,11 @@
           </li>
 
           <!-- Stock Menu -->
-          <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-boxes"></i> <p>Stock <i class="fas fa-angle-left right"></i></p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index') block @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit') block @endif">
 
               <li class="nav-item @if($current_route=='stock-in-transit.index'||$current_route=='stock-in-transit.edit') active @endif">
                 <a href="{{ route('stock-in-transit.index') }}" class="nav-link">
@@ -82,7 +82,7 @@
                 </a>
               </li>
 
-              <li class="nav-item @if($current_route=='stock-in-transit-customer.index') active @endif">
+              <li class="nav-item @if($current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit') active @endif">
                 <a href="{{ route('stock-in-transit-customer.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit (Customer)</p>
                 </a>

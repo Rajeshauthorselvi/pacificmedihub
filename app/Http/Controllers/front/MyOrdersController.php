@@ -115,9 +115,10 @@ class MyOrdersController extends Controller
           $add_rtn_prod->customer_order_return_id = $add_return->id;
           $add_rtn_prod->order_id         = $request->order_id;
           $add_rtn_prod->order_product_id = $item_details['order_product_id'][$key];
+          $add_rtn_prod->order_product_variant_id = $item_details['order_product_variant_id'][$key];
           $add_rtn_prod->qty_received     = $item_details['recived_qty'][$key];
           $add_rtn_prod->damage_quantity  = $item_details['damaged_qty'][$key];
-          $add_rtn_prod->missed_quantity  = $item_details['missed_qty'][$key];
+          //$add_rtn_prod->missed_quantity  = $item_details['missed_qty'][$key];
           $add_rtn_prod->return_quantity  = $item_details['return_qty'][$key];
           $add_rtn_prod->stock_quantity   = $item_details['stock_qty'][$key];
           $add_rtn_prod->timestamps       = false;
@@ -132,7 +133,7 @@ class MyOrdersController extends Controller
         'ref_id'              => $request->order_id,
         'customer_id'         => $auth_id,
         'content'             => $creater_name."'s Order Return request for ".$order_return->order_no,
-        'url'                 => url('admin/stock-in-transit-customer'),
+        'url'                 => url('admin/stock-in-transit-customer/'.$add_return->id.'/edit'),
         'created_at'          => date('Y-m-d H:i:s'),
         'created_by'          => $auth_id,
         'created_user_type'   => 3,
@@ -270,6 +271,7 @@ class MyOrdersController extends Controller
       foreach ($order_products as $key => $item) {
         $order_items[$key]['id'] =  $item->id;
         $order_items[$key]['product_id'] =  $item->product->id;
+        $order_items[$key]['variant_id'] =  $item->variant->id;
         $order_items[$key]['product_name'] =  $item->product->name;
         $order_items[$key]['variant_sku'] = $item->variant->sku;
         $order_items[$key]['variant_option1'] = isset($item->variant->optionName1->option_name)?$item->variant->optionName1->option_name:null;

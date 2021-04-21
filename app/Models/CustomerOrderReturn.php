@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\User;
+use App\Models\Orders;
 
 class CustomerOrderReturn extends Model
 {
@@ -17,5 +18,10 @@ class CustomerOrderReturn extends Model
     public function customer()
     {
     	return $this->belongsTo(User::class,'customer_id');
+    }
+
+    public function orderData()
+    {
+    	return $this->belongsTo(Orders::class,'order_id');
     }
 }
