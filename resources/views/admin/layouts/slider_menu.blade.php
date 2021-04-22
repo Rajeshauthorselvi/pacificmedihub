@@ -70,11 +70,11 @@
           </li>
 
           <!-- Stock Menu -->
-          <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit'||$current_route=='return.show'||$current_route=='wastage.show'||$current_route=='low-stock-purchase.create') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-boxes"></i> <p>Stock <i class="fas fa-angle-left right"></i></p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit') block @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit'||$current_route=='return.show'||$current_route=='wastage.show'||$current_route=='low-stock-purchase.create') block @endif">
 
               <li class="nav-item @if($current_route=='stock-in-transit.index'||$current_route=='stock-in-transit.edit') active @endif">
                 <a href="{{ route('stock-in-transit.index') }}" class="nav-link">
@@ -88,17 +88,17 @@
                 </a>
               </li>
               
-              <li class="nav-item @if($current_route=='return.index'||$current_route=='return.edit') active @endif">
+              <li class="nav-item @if($current_route=='return.index'||$current_route=='return.edit'||$current_route=='return.show') active @endif">
                 <a href="{{ route('return.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>List Return</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='wastage.index'||$current_route=='wastage.create') active @endif">
+              <li class="nav-item @if($current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='wastage.show') active @endif">
                 <a href="{{ route('wastage.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Wastage/Write Off</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='low-stocks.index') active @endif">
+              <li class="nav-item @if($current_route=='low-stocks.index'||$current_route=='low-stock-purchase.create') active @endif">
                 <a href="{{ route('low-stocks.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Low Stock Alert</p>
                 </a>
@@ -112,32 +112,32 @@
           </li>
 
           <!-- Orders Menu -->
-          <li class="nav-item @if($current_route=='new-orders.index'||$current_route=='orders.create'||$current_route=='new-orders.show'||$current_route=='new-orders.edit'||$current_route=='assign-shippment.index'||$current_route=='assign-delivery.index'||$current_route=='completed-orders.index'||$current_route=='cancelled-orders.index') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='new-orders.index'||$current_route=='orders.create'||$current_route=='new-orders.show'||$current_route=='new-orders.edit'||$current_route=='assign-shippment.index'||$current_route=='assign-delivery.index'||$current_route=='completed-orders.index'||$current_route=='cancelled-orders.index'||$current_route=='assign-shippment.show'||$current_route=='assign-shippment.edit'||$current_route=='assign-delivery.show'||$current_route=='assign-delivery.edit'||$current_route=='completed-orders.show'||$current_route=='cancelled-orders.show'||$current_route=='cancelled-orders.edit') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-dolly-flatbed"></i> <p>Orders <i class="fas fa-angle-left right"></i></p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='new-orders.index'||$current_route=='orders.create'||$current_route=='new-orders.show'||$current_route=='new-orders.edit'||$current_route=='assign-shippment.index'||$current_route=='assign-delivery.index'||$current_route=='completed-orders.index'||$current_route=='cancelled-orders.index') block @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='new-orders.index'||$current_route=='orders.create'||$current_route=='new-orders.show'||$current_route=='new-orders.edit'||$current_route=='assign-shippment.index'||$current_route=='assign-delivery.index'||$current_route=='completed-orders.index'||$current_route=='cancelled-orders.index'||$current_route=='assign-shippment.show'||$current_route=='assign-shippment.edit'||$current_route=='assign-delivery.show'||$current_route=='assign-delivery.edit'||$current_route=='completed-orders.show'||$current_route=='cancelled-orders.show'||$current_route=='cancelled-orders.edit') block @endif">
               <li class="nav-item @if($current_route=='new-orders.index'||$current_route=='orders.create'||$current_route=='new-orders.show'||$current_route=='new-orders.edit') active @endif">
                 <a href="{{ route('new-orders.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>New Orders</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='assign-shippment.index') active @endif">
+              <li class="nav-item @if($current_route=='assign-shippment.index'||$current_route=='assign-shippment.show'||$current_route=='assign-shippment.edit') active @endif">
                 <a href="{{ route('assign-shippment.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Assigned for Delivery</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='assign-delivery.index') active @endif">
+              <li class="nav-item @if($current_route=='assign-delivery.index'||$current_route=='assign-delivery.show'||$current_route=='assign-delivery.edit') active @endif">
                 <a href="{{ route('assign-delivery.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Delivery In Progress</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='completed-orders.index') active @endif">
+              <li class="nav-item @if($current_route=='completed-orders.index'||$current_route=='completed-orders.show') active @endif">
                 <a href="{{ route('completed-orders.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Orders Completed</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='cancelled-orders.index') active @endif">
+              <li class="nav-item @if($current_route=='cancelled-orders.index'||$current_route=='cancelled-orders.show'||$current_route=='cancelled-orders.edit') active @endif">
                 <a href="{{ route('cancelled-orders.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Cancelled/Missed Orders</p>
                 </a>
@@ -156,10 +156,15 @@
           </li>
           
           <!-- Customer Menu -->
-          <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit'||$current_route=='customers.show'||$current_route=='reject.customer'||$current_route=='new.customer') active @endif">
+          <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit'||$current_route=='customers.show'||$current_route=='reject.customer'||$current_route=='new.customer'||$current_route=='blocked.customer') active @endif">
             <a href="{{ route('customers.index') }}" class="nav-link"><i class="fas fa-users"></i><p>Customers</p></a>
           </li>
-          
+            
+          <!-- Interested Customer Menu -->
+            <li class="nav-item @if($current_route=='interested.customers') active @endif">
+            <a href="{{ route('interested.customers') }}" class="nav-link"><i class="fas fa-user-tie"></i><p>Interested Customers</p></a>
+          </li>
+
           <!-- Vendor Menu -->
           <li class="nav-item @if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit'||$current_route=='vendor.show'||$current_route=='vendor-products.index') active @endif">
             <a href="{{route('vendor.index')}}" class="nav-link"><i class="fas fa-people-carry"></i><p>Vendor</p></a>
@@ -192,22 +197,22 @@
           </li>
 
  
-          <!-- Static Page Menu -->
-          <li class="nav-item ">
+          <!-- Reports Page Menu -->
+          <li class="nav-item  @if($current_route=='report-order.index'||$current_route=='report-purchase.index'||$current_route=='report-employee.index') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-chart-bar"></i><p>Reports<i class="fas fa-angle-left right"></i></p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
+            <ul class="nav nav-treeview"  style="display:@if($current_route=='report-order.index'||$current_route=='report-purchase.index'||$current_route=='report-employee.index') block @endif">
+              <li class="nav-item @if($current_route=='report-order.index') active @endif">
                 <a href="{{ route('report-order.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i>
                   <p>Orders</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item @if($current_route=='report-purchase.index') active @endif">
                 <a href="{{ route('report-purchase.index') }}" class="nav-link"><i class="fas fa-angle-double-right"></i><p>Purchase</p></a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item @if($current_route=='report-employee.index') active @endif">
                 <a href="{{ route('report-employee.index') }}" class="nav-link"><i class="fas fa-angle-double-right"></i><p>Employee</p></a>
               </li>
    {{--            <li class="nav-item">

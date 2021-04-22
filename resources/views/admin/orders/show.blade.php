@@ -46,11 +46,13 @@
                       <li>
                         <a href="{{ url('admin/order-email/'.$order->id) }}" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
                       </li>
-                      <li>
-                        <a href="{{ route($edit_route,$order->id) }}" class="edit">
-                          <i class="fa fa-edit"></i>&nbsp; Edit
-                        </a>
-                      </li>
+                      @if($order->statusName->id!=13)
+                        <li>
+                          <a href="{{ route($edit_route,$order->id) }}" class="edit">
+                            <i class="fa fa-edit"></i>&nbsp; Edit
+                          </a>
+                        </li>
+                      @endif
                       <li>
                         <a href="{{ route($delete_route,$order->id) }}" class="delete" onclick="return confirm('Are you sure want to delete?')">
                           <i class="fa fa-trash"></i>&nbsp; Delete

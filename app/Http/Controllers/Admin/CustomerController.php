@@ -11,6 +11,7 @@ use App\Models\UserPoc;
 use App\Models\Countries;
 use App\Models\Prefix;
 use App\Models\Employee;
+use App\Models\NewsLetter;
 use App\Mail\NewRegister;
 use Redirect;
 use Arr;
@@ -39,7 +40,7 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['all_customers'] = User::where('users.role_id',7)->where('appoved_status',3)->where('is_deleted',0)->orderBy('id','desc')->get();
+        $data['all_customers'] = User::where('users.role_id',7)->where('appoved_status',3)->where('status',1)->where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.customer.index',$data);
     }
 
@@ -445,7 +446,7 @@ class CustomerController extends Controller
             return redirect()->route('new.customer')->with('error','Customer rejected successfully...!');
         }elseif($request->data=='block'){
             User::find($request->id)->update(['status'=>0]);
-            return redirect()->route('customers.index')->with('error','Customer blocked successfully...!');
+            return redirect()->route('blocked.customer')->with('error','Customer blocked successfully...!');
         }elseif($request->data=='unblock'){
             User::find($request->id)->update(['status'=>1]);
             return redirect()->route('customers.index')->with('success','Customer unblocked successfully...!');
@@ -476,6 +477,32 @@ class CustomerController extends Controller
         $data=array();
         $data['rejected_customers'] = User::where('users.role_id',7)->where('appoved_status',2)->where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin.customer.rejected_index',$data);
+    }
+
+    public function  blockedCustomerList()
+    {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','read')) {
+                abort(404);
+            }
+        }
+
+        $data=array();
+        $data['blocked_customers'] = User::where('users.role_id',7)->where('appoved_status',3)->where('status',0)->where('is_deleted',0)->orderBy('id','desc')->get();
+        return view('admin.customer.blocked_index',$data);
+    }
+
+    public function interestedCustomerList()
+    {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('customer','read')) {
+                abort(404);
+            }
+        }
+
+        $data=array();
+        $data['interested_customers'] = NewsLetter::orderBy('id','desc')->get();
+        return view('admin.customer.interested_customer',$data);
     }
 
     public function CustomerImport()

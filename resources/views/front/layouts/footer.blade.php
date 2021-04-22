@@ -9,7 +9,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-7">
-					<i class="far fa-paper-plane"></i> &nbsp;Sign Up For Updates
+					<i class="far fa-paper-plane"></i> &nbsp;Submit your email for signup approval process 
 				</div>
 				<div class="col-sm-5">
 					<form action="{{ route('news.letter') }}" method="POST" id="subForm">
@@ -18,7 +18,7 @@
 							<div class="col-8 p-0">
 								<input type="email" name="email" placeholder="Your email address..." id="subMail" autocomplete="off">
 							</div>
-							<div class="col-4 p-0"><input type="button" id="subscribe" value="Subscribe !"></div>
+							<div class="col-4 p-0"><input type="button" id="subscribe" value="Send !"></div>
 							<span class="text-danger email_validate" style="display:none">Please enter valid Email Address</span>
 						</div>
 					</form>

@@ -260,7 +260,7 @@
                       <div class="col-sm-3">
                         <label for="purchase_date">Delivery Methods *</label>
                         {!! Form::hidden('free_delivery_amount',$free_delivery_target,['class'=>'free_delivery_amount']) !!}
-                        {!! Form::hidden('delivery_charge',$order->delivery_charge,['class'=>'del_charge_hidden']) !!}
+                        {{-- {!! Form::hidden('delivery_charge',$order->delivery_charge,['class'=>'del_charge_hidden']) !!} --}}
                         <select class="form-control no-search " id="delivery-methods" name="delivery_method_id">
                           @foreach($delivery_methods as $method)
                             @if ($order->delivery_method_id==$method->id)
@@ -317,7 +317,9 @@
                           </tr>
                             <tr class="total-calculation">
                               <td class="title">Delivery Charge</td>
-                            <td id="deliveryCharge">{{$delivery_charge}}</td>
+                            <td>
+                              <input type="text" name="delivery_charge" id="deliveryCharge" @if($update_route!='cancelled-orders.update') readonly @endif value="{{ $order->delivery_charge }}" onkeyup="validateNum(event,this);">
+                            </td>
                           </tr>
                             <tr class="total-calculation">
                               <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$order->sgd_total_amoun}}">
@@ -501,6 +503,19 @@
           overallCalculation(balance_amount,tax_rate);
           currencyCalculation();
         }
+      });
+
+      $(document).on('keyup','#deliveryCharge',function(){
+        var deliveryCharge = $(this).val();
+        var all_amount = $('#allAmount').text();
+        var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+        var tax = tax_rate/100;
+        var calculatTax = tax*all_amount;
+        var taxAmount = calculatTax.toFixed(2);
+        var totalSGD = parseFloat(deliveryCharge)+parseFloat(all_amount)+parseFloat(taxAmount);
+        $('#total_amount_sgd').text(totalSGD.toFixed(2));
+        $('#sgd_total_amount_hidden').val(totalSGD);
+        currencyCalculation();
       });
 
       $(document).on('change', '.rfq_price', function(event) {
@@ -773,9 +788,9 @@
           }
 
           if (del_fees!=0) {
-            $('#deliveryCharge').text(del_fees);
+            $('#deliveryCharge').val(del_fees);
           }else{
-            $('#deliveryCharge').text('0.00');
+            $('#deliveryCharge').val('0.00');
           }
           overallCalculation(all_amount,tax_rate);
           currencyCalculation();
@@ -786,7 +801,7 @@
       $(document).ready(function() {
         $('#delivery-methods option[value="3"]').hide();
         var del_fees = $('#delivery-methods option:selected').attr('attr-fee');
-        $('#deliveryCharge').text(del_fees);
+        $('#deliveryCharge').val(del_fees);
       });
 
       $(document).on('change','#delivery-methods', function(event) {
@@ -797,9 +812,9 @@
         var del_type = $('#delivery-methods option:selected').val();
         
         if (del_fees!=0) {
-          $('#deliveryCharge').text(del_fees);
+          $('#deliveryCharge').val(del_fees);
         }else{
-          $('#deliveryCharge').text('0.00');
+          $('#deliveryCharge').val('0.00');
         }
         overallCalculation(all_amount,tax_rate);
         currencyCalculation();
@@ -898,14 +913,14 @@
         var tax = tax_rate/100;
         var calculatTax = tax*all_amount;
         var taxAmount = calculatTax.toFixed(2);
-        var deliveryCharge = $('#deliveryCharge').text();
+        var deliveryCharge = $('#deliveryCharge').val();
         $('#orderTax').text(taxAmount);
         var calculateSGD = parseFloat(all_amount)+parseFloat(taxAmount)+parseFloat(deliveryCharge);
         var totalSGD = parseFloat(calculateSGD);
         $('#total_amount_sgd').text(totalSGD.toFixed(2));
+        $('#sgd_total_amount_hidden').val(totalSGD);
         $('#total_amount_hidden').val(all_amount);
         $('#order_tax_amount_hidden').val(taxAmount);
-        $('#sgd_total_amount_hidden').val(totalSGD);
         $('.del_charge_hidden').val(deliveryCharge);
       }      
     

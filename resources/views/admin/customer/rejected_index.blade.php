@@ -31,13 +31,16 @@
               <div class="card-header">
                 <ul class="nav nav-tabs flex-nowrap">
                   <li class="nav-item">
-                    <a href="{{ route('customers.index') }}" class="nav-link" title="All Customer List"><i class="fas fa-users"></i> &nbsp;All Customers</a>
+                    <a href="{{ route('customers.index') }}" class="nav-link" title="Active Customer List"><i class="fas fa-users"></i> &nbsp;Active Customers</a>
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('new.customer') }}" class="nav-link" title="New Customer Requests List"><i class="fas fa-user-plus"></i> &nbsp;New Requests</a>
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('reject.customer') }}" class="nav-link active" title="Rejected Customer List"><i class="fas fa-user-times"></i> &nbsp;Rejected Customers</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('blocked.customer') }}" class="nav-link" title="Blocked Customer List"><i class="fas fa-user-lock"></i> &nbsp;Blocked Customers</a>
                   </li>
                 </ul>
               </div>

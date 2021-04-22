@@ -1,6 +1,6 @@
 <?php 
 	$categories = App\Models\Categories::where('published',1)->where('is_deleted',0)->where('parent_category_id',NULL)
-																		 ->limit(6)->orderBy('display_order','asc')->get();
+																		 ->limit(5)->orderBy('display_order','asc')->get();
 	$current_route=Route::current()->uri();
 	if(($current_route=="home")||($current_route=="/")){
 		$header_category_status = "active";

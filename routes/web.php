@@ -141,9 +141,11 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::post('save-address-form','Admin\CustomerController@saveAddressForm')->name('save.address');
 	Route::resource('vendor-products','Admin\VendorProdcutsController');
 	Route::post('add-new-address','Admin\CustomerController@AddNewAddressController');
-	Route::get('reject-or-block','Admin\CustomerController@rejectOrBlock')->name('reject.block');
+	Route::get('block-customer','Admin\CustomerController@rejectOrBlock')->name('reject.block');
 	Route::get('new-customer-request','Admin\CustomerController@newCustomerList')->name('new.customer');
 	Route::get('reject-customers','Admin\CustomerController@rejectCustomerList')->name('reject.customer');
+	Route::get('blocked-customers','Admin\CustomerController@blockedCustomerList')->name('blocked.customer');
+	Route::get('interested-customers','Admin\CustomerController@interestedCustomerList')->name('interested.customers');
 	Route::resource('customers','Admin\CustomerController');
 
 	//Vendor
