@@ -48,7 +48,13 @@ class VendorsGeneralDetails implements  ToCollection, WithHeadingRow, WithValida
         		'status'				=> ($row['published']=="Yes" || $row['published']=="yes")?1:0,
         		'is_deleted'			=> 0
         	];
-        	Vendor::insert($data);
+        	$check_vendor_exists=Vendor::where('email',$row['email'])->first();
+        	if ($check_vendor_exists) {
+        		Vendor::where('email',$row['email'])->update($data);
+        	}
+        	else{
+	        	Vendor::insert($data);
+        	}
         }
     }
     public function VendorCode()

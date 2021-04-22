@@ -51,10 +51,15 @@ class CustomerCompanyDetails implements ToCollection, WithHeadingRow, WithValida
                     'is_deleted'        => 0
         		];
 
-                $customerid=User::insertGetId($customer);
-
-                if ($row['published']=="Yes") {
-                    $this->TriggerEmail($customerid);
+                $check_exists=User::where('email',$row['login_email'])->first();
+                if ($check_exists) {
+                    User::where('email',$row['login_email'])->update($customer);
+                }
+                else{
+                    $customerid=User::insertGetId($customer);
+                    if ($row['published']=="Yes") {
+                        $this->TriggerEmail($customerid);
+                    }
                 }
         }
 
@@ -151,11 +156,12 @@ class CustomerCompanyDetails implements ToCollection, WithHeadingRow, WithValida
         $rules=
             [
                 'customerid'    =>'required|unique:users,id',
-                'login_email'   => 'required|unique:users,email',
+                // 'login_email'   => 'required|unique:users,email',
                 'sales_rep'     => 'required',
                 'published'     =>[
                     'required', Rule::in(['Yes', 'No'])
                 ],
+                'login_email' => Rule::unique('users','email'),
             ];
 
         return $rules;
