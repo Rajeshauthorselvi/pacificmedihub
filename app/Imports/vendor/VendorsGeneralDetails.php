@@ -107,6 +107,8 @@ class VendorsGeneralDetails implements  ToCollection, WithHeadingRow, WithValida
     }
     public function rules(): array
     {
-    	return [];
+    	return [
+    		'email' => 'required|unique:vendors',
+    	];
     }
 }
