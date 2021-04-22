@@ -392,7 +392,7 @@ class VendorController extends Controller
 
         }
 
-        return Redirect::back()->with('success','Customer imported successfully');
+        return Redirect::back()->with('success','Vendor imported successfully');
     }
     public function DownloadSampleImportSheet()
     {
