@@ -544,7 +544,6 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-      //dd($request->all());
         $this->validate(request(),[
             'order_status'   => 'required',
         ]);
@@ -616,7 +615,7 @@ class OrderController extends Controller
               'customer_id'           => $request->customer_id,
               'order_status'          => $request->order_status,
               'order_tax'             => $request->order_tax,
-              'order_discount'        => $request->order_discount,
+              //'order_discount'        => $request->order_discount,
               'delivery_method_id'    => $request->delivery_method_id,
               'delivery_charge'       => $request->delivery_charge,
               'payment_term'          => $request->payment_term,
@@ -625,7 +624,7 @@ class OrderController extends Controller
               'paid_amount'           => $request->paid_amount,
               'paying_by'             => $request->paying_by,
               'payment_note'          => $request->payment_note,
-              'notes'                 => $request->note,
+              'notes'                 => $request->notes,
               'currency'              => $request->currency,
               'order_tax_amount'      => $request->order_tax_amount,
               'total_amount'          => $request->total_amount,

@@ -12,6 +12,8 @@ use App\Models\ProductVariantVendor;
 use App\Models\PurchaseBatchInfo;
 class Orders extends Model
 {
+  protected $fillable=['rfq_id','order_no','invoice_no','order_status','customer_id','sales_rep_id','currency','order_tax','order_tax_amount','order_discount','delivery_method_id','delivery_charge','total_amount','sgd_total_amount','exchange_total_amount','notes','user_id','delivery_address_id','billing_address_id','created_user_type','payment_term','payment_status','payment_ref_no','paid_amount','paying_by','payment_note','order_completed_at','delivered_at','created_at','updated_at','delivery_status','delivery_person_id','modified_logistic_id','logistic_instruction','approximate_delivery_date','address_id','quantity_deducted'];
+
     public function customer()
     {
     	return $this->belongsTo(User::class,'customer_id');
