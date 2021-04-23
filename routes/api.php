@@ -18,5 +18,15 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
+
 //Authentication
+Route::post('register', 'Api\AuthController@registerUser');
 Route::post('login', 'Api\AuthController@login');
+
+//Forget password
+Route::post('send-code', 'Api\AuthController@sendCode');
+Route::post('forget-password', 'Api\AuthController@forgetPassword');
+
+//Country, State, City
+Route::get('country-list','Api\AddressController@countryList');
+Route::get('state-or-city-list/{id}','Api\AddressController@stateORCityList');
