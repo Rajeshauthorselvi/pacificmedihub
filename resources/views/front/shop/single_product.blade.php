@@ -18,7 +18,7 @@
 				<div class="col-md-6">
 					<div class="outer">
 						<div id="big" class="owl-carousel owl-theme">
-							@if(isset($product->main_image))
+							@if($product->main_image!=null)
 								<div class="item">
 									<img src="{{asset('theme/images/products/main/'.$product->main_image)}}" alt="Product Name" width="590" height="600" class="img-responsive" />
 								</div>
@@ -118,7 +118,11 @@
 
 						<div class="buttons">
 							<a class="rfq-btn" href="javascript:void(0);" variant-id={{ $default_variant_id }}>RFQ</a>
-	            <a class="cart-btn" href="javascript:void(0);" variant-id={{ $default_variant_id }}>Add to Cart</a>
+							@if(Auth::id())
+	            				<a class="cart-btn" href="javascript:void(0);" variant-id={{ $default_variant_id }}>Add to Cart</a>
+	            			@else
+	            				<a class="cart-btn" href="{{ route('customer.login') }}">Add to Cart</a>
+	            			@endif
 						</div>
 
 						<div class="social-links">
