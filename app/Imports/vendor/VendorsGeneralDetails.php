@@ -114,11 +114,12 @@ class VendorsGeneralDetails implements  ToCollection, WithHeadingRow, WithValida
     public function rules(): array
     {
     	return [
+    		'vendorid' => 'required|unique:vendors,id',
     		'email' => 'required|unique:vendors',
-    		'uen'	 => 'required',
-			'name' => 'required',
-			'contact_number' => 'required',
-			'address_line1' => 'required',
+    		'vendor_uen'	 => 'required',
+			'vendor_name' => 'required',
+			'contact_no' => 'required',
+			'address' => 'required',
 			'country' => 'required',
     	];
     }
