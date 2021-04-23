@@ -91,16 +91,16 @@ class AddressController extends Controller
 
     public function countryList()
     {
-        $state = Countries::orderBy('name','asc')->pluck("name","id");    
+        $state = Countries::select('id','name')->orderBy('name','asc')->get()->toArray();    
         return response()->json($state);
     }
 
     public function stateORCityList(Request $request,$id)
     {
         if($request->from=='state'){
-            $list = State::where('country_id',$id)->pluck("name","id");
+            $list = State::select('id','name')->where('country_id',$id)->get()->toArray();
         }elseif($request->from=='city'){
-            $list = City::where('state_id',$id)->pluck("name","id");    
+            $list = City::select('id','name')->where('state_id',$id)->get()->toArray();    
         }
         return response()->json($list);
     }
