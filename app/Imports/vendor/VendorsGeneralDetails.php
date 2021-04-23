@@ -115,6 +115,11 @@ class VendorsGeneralDetails implements  ToCollection, WithHeadingRow, WithValida
     {
     	return [
     		'email' => 'required|unique:vendors',
+    		'uen'	 => 'required',
+			'name' => 'required',
+			'contact_number' => 'required',
+			'address_line1' => 'required',
+			'country' => 'required',
     	];
     }
 }
