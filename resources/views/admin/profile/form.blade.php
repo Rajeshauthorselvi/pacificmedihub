@@ -154,8 +154,7 @@
   <style>
     #myMap {height: 350px;width: 100%;}
   </style>
-  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyA7WMFKWkvwBnf3DCeMyepx19UW_Mez_Js&libraries=places">
-  </script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7WMFKWkvwBnf3DCeMyepx19UW_Mez_Js&libraries=places"></script>
 
   <script type="text/javascript"> 
     var lat='{{ $admin->latitude }}';
@@ -167,32 +166,34 @@
     var infowindow = new google.maps.InfoWindow();
     function initialize(){
       var mapOptions = {
+
         zoom: 15,
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
       map = new google.maps.Map(document.getElementById("myMap"), mapOptions);
-
+      
       marker = new google.maps.Marker({
         map: map,
         position: myLatlng,
         draggable: true 
       }); 
 
-      geocoder.geocode({'latLng': myLatlng }, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-          if (results[0]) {
-            $('#latitude,#longitude').show();
-            $('#address').val(results[0].formatted_address);
-            $('#latitude').val(marker.getPosition().lat());
-            $('#longitude').val(marker.getPosition().lng());
-            infowindow.setContent(results[0].formatted_address);
-            infowindow.open(map, marker);
-          }
-        }
-      });
+          var input = document.getElementById('pac-input');
+          var autocomplete = new google.maps.places.Autocomplete(input);
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var place = autocomplete.getPlace();
 
+                console.log(place.formatted_address);
+                $('#latitude,#longitude').show();
+                $('#address').val(place.formatted_address);
+                $('#latitude').val( place.geometry.location.lat());
+                $('#longitude').val( place.geometry.location.lng());
+                infowindow.setContent(place.formatted_address);
+                infowindow.open(map, marker);
+
+            });
       google.maps.event.addListener(marker, 'dragend', function() {
 
         geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
@@ -209,19 +210,10 @@
 
       });
       const card = document.getElementById("pac-card");
-      const input = document.getElementById("pac-input");
-      const options = {
-        fields: ["formatted_address", "geometry", "name"],
-        origin: map.getCenter(),
-        strictBounds: false,
-        types: ["establishment"],
-      };
-      map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
-      const autocomplete = new google.maps.places.Autocomplete(
-        input,
-        options
-      );
-      autocomplete.bindTo("bounds", map);
+          map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
+         
+          autocomplete.bindTo("bounds", map);
+
 
       autocomplete.addListener("place_changed", () => {
         marker.setVisible(false);
@@ -232,7 +224,6 @@
           );
           return;
         }
-        
         if (place.geometry.viewport) {
           map.fitBounds(place.geometry.viewport);
         } else {
@@ -241,9 +232,6 @@
         }
         marker.setPosition(place.geometry.location);
         marker.setVisible(true);
-        infowindowContent.children["place-name"].textContent = place.name;
-        infowindowContent.children["place-address"].textContent =
-          place.formatted_address;
         infowindow.open(map, marker);
       });
     }
