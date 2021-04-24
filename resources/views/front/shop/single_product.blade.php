@@ -97,7 +97,7 @@
 				  						<div class="variant-items">
 				  			  				@foreach($option->getoptionvalues as $k => $value)
 				  			  					<?php 
-				  			  						$default_variant = $allowed_options[$option->id][$k]['id']; 
+				  			  						$default_variant = isset($allowed_options[$option->id][$k]['id'])?$allowed_options[$option->id][$k]['id']:''; 
 				  			  					?>
 			  			       					<div class="swatch-element square">
 			  										<input id="swatch-{{$value->id}}" @if($default_variant==$default_variant_id) checked @endif class="swatch-variant" type="radio" data-optionID="{{$option->id}}" name="option-{{$optCount}}" value="{{$value->id}}" option-count="{{$optCount}}">
