@@ -512,7 +512,7 @@ class OrderController extends Controller
           $order_status->whereIn('id',[17,18,19,20]);
         }
 
-        $order_status=$order_status->pluck('status_name','id')->toArray();
+        $order_status=$order_status->orderBy('order_by','ASC')->pluck('status_name','id')->toArray();
 
         $delivery_status=OrderStatus::where('status',1);
           if ($currenct_route[0]=="assign-shippment") {
@@ -522,6 +522,7 @@ class OrderController extends Controller
             $delivery_status->whereIn('id',[14,15,16,17]);
           }
             $delivery_status=$delivery_status->pluck('status_name','id')->toArray();
+
             $data['delivery_status']=[''=>'Please Select']+$delivery_status;
         $data['order_status']=[''=>'Please Select']+$order_status;
 
