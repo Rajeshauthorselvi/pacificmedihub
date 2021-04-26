@@ -72,16 +72,30 @@ class CategoriesController extends Controller
             $photo          = $request->file('category_image');            
             $filename       = $photo->getClientOriginalName();            
             $file_extension = $request->file('category_image')->getClientOriginalExtension();
-            $image_name     = strtotime("now").".".$file_extension;
+            $image_name     = 'img_'.strtotime("now").".".$file_extension;
             $request->category_image->move(public_path('theme/images/categories/'), $image_name);
         }
         else{
             $image_name = NULL;
         }
+
+        $icon= $request->hasFile('category_icon');
+        if($icon){
+            $photo          = $request->file('category_icon');            
+            $filename       = $photo->getClientOriginalName();            
+            $file_extension = $request->file('category_icon')->getClientOriginalExtension();
+            $icon_name      = 'icn_'.strtotime("now").".".$file_extension;
+            $request->category_icon->move(public_path('theme/images/categories/icons/'), $icon_name);
+        }
+        else{
+            $icon_name = NULL;
+        }
+
         $add = new Categories;
         $add->parent_category_id = $request->parent_category;
         $add->name   = $request->category_name;
         $add->image  = $image_name;
+        $add->icon   = $icon_name;
         $add->description = $request->category_description;
         $add->published = $published;
         $add->show_home = $homepage;
@@ -157,7 +171,7 @@ class CategoriesController extends Controller
             $photo          = $request->file('category_image');            
             $filename       = $photo->getClientOriginalName();            
             $file_extension = $request->file('category_image')->getClientOriginalExtension();
-            $image_name     = strtotime("now").".".$file_extension;
+            $image_name     = 'img_'.strtotime("now").".".$file_extension;
             $request->category_image->move(public_path('theme/images/categories/'), $image_name);
         }
         else{
@@ -168,10 +182,29 @@ class CategoriesController extends Controller
             }
         }
 
+
+        $icon = $request->hasFile('category_icon');
+        if($icon){
+            $photo          = $request->file('category_icon');
+            $filename       = $photo->getClientOriginalName();
+            $file_extension = $request->file('category_icon')->getClientOriginalExtension();
+            $icon_name      = 'icn_'.strtotime("now").".".$file_extension;
+            $request->category_icon->move(public_path('theme/images/categories/icons/'), $icon_name);
+        }
+        else{
+            if($check_category){
+                $icon_name = $check_category->icon;    
+            }else{
+                $icon_name = NULL;    
+            }
+        }
+
+
         if($check_category){
             $check_category->parent_category_id = $request->parent_category;
             $check_category->name   = $request->category_name;
             $check_category->image  = $image_name;
+            $check_category->icon   = $icon_name;
             $check_category->description = $request->category_description;
             $check_category->published = $published;
             $check_category->show_home = $homepage;
