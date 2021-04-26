@@ -76,7 +76,7 @@
 
               <div class="form-group">
                 <div class="map-block">
-                  <div id="myMap"></div>
+                   <div id="myMap"></div>
                   <div class="pac-card" id="pac-card">
                     <div id="title">Search Place</div>
                     <div id="pac-container">
@@ -99,6 +99,70 @@
   </div>
 </div>
 
+<style>
+  .map-block {
+      width: 100%;
+  }
+      #myMap {
+         height: 350px;
+         width: 100%;
+      }  
+      #map {
+        height: 100%;
+      }
+
+      .pac-card {
+        margin: 10px 10px 0 0;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        font-family: Roboto;
+      }
+
+      #pac-container {
+        padding-bottom: 12px;
+        margin-right: 12px;
+      }
+    .pac-container {
+        z-index: 10000 !important;
+    }
+      .pac-controls {
+        display: inline-block;
+        padding: 5px 11px;
+      }
+
+      .pac-controls label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+      #title {
+        color: #fff;
+        background-color: #4d90fe;
+        font-size: 22px;
+        font-weight: 500;
+        padding: 5px;
+      }
+
+</style>s
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDNi6888yh6v93KRXKYeHfMv59kQHw-XPQ&libraries=places&v=weekly">
 </script>
 
