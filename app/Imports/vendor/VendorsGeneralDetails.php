@@ -11,6 +11,7 @@ use App\Models\Prefix;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Illuminate\Validation\Rule;
 class VendorsGeneralDetails implements  ToCollection, WithHeadingRow, WithValidation
 {
     /**
@@ -48,13 +49,9 @@ class VendorsGeneralDetails implements  ToCollection, WithHeadingRow, WithValida
         		'status'				=> ($row['published']=="Yes" || $row['published']=="yes")?1:0,
         		'is_deleted'			=> 0
         	];
-        	$check_vendor_exists=Vendor::where('email',$row['email'])->first();
-        	if ($check_vendor_exists) {
-        		Vendor::where('email',$row['email'])->update($data);
-        	}
-        	else{
-	        	Vendor::insert($data);
-        	}
+        	
+	        Vendor::insert($data);
+        	
         }
     }
     public function VendorCode()
@@ -114,9 +111,9 @@ class VendorsGeneralDetails implements  ToCollection, WithHeadingRow, WithValida
     public function rules(): array
     {
     	return [
+            // 'vendor_uen' => Rule::unique('vendors', 'uen'),
     		'vendorid' => 'required|unique:vendors,id',
-    		'email' => 'required|unique:vendors',
-    		'vendor_uen'	 => 'required',
+    		'vendor_uen'	 => 'required|unique:vendors,uen',
 			'vendor_name' => 'required',
 			'contact_no' => 'required',
 			'address' => 'required',
