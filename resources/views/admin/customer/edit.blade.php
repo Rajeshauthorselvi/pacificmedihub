@@ -340,7 +340,9 @@
                                   <br>{{ $address->post_code }}
                                 </td>
                                 <td>
-                                  <button type="button" class="btn btn-info edit" address-id="{{$address['id']}}" data-toggle="modal" data-target="#edit-address">Edit</button>
+                                  <a href="{{ url('admin/edit-address/'.$address['id'].'?customer_id='.$customer['id']) }}" class="btn btn-info">
+                                    Edit
+                                  </a>
                                 </td>
                               </tr>
                               
