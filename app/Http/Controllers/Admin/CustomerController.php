@@ -535,4 +535,23 @@ class CustomerController extends Controller
         $path=public_path('theme/sample_datas/').$attachment;
         return Response::download($path, $attachment);
     }
+    public function EditAddress($address_id)
+    {
+        $data = array();
+        $address = UserAddress::find($address_id);
+        $data['id'] = $address->id;
+        $data['cus_id'] = $address->customer_id;
+        $data['name'] = $address->name;
+        $data['mobile'] = $address->mobile;
+        $data['address_line1'] = $address->address_line1;
+        $data['address_line2'] = $address->address_line2;
+        $data['post_code'] = $address->post_code;
+        $data['country_id'] = $address->country_id;
+        $data['state_id'] = $address->state_id;
+        $data['city_id'] = $address->city_id;
+        $data['latitude'] = $address->latitude;
+        $data['longitude'] = $address->longitude;
+        $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        return view('admin.customer.address.edit',$data);
+    }
 }

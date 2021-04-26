@@ -134,6 +134,7 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('cancelled-orders','Admin\OrderController');
 
 	//Customer
+	Route::get('edit-address/{address_id}','Admin\CustomerController@EditAddress');
 	Route::get('customer-sample-sheet','Admin\CustomerController@DownloadSampleImportSheet');
 	Route::get('customer-import', 'Admin\CustomerController@CustomerImport');
 	Route::post('customer-import-post', 'Admin\CustomerController@CustomerImportPost');
