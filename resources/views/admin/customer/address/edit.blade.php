@@ -114,7 +114,9 @@
                         </div>
                       </div>
   <div class="form-group">
-    <button type="button" class="btn reset-btn" data-dismiss="modal">Cancel</button>
+    <a href="{{route('customers.edit',[Request::get('customer_id')])}}" class="btn reset-btn">
+      Cancel
+    </a>
         <button type="submit" id="submit-btn" class="btn save-btn">Save</button>
   </div>
 </form></div>
