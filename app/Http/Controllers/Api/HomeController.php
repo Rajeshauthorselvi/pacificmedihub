@@ -68,6 +68,7 @@ class HomeController extends Controller
         $data['banner_image_url']    = url('theme/images/sliders/');
         $data['category_image_url']  = url('theme/images/categories/icons/');
         $data['product_image_url']   = url('theme/images/products/main/');
+        $data['dummy_image']	     = url('theme/images/products/placeholder.jpg');
         return response()->json($data);
     }
 }
