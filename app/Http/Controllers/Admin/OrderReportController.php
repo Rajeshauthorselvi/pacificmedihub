@@ -25,7 +25,8 @@ class OrderReportController extends Controller
                                ->where('is_deleted',0)
                                ->pluck('name','id')
                                ->toArray();
-        $data['order_status']=['Please Select']+OrderStatus::pluck('status_name','id')->toArray();
+        $data['order_status']=['Please Select']+OrderStatus::whereIn('id',[11,12,13,14,15,16,17,18,19,21])
+                              ->pluck('status_name','id')->toArray();
         $orders=Orders::where('order_status','<>',"");
                     if ($request->has('filter_status')) {
                         $orders->where('order_status',13);
