@@ -93,7 +93,33 @@ class VendorController extends Controller
             'address1'       => 'required',
             'country'        => 'required'
         ]);
-        
+
+        $vendor_id      = '';
+        $vendor_code = Prefix::where('key','prefix')->where('code','vendor')->value('content');
+        if (isset($vendor_code)) {
+            $value = unserialize($vendor_code);
+            $char_val = $value['value'];
+            $year = date('Y');
+            $total_datas = Vendor::count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $vendor_id=$replace_number;
+        }
+
+
         $gst_image= $request->hasFile('vendorGst_image');
         if($gst_image){
             $photo          = $request->file('vendorGst_image');            
@@ -133,7 +159,7 @@ class VendorController extends Controller
         if($request->vendor_status){$status = 1;}else{$status = 0;}
 
         $add_vendor = new Vendor;
-        $add_vendor->code = $request->code;
+        $add_vendor->code = $vendor_id;
         $add_vendor->uen = $request->vendor_uen;
         $add_vendor->name = $request->vendor_name;
         $add_vendor->email = $request->email;
