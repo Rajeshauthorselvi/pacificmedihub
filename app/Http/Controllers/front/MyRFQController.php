@@ -124,12 +124,15 @@ class MyRFQController extends Controller
         $user_id = Auth::id();
         $sales_rep_id = User::where('id',$user_id)->value('sales_rep');
 
+        $delivery_charge = DeliveryMethod::find($request->delevery_method);
+
         $rfq_details=[
             'order_no'            => $rfq_code,
             'status'              => 22,
             'customer_id'         => $user_id,
             'sales_rep_id'        => isset($sales_rep_id)?$sales_rep_id:0,
             'delivery_method_id'  => $request->delevery_method,
+            'delivery_charge'     => isset($delivery_charge)?$delivery_charge:0,
             'notes'               => $request->notes,
             'user_id'             => $user_id,
             'delivery_address_id' => $request->delivery_address,

@@ -81,7 +81,9 @@
                                               <th>{{ $option }}</th>
                                             @endforeach
                                             <th>Ordered Qty</th>
+                                            <th class="quantity-info">Damage Qty</th>
                                             <th class="quantity-info">Return Qty</th>
+                                            <th class="quantity-info">Total Return Qty</th>
                                           </tr>
                                         </thead>
                                         <tbody>
@@ -109,7 +111,9 @@
                                                 <td> {{$variant['option_value5']}} </td>
                                               @endif
                                               <td>{{ $variation_details['quantity'] }}</td>
+                                              <td>{{ $return_details['damage_quantity'] }}</td>
                                               <td>{{ $return_details['return_quantity'] }}</td>
+                                              <td>{{ $return_details['total_return_quantity'] }}</td>
                                             </tr>
                                           @endforeach
                                         </tbody>

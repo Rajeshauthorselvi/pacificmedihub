@@ -118,8 +118,8 @@ class MyOrdersController extends Controller
           $add_rtn_prod->order_product_variant_id = $item_details['order_product_variant_id'][$key];
           $add_rtn_prod->qty_received     = $item_details['recived_qty'][$key];
           $add_rtn_prod->damage_quantity  = $item_details['damaged_qty'][$key];
-          //$add_rtn_prod->missed_quantity  = $item_details['missed_qty'][$key];
           $add_rtn_prod->return_quantity  = $item_details['return_qty'][$key];
+          $add_rtn_prod->total_return_quantity = $item_details['total_return_qty'][$key];
           $add_rtn_prod->stock_quantity   = $item_details['stock_qty'][$key];
           $add_rtn_prod->timestamps       = false;
           $add_rtn_prod->save();
@@ -287,15 +287,15 @@ class MyOrdersController extends Controller
         $order_items[$key]['quantity'] = $item->quantity;
         $order_items[$key]['qty_received'] = 0;
         $order_items[$key]['damaged_qty'] = 0;
-        $order_items[$key]['missed_qty']  = 0;
         $order_items[$key]['return_qty']  = 0;
+        $order_items[$key]['total_return_qty']  = 0;
         $order_items[$key]['stock_qty']   = 0;
         if(isset($order_return)){
           $return_products = CustomerOrderReturnProducts::where('customer_order_return_id',$order_return->id)->where('order_product_id',$item->product->id)->first();
           $order_items[$key]['qty_received'] = $return_products->qty_received;
           $order_items[$key]['damaged_qty']  = $return_products->damage_quantity;
-          $order_items[$key]['missed_qty']   = $return_products->missed_quantity;
           $order_items[$key]['return_qty']   = $return_products->return_quantity;
+          $order_items[$key]['total_return_qty']   = $return_products->total_return_quantity;
           $order_items[$key]['stock_qty']    = $return_products->stock_quantity;
         }
       }

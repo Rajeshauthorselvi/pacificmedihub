@@ -38,7 +38,7 @@ class StockInTransitCustomerController extends Controller
         $order = Orders::find($value->order_id);
         $order_products_qty = OrderProducts::where('order_id',$order->id)->sum('quantity');
         $return_products_recived_qty = CustomerOrderReturnProducts::where('customer_order_return_id',$value->id)->where('order_id',$value->order_id)->sum('qty_received');
-        $return_products_return_qty = CustomerOrderReturnProducts::where('customer_order_return_id',$value->id)->where('order_id',$value->order_id)->sum('return_quantity');
+        $return_products_return_qty = CustomerOrderReturnProducts::where('customer_order_return_id',$value->id)->where('order_id',$value->order_id)->sum('total_return_quantity');
         $returns[]=[
           'return_id'       => $value->id,
           'return_date'     => date('d-m-Y',strtotime($value->created_at)),
@@ -46,7 +46,6 @@ class StockInTransitCustomerController extends Controller
           'order_number'    => $order->order_no,
           'quantity'        => $order_products_qty,
           'return_quantity' => $return_products_return_qty,
-          //'qty_received'    => $return_products_recived_qty,
           'status_id'       => $value->statusName->id,
           'status'          => $value->statusName->status_name,
           'color_code'      => $value->statusName->color_codes

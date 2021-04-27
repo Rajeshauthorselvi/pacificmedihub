@@ -30,7 +30,7 @@
 
 										<td class="product-data">
 											<div class="image">
-												@if($items['product_image']!='placeholder.jpg')
+												@if($items['product_image']!=null)
 													<a href="{{ $items['link'] }}"><img src="{{asset('theme/images/products/main/'.$items['product_image'])}}"></a>
 												@else
 													<a href="{{ $items['link'] }}"><img src="{{ asset('theme/images/products/placeholder.jpg') }}"></a>

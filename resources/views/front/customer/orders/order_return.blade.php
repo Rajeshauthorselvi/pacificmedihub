@@ -113,14 +113,14 @@
               <div class="table-responsive">
                 <table class="table">
                   <thead>
-                    <th>No.</th>
-                    <th style="width:50%">Product Name</th>
+                    <th class="text-center">No.</th>
+                    <th class="text-center" style="width:50%">Product Name</th>
                     <th class="text-center width">Qty Ordered</th>
-                    <th class="text-center width">Qty Received <br><small>(a)</small></th>
-                    <th class="text-center width">Damaged Qty</th>
-                    {{-- <th class="text-center width">Missed Qty <br><small>(a - b)</small></th> --}}
-                    <th class="text-center width">Return Qty <br><small>(b)</small></th>
-                    <th class="text-center width">Qty in Hand <br><small>(a - b)</small></th>
+                    <th class="text-center width">Qty Received <small>(a)</small></th>
+                    <th class="text-center width">Damaged Qty <small>(b)</small></th>
+                    <th class="text-center width">Return Qty <small>(c)</small></th>
+                    <th class="text-center width">Total Return Qty <small>d=(b + c)</small></th>
+                    <th class="text-center width">Qty in Hand <small>(a - d)</small></th>
                   </thead>
                   <tbody>
                     <input type="hidden" name="order_id" value="{{ $order->id }}">
@@ -165,11 +165,11 @@
                       <td class="text-center">
                         <input type="text" name="item[damaged_qty][]" class="form-control damaged-qty" value="{{ $products['damaged_qty'] }}">
                       </td>
-                      {{-- <td class="text-center">
-                        <input type="text" name="item[missed_qty][]" class="form-control missed-qty" value="{{ $products['missed_qty'] }}" readonly>
-                      </td> --}}
                       <td class="text-center">
-                        <input type="text" name="item[return_qty][]" class="form-control return-qty" value="{{ $products['return_qty'] }}" readonly>
+                        <input type="text" name="item[return_qty][]" class="form-control return-qty" value="{{ $products['return_qty'] }}">
+                      </td>
+                      <td class="text-center">
+                        <input type="text" name="item[total_return_qty][]" class="form-control total-return-qty" value="{{ $products['total_return_qty'] }}" readonly>
                       </td>
                       <td class="text-center">
                         <input type="text" name="item[stock_qty][]" class="form-control stock-qty" value="{{ $products['quantity'] }}" readonly>
@@ -197,19 +197,13 @@
     </div>
   </div>
 </div>
+<style type="text/css">
+  .product-sec table th.width{
+    min-width:70px
+  }
+</style>
 @push('custom-scripts')
 <script type="text/javascript">
-  $(document).on('change', '.recived-qty', function(event) {
-    if(this.value==''){
-        $(this).val(0); 
-      }
-      var recivedQty = $(this).val();
-      var orderedQty = $(this).parents('tr').find('.qty').text();
-      if(parseInt(orderedQty)<parseInt(recivedQty)){
-        $(this).val(orderedQty);
-      }
-      $(this).trigger('keyup');
-  });
   $(document).on('change', '.damaged-qty', function(event) {
     if(this.value==''){
         $(this).val(0); 
@@ -221,25 +215,18 @@
       }
       $(this).trigger('keyup');
   });
-  $(document).ready(function() {
-    $('.recived-qty').on('keyup',function(){
-      if(this.value==''){
+  $(document).on('change', '.return-qty', function(event) {
+    if(this.value==''){
         $(this).val(0); 
       }
-      if (/\D/g.test(this.value))
-      {
-        this.value = this.value.replace(/\D/g, '');
+      var returnQty = $(this).val();
+      var recivedQty = $(this).parents('tr').find('.recived-qty').val();
+      if(parseInt(recivedQty)<parseInt(returnQty)){
+        $(this).val(recivedQty);
       }
-      var recivedQty = $(this).val();
-      var orderedQty = $(this).parents('tr').find('.qty').text();
-      var damagedQty = $(this).parents('tr').find('.damaged-qty').val();
-      var missedQty  = parseInt(orderedQty)-parseInt(recivedQty);
-      var stockQty   = parseInt(recivedQty)-parseInt(damagedQty);
-      $(this).parents('tr').find('.missed-qty').val(missedQty);
-      $(this).parents('tr').find('.return-qty').val(damagedQty);
-      $(this).parents('tr').find('.stock-qty').val(stockQty);
-    });
-
+      $(this).trigger('keyup');
+  });
+  $(document).ready(function() {
     $('.damaged-qty').on('keyup',function(){
       if(this.value==''){
         $(this).val(0); 
@@ -248,18 +235,32 @@
       {
         this.value = this.value.replace(/\D/g, '');
       }
-      /*var recivedQty = $(this).parents('tr').find('.recived-qty').val();*/
       var orderedQty = $(this).parents('tr').find('.qty').text();
       var damagedQty = $(this).val();
-      var stockQty   = parseInt(orderedQty)-parseInt(damagedQty)
-      $(this).parents('tr').find('.return-qty').val(damagedQty);
+      var returnQty  = $(this).parents('tr').find('.return-qty').val();
+      var totalReturnQty = parseInt(damagedQty)+parseInt(returnQty);
+      var stockQty   = parseInt(orderedQty)-parseInt(totalReturnQty);
+      $(this).parents('tr').find('.total-return-qty').val(totalReturnQty);
       $(this).parents('tr').find('.stock-qty').val(stockQty);
-      /*var missedQty  = parseInt(orderedQty)-parseInt(recivedQty);
-      var stockQty   = parseInt(recivedQty)-parseInt(damagedQty);
-      $(this).parents('tr').find('.missed-qty').val(missedQty);
-      $(this).parents('tr').find('.return-qty').val(damagedQty);
-      $(this).parents('tr').find('.stock-qty').val(stockQty);*/
     });
+
+    $('.return-qty').on('keyup',function(){
+      if(this.value==''){
+        $(this).val(0); 
+      }
+      if (/\D/g.test(this.value))
+      {
+        this.value = this.value.replace(/\D/g, '');
+      }
+      var orderedQty = $(this).parents('tr').find('.qty').text();
+      var damagedQty = $(this).parents('tr').find('.damaged-qty').val();
+      var returnQty  = $(this).val();
+      var totalReturnQty = parseInt(damagedQty)+parseInt(returnQty);
+      var stockQty   = parseInt(orderedQty)-parseInt(totalReturnQty);
+      $(this).parents('tr').find('.total-return-qty').val(totalReturnQty);
+      $(this).parents('tr').find('.stock-qty').val(stockQty);
+    });
+
   });
 
   

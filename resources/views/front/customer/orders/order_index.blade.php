@@ -34,7 +34,6 @@
                       <span>Delivered Date</span>: {{ date('d/m/Y',strtotime($order['delivered_at'])) }}
                     @endif
                   </div>
-                  
                 </div>
                 <?php 
                   if($order['payment_status']==1) $pay_status = 'Paid';

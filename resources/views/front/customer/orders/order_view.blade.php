@@ -99,8 +99,12 @@
                     </span>
                   </p>
                   <p>
-                    <span>Tel: {{$delivery_address->mobile}}</span><br>
-                    <span>Email: {{$cus_email}}</span>
+                    @if(isset($delivery_address->mobile))
+                      <span>Tel: {{$delivery_address->mobile}}</span><br>
+                    @endif
+                    @if(isset($cus_email))
+                      <span>Email: {{$cus_email}}</span>
+                    @endif
                   </p>
                 </div>
               </div>
@@ -124,8 +128,12 @@
                       </span>
                     </p>
                     <p>
-                      <span>Tel: {{$admin_address->post_code}}</span><br>
-                      <span>Email: {{$admin_address->company_email}}</span>
+                      @if(isset($admin_address->contact_number))
+                        <span>Tel: {{$admin_address->contact_number}}</span><br>
+                      @endif
+                      @if(isset($admin_address->email))
+                        <span>Email: {{$admin_address->email}}</span>
+                      @endif
                     </p>
                   </div>
                 </div>
