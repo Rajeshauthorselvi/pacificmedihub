@@ -79,7 +79,8 @@ class OrderReportController extends Controller
                                ->where('is_deleted',0)
                                ->pluck('name','id')
                                ->toArray();
-        $data['order_status']=['Please Select']+OrderStatus::pluck('status_name','id')->toArray();
+        $data['order_status']=['Please Select']+OrderStatus::whereIn('id',[11,12,13,14,15,16,17,18,19,21])
+                              ->pluck('status_name','id')->toArray();
         $from_date=date('Y-m-d',strtotime($dates[0]));
         $to_date=date('Y-m-d',strtotime($dates[1] . " +1 days"));
         $orders=Orders::where('order_status','<>',"");
