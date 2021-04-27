@@ -31,6 +31,7 @@
                   elseif($rfq['status']==25) { $status = 'Quoted'; $color_code = '#5bc0de'; }
                   elseif($rfq['status']==21) { $status = 'Rejected'; $color_code = '#dd4b39'; }
                   elseif($rfq['status']==10) { $status = 'Order Placed'; $color_code = '#00a65a'; }
+                  elseif($rfq['status']==11) { $status = 'Cancelled'; $color_code = '#dd4b39'; }
                 ?>
                 <div class="header">
                   <div class="col-sm-4 text-left">
@@ -55,7 +56,9 @@
                   </div>
                   <div class="col-sm-5 text-right">
                     <?php $rfq_id = base64_encode($rfq['id']);?>
-                    <a href="{{ route('my.rfq.comments',$rfq_id) }}" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>
+                    @if($rfq['status']!=11)
+                      <a href="{{ route('my.rfq.comments',$rfq_id) }}" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>
+                    @endif
                     <a href="{{ route('my-rfq.show',$rfq_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
                     @if($rfq['status']==25)
                       <a href="{{ route('my-rfq.edit',$rfq_id) }}" class="btn view"><i class="far fa-edit"></i>&nbsp;Edit</a>

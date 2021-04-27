@@ -41,7 +41,7 @@
                   
                   <div class="action_sec">
                     <div class="clearfix"></div>
-                    <ul class="list-unstyled">
+                    <ul class="list-unstyled" style="@if($rfqs->status==11) display:none; @endif">
                       @if($rfqs->status==25 || $rfqs->status==24)
                         <li>
                           <a href="{{ route('rfq.toOrder',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
