@@ -41,84 +41,103 @@
                 <form action="{{route('categories.store')}}" method="post" enctype="multipart/form-data">
                   @csrf 
                   <div class="form-group">
-                    <label for="categoryName">Category Name *</label>
-                    <input type="text" class="form-control" name="category_name" id="categoryName" value="{{old('category_name')}}" autocomplete="off">
-                    @if($errors->has('category_name'))
-                      <span class="text-danger">{{ $errors->first('category_name') }}</span>
-                    @endif
-                  </div>
-                  <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" rows="3" name="category_description" id="description">{{old('category_description')}}</textarea>
-                  </div>
-                  <div class="form-group">
-                    <label>Parent Category</label>
-                    <select class="form-control select2bs4" name="parent_category">
-                      <option selected="selected" value="">[None]</option>
-                      @foreach($categories as $category)
-                        <?php
-                          $category_name = $category->name;
-                          if($category->parent_category_id!=NULL){
-                            $category_name = $category->parent->name.'  >>  '.$category->name;
-                          }
-                        ?>
-                        <option value="{{$category->id}}" {{ (collect(old('parent_category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="categoryImage">Image</label>
-                    <div class="custom-file">
-                      <input type="file" class="custom-file-input" name="category_image" id="categoryImage" accept="image/*" value="{{old('category_image')}}">
-                      <label class="custom-file-label" for="categoryImage">Choose file</label>
+                    <div class="col-sm-6">
+                      <label for="categoryName">Category Name *</label>
+                      <input type="text" class="form-control" name="category_name" id="categoryName" value="{{old('category_name')}}" autocomplete="off">
+                      @if($errors->has('category_name'))
+                        <span class="text-danger">{{ $errors->first('category_name') }}</span>
+                      @endif
                     </div>
-                  </div>
-                  <div class="form-group clearfix">
-                    <div class="icheck-info d-inline">
-                      <input type="checkbox" name="category_published" id="Published" checked>
-                      <label for="Published">Published</label>
-                    </div>
-                  </div>
-                  <div class="form-group clearfix">
-                    <div class="icheck-info d-inline">
-                      <input type="checkbox" name="category_homepage" id="homePage" @if(old('category_homepage')=='on') checked @endif>
-                      <label for="homePage">Show on Home Page</label>
+                    <div class="col-sm-6">
+                      <label>Parent Category</label>
+                      <select class="form-control select2bs4" name="parent_category">
+                        <option selected="selected" value="">[None]</option>
+                        @foreach($categories as $category)
+                          <?php
+                            $category_name = $category->name;
+                            if($category->parent_category_id!=NULL){
+                              $category_name = $category->parent->name.'  >>  '.$category->name;
+                            }
+                          ?>
+                          <option value="{{$category->id}}" {{ (collect(old('parent_category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
+                        @endforeach
+                      </select>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="displayOrder">Display Order</label>
-                    <input type="number" class="form-control" name="display_order" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" id="displayOrder" value="{{old('display_order',$display_order+1)}}">
+                    <div class="col-sm-6">
+                      <label for="categoryImage">Web Banner Image</label>
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="category_image" id="categoryImage" accept="image/*" value="{{old('category_image')}}">
+                        <label class="custom-file-label" for="categoryImage">Choose file</label>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <label for="categoryIcon">Mobile Icon Image</label>
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="category_icon" id="categoryIcon" accept="image/*" value="{{old('category_icon')}}">
+                        <label class="custom-file-label" for="categoryIcon">Choose file</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label for="description">Description</label>
+                      <textarea class="form-control" rows="3" name="category_description" id="description">{{old('category_description')}}</textarea>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-md-6">
+                      <label for="searchEngine">Search Engine Friendly Page Name *</label>
+                      <span title="Set a search engine friendly page name e.g. 'the-best-category' to make your page URL 'http://www.abcdxyz.com/the-best-category'." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
+                      <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
+                      @if($errors->has('search_engine'))
+                        <span class="text-danger">{{ $errors->first('search_engine') }}</span>
+                      @endif
+                    </div>
+                    <div class="col-md-6">
+                      <label for="metaTile">Meta Title</label>
+                      <span title="Override the page title. The default is the name of the category." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
+                      <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title')}}">
+                    </div>
                   </div>
                   <div class="form-group">
-                    <label for="searchEngine">Search Engine Friendly Page Name *</label>
-                    <span title="Set a search engine friendly page name e.g. 'the-best-category' to make your page URL 'http://www.abcdxyz.com/the-best-category'." class="ico-help">
-                      <i class="fa fa-question-circle"></i>
-                    </span>
-                    <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
-                    @if($errors->has('search_engine'))
-                      <span class="text-danger">{{ $errors->first('search_engine') }}</span>
-                    @endif
+                    <div class="col-md-6">
+                      <label for="metaKeyword">Meta Keywords</label>
+                      <span title="Meta description to be added to category page header." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
+                      <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword')}}</textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="metaDescription">Meta Description</label>
+                      <span title="Meta description to be added to category page header." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
+                      <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description')}}</textarea>
+                    </div>
                   </div>
                   <div class="form-group">
-                    <label for="metaTile">Meta Title</label>
-                    <span title="Override the page title. The default is the name of the category." class="ico-help">
-                      <i class="fa fa-question-circle"></i>
-                    </span>
-                    <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title')}}">
-                  </div>
-                  <div class="form-group">
-                    <label for="metaKeyword">Meta Keywords</label>
-                    <span title="Meta description to be added to category page header." class="ico-help">
-                      <i class="fa fa-question-circle"></i>
-                    </span>
-                    <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword')}}</textarea>
-                  </div>
-                  <div class="form-group">
-                    <label for="metaDescription">Meta Description</label>
-                    <span title="Meta description to be added to category page header." class="ico-help">
-                      <i class="fa fa-question-circle"></i>
-                    </span>
-                    <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description')}}</textarea>
+                    <div class="col-md-6">
+                      <label for="displayOrder">Display Order</label>
+                      <input type="number" class="form-control" name="display_order" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" id="displayOrder" value="{{old('display_order',$display_order+1)}}">
+                    </div>
+                    <div class="col-md-2" style="margin-top:1rem">
+                      <div class="icheck-info">
+                        <input type="checkbox" name="category_published" id="Published" checked>
+                        <label for="Published">Published</label>
+                      </div>
+                      <div class="icheck-info">
+                        <input type="checkbox" name="category_homepage" id="homePage" @if(old('category_homepage')=='on') checked @endif>
+                        <label for="homePage">Show on Home Page</label>
+                      </div>
+                    </div>
                   </div>
                   <div class="form-group">
                     <a href="{{route('categories.index')}}" class="btn reset-btn">Cancel</a>
@@ -133,6 +152,9 @@
     </section>
   </div>
   
+  <style type="text/css">
+    .form-group{display:flex}
+  </style>
   @push('custom-scripts')
     <script type="text/javascript">
       $(document).on('keyup','#categoryName',function(){
