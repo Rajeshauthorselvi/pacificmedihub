@@ -33,13 +33,13 @@
               </a>
             </div>
             @endif --}}
-           {{--  @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('department_setting','create'))
+            @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('department_setting','create'))
             <div class="col-sm-6 text-right pull-right">
               <a class="btn add-new" href="{{route('departments.create')}}">
                 <i class="fas fa-plus-square"></i>&nbsp;&nbsp;Add New
               </a>
             </div>
-            @endif --}}
+            @endif
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -51,7 +51,8 @@
                   <table id="example2" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th><input type="checkbox" class="select-all"></th>
+                        {{-- <th><input type="checkbox" class="select-all"></th> --}}
+                        <th>S.No</th>
                       	<th>Name</th>
                       	<th>Published</th>
                       	<th>Action</th>
@@ -60,7 +61,10 @@
                     <tbody>
                     	@foreach($departments as $dept)
                         <tr>
-                          <td><input type="checkbox" value="{{ $dept->id }}" name="dept-ids"></td>
+                          {{-- <td><input type="checkbox" value="{{ $dept->id }}" name="dept-ids"></td> --}}
+                          <td>
+                            {{ $loop->iteration }}
+                          </td>
                           <td>{{$dept->dept_name}}</td>
                            <?php
                             if($dept->status==1){$status = "fa-check";}
@@ -68,24 +72,30 @@
                           ?>
                           <td><i class="fas {{$status}}"></i></td>
                           <td>
+                            @if ($dept->id>3)
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
                                 @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('department_setting','update'))
+
                                 <a href="{{route('departments.edit',$dept->id)}}"><li class="dropdown-item">
                                   <i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li>
                                 </a>
                                 @endif
-                               {{--  @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('department_setting','delete'))
+                                
+                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('department_setting','delete'))
                                 <a href="#"><li class="dropdown-item">
                                   <form method="POST" action="{{ route('departments.destroy',$dept->id) }}">@csrf 
                                     <input name="_method" type="hidden" value="DELETE">
                                     <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
                                   </form></li>
                                 </a>
-                                @endif --}}
+                                @endif
                               </ul>
                             </div>
+                            @else
+                              -
+                            @endif
                           </td>
                         </tr>
                       @endforeach
