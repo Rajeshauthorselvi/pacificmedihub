@@ -770,6 +770,15 @@ class MyRFQController extends Controller
         return true;
     }
 
+    public function cancelRFQ($rfq_id)
+    {
+        $id = base64_decode($rfq_id);
+        $rfq = RFQ::find($id);
+        $rfq->status = 11;
+        $rfq->save();
+        return redirect()->route('my-rfq.index')->with('error','Your RFQ '.$rfq->order_no.' is cancelled successfully!');
+    }
+
     public function placeOrder($rfq_id)
     {
         $id = base64_decode($rfq_id);

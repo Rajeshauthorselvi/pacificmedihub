@@ -39,7 +39,10 @@
                     <a href="{{ route('reject.customer') }}" class="nav-link" title="Rejected Customer List"><i class="fas fa-user-times"></i> &nbsp;Rejected Customers</a>
                   </li>
                   <li class="nav-item">
-                    <a href="" class="nav-link active" title="Blocked Customer List"><i class="fas fa-user-lock"></i> &nbsp;Blocked</a>
+                    <a href="{{ route('blocked.customer') }}" class="nav-link active" title="Blocked Customer List"><i class="fas fa-user-lock"></i> &nbsp;Blocked</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('interested.customers') }}" class="nav-link" title="Interested Customer List"><i class="fas fa-user-tie"></i> &nbsp;Interested Customers</a>
                   </li>
                 </ul>
               </div>

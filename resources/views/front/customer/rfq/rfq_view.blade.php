@@ -43,7 +43,7 @@
           <div class="action_sec">
             @if($rfq->status!=21 && $data_from!='child')
             <?php $rfq_id = base64_encode($rfq->id); ?>
-              <ul class="list-unstyled">
+              <ul class="list-unstyled" style="@if($rfq->status==11) display:none; @endif">
                 <li style="background-color: #216ea7;border-right: 1px solid #227bbb;@if($rfq->status==22||$rfq->status==23||$rfq->status==10) display:none; @endif">
                   @if(($check_parent->parent_company!=0)&&($rfq->send_approval==0))
                     <a href="{{ route('send.rfq.approval',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Send Approval?')">
@@ -79,6 +79,11 @@
                     <i class="fa fa-edit"></i>&nbsp; Edit
                   </a>
                 </li>
+                <li style="background-color:#dd4b39;display: @if($rfq->status==22||$rfq->status==25)block @else none; @endif">
+                  <a href="{{ route('my.rfq.cancel',$rfq_id) }}" class="cancel" onclick="return confirm('Are you sure want to Cancel this RFQ?')">
+                    <i class="far fa-window-close"></i>&nbsp; Cancel
+                  </a>
+                </li>
               </ul>
             @endif
           </div>
@@ -98,6 +103,7 @@
                   elseif($rfq['status']==25) { $status = 'Quoted'; $color_code = '#5bc0de'; }
                   elseif($rfq['status']==21) { $status = 'Rejected'; $color_code = '#dd4b39'; }
                   elseif($rfq['status']==10) { $status = 'Order Placed'; $color_code = '#00a65a'; }
+                  elseif($rfq['status']==11) { $status = 'Cancelled'; $color_code = '#dd4b39'; }
                 ?>
                 <li><span>Status</span>: <span class="badge" style="background:{{$color_code}};color:#fff;padding: 5px">{{ $status }}</span></li>
                 <?php 

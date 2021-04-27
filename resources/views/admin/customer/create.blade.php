@@ -176,7 +176,7 @@
 
                       <div class="form-group">
                         <div class="col-sm-6">
-                          <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancle</a>
+                          <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancel</a>
                           <button type="button" id="validateStep1" class="btn save-btn next-step">Next</button>
                         </div>
                       </div>

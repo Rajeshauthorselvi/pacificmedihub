@@ -42,6 +42,9 @@
                   <li class="nav-item">
                     <a href="{{ route('blocked.customer') }}" class="nav-link" title="Blocked Customer List"><i class="fas fa-user-lock"></i> &nbsp;Blocked Customers</a>
                   </li>
+                  <li class="nav-item">
+                    <a href="{{ route('interested.customers') }}" class="nav-link" title="Interested Customer List"><i class="fas fa-user-tie"></i> &nbsp;Interested Customers</a>
+                  </li>
                 </ul>
               </div>
               <div class="card">

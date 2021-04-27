@@ -28,7 +28,23 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-              	<h4>Interested Customers</h4>
+              	<ul class="nav nav-tabs flex-nowrap">
+                  <li class="nav-item">
+                    <a href="{{ route('customers.index') }}" class="nav-link" title="Active Customer List"><i class="fas fa-users"></i> &nbsp;Active Customers</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('new.customer') }}" class="nav-link" title="New Customer Requests List"><i class="fas fa-user-plus"></i> &nbsp;New Requests</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('reject.customer') }}" class="nav-link" title="Rejected Customer List"><i class="fas fa-user-times"></i> &nbsp;Rejected Customers</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('blocked.customer') }}" class="nav-link " title="Blocked Customer List"><i class="fas fa-user-lock"></i> &nbsp;Blocked Customers</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="" class="nav-link active" title="Interested Customer List"><i class="fas fa-user-tie"></i> &nbsp;Interested Customers</a>
+                  </li>
+                </ul>
               </div>
               <div class="card">
                 <div class="card-body">
@@ -60,5 +76,11 @@
       </div>
     </section>
   </div>
-
+  <style type="text/css">
+    .customer .pull-left{width:80%}
+    .customer .nav.nav-tabs.flex-nowrap {border: none;}
+    .customer .nav-tabs .nav-item{margin:0 3px;width:21%;text-align:center;}
+    .customer .nav-tabs .nav-item .nav-link{border: none;border-radius: 0;background: #ebeff5;}
+    .customer .nav-tabs .nav-item .nav-link.active {background: #02abbf;color: #fff;}
+  </style>
  @endsection

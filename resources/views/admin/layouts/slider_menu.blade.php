@@ -156,15 +156,10 @@
           </li>
           
           <!-- Customer Menu -->
-          <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit'||$current_route=='customers.show'||$current_route=='reject.customer'||$current_route=='new.customer'||$current_route=='blocked.customer') active @endif">
+          <li class="nav-item @if($current_route=='customers.index'||$current_route=='customers.create'||$current_route=='customers.edit'||$current_route=='customers.show'||$current_route=='reject.customer'||$current_route=='new.customer'||$current_route=='blocked.customer'||$current_route=='interested.customers') active @endif">
             <a href="{{ route('customers.index') }}" class="nav-link"><i class="fas fa-users"></i><p>Customers</p></a>
           </li>
             
-          <!-- Interested Customer Menu -->
-            <li class="nav-item @if($current_route=='interested.customers') active @endif">
-            <a href="{{ route('interested.customers') }}" class="nav-link"><i class="fas fa-user-tie"></i><p>Interested Customers</p></a>
-          </li>
-
           <!-- Vendor Menu -->
           <li class="nav-item @if($current_route=='vendor.index'||$current_route=='vendor.create'||$current_route=='vendor.edit'||$current_route=='vendor.show'||$current_route=='vendor-products.index') active @endif">
             <a href="{{route('vendor.index')}}" class="nav-link"><i class="fas fa-people-carry"></i><p>Vendor</p></a>
@@ -243,11 +238,11 @@
           </li>
 
           <!-- Settings Menu -->
-          <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings-prefix.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit'||$current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit'||$current_route=='delivery-methods.index'||$current_route=='delivery-methods.edit') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings-prefix.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit'||$current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit'||$current_route=='delivery-methods.index'||$current_route=='delivery-methods.edit'||$current_route=='delivery-methods.create') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link"><i class="fas fa-cog"></i>
               <p>Settings<i class="fas fa-angle-left right"></i></p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings-prefix.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit'||$current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit'||$current_route=='delivery-methods.index'||$current_route=='delivery-methods.edit') block @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='access-control.index'||$current_route=='access-control.create'||$current_route=='access-control.edit'||$current_route=='access-control.show'||$current_route=='settings-prefix.index'||$current_route=='currency.index'||$current_route=='payment_method.index'||$current_route=='departments.index'||$current_route=='departments.create'||$current_route=='departments.edit'||$current_route=='comission_value.index'||$current_route=='comission_value.edit'||$current_route=='comission_value.create'||$current_route=='currency.create'||$current_route=='currency.edit'||$current_route=='payment_method.create'||$current_route=='payment_method.edit'||$current_route=='tax.index'||$current_route=='tax.create'||$current_route=='tax.edit'||$current_route=='delivery-methods.index'||$current_route=='delivery-methods.edit'||$current_route=='delivery-methods.create') block @endif">
               {{-- <li class="nav-item">
                 <a href="" class="nav-link"><i class="fas fa-angle-double-right"></i><p>General Settings</p></a>
               </li> --}}

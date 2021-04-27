@@ -91,34 +91,40 @@
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
-                              <ul class="dropdown-menu">
-                                <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
-                                @if($rfq->status!=23)
-                                  @if ($rfq->status!=10 && (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','update')))
-                                    <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                              @if($rfq->status==11) 
+                                <ul class="dropdown-menu">
+                                  <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
+                                </ul>
+                              @else
+                                <ul class="dropdown-menu">
+                                  <a href="{{route('rfq.show',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-eye"></i>&nbsp;&nbsp;View</li></a>
+                                  @if($rfq->status!=23)
+                                    @if ($rfq->status!=10 && (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','update')))
+                                      <a href="{{route('rfq.edit',$rfq->id)}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
+                                    @endif
                                   @endif
-                                @endif
-                                @if($rfq->status==25 || $rfq->status==24)
-                                  <a href="{{ route('rfq.toOrder',$rfq->id) }}" onclick="return confirm('Are you sure want to Place Order?')"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
-                                @endif
-                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
+                                  @if($rfq->status==25 || $rfq->status==24)
+                                    <a href="{{ route('rfq.toOrder',$rfq->id) }}" onclick="return confirm('Are you sure want to Place Order?')"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
+                                  @endif
+                                  <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
 
-                                <a href="{{ url('admin/rfq_pdf/'.$rfq->id) }}"><li class="dropdown-item"><i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF</li></a>
+                                  <a href="{{ url('admin/rfq_pdf/'.$rfq->id) }}"><li class="dropdown-item"><i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF</li></a>
 
-                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</li></a>
+                                  <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</li></a>
 
-                                <a href="{{ url('admin/rfq-comments/'.$rfq->id) }}"><li class="dropdown-item"><i class="fas fa-comments"></i>&nbsp;&nbsp;Comments</li></a>
+                                  <a href="{{ url('admin/rfq-comments/'.$rfq->id) }}"><li class="dropdown-item"><i class="fas fa-comments"></i>&nbsp;&nbsp;Comments</li></a>
 
-                                <a href="javascript:void(0)"><li class="dropdown-item"><i class="fas fa-print"></i>&nbsp;&nbsp;Print</li></a>
-                                @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','delete'))
-                                <a href="javascript:void(0)"><li class="dropdown-item">
-                                  <form method="POST" action="{{ route('rfq.destroy',$rfq->id) }}">@csrf 
-                                    <input name="_method" type="hidden" value="DELETE">
-                                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
-                                  </form>
-                                </li></a>
-                                @endif
-                              </ul>
+                                  <a href="javascript:void(0)"><li class="dropdown-item"><i class="fas fa-print"></i>&nbsp;&nbsp;Print</li></a>
+                                  @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('rfq','delete'))
+                                  <a href="javascript:void(0)"><li class="dropdown-item">
+                                    <form method="POST" action="{{ route('rfq.destroy',$rfq->id) }}">@csrf 
+                                      <input name="_method" type="hidden" value="DELETE">
+                                      <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
+                                    </form>
+                                  </li></a>
+                                  @endif
+                                </ul>
+                              @endif
                             </div>
                           </td>
                         </tr>
