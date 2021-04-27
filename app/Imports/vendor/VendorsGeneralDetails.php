@@ -113,7 +113,7 @@ class VendorsGeneralDetails implements  ToCollection, WithHeadingRow, WithValida
     	return [
             // 'vendor_uen' => Rule::unique('vendors', 'uen'),
     		'vendorid' => 'required|unique:vendors,id',
-    		'vendor_uen'	 => 'required|unique:vendors,uen',
+    		'vendor_uen'	 => 'unique:vendors,uen',
 			'vendor_name' => 'required',
 			'contact_no' => 'required',
 			'address' => 'required',
