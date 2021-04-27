@@ -1,5 +1,6 @@
 @extends('front.layouts.default')
 @section('front_end_container')
+
 <div class="breadcrumbs">
 	<div class="container">
 		<ul class="items">
@@ -181,24 +182,24 @@
 										<h4><strong>Related</strong> Products</h4>
 									</div>
 									<div id="product-scroll" class="owl-carousel product-scroll owl-theme">
-										@foreach($related_products as $product)
+										@foreach($related_products as $rproduct)
 											<?php 
-	                      if(!empty($product->main_image)){$image = "theme/images/products/main/".$product->main_image;}
+	                      if(!empty($rproduct->main_image)){$image = "theme/images/products/main/".$rproduct->main_image;}
 	                      else {$image = "theme/images/products/placeholder.jpg";}
 
-	                      $category_slug = $product->category->search_engine_name;
-	                      $product_id = base64_encode($product->id);
+	                      $category_slug = $rproduct->category->search_engine_name;
+	                      $rproduct_id = base64_encode($rproduct->id);
 						          ?>
 										
 										  <div class="item">
 									    	<div class="product-inner">
 									    		<div class="product-thumb">
-									    			<a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}"><img src="{{asset($image)}}" alt="{{ $product->name }}" width="269" height="232" /></a>
+									    			<a href="{{ url("$category_slug/$rproduct->search_engine_name/$rproduct_id") }}"><img src="{{asset($image)}}" alt="{{ $rproduct->name }}" width="269" height="232" /></a>
 									    			<div class="pro-tag"><span class="new-label">NEW</span></div>
 									    			<div class="pro-fav">
 									    				<?php 
 									    					$wish_list = 0;
-									    					$wish_list = array_search($product->id, array_column($wishlist, 'product_id'));
+									    					$wish_list = array_search($rproduct->id, array_column($wishlist, 'product_id'));
 									    					$row = $wish_list+1;
 									    					$check_wish = (string)$wish_list;
 									    					if((count($wishlist)!=0)&&$check_wish!=""){
@@ -211,12 +212,12 @@
 									    						$check = false;
 									    					}
 									    				?>
-									    				<a productID="{{$product_id}}" check="{{$check}}" rowID="{{ $row_id }}" class="wishlist-action"><i class="{{ $icon }} fa-heart"></i></a>
+									    				<a productID="{{$rproduct_id}}" check="{{$check}}" rowID="{{ $row_id }}" class="wishlist-action"><i class="{{ $icon }} fa-heart"></i></a>
 								    				</div>
 									    		</div>
 									    		<div class="product-info">
-									    			<a class="btn" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">RFQ</a><a class="btn act" href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">VIEW</a>
-									    			<h3><a href="{{ url("$category_slug/$product->search_engine_name/$product_id") }}">{{ Str::limit($product->name, 30) }}</a></h3>
+									    			<a class="btn" href="{{ url("$category_slug/$rproduct->search_engine_name/$rproduct_id") }}">RFQ</a><a class="btn act" href="{{ url("$category_slug/$rproduct->search_engine_name/$rproduct_id") }}">VIEW</a>
+									    			<h3><a href="{{ url("$category_slug/$rproduct->search_engine_name/$rproduct_id") }}">{{ Str::limit($rproduct->name, 30) }}</a></h3>
 									    		</div>
 									    	</div>
 										  </div>
