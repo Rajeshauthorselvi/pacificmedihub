@@ -124,6 +124,9 @@
 	            				<a class="cart-btn" href="{{ route('customer.login') }}">Add to Cart</a>
 	            			@endif
 						</div>
+	            			<div class="view-cart" style="display:none">
+	            				Check Your Items here <a href="{{ route('cart.index') }}">View Cart</a>
+	            			</div>
 
 						<div class="social-links">
 							<?php 
@@ -428,7 +431,10 @@
 		timeout: 5000
 	});
 	@if(Session::has('item'))
+		$('.view-cart').show();
  		toastr.show('Item added to Cart Successfully.!');
+ 	@else
+ 		$('.view-cart').hide();
  	@endif
 
   $('.cart-btn').on('click',function() {
