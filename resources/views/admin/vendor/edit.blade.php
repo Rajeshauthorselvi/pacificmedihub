@@ -118,10 +118,9 @@
 
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="Email">Email *</label>
+                            <label for="Email">Email</label>
                             <input type="text" class="form-control validate-email" name="vendor_email" id="Email" value="{{old('vendor_email',$vendor->email)}}">
                             <span class="email-error" style="display:none;color:red;">Invalid email</span>
-                            <span class="text-danger" style="display:none">Vendor Email is required</span>
                             @if($errors->has('vendor_email'))
                               <span class="text-danger">{{ $errors->first('vendor_email') }}</span>
                             @endif
@@ -424,18 +423,6 @@
           }
           if($("[name='vendor_uen']").val()=="") {
             $("[name='vendor_uen']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='vendor_email']").val()=="") {
-            $("[name='vendor_email']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='vendor_contact']").val()=="") {
-            $("[name='vendor_contact']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='vendor_email']").val()=="") {
-            $("[name='vendor_email']").closest('.form-group').find('span.text-danger').show();
             valid=false;
           }
           if($("[name='vendor_contact']").val()=="") {
