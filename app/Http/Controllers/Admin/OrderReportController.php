@@ -19,7 +19,7 @@ class OrderReportController extends Controller
      */
     public function index(Request $request)
     {
-        
+         
         $data['all_customers']=['Please Select']+User::where('role_id',7)
                                ->where('status',1)
                                ->where('is_deleted',0)
