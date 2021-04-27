@@ -71,7 +71,7 @@
 
                         <div class="form-group">
                           <div class="col-sm-5">
-                            <label for="vendorUen">Vendor UEN *</label>
+                            <label for="vendorUen">Vendor UEN</label>
                             <input type="text" class="form-control" name="vendor_uen" id="vendorUen" value="{{old('vendor_uen')}}">
                             <span class="text-danger" style="display:none">Vendor UEN is required</span>
                           </div>
@@ -334,10 +334,6 @@
           //$(e.target).closest('.tab-pane.active').find('span.text-danger').hide();
           if($("[name='vendor_name']").val()=="") {
             $("[name='vendor_name']").closest('.form-group').find('span.text-danger').show();
-            valid=false;
-          }
-          if($("[name='vendor_uen']").val()=="") {
-            $("[name='vendor_uen']").closest('.form-group').find('span.text-danger').show();
             valid=false;
           }
           if($("[name='vendor_contact']").val()=="") {
