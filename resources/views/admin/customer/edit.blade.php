@@ -198,9 +198,9 @@
                       <div class="form-group">
                         <div class="col-sm-6">
                           @if($from!='approve')
-                            <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancle</a>
+                            <a href="{{ route('customers.index') }}" class="btn reset-btn">Cancel</a>
                           @else
-                            <a href="{{ route('new.customer') }}" class="btn reset-btn">Cancle</a>
+                            <a href="{{ route('new.customer') }}" class="btn reset-btn">Cancel</a>
                           @endif
                           <button type="button" id="validateStep1" class="btn save-btn next-step">Next</button>
                         </div>
