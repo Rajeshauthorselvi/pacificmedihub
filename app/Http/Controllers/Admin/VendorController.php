@@ -87,7 +87,7 @@ class VendorController extends Controller
     {
         $this->validate(request(), [
             'vendor_name'    => 'required',
-            'vendor_uen'     => 'required',
+            // 'vendor_uen'     => 'required',
             // 'email'          => 'required|email|unique:vendors',
             'vendor_contact' => 'required',
             'address1'       => 'required',
@@ -247,7 +247,7 @@ class VendorController extends Controller
     {
         $this->validate(request(), [
             'vendor_name'    => 'required',
-            'vendor_uen'     => 'required',
+            // 'vendor_uen'     => 'required',
             // 'vendor_email'   => 'required|email',
             'vendor_contact' => 'required',
             'address1'       => 'required',
