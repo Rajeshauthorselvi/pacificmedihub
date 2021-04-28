@@ -43,6 +43,9 @@
                 </ol>
             </div>
             <div class="col-sm-6 text-right pull-right">
+            <a href="{{ url('admin/customer-export') }}" class="btn btn-info">
+              <i class="fa fa-download"></i> Download All Customer
+            </a>
             <a href="{{ url('admin/customer-sample-sheet') }}" class="btn btn-info">
               <i class="fa fa-download"></i> Download Sample Sheet
             </a>

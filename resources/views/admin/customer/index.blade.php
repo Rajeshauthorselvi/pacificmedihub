@@ -41,6 +41,9 @@
               <a href="{{ url('admin/customer-import') }}" class="btn btn-info">
                 <i class="fa fa-file-import"></i>&nbsp; Import Customers
               </a>
+            <a href="{{ url('admin/customer-export') }}" class="btn btn-info">
+              <i class="fa fa-download"></i> Download All Customers
+            </a>
             </div>
             @endif
           </div>

@@ -24,6 +24,7 @@ use Str;
 use Excel;
 use Response;
 use App\Imports\CustomerImport;
+use App\Exports\customer\CustomerExport;
 class CustomerController extends Controller
 {
     /**
@@ -553,5 +554,9 @@ class CustomerController extends Controller
         $data['longitude'] = $address->longitude;
         $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
         return view('admin.customer.address.edit',$data);
+    }
+    public function CustomerExportController()
+    {
+        return (new CustomerExport())->download('invoices.xls');
     }
 }

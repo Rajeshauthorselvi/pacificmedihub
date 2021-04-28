@@ -9,6 +9,7 @@ use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
 use App\Models\UserPoc;
 use App\Models\UserCompanyDetails;
+use App\User;
 use DB;
 use Auth;
 
@@ -66,6 +67,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(UserPoc::class,'poc_id');
     }
+    public function CustomerPoc()
+    {
+        return $this->hasMany(UserPoc::class,'customer_id','id');
+    }
 
     public function getCountry()
     {
@@ -85,6 +90,10 @@ class User extends Authenticatable
     public function getSalesRep()
     {
         return $this->belongsTo('App\Models\Employee','sales_rep'); 
+    }
+    public function getParentConpany()
+    {
+        return $this->belongsTo('App\User','parent_company'); 
     }
 
     static function ParentCompany($parent_id)
