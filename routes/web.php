@@ -89,8 +89,9 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 		'as'=>'wastage.product.search','uses'=>'Admin\WastageController@ProductSearch'
 	]);
 	Route::resource('wastage','Admin\WastageController');
-
 	Route::resource('stock-in-transit-customer','Admin\StockInTransitCustomerController');
+	Route::resource('customer-return','Admin\ReturnCustomerController');
+	Route::resource('customer-wastage','Admin\WastageCustomerController');
 
 	//RFQ
 	Route::get('check-rfq-existing','Admin\RFQController@CheckRfqExistingPrice');

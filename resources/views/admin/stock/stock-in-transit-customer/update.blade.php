@@ -48,9 +48,10 @@
                       <div class="col-sm-3">
                         <label for="order_number">Order Number</label>
                         {!! Form::text('order_number',$return->orderData->order_no,['class'=>'form-control','readonly'=>true]) !!}
+                        <input type="hidden" name="order_id" value="{{ $return->orderData->id }}">
                       </div>
                       <div class="col-sm-3">
-                        <label for="customer">Status *</label>
+                        <label for="customer">Customer *</label>
                         {!! Form::text('customer',$return->customer->name,['class'=>'form-control','readonly'=>true]) !!}
                       </div>
                       <div class="col-sm-3">
@@ -95,7 +96,9 @@
                                             ?>
                                             <input type="hidden" name="variant[product_id][]" value="{{ $variation_details->product_id }}">
                                             <input type="hidden" name="variant[variant_id][]" value="{{ $variation_details->product_variation_id }}">
+                                            <input type="hidden" name="variant[damage_quantity][]" value="{{ $return_details['damage_quantity'] }}">
                                             <input type="hidden" name="variant[return_qty][]" value="{{ $return_details['return_quantity'] }}">
+                                            <input type="hidden" name="variant[total_return_quantity][]" value="{{ $return_details['total_return_quantity'] }}">
                                             <tr class="parent_tr">
                                               <td>{{$variant['option_value1']}}</td>
                                               @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)

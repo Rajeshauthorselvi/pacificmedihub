@@ -70,11 +70,11 @@
           </li>
 
           <!-- Stock Menu -->
-          <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit'||$current_route=='return.show'||$current_route=='wastage.show'||$current_route=='low-stock-purchase.create') menu-is-opening menu-open @endif">
+          <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit'||$current_route=='return.show'||$current_route=='wastage.show'||$current_route=='low-stock-purchase.create'||$current_route=='customer-return.index'||$current_route=='customer-return.show'||$current_route=='customer-wastage.index'||$current_route=='customer-wastage.show') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-boxes"></i> <p>Stock <i class="fas fa-angle-left right"></i></p>
             </a>
-            <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit'||$current_route=='return.show'||$current_route=='wastage.show'||$current_route=='low-stock-purchase.create') block @endif">
+            <ul class="nav nav-treeview" style="display:@if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='stock-in-transit.edit'||$current_route=='low-stocks.index'||$current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit'||$current_route=='return.show'||$current_route=='wastage.show'||$current_route=='low-stock-purchase.create'||$current_route=='customer-return.index'||$current_route=='customer-return.show'||$current_route=='customer-wastage.index'||$current_route=='customer-wastage.show') block @endif">
 
               <li class="nav-item @if($current_route=='stock-in-transit.index'||$current_route=='stock-in-transit.edit') active @endif">
                 <a href="{{ route('stock-in-transit.index') }}" class="nav-link">
@@ -88,12 +88,12 @@
                 </a>
               </li>
               
-              <li class="nav-item @if($current_route=='return.index'||$current_route=='return.edit'||$current_route=='return.show') active @endif">
+              <li class="nav-item @if($current_route=='return.index'||$current_route=='return.edit'||$current_route=='return.show'||$current_route=='customer-return.index'||$current_route=='customer-return.show') active @endif">
                 <a href="{{ route('return.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>List Return</p>
                 </a>
               </li>
-              <li class="nav-item @if($current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='wastage.show') active @endif">
+              <li class="nav-item @if($current_route=='wastage.index'||$current_route=='wastage.create'||$current_route=='wastage.show'||$current_route=='customer-wastage.index'||$current_route=='customer-wastage.show') active @endif">
                 <a href="{{ route('wastage.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Wastage/Write Off</p>
                 </a>

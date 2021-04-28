@@ -40,7 +40,14 @@
           <div class="col-md-12">
             <div class="card card-outline card-primary">
               <div class="card-header">
-                <h3 class="card-title">All Wastage</h3>
+                <ul class="nav nav-tabs flex-nowrap">
+                  <li class="nav-item">
+                    <a href="{{ route('wastage.index') }}" class="nav-link active" title="Vendor Wastage List"><i class="fas fa-people-carry"></i> &nbsp;Vendor Wastage</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('customer-wastage.index') }}" class="nav-link" title="Customer Wastage List"><i class="fas fa-users"></i> &nbsp;Customer Wastage</a>
+                  </li>
+                </ul>
               </div>
               <div class="card">
                 <div class="card-body">
@@ -89,6 +96,13 @@
       </div>
     </section>
   </div>
+  <style type="text/css">
+    .pull-left{width:80%}
+    .nav.nav-tabs.flex-nowrap {border: none;}
+    .nav-tabs .nav-item{margin:0 3px;width:21%;text-align:center;}
+    .nav-tabs .nav-item .nav-link{border: none;border-radius: 0;background: #ebeff5;}
+    .nav-tabs .nav-item .nav-link.active {background: #02abbf;color: #fff;}
+  </style>
    @push('custom-scripts')
   <script type="text/javascript">
       

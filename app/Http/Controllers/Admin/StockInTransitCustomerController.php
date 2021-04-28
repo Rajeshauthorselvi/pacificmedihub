@@ -73,20 +73,38 @@ class StockInTransitCustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $return = CustomerOrderReturn::where('id',$request->return_id)->first();
-        $return->order_return_status = $request->status;
-        $return->save();
-        if($request->status==2)
-        {
-            foreach ($request->variant['product_id'] as $key => $variant) {
-                $variant  = ProductVariantVendor::where('product_variant_id',$request->variant['variant_id'][$key])
-                                ->where('product_id',$request->variant['product_id'][$key])->first();
-                $quantity = $variant->stock_quantity + $request->variant['return_qty'][$key];
-                $variant->stock_quantity  =  $quantity;
-                $variant->save();
-            }
+      $order = Orders::find($request->order_id);
+      $return = CustomerOrderReturn::where('id',$request->return_id)->first();
+      $return->order_return_status = $request->status;
+      $return->save();
+      if($request->status==2)
+      {
+        $total = 0;
+        $subTotal = 0;
+        foreach ($request->variant['product_id'] as $key => $variant) {
+          $variant  = ProductVariantVendor::where('product_variant_id',$request->variant['variant_id'][$key])
+                          ->where('product_id',$request->variant['product_id'][$key])->first();
+          $quantity = $variant->stock_quantity + $request->variant['return_qty'][$key];
+          $variant->stock_quantity  =  $quantity;
+          $variant->save();
+
+          $order_product = OrderProducts::where('product_variation_id',$request->variant['variant_id'][$key])
+                              ->where('product_id',$request->variant['product_id'][$key])->first();
+          $order_qty = $order_product->quantity - $request->variant['total_return_quantity'][$key];
+          $sub_total = $request->variant['total_return_quantity'][$key] * $order_product->final_price;
+          $sub_total_amt = $order_product->sub_total - $sub_total;
+          $order_product->quantity = $order_qty;
+          $order_product->sub_total = $sub_total_amt;
+          $subTotal += $sub_total;
+          $total += $sub_total_amt;
+          $order_product->save();
         }
-        return Redirect::route('stock-in-transit-customer.index')->with('success','Stock Updated successfully...!');  
+        $order->total_amount = $total;
+        $order->sgd_total_amount = $order->sgd_total_amount - $subTotal;
+        $order->exchange_total_amount = $order->exchange_total_amount - $subTotal;
+        $order->save();
+      }
+      return Redirect::route('stock-in-transit-customer.index')->with('success','Stock Updated successfully...!');  
     }
 
     /**
@@ -111,8 +129,8 @@ class StockInTransitCustomerController extends Controller
         $data = array();
         $data['return'] = $return = CustomerOrderReturn::find($id);
         $data['return_products']  = $return_products = CustomerOrderReturnProducts::where('customer_order_return_id',$return->id)->get();
-        $data['order_status']     = OrderStatus::where('status',1)->whereIn('id',[2,7])->pluck('status_name','id')
-                                           ->toArray(); 
+        $data['order_status']     = OrderStatus::where('status',1)->whereIn('id',[2,7,24])->orderBy('status_name','asc')
+                                               ->pluck('status_name','id')->toArray(); 
 
         $product_data = $product_variant = array();
 
