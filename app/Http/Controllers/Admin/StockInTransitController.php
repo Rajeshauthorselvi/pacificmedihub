@@ -283,9 +283,10 @@ class StockInTransitController extends Controller
           }
 
        }
-
         $batch_id=$variant['batch_id'];
         $expiry_date=$variant['expiry_date'];
+        $location_details=$variant['location_id'];
+
 
 
           foreach ($row_ids as $key => $row_id) {
@@ -322,7 +323,8 @@ class StockInTransitController extends Controller
                   'product_id'          => $product_id[$key],
                   'product_variant_id'  => $variant_id[$key],
                   'batch_id'            => $batch,
-                  'expiry_date'         => $ex_date
+                  'expiry_date'         => $ex_date,
+                  'location_id'         => $location_details[$key]
                 ]
               );
           }

@@ -94,6 +94,7 @@
                             <th class="quantity-info">Stock Quantity<br><small>(A-C-D)</small></th>
                             <th>Batch Id</th>
                             <th>Expiry Date</th>
+                            <th>LocationId</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -182,6 +183,9 @@
                             </td>
                             <td width="20%">
                               <input type="text" class="form-control"  name="variant[expiry_date][]" data-inputmask-alias="datetime" data-inputmask-inputformat="mm-yyyy" data-mask value="{{ isset($batch_details->expiry_date)?$batch_details->expiry_date:'' }}">
+                            </td>
+                            <td width="20%">
+                              <input type="text" class="form-control"  name="variant[location_id][]" value="{{ isset($batch_details->location_id)?$batch_details->location_id:'' }}">
                             </td>
                           </tr>
                         @endforeach
