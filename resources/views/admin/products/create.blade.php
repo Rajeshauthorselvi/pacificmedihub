@@ -377,11 +377,11 @@
 
                   <div class="form-group">
                     <div class="col-md-6">
-                      <label for="searchEngine">Search Engine Friendly Page Name *</label>
+                      <label for="searchEngineCat">Search Engine Friendly Page Name *</label>
                       <span title="Set a search engine friendly page name e.g. 'the-best-category' to make your page URL 'http://www.abcdxyz.com/the-best-category'." class="ico-help">
                         <i class="fa fa-question-circle"></i>
                       </span>
-                      <input type="text" class="form-control" name="search_engine" id="searchEngine" value="{{old('search_engine')}}">
+                      <input type="text" class="form-control" name="search_engine" id="searchEngineCat" value="{{old('search_engine')}}">
                       @if($errors->has('search_engine'))
                         <span class="text-danger">{{ $errors->first('search_engine') }}</span>
                       @endif
@@ -448,6 +448,25 @@
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
+
+      $(document).on('keyup','#categoryName',function(){
+        var product_name = $(this).val();
+        var rmvSplChr = product_name.replace(/[^\w\s]/gi, '');
+        var slug = rmvSplChr.replace(/\s+/g, '-');
+        $('#searchEngineCat').val(slug.toLowerCase());
+      });
+
+      $(document).on('keypress','#searchEngineCat',function(event) {
+        var regex = new RegExp("^[a-zA-Z0-9]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+          event.preventDefault();
+          return false;
+        }
+      });
+    
+
+
       $('.alert-brand').hide();
       $('.alert-category').hide();
   $("body").on("click",".add-brand",function(e){
