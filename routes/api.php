@@ -32,10 +32,16 @@ Route::get('country-list','Api\AddressController@countryList');
 Route::get('state-or-city-list/{id}','Api\AddressController@stateORCityList');
 
 //Home
-Route::get('home','Api\HomeController@index');
+Route::get('home','Api\ShopController@home');
+
+//Category
+Route::get('category/{category_id}','Api\ShopController@category');
+
+//Product
+Route::get('products/{product_id}','Api\ShopController@product');
 
 //Authenticated API's
 Route::middleware('auth:api')->group( function () {
-
-	
+	Route::get('logout', 'Api\AuthController@logout');
+	Route::get('counts', 'Api\ShopController@getCounts');
 });

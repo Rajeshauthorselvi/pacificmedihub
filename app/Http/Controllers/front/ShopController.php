@@ -60,6 +60,7 @@ class ShopController extends Controller
 
     	return view('front.shop.category_product',$data);
     }
+    
     public function product($category_slug='',$product_slug='',$product_id)
     {   
         $data = array();

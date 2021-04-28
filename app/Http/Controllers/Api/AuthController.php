@@ -48,8 +48,13 @@ class AuthController extends Controller
             $password   = base64_decode($request->password);
             
             if(Auth::attempt(['email' => $request->email, 'password' => $password])) 
-	        {    
-	            $data['user']=$user;
+	        {
+                $tokenResult = $user->createToken('Personal Access Token');
+                $token = $tokenResult->token;
+                $data['access_token'] = $tokenResult->accessToken;
+                $data['token_type'] = 'Bearer';
+
+	            $data['user'] = $user;
                 $user->last_login = date('Y-m-d H:i:s');
                 $user->update();
 	            return response()->json(['success'=> true,'errorMessage'=>'','data'=>$data]);
@@ -226,4 +231,12 @@ class AuthController extends Controller
         }
     }
 
+    public function logout(Request $request)
+    {
+        $request->user()->token()->revoke();        
+        
+        return response()->json([
+            'message' => 'Successfully logged out'
+        ]);
+    }
 }
