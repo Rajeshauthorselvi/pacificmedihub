@@ -468,7 +468,7 @@
       $('.error_append').html('');
       $('#BrandModal').modal('hide');
       $('[name="brand"]').append('<option value="'+response.brand_id+'">'+response.brand_name+'</option>');
-      $('.select2bs4').selectpicker('refresh');
+      $('[name="brand"]').val(response.brand_id).change();
         $('#brand-post')[0].reset();   
     })
     .fail(function(errors) {
@@ -498,7 +498,8 @@
       $('.error_append_category').html('');
       $('#CategoryModal').modal('hide');
       $('[name="category"]').append('<option value="'+response.category_id+'">'+response.category_name+'</option>');
-      $('.select2bs4').selectpicker('refresh');
+      // $('.select2bs4').selectpicker('refresh');
+      $('[name="category"]').val(response.category_id).change();
         $('#category-post')[0].reset();   
     })
     .fail(function(errors) {

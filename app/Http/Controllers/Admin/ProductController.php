@@ -1530,8 +1530,17 @@ class ProductController extends Controller
         $add->created_at = date('Y-m-d H:i:s');
         $add->save();
 
+
+        if ($request->parent_category!="") {
+            $parent_category=Categories::find($request->parent_category)->name;
+            $category_name=$parent_category.' >> '.$request->category_name;
+        }
+        else{
+            $category_name=$request->category_name;
+        }
+        
         if ($published==1) {
-             return ['category_name'=>$request->category_name,'category_id'=>$add->id] ;
+             return ['category_name'=>$category_name,'category_id'=>$add->id] ;
         }
         else{
             return null;
