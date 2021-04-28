@@ -36,6 +36,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('admin-profile','Admin\AdminProfileController');
 
 	//Products
+	Route::post('category-ajax','Admin\ProductController@AddCategoryAjax');
+	Route::post('brand-ajax','Admin\ProductController@AddBrandAjax');
 	Route::resource('products','Admin\ProductController');
 	Route::post('product_variant','Admin\ProductController@productVariant');
 	Route::post('delete-product-image',['as'=>'remove.pimage','uses'=>'Admin\ProductController@removeImage']);
@@ -135,9 +137,10 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('cancelled-orders','Admin\OrderController');
 
 	//Customer
+	Route::get('customer-import', 'Admin\CustomerController@CustomerImport');
+	Route::get('customer-export', 'Admin\CustomerController@CustomerExportController');
 	Route::get('edit-address/{address_id}','Admin\CustomerController@EditAddress');
 	Route::get('customer-sample-sheet','Admin\CustomerController@DownloadSampleImportSheet');
-	Route::get('customer-import', 'Admin\CustomerController@CustomerImport');
 	Route::post('customer-import-post', 'Admin\CustomerController@CustomerImportPost');
 	Route::get('edit-address-form','Admin\CustomerController@editAddressForm');
 	Route::post('save-address-form','Admin\CustomerController@saveAddressForm')->name('save.address');

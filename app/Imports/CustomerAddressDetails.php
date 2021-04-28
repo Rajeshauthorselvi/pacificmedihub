@@ -41,7 +41,10 @@ class CustomerAddressDetails implements ToCollection, WithHeadingRow, WithValida
         		'is_deleted'		=> 0,
         	];
         	$address_id=UserAddress::insertGetId($data);
-        	User::where('id',$row['customerid'])->update(['address_id'=>$address_id]);
+        	if ($row['is_default']=="Yes") {
+        		User::where('id',$row['customerid'])->update(['address_id'=>$address_id]);
+        	}
+        	
         }
 
     }

@@ -1,5 +1,6 @@
 @extends('admin.layouts.master')
 @section('main_container')
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -76,6 +77,9 @@
                         @if($errors->has('category'))
                           <span class="text-danger">{{ $errors->first('category') }}</span>
                         @endif
+                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#CategoryModal">
+                          <i class="fa fa-plus"></i>&nbsp;Add New Category
+                        </button>
                       </div>
                       <div class="form-group">
                         <label for="alertQty">Alert Quantity</label>
@@ -103,6 +107,10 @@
                             <option value="{{$brand->id}}" {{ (collect(old('brand'))->contains($brand->id)) ? 'selected':'' }}>{{$brand->name}}</option>
                           @endforeach
                         </select>
+                        
+                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#BrandModal">
+                          <i class="fa fa-plus"></i>&nbsp;Add New Brand
+                        </button>
                       </div>
                       
                       
@@ -240,13 +248,288 @@
       </div>
     </section>
   </div>
+ <!-- Modal -->
+<div class="modal fade" id="BrandModal" tabindex="-1" role="dialog" aria-labelledby="BrandModal" aria-hidden="true">
+<form action="{{url('admin/brand-ajax')}}" method="post" enctype="multipart/form-data" id="brand-post" >
+                  @csrf
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Add New Brand</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger alert-block alert-brand">
+          <button type="button" class="close" data-dismiss="alert">×</button> 
+          <ul class="error_append"> </ul>
+        </div>
+                  <div class="form-group">
+                    <label for="brandName">Brand Name *</label>
+                    <input type="text" class="form-control" name="brand_name" id="brandName" value="{{old('brand_name')}}">
+
+                  </div>
+                  <div class="form-group" style="display:flex;">
+                    <div class="col-sm-6" style="padding-left:0">
+                      <label for="manfName">Manufacturing Name *</label>
+                      <input type="text" class="form-control" name="manf_name" id="manfName" value="{{old('manf_name')}}">
+                      @if($errors->has('manf_name'))
+                        <span class="text-danger">{{ $errors->first('manf_name') }}</span>
+                      @endif
+                    </div>
+                    <div class="col-sm-6" style="padding-left:0">
+                      <label for="manfName">Manufacturing Country</label>
+                      {!! Form::select('country_id',$countries,null,['class'=>'form-control select2bs4 required']) !!}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="brandImage">Image</label>
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input" name="brand_image" id="brandImage" accept="image/*" value="{{old('brand_image')}}">
+                      <label class="custom-file-label" for="brandImage">Choose file</label>
+                    </div>
+                  </div>
+                  <div class="form-group clearfix">
+                    <div class="icheck-info d-inline">
+                      <input type="checkbox" name="brand_published" id="Published" checked>
+                      <label for="Published">Published</label>
+                    </div>
+                  </div>
+                
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary add-brand">Add New Brand</button>
+      </div>
+    </div>
+  </div>
+</form>
+</div> 
+
+ <!-- Modal -->
+<div class="modal fade" id="CategoryModal" tabindex="-1" role="dialog" aria-labelledby="CategoryModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Add New Category</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <form action="{{route('categories.store')}}" method="post" enctype="multipart/form-data" id="category-post">
+        @csrf 
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="col-sm-12">
+      <div class="modal-body">
+        <div class="alert alert-danger alert-block alert-category">
+          <button type="button" class="close" data-dismiss="alert">×</button> 
+          <ul class="error_append_category"> </ul>
+        </div>
+                  <div class="form-group">
+                    <div class="col-sm-6">
+                      <label for="categoryName">Category Name *</label>
+                      <input type="text" class="form-control" name="category_name" id="categoryName" value="{{old('category_name')}}" autocomplete="off">
+                      @if($errors->has('category_name'))
+                        <span class="text-danger">{{ $errors->first('category_name') }}</span>
+                      @endif
+                    </div>
+                    <div class="col-sm-6">
+                      <label>Parent Category</label>
+                      <select class="form-control select2bs4" name="parent_category">
+                        <option selected="selected" value="">[None]</option>
+                        @foreach($categories as $category)
+                          <?php
+                            $category_name = $category->name;
+                            if($category->parent_category_id!=NULL){
+                              $category_name = $category->parent->name.'  >>  '.$category->name;
+                            }
+                          ?>
+                          <option value="{{$category->id}}" {{ (collect(old('parent_category'))->contains($category->id)) ? 'selected':'' }}>{{$category_name}}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-6">
+                      <label for="categoryImage">Web Banner Image</label>
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="category_image" id="categoryImage" accept="image/*" value="{{old('category_image')}}">
+                        <label class="custom-file-label" for="categoryImage">Choose file</label>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <label for="categoryIcon">Mobile Icon Image</label>
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="category_icon" id="categoryIcon" accept="image/*" value="{{old('category_icon')}}">
+                        <label class="custom-file-label" for="categoryIcon">Choose file</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label for="description">Description</label>
+                      <textarea class="form-control" rows="3" name="category_description" id="description">{{old('category_description')}}</textarea>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-md-6">
+                      <label for="searchEngineCat">Search Engine Friendly Page Name *</label>
+                      <span title="Set a search engine friendly page name e.g. 'the-best-category' to make your page URL 'http://www.abcdxyz.com/the-best-category'." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
+                      <input type="text" class="form-control" name="search_engine" id="searchEngineCat" value="{{old('search_engine')}}">
+                      @if($errors->has('search_engine'))
+                        <span class="text-danger">{{ $errors->first('search_engine') }}</span>
+                      @endif
+                    </div>
+                    <div class="col-md-6">
+                      <label for="metaTile">Meta Title</label>
+                      <span title="Override the page title. The default is the name of the category." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
+                      <input type="text" class="form-control" name="meta_title" id="metaTile" value="{{old('meta_title')}}">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-6">
+                      <label for="metaKeyword">Meta Keywords</label>
+                      <span title="Meta description to be added to category page header." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
+                      <textarea class="form-control" rows="3" name="meta_keyword" id="metaKeyword">{{old('meta_keyword')}}</textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="metaDescription">Meta Description</label>
+                      <span title="Meta description to be added to category page header." class="ico-help">
+                        <i class="fa fa-question-circle"></i>
+                      </span>
+                      <textarea class="form-control" rows="3" name="meta_description" id="metaDescription">{{old('meta_description')}}</textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-6">
+                      <label for="displayOrder">Display Order</label>
+                      <input type="number" class="form-control" name="display_order" min="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" id="displayOrder" value="{{old('display_order',$display_order+1)}}">
+                    </div>
+                    <div class="col-md-4" style="margin-top:1rem">
+                      <div class="icheck-info">
+                        <input type="checkbox" name="category_published" id="Published" checked>
+                        <label for="Published">Published</label>
+                      </div>
+                      <div class="icheck-info">
+                        <input type="checkbox" name="category_homepage" id="homePage" @if(old('category_homepage')=='on') checked @endif>
+                        <label for="homePage">Show on Home Page</label>
+                      </div>
+                    </div>
+                  </div>
+          </div>
+              </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn save-btn add-category">Add New Category</button>
+                  </div>
+      </form>
+        
+      </div>
+    </div>
+  </div>  
 <style type="text/css">
+
+   #CategoryModal .form-group{display:flex}
   #clear-option,#add-options{float: left;}
   #add-options{margin-right: 10px;}
   .hidden{display: none;}
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
+
+      $(document).on('keyup','#categoryName',function(){
+        var product_name = $(this).val();
+        var rmvSplChr = product_name.replace(/[^\w\s]/gi, '');
+        var slug = rmvSplChr.replace(/\s+/g, '-');
+        $('#searchEngineCat').val(slug.toLowerCase());
+      });
+
+      $(document).on('keypress','#searchEngineCat',function(event) {
+        var regex = new RegExp("^[a-zA-Z0-9]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+          event.preventDefault();
+          return false;
+        }
+      });
+    
+
+
+      $('.alert-brand').hide();
+      $('.alert-category').hide();
+  $("body").on("click",".add-brand",function(e){
+  $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+    var formData = new FormData($('#brand-post')[0]);
+    $.ajax({
+      url: '{{ url("admin/brand-ajax") }}',
+      type: 'POST',
+      processData: false,
+      contentType: false,
+      data: formData
+    })
+    .done(function(response) {
+      $('.error_append').html('');
+      $('#BrandModal').modal('hide');
+      $('[name="brand"]').append('<option value="'+response.brand_id+'">'+response.brand_name+'</option>');
+      $('[name="brand"]').val(response.brand_id).change();
+        $('#brand-post')[0].reset();   
+    })
+    .fail(function(errors) {
+      $('.alert-brand').show();
+      $.each(errors.responseJSON.errors, function(index, val) {
+         $('.error_append').append('<li>'+val+'</li>');
+      });
+    });
+    
+  });
+
+  $("body").on("click",".add-category",function(e){
+  $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+    var formData = new FormData($('#category-post')[0]);
+    $.ajax({
+      url: '{{ url("admin/category-ajax") }}',
+      type: 'POST',
+      processData: false,
+      contentType: false,
+      data: formData
+    })
+    .done(function(response) {
+      $('.error_append_category').html('');
+      $('#CategoryModal').modal('hide');
+      $('[name="category"]').append('<option value="'+response.category_id+'">'+response.category_name+'</option>');
+      // $('.select2bs4').selectpicker('refresh');
+      $('[name="category"]').val(response.category_id).change();
+        $('#category-post')[0].reset();   
+    })
+    .fail(function(errors) {
+      $('.alert-category').show();
+      $.each(errors.responseJSON.errors, function(index, val) {
+         $('.error_append_category').append('<li>'+val+'</li>');
+      });
+    });
+    
+  });
+
       //Image Upload
       window.onload = function(){   
         //Check File API support

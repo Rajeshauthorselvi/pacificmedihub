@@ -18,6 +18,7 @@ use App\Models\Prefix;
 use App\Models\RFQ;
 use App\Models\RFQProducts;
 use App\Models\CommissionValue;
+use App\Models\Countries;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductImport;
 use Redirect;
@@ -112,6 +113,9 @@ class ProductController extends Controller
             $data['product_id']=$replace_number;
         }
 
+        $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        $data['display_order']=Categories::where('is_deleted',0)->orderBy('id','desc')->take(1)->value('display_order');
+        $data['categories'] = Categories::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/products/create',$data);
     }
 
@@ -426,6 +430,9 @@ class ProductController extends Controller
                                         ->where('is_deleted',0)->get();
         $data['order_exists']    = PurchaseProducts::where('product_id',$id)->exists();
         //dd($data);
+        $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        $data['display_order']=Categories::where('is_deleted',0)->orderBy('id','desc')->take(1)->value('display_order');
+        $data['categories'] = Categories::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/products/edit',$data);
     }
 
@@ -1420,5 +1427,124 @@ class ProductController extends Controller
         $path=public_path('theme/sample_datas/').$attachment;
         return Response::download($path, $attachment);
     }
+    public function AddBrandAjax(Request $request)
+    {
+        $this->validate(request(), 
+            ['brand_name' => 'required', 'manf_name' => 'required'],
+            [
+                'brand_name.required'   => 'Brand name is required'   ,
+                'manf_name.required'    => 'Manufacturing name is required',
+            ]
+        ); 
 
+        if($request->brand_published){$published = 1;}else{$published = 0;}
+        $image= $request->hasFile('brand_image');
+        if($image){
+            $photo          = $request->file('brand_image');            
+            $filename       = $photo->getClientOriginalName();            
+            $file_extension = $request->file('brand_image')->getClientOriginalExtension();
+            $image_name     = strtotime("now").".".$file_extension;
+            $request->brand_image->move(public_path('theme/images/brands/'), $image_name);
+        }
+        else{
+            $image_name = NULL;
+        }
+        $add = new Brand;
+        $add->name   = $request->brand_name;
+        $add->manf_name = $request->manf_name;
+        $add->manf_country_id = $request->country_id;
+        $add->image  = $image_name;
+        $add->published = $published;
+        $add->created_at = date('Y-m-d H:i:s');
+        $add->save();
+
+        if ($published==1) {
+             return ['brand_name'=>$request->brand_name,'brand_id'=>$add->id] ;
+        }
+        else{
+            return null;
+        }
+    }
+    public function AddCategoryAjax(Request $request)
+    {
+        $this->validate(request(), 
+            [
+                'category_name'  => 'required',
+                'search_engine'  => 'required'
+            ],
+            [
+                'category_name.required'   => 'Category name is required'   ,
+                'search_engine.required'    => 'Search engine name is required',
+            ]
+        );
+
+        if($request->category_published){$published = 1;}else{$published = 0;}
+        if($request->category_homepage){$homepage = 1;}else{$homepage = 0;}
+
+        
+        
+        if($request->display_order!=NULL){
+            $display_order = $request->display_order;
+        }else{
+            $display_order = Categories::where('is_deleted',0)->orderBy('id', 'desc')->take(1)->value('display_order');
+            $display_order = $display_order+1;
+        }
+
+        $image= $request->hasFile('category_image');
+        if($image){
+            $photo          = $request->file('category_image');            
+            $filename       = $photo->getClientOriginalName();            
+            $file_extension = $request->file('category_image')->getClientOriginalExtension();
+            $image_name     = 'img_'.strtotime("now").".".$file_extension;
+            $request->category_image->move(public_path('theme/images/categories/'), $image_name);
+        }
+        else{
+            $image_name = NULL;
+        }
+
+        $icon= $request->hasFile('category_icon');
+        if($icon){
+            $photo          = $request->file('category_icon');            
+            $filename       = $photo->getClientOriginalName();            
+            $file_extension = $request->file('category_icon')->getClientOriginalExtension();
+            $icon_name      = 'icn_'.strtotime("now").".".$file_extension;
+            $request->category_icon->move(public_path('theme/images/categories/icons/'), $icon_name);
+        }
+        else{
+            $icon_name = NULL;
+        }
+
+        $add = new Categories;
+        $add->parent_category_id = $request->parent_category;
+        $add->name   = $request->category_name;
+        $add->image  = $image_name;
+        $add->icon   = $icon_name;
+        $add->description = $request->category_description;
+        $add->published = $published;
+        $add->show_home = $homepage;
+        $add->display_order = $display_order;
+        $add->search_engine_name = $request->search_engine;
+        $add->meta_title = $request->meta_title;
+        $add->meta_keyword = $request->meta_keyword;
+        $add->meta_description = $request->meta_description;
+        $add->created_at = date('Y-m-d H:i:s');
+        $add->save();
+
+
+        if ($request->parent_category!="") {
+            $parent_category=Categories::find($request->parent_category)->name;
+            $category_name=$parent_category.' >> '.$request->category_name;
+        }
+        else{
+            $category_name=$request->category_name;
+        }
+        
+        if ($published==1) {
+             return ['category_name'=>$category_name,'category_id'=>$add->id] ;
+        }
+        else{
+            return null;
+        }
+       
+    }
 }
