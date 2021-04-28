@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class PurchaseBatchInfo extends Model
 {
     protected $table="purchase_batch_info";
-    protected $fillable=['purchase_id','product_id','product_variant_id','batch_id','expiry_date'];
+    protected $fillable=['purchase_id','product_id','product_variant_id','batch_id','expiry_date','location_id'];
     public $timestamps=false;
 }
