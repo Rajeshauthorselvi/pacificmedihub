@@ -988,14 +988,14 @@ button:focus{outline:none}
 .category-image {
     width: 100%;
     display: block;
-    height: 250px;
+    height: 200px;
     position: relative;
 }
 .category-image img {
     position: absolute;
-    width: 100%;
-    height: inherit;
-    object-fit: cover;
+    width: 97%;
+    height: 188px;
+    object-fit: fill;
 }
 
 .login-page, .register-page {
