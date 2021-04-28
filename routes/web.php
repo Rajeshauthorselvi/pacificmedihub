@@ -36,6 +36,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('admin-profile','Admin\AdminProfileController');
 
 	//Products
+	Route::post('category-ajax','Admin\ProductController@AddCategoryAjax');
+	Route::post('brand-ajax','Admin\ProductController@AddBrandAjax');
 	Route::resource('products','Admin\ProductController');
 	Route::post('product_variant','Admin\ProductController@productVariant');
 	Route::post('delete-product-image',['as'=>'remove.pimage','uses'=>'Admin\ProductController@removeImage']);
