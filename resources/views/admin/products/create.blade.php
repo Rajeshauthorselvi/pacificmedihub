@@ -261,7 +261,10 @@
         </button>
       </div>
       <div class="modal-body">
-                <span class="text-danger"> <ul class="error_append"> </ul> </span>
+        <div class="alert alert-danger alert-block alert-brand">
+          <button type="button" class="close" data-dismiss="alert">×</button> 
+          <ul class="error_append"> </ul>
+        </div>
                   <div class="form-group">
                     <label for="brandName">Brand Name *</label>
                     <input type="text" class="form-control" name="brand_name" id="brandName" value="{{old('brand_name')}}">
@@ -296,7 +299,7 @@
                 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-primary add-brand">Add New Brand</button>
       </div>
     </div>
@@ -319,7 +322,11 @@
         <!-- Modal body -->
         <div class="modal-body">
           <div class="col-sm-12">
-            <span class="text-danger"> <ul class="error_append_category"> </ul> </span>
+      <div class="modal-body">
+        <div class="alert alert-danger alert-block alert-category">
+          <button type="button" class="close" data-dismiss="alert">×</button> 
+          <ul class="error_append_category"> </ul>
+        </div>
                   <div class="form-group">
                     <div class="col-sm-6">
                       <label for="categoryName">Category Name *</label>
@@ -424,7 +431,7 @@
         
         <!-- Modal footer -->
         <div class="modal-footer">
-                    <a href="{{route('categories.index')}}" class="btn reset-btn">Cancel</a>
+                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="button" class="btn save-btn add-category">Add New Category</button>
                   </div>
       </form>
@@ -441,7 +448,8 @@
 </style>
   @push('custom-scripts')
     <script type="text/javascript">
-
+      $('.alert-brand').hide();
+      $('.alert-category').hide();
   $("body").on("click",".add-brand",function(e){
   $.ajaxSetup({
       headers: {
@@ -464,6 +472,7 @@
         $('#brand-post')[0].reset();   
     })
     .fail(function(errors) {
+      $('.alert-brand').show();
       $.each(errors.responseJSON.errors, function(index, val) {
          $('.error_append').append('<li>'+val+'</li>');
       });
@@ -493,6 +502,7 @@
         $('#category-post')[0].reset();   
     })
     .fail(function(errors) {
+      $('.alert-category').show();
       $.each(errors.responseJSON.errors, function(index, val) {
          $('.error_append_category').append('<li>'+val+'</li>');
       });

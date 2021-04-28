@@ -430,6 +430,9 @@ class ProductController extends Controller
                                         ->where('is_deleted',0)->get();
         $data['order_exists']    = PurchaseProducts::where('product_id',$id)->exists();
         //dd($data);
+        $data['countries']=[''=>'Please Select']+Countries::pluck('name','id')->toArray();
+        $data['display_order']=Categories::where('is_deleted',0)->orderBy('id','desc')->take(1)->value('display_order');
+        $data['categories'] = Categories::where('is_deleted',0)->orderBy('id','desc')->get();
         return view('admin/products/edit',$data);
     }
 
