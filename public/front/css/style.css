@@ -988,7 +988,7 @@ button:focus{outline:none}
 .category-image {
     width: 100%;
     display: block;
-    height: 250px;
+    height: 200px;
     position: relative;
 }
 .category-image img {
