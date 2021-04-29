@@ -44,4 +44,7 @@ Route::get('products/{product_id}','Api\ShopController@product');
 Route::middleware('auth:api')->group( function () {
 	Route::get('logout', 'Api\AuthController@logout');
 	Route::get('counts', 'Api\ShopController@getCounts');
+
+	//Cart
+	Route::resource('my-cart','Api\CartController');
 });

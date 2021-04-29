@@ -67,28 +67,40 @@ class ShopController extends Controller
             $data['user_id'] = Auth::id();
         }
 
-    	$category = Categories::where('id',$id)->first();
-        $data['parent_id']      = isset($category->parent_category_id)?$category->parent_category_id:NULL;
-        if($id=='all'){
-            $data['products']   = Product::select('id','name','code','main_image')->where('published',1)
-            							 ->where('is_deleted',0)->paginate(10);
-        }else{
-            $check_parent       = Categories::find($id);
-            if($check_parent->parent_category_id){
-                $products       = Product::select('id','name','code','main_image')->where('category_id',$id)
-                						 ->where('published',1)->where('is_deleted',0)->paginate(10);    
-            }else{
-                $category_ids   = Categories::where('id',$id)->orWhere('parent_category_id',$id)->where('published',1)
-                                          ->where('is_deleted',0)->pluck('id')->toArray();
+        if($id!='all'){
+            $categories = Categories::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->get();
 
-                $products       = Product::select('id','name','code','main_image')->whereIn('category_id',$category_ids)
-                						 ->where('published',1)->where('is_deleted',0)->paginate(10);    
+            foreach ($categories as $key => $category) {
+                $current_category = false;
+                $products=$allproducts=array();
+                if($category->id == (int)$id) {
+                    $current_category = true;
+                    $products = Product::where('category_id',$id)->where('published',1)->where('is_deleted',0)->paginate(5);
+                    if(count($products) > 0) {
+                        foreach ($products as $pr_key => $product)
+                        { 
+                            $allproducts[$pr_key]['id'] = $product->id;
+                            $allproducts[$pr_key]['name'] = $product->name;
+                            $allproducts[$pr_key]['category_id'] = $product->category_id;
+                            $allproducts[$pr_key]['code']=$product->code;
+                            $allproducts[$pr_key]['main_image']=$product->main_image;
+                        }
+                    }
+                }
+                $data['categories'][$key]['id'] = $category->id;
+                $data['categories'][$key]['name'] = $category->name;
+                $data['categories'][$key]['icon'] = $category->icon;
+                $data['categories'][$key]['display_order'] = $category->display_order;
+                $data['categories'][$key]['current_category'] = $current_category;
+                $data['categories'][$key]['products'] = $allproducts;
             }
-            $data['products']   = $products;
+            $data['category_image_url']  = url('theme/images/categories/icons/');
+    	    $data['product_image_url']   = url('theme/images/products/main/');
+            $data['dummy_image']	     = url('theme/images/products/placeholder.jpg');
+        }else{
+            $data['categories'] = Categories::select('id','name','icon','display_order')->where('published',1)
+                                        ->where('is_deleted',0)->orderBy('display_order','asc')->get();
         }
-
-    	$data['product_image_url']   = url('theme/images/products/main/');
-        $data['dummy_image']	     = url('theme/images/products/placeholder.jpg');
 
         return response()->json($data);
     }
