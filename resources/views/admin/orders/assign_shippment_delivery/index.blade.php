@@ -132,8 +132,7 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Region</th>
-                        <th>Post Code</th>
+                        <th>Region/Postcode</th>
                         <th>Ordered Date</th>
                         <th>Delivery Date</th>
                         <th>Order Code</th>
@@ -188,8 +187,7 @@
                             <input type="hidden" class="low_stock_{{ $order->id }}" value="{{ $low_stock }}">
                           </td>
                           <?php $region=\App\Models\Orders::GetRegion($order->address->post_code); ?>
-                          <td>{{ isset($region)?$region:'-' }}</td>
-                          <td>{{ $order->address->post_code }}</td>
+                          <td>{{ isset($region)?$region.'/'.$order->address->post_code:$order->address->post_code }}</td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td>
                             {{ isset($order->approximate_delivery_date)?date('m/d/Y',strtotime($order->approximate_delivery_date)):'-' }}
