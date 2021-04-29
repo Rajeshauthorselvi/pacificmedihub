@@ -46,6 +46,7 @@
             </a>
             </div>
             @endif
+            
           </div>
           <div class="col-md-12">
             <div class="card card-outline card-primary">
