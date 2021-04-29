@@ -58,6 +58,9 @@
                 <i class="fa fa-tasks" aria-hidden="true"></i> Move to Rejected
               </a>
               @endif
+              <div class="spinner-border text-primary hidden" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
             </div>
             @endif
             @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('order','create'))
@@ -120,8 +123,7 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Region</th>
-                        <th>Postcode</th>
+                        <th>Region/Postcode</th>
                         <th>Ordered Date</th>
                         @if ($active_menu[0]!="new-orders") 
                         <th>Delivered Date</th>
@@ -133,7 +135,9 @@
                         <th>Grand Total</th>
                         <th>Paid</th>
                         <th>Balance</th>
+                        @if ($active_menu[0]=="completed-orders") 
                         <th>Payment Status</th>
+                        @endif
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -157,8 +161,7 @@
 
                           </td>
                           <?php $region=\App\Models\Orders::GetRegion($order->address->post_code); ?>
-                          <td>{{ isset($region)?$region:'-' }}</td>
-                          <td>{{ $order->address->post_code }}</td>
+                          <td>{{ isset($region)?$region.'/'.$order->address->post_code:$order->address->post_code }}</td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           @if ($active_menu[0]!="new-orders") 
                           <td>
@@ -182,6 +185,7 @@
                             {{ number_format($balance_amount['balance_amount'],2,'.','') }}
 
                           </td>
+                          @if ($active_menu[0]=="completed-orders") 
                           <td>
                             <?php $color_code=[1=>'#00a65a',2=>'#5bc0de',3=>'#f0ad4e']?>
                             <?php $payment_status=[0=>'',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
@@ -189,6 +193,7 @@
                                 {{ $payment_status[$order->payment_status] }}
                               </span>
                           </td>
+                          @endif
                           <td>
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
@@ -423,8 +428,12 @@
                 status_id: status_id,
                 order_ids:order_ids
               },
+              beforeSend: function (){
+                $('.spinner-border').removeClass('hidden');
+              }
             })
             .done(function() {
+              $('.spinner-border').addClass('hidden');
               location.reload();
             });
         }

@@ -3,8 +3,7 @@
                     <thead>
                       <tr>
                         <th><input type="checkbox" class="select-all"></th>
-                        <th>Region</th>
-                        <th>Postcode</th>
+                        <th>Region/Postcode</th>
                         <th>Ordered Date</th>
                         <th>Order Code</th>
                         <th>Customer</th>
@@ -50,8 +49,7 @@
                           </td>
 
                           <?php $region=\App\Models\Orders::GetRegion($order->address->post_code); ?>
-                          <td>{{ isset($region)?$region:'-' }}</td>
-                          <td>{{ $order->address->post_code }}</td>
+                          <td>{{ isset($region)?$region.'/'.$order->address->post_code:$order->address->post_code }}</td>
                           <td>{{ date('m/d/Y',strtotime($order->created_at)) }}</td>
                           <td><a href="{{route($show_route,$order->id)}}">{{ $order->order_no }}</a></td>
                           <td>{{ $order->customer->name }}</td>
