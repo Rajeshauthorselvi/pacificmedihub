@@ -5,7 +5,9 @@ namespace App\Providers;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
+use Laravel\Passport\Passport;
 use Auth;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -14,7 +16,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+        'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**
@@ -34,7 +36,6 @@ class AuthServiceProvider extends ServiceProvider
 
         // Check for Super Admin
         $gate->define('isSuperAdmin', function($user){
-            dd($user->role_id );
             return $user->role_id == 1;
         });
 
@@ -69,5 +70,7 @@ class AuthServiceProvider extends ServiceProvider
         $gate->define('isCustomer', function($user){
             return $user->role_id == 7;
         });
+
+        Passport::routes();
     }
 }
