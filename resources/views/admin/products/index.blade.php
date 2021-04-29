@@ -94,7 +94,30 @@
                             else{$published = "fa-ban";}
                           ?>
                           <td><i class="fas {{$published}}"></i></td>
-                          <td>
+                          <td class="action-td">
+{{--                                 <a href="{{route('products.show',$product['id'])}}">
+                                  <i class="far fa-eye"></i>
+                                </a>&nbsp;
+                                      @if (Auth::check() || Auth::guard('employee')->check()) 
+                                          @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('product','update')) 
+                                              <a href="{{route('products.edit',$product['id'])}}">
+                                                  <i class="far fa-edit"></i>
+                                              </a>
+                                          @endif
+                                      @endif
+                                      @if (Auth::check() || Auth::guard('employee')->check()) 
+                                        @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('product','delete')) 
+                                          <a href="#">
+                                              <form method="POST" action="{{ route('products.destroy',$product['id']) }}">
+                                                @csrf 
+                                                <input name="_method" type="hidden" value="DELETE">
+                                                <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this item?');">
+                                                  <i class="far fa-trash-alt"></i>
+                                                </button>
+                                              </form>
+                                          </a>
+                                        @endif
+                                      @endif --}}
                             <div class="input-group-prepend">
                               <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                               <ul class="dropdown-menu">
