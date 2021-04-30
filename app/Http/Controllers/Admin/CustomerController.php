@@ -557,6 +557,6 @@ class CustomerController extends Controller
     }
     public function CustomerExportController()
     {
-        return (new CustomerExport())->download('invoices.xls');
+        return (new CustomerExport())->download('Customers-List.xls');
     }
 }
