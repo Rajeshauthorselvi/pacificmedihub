@@ -9,6 +9,7 @@ use App\User;
 use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
 use App\Models\UserPoc;
+use App\Models\Prefix;
 use App\Models\Countries;
 use App\Models\UserCompanyDetails;
 use App\Models\Prefix;
@@ -161,7 +162,7 @@ class ProfileController extends Controller
             $data['product_image_url']   = url('theme/images/products/main/');
             $data['dummy_image']         = url('theme/images/products/placeholder.jpg');
             
-            return response()->json(['success'=>false, 'data'=>$data]);
+            return response()->json(['success'=>true, 'data'=>$data]);
         }else{
             return response()->json(['success'=>false]);
         }
