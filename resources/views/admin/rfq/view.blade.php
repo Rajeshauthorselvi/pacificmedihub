@@ -89,7 +89,7 @@
                         ?>
                         <li><h5>RFQ Code: <small>{{ $rfqs->order_no }}</small></h5></li>
                         <li><strong>Date: </strong>{{date('d F, Y',strtotime($rfqs->created_at))}}</li>
-                        <li><strong>Status: </strong>{{ ($rfq->statusName->id==10)?'Order Placed':$status }}</li>
+                        <li><strong>Status: </strong>{{ ($rfqs->statusName->id==10)?'Order Placed':$status }}</li>
                         <li><strong>Sales Rep: </strong>{{isset($rfqs->salesrep->emp_name)?$rfqs->salesrep->emp_name:''}}</li>
                         @if(isset($rfqs->payTerm->name))
                           <li><strong>Payment Term: </strong>{{$rfqs->payTerm->name}}</li>
