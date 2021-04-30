@@ -125,53 +125,26 @@ class ShopController extends Controller
             $data['user_id'] = Auth::id();
         }
 
-        $product = Product::with('product_images','product_variant')
-                          ->where('id',$id)->where('is_deleted',0)->first();
-
-       $allowed_options=[]; 
-       $default_variant_id=0; 
+        $allowed_options=[]; 
+        $default_variant_id=0; 
        
-       
-       $data['default_variant_id'] = 0;
-       $data['default_sku'] = null;
-       $data['options'] = null;
-       $data['allowed_options'] = [];
+        $data['default_variant_id'] = 0;
+        $data['default_sku']        = null;
+        $data['is_favourite']       = false;
+        $data['options']            = null;
+        $data['allowed_options']    = [];
 
-        if(isset($product->product_variant) && ($product->product_variant->count()!=0 )){   
-        $data = array();
-
-        $data['user_id'] = null;
-        if(Auth::check()){
-            $data['user_id'] = Auth::id();
-        }
-
-        $product = Product::with('product_images','product_variant')
-                          ->where('id',$id)->where('is_deleted',0)->first();
-                          
-        /*Dhinesh Code*/
-            $product->quantity=0;
-        /*Dhinesh Code*/
-
-       $allowed_options=[]; 
-       $default_variant_id=0; 
-       
-       
-       $data['default_variant_id'] = 0;
-       $data['default_sku'] = null;
-       $data['options'] = null;
-       $data['allowed_options'] = [];
+        $product = Product::with('product_images','product_variant')->where('id',$id)->where('is_deleted',0)->first();
 
         if(isset($product->product_variant) && ($product->product_variant->count()!=0 )){
-
+            /*Dhinesh Code*/
+                $product->quantity = 0;
+            /*Dhinesh Code*/
             foreach($product->product_variant as $key=> $variant){
 
-
-                $get_sku = DB::table('product_variant_vendors')
-                                    ->where('product_id',$variant->product_id)
-                                    ->where('product_variant_id',$variant->id)
-                                    ->orderBy('retail_price','desc')
-                                    ->first();
-                
+                $get_sku = DB::table('product_variant_vendors')->where('product_id',$variant->product_id)
+                             ->where('product_variant_id',$variant->id)->orderBy('retail_price','desc')->first();
+                             
                 if($key=="0") {
                     $default_variant_id = $variant->id;
                     $default_sku = $get_sku->sku;
@@ -206,41 +179,35 @@ class ShopController extends Controller
                 )->whereIn('id',$required_options)->orderBy(DB::raw('FIELD(id, '.implode(", " , $required_options).')'))->get();
 
                 /*Dhinesh Code*/
-                    $options=array();
-                    foreach ($data['options'] as $key => $option) {
-                            $options_val=[
-                                'id'             => $option->id,
-                                'option_name'    => $option->option_name,
-                                // 'getoptionvalues'=> $option->getoptionvalues
+                $options=array();
+                foreach ($data['options'] as $key => $option) {
+                        $options_val=[
+                            'id'             => $option->id,
+                            'option_name'    => $option->option_name,
+                            // 'getoptionvalues'=> $option->getoptionvalues
+                        ];
+                        foreach ($option->getoptionvalues as $key => $option_values) {
+                            $option_values=[
+                                'id'            => $option_values->id,
+                                'option_id'     => $option_values->option_id,
+                                'option_value'  => $option_values->option_value,
+                                'selected'      => false,
                             ];
-                            foreach ($option->getoptionvalues as $key => $option_values) {
-                                $option_values=[
-                                    'id'            => $option_values->id,
-                                    'option_id'     => $option_values->option_id,
-                                    'option_value'  => $option_values->option_value,
-                                    'selected'      => false,
-                                ];
-                                $options_val['getoptionvalues'][]=$option_values;
-                            }
-                            array_push($options, $options_val);
-                    }
+                            $options_val['getoptionvalues'][]=$option_values;
+                        }
+                        array_push($options, $options_val);
+                }
                 /*Dhinesh Code*/
 
             }
-            $data['options']=$options;
-            $data['allowed_options'] = $allowed_options;  
+            $data['options']            = $options;
+            $data['allowed_options']    = $allowed_options;  
             $data['default_variant_id'] = $default_variant_id;
-            $data['default_sku'] = $default_sku;
+            $data['default_sku']        = $default_sku;
         }
         
         $data['product'] = $product;
-
         return response()->json($data);
-    }
-        
-        $data['product'] = $product;
-
-    	return response()->json($data);
     }
 
     public function getCounts()

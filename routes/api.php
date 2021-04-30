@@ -50,4 +50,6 @@ Route::middleware('auth:api')->group( function () {
 
 	//Profile
 	Route::get('profile','Api\ProfileController@index');
+	Route::post('update-profile','Api\ProfileController@updateProfile');
+	Route::post('update-bank-data','Api\ProfileController@updateBankData');
 });
