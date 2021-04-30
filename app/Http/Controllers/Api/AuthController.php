@@ -15,6 +15,7 @@ use Validator;
 use Mail;
 use Str;
 use Session;
+use Hash;
 
 
 class AuthController extends Controller
