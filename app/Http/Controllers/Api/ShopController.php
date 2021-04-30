@@ -66,7 +66,6 @@ class ShopController extends Controller
         if(Auth::check()){
             $data['user_id'] = Auth::id();
         }
-
         if($id!='all'){
             $categories = Categories::where('published',1)->where('is_deleted',0)->orderBy('display_order','asc')->get();
 
@@ -84,6 +83,7 @@ class ShopController extends Controller
                             $allproducts[$pr_key]['category_id'] = $product->category_id;
                             $allproducts[$pr_key]['code']=$product->code;
                             $allproducts[$pr_key]['main_image']=$product->main_image;
+                            $allproducts[$pr_key]['url'] = url('/api/products/'.$product->id);
                         }
                     }
                 }
@@ -93,6 +93,7 @@ class ShopController extends Controller
                 $data['categories'][$key]['display_order'] = $category->display_order;
                 $data['categories'][$key]['current_category'] = $current_category;
                 $data['categories'][$key]['products'] = $allproducts;
+                $data['categories'][$key]['url'] = url('/api/category/'.$category->id);
             }
             $data['category_image_url']  = url('theme/images/categories/icons/');
     	    $data['product_image_url']   = url('theme/images/products/main/');
