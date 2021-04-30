@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
 use App\User;
 use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
@@ -107,6 +108,87 @@ class ProfileController extends Controller
 
     public function updateBankData(Request $request)
     {
+        $credentials = $request->only('user_id');
+        $rules = ['user_id' => 'required'];
+
+        $validator = Validator::make($credentials, $rules);
+        if($validator->fails()) {
+            $validation_error_response=array();
+            foreach ($rules as $key => $value) {
+                if(!empty($validator->messages()->first($key))) $validation_error_response[]=$validator->messages()->first($key);
+            }
+            return response()->json(['success'=> false, 'errorMessage'=> $validation_error_response]);
+        }
+        else
+        {
+            $bank_data = UserBankAcccount::where('customer_id',$request->user_id)->first();
+            $bank_data->account_name   = $request->account_name;
+            $bank_data->account_number = $request->account_number;
+            $bank_data->bank_name      = $request->bank_name;
+            $bank_data->bank_branch    = $request->bank_branch;
+            $bank_data->paynow_contact = $request->paynow_contact;
+            $bank_data->place          = $request->place;
+            $bank_data->save();
+
+            return response()->json(['success'=> true,'message'=> 'Bank details updated successfully.!','data'=>$bank_data]);
+        }
+    }
+
+    public function updatePOCData(Request $request)
+    {
+
+    }
+
+    public function wishlistGet()
+    {
+        if(Auth::check()){
+            $user_id = Auth::id();
+            Cart::instance('wishlist')->restore('userID_'.$user_id);
+            $items = Cart::instance('Wishlist')->content();
+            $wishlist_data = array();
+            foreach($items as $key => $item)
+            {
+                $wishlist_data[$key]['uniqueId']      = $item->getUniqueId();
+                $wishlist_data[$key]['product_id']    = $item->id;
+                $wishlist_data[$key]['product_name']  = $item->name;
+                $wishlist_data[$key]['product_image'] = $item->options['product_img'];
+                $wishlist_data[$key]['url']           = url('/api/products/'.$item->id);
+            }
+
+            $data['user_id'] = $user_id;
+            $data['wishlist_count'] = Cart::count();
+            $data['wishlist_data']  = $wishlist_data;
+            $data['product_image_url']   = url('theme/images/products/main/');
+            $data['dummy_image']         = url('theme/images/products/placeholder.jpg');
+            
+            return response()->json(['success'=>false, 'data'=>$data]);
+        }else{
+            return response()->json(['success'=>false]);
+        }
+    }
+
+    public function addWishlist(Request $request)
+    {
+        if(Auth::check()){
+            $user_id = Auth::id();
+            Cart::instance('wishlist')->restore('userID_'.$user_id);
         
+            $product_id  = $request->product_id;
+            $wish_action = $request->row_id;
+            $product = Product::find($product_id);
+            
+            if(Cart::has($wish_action)){
+                Cart::instance('wishlist')->remove($request->row_id);
+                Cart::instance('wishlist')->store('userID_'.$user_id);
+                $message="removed";
+            }else{
+                Cart::instance('wishlist')->add($product->id,$product->name,0,1,['product_img'=>$product->main_image]);
+                Cart::instance('wishlist')->store('userID_'.$user_id);
+                $message="added";
+            }
+            return response()->json(['success'=>true, 'data'=>$message]);
+        }else{
+            return response()->json(false);
+        }
     }
 }

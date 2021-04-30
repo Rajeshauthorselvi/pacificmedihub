@@ -52,4 +52,9 @@ Route::middleware('auth:api')->group( function () {
 	Route::get('profile','Api\ProfileController@index');
 	Route::post('update-profile','Api\ProfileController@updateProfile');
 	Route::post('update-bank-data','Api\ProfileController@updateBankData');
+	Route::post('update-poc-data','Api\ProfileController@updatePOCData');
+
+	//Wishlist
+	Route::get('my-wishlist', 'Api\ProfileController@wishlistGet');
+	Route::post('my-wishlist', 'Api\ProfileController@addWishlist');
 });
