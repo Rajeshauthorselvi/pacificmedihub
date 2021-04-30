@@ -133,10 +133,10 @@
                         <th>Sales Rep</th>
                         <th>Order Status</th>
                         <th>Grand Total</th>
-                        <th>Paid</th>
-                        <th>Balance</th>
                         @if ($active_menu[0]=="completed-orders") 
-                        <th>Payment Status</th>
+                          <th>Paid</th>
+                          <th>Balance</th>
+                          <th>Payment Status</th>
                         @endif
                         <th>Action</th>
                       </tr>
@@ -180,12 +180,12 @@
                           <?php 
                             $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($order->id,$order->sgd_total_amount,2);
                           ?>
+                          @if ($active_menu[0]=="completed-orders") 
                           <td>{{ $balance_amount['paid_amount'] }}</td>
                           <td class="balance">
                             {{ number_format($balance_amount['balance_amount'],2,'.','') }}
 
                           </td>
-                          @if ($active_menu[0]=="completed-orders") 
                           <td>
                             <?php $color_code=[1=>'#00a65a',2=>'#5bc0de',3=>'#f0ad4e']?>
                             <?php $payment_status=[0=>'',1=>'Paid',2=>'Partly Paid',3=>'Not Paid']; ?>
