@@ -47,4 +47,7 @@ Route::middleware('auth:api')->group( function () {
 
 	//Cart
 	Route::resource('my-cart','Api\CartController');
+
+	//Profile
+	Route::get('profile','Api\ProfileController@index');
 });
