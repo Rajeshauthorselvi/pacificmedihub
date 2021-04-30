@@ -44,9 +44,18 @@ class ShopController extends Controller
             							   ->orderBy('display_order','asc')->get();
         }
 
-        $data['categories'] = Categories::select('id','name','icon','display_order')->where('published',1)
-        								->where('is_deleted',0)->where('show_home',1)->where('parent_category_id',NULL)
-										->limit(6)->orderBy('display_order','asc')->get();
+        $categories = Categories::select('id','name','icon','display_order')->where('published',1)
+                                        ->where('is_deleted',0)->where('parent_category_id',NULL)->limit(6)
+                                        ->orderBy('display_order','asc')->get();
+
+        foreach ($categories as $key => $category) {
+            $data['categories'][$key]['id'] = $category->id;
+            $data['categories'][$key]['name'] = $category->name;
+            $data['categories'][$key]['icon'] = $category->icon;
+            $data['categories'][$key]['display_order'] = $category->display_order;
+            $data['categories'][$key]['url'] = url('/api/category/'.$category->id);
+        }
+
 
     	$data['new_arrival_products'] = Product::select('id','name','code','main_image')->where('published',1)
     										   ->where('show_home',1)->where('is_deleted',0)
