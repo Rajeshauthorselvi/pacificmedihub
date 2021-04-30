@@ -226,7 +226,7 @@ class AuthController extends Controller
         if(isset($check->email)&&($check->email==$request->email)){
             $check->password = Hash::make($request->password);
             $check->save();
-            return response()->json(['success'=> true, 'errorMessage'=>'','data'=>$add]);
+            return response()->json(['success'=> true, 'errorMessage'=>'','data'=>$check]);
         }else{
             return response()->json(['success'=> false, 'errorMessage'=>'Email mismatch, User does not exist.!']);   
         }
