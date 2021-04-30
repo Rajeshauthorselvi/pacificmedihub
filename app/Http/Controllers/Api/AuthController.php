@@ -224,8 +224,8 @@ class AuthController extends Controller
         ];
         $check = User::where('email',$request->email)->first();
         if(isset($check->email)&&($check->email==$request->email)){
-            $user->password = Hash::make($request->password);
-            $user->save();
+            $check->password = Hash::make($request->password);
+            $check->save();
             return response()->json(['success'=> true, 'errorMessage'=>'','data'=>$add]);
         }else{
             return response()->json(['success'=> false, 'errorMessage'=>'Email mismatch, User does not exist.!']);   
