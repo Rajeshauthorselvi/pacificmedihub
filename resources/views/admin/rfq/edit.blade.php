@@ -137,7 +137,7 @@
                                         @if ($product['check_rfq_price_exists'])
                                           <th class="width">Last RFQ Price</th>
                                         @endif
-                                        <th class="width">RFQ Price <br><small>(a)</small></th>
+                                        <th class="width">RFQ Price {{-- <br><small>(a)</small> --}}</th>
                                         <th class="width">Discount
                                           <div class="discount-type">
                                             <div class="icheck-info d-inline">
