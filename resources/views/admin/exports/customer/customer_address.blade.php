@@ -1,16 +1,19 @@
 <table>
 	<thead>
-		<th>CustomerId</th>	
-		<th>Name</th>
-		<th>Contact No</th>
-		<th>Address Line1</th>
-		<th>Address Line 2</th>
-		<th>Country	State</th>
-		<th>City</th>
-		<th>Post Code</th>
-		<th>Latitude</th>
-		<th>Longitude</th>
-		<th>Is Default</th>
+		<tr>
+			<th>CustomerId</th>	
+			<th>Name</th>
+			<th>Contact No</th>
+			<th>Address Line1</th>
+			<th>Address Line 2</th>
+			<th>Country</th>
+			<th>State</th>
+			<th>City</th>
+			<th>Post Code</th>
+			<th>Latitude</th>
+			<th>Longitude</th>
+			<th>Is Default</th>
+		</tr>
 	</thead>
 	<tbody>
 		@foreach ($all_address as $address)
@@ -23,6 +26,7 @@
 					<td>{{ $address->country->name }}</td>
 					<td>{{ isset($address->state->name)?$address->state->name:'' }}</td>
 					<td>{{ isset($address->city->name)?$address->city->name:'' }}</td>
+					<td>{{ $address->post_code }}</td>
 					<td>{{ $address->latitude }}</td>
 					<td>{{ $address->latitude }}</td>
 					<td>{{ ($address->address_type==0)?'Yes':'No' }}</td>

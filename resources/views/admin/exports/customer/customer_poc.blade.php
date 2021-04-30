@@ -1,9 +1,11 @@
 <table>
 	<thead>
-		<th>CustomerId</th>
-		<th>Name</th>
-		<th>Email</th>
-		<th>Phone No</th>
+		<tr>
+			<th>CustomerId</th>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Phone No</th>
+		</tr>
 	</thead>
 	<tbody>
 		@foreach ($all_poc as $customer_poc)

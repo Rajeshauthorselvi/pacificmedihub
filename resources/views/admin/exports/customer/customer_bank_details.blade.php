@@ -1,14 +1,16 @@
 <table>
 	<thead>
-		<th>CustomerId</th>
-		<th>Account Name</th>
-		<th>Account Number</th>
-		<th>Bank Name</th>
-		<th>Bank Branch</th>
-		<th>IFSC Code</th>
-		<th>Paynow Contact</th>
-		<th>Place</th>
-		<th>Others</th>
+		<tr>
+			<th>CustomerId</th>
+			<th>Account Name</th>
+			<th>Account Number</th>
+			<th>Bank Name</th>
+			<th>Bank Branch</th>
+			<th>IFSC Code</th>
+			<th>Paynow Contact</th>
+			<th>Place</th>
+			<th>Others</th>
+		</tr>
 	</thead>
 	<tbody>
 		@foreach ($all_bank_details as $bank_details)
