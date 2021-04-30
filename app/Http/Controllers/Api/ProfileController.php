@@ -9,7 +9,6 @@ use App\User;
 use App\Models\UserBankAcccount;
 use App\Models\UserAddress;
 use App\Models\UserPoc;
-use App\Models\Prefix;
 use App\Models\Countries;
 use App\Models\UserCompanyDetails;
 use App\Models\Prefix;
