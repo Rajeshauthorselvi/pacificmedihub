@@ -453,6 +453,9 @@
         var product_name = $(this).val();
         var rmvSplChr = product_name.replace(/[^\w\s]/gi, '');
         var slug = rmvSplChr.replace(/\s+/g, '-');
+        var slug = rmvSplChr.replace(/\s#/g, '-');
+        var slug = rmvSplChr.replace(/\s//g, '-');
+        var slug=slug.replace(/~+$/,'');
         $('#searchEngineCat').val(slug.toLowerCase());
       });
 

@@ -61,7 +61,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                           <label for="purchase_order_number">Vendor *</label>
-                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control select2bs4','style'=>'pointer-events:none','readonly'=>true,'style'=>'pointer-events:none']) !!}
+                          {!! Form::select('vendor_id',$vendors, null,['class'=>'form-control','style'=>'pointer-events:none','readonly'=>true,'style'=>'pointer-events:none']) !!}
                         </div>
                     </div>
                   <div class="product-sec col-sm-12">
