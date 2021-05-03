@@ -67,6 +67,7 @@ class ShopController extends Controller
                 'name'    =>  $new_arrival->name,
                 'code'    =>  $new_arrival->code,
                 'main_image'    =>  $new_arrival->main_image,
+                'is_fav'      => false
             ];
         }
         $data['new_arrival_products']=$new_products;
