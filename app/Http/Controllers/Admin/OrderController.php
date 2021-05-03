@@ -808,7 +808,7 @@ class OrderController extends Controller
         'created_user_type'   => $user_type,
       ]);
         Mail::send('admin.orders.emails.notification_status_email', $data, function ($m) use($order_details,$subject) {
-          $m->from('dhinesh@authorselvi.com');
+          $m->from('info@sgmedicalsupplies.sg');
           $m->to($order_details->customer->email,'Status Notification');
           $m->subject($subject);
        });
@@ -1816,7 +1816,7 @@ return ['product_ids'=>$all_product_ids,'variants'=>$all_variant_ids,'remaining_
       Storage::put('public/order/'.$order_details['order_no'].'.pdf', $file);
 
         Mail::send('admin.orders.email_pdf', $data, function ($m) use($order_details,$customer_email) {
-         $m->from('dhinesh@authorselvi.com');
+         $m->from('info@sgmedicalsupplies.sg');
          $m->to($customer_email->email, 'Email Invoice')->subject($order_details['order_no'].' Invoice');
          $m->attach(storage_path('app/public/order/'.$order_details['order_no'].'.pdf'));
        });

@@ -362,11 +362,11 @@
 
                   <div class="tab-pane address-tabs " tab-count="4" role="tabpanel" id="step4">
                     <div class="col-sm-12" style="display:flow-root">
-                      {!! Form::hidden('bank[account_id]',$customer->bank->id) !!}
+                      {!! Form::hidden('bank[account_id]',isset($customer->bank->id)?$customer->bank->id:0) !!}
                       <div class="form-group">
                         <div class="col-sm-6">
                           <label for="accountName">Account Name</label>
-                          {!! Form::text('bank[account_name]',$customer->bank->account_name,['class'=>'form-control']) !!}
+                          {!! Form::text('bank[account_name]',isset($customer->bank->account_name)?$customer->bank->account_name:'',['class'=>'form-control']) !!}
                           <span class="text-danger"></span>
                         </div>
                         <div class="col-sm-6">

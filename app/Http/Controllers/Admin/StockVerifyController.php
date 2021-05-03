@@ -86,8 +86,8 @@ class StockVerifyController extends Controller
       $data['creater_name']=$creater_name;
       $data['product_data']=$product_data;
         Mail::send('admin.orders.assign_shippment_delivery.notification_email', $data, function ($m) use($order_details) {
-         $m->from('dhinesh@authorselvi.com');
-           $m->to('dhinesh@authorselvi.com', 'Notification')->subject($order_details->order_no.'-Need quantity');
+         $m->from('info@sgmedicalsupplies.sg');
+           $m->to('info@sgmedicalsupplies.sg', 'Notification')->subject($order_details->order_no.'-Need quantity');
        });
 
 
@@ -145,8 +145,9 @@ class StockVerifyController extends Controller
       $data['creater_name']=$creater_name;
       $data['product_data']=$product_data;
         Mail::send('admin.orders.assign_shippment_delivery.notification_email', $data, function ($m) use($order_details) {
-         $m->from('dhinesh@authorselvi.com');
-         $m->to('dhinesh@authorselvi.com', 'Notification')->subject($order_details->order_no.'-Need quantity');
+         $m->from('info@sgmedicalsupplies.sg');
+         $m->to('info@sgmedicalsupplies.sg', 'Notification')->subject($order_details->order_no.'-Need quantity');
+         $m->bcc('dhinesh@authorselvi.com');
        });
 
     }

@@ -287,9 +287,11 @@ class CustomerController extends Controller
         
         /* Update Bank details */
         $bank_details = $request->bank;
+        if ($bank_details['account_id']!=0) {
         $bank = UserBankAcccount::find($bank_details['account_id']);
         Arr::forget($bank_details,['account_id']);
         $bank->update($bank_details);
+        }
 
         /* Update POC details */
         if($request->poc){

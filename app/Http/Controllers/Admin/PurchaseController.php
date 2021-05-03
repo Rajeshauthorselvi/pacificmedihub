@@ -977,8 +977,8 @@ class PurchaseController extends Controller
       $file = $pdf->output();
       Storage::put('public/purchase/'.$purchase->purchase_order_number.'.pdf', $file);
         Mail::send('admin.purchase.email_purchase', $data, function ($m) use($purchase) {
-         $m->from('dhinesh@authorselvi.com');
-         $m->to('dhinesh@authorselvi.com', 'Email Invoice')->subject($purchase->purchase_order_number.' Invoice');
+         $m->from('info@sgmedicalsupplies.sg');
+         $m->to('info@sgmedicalsupplies.sg', 'Email Invoice')->subject($purchase->purchase_order_number.' Invoice');
          $m->attach(storage_path('app/public/purchase/'.$purchase->purchase_order_number.'.pdf'));
        });
 
