@@ -13,6 +13,7 @@ use App\Models\Countries;
 use App\Models\UserCompanyDetails;
 use App\Models\Prefix;
 use App\Models\Employee;
+use App\Models\Product;
 use Validator;
 use Redirect;
 use Arr;
