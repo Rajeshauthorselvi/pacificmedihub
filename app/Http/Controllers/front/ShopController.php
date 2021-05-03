@@ -42,7 +42,7 @@ class ShopController extends Controller
             $data['products']   = Product::where('published',1)->where('is_deleted',0)->paginate(10);
         }else{
             $check_parent       = Categories::find($id);
-            if($check_parent->parent_category_id){
+            if(isset($check_parent->parent_category_id)){
                 $products       = Product::where('category_id',$id)->where('published',1)
                                          ->where('is_deleted',0)->paginate(10);    
             }else{

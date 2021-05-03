@@ -48,10 +48,19 @@ class ShopController extends Controller
         								->where('is_deleted',0)->where('show_home',1)->where('parent_category_id',NULL)
 										->limit(6)->orderBy('display_order','asc')->get();
 
-    	$data['new_arrival_products'] = Product::select('id','name','code','main_image')->where('published',1)
+    	$new_arrival_products = Product::select('id','name','code','main_image')->where('published',1)
     										   ->where('show_home',1)->where('is_deleted',0)
                                     		   ->orderBy('id','desc')->limit(10)->get();
-        
+        $new_products=array();
+        foreach ($new_arrival_products as $key => $new_arrival) {
+            $new_products[]=[
+                'id'    =>  $new_arrival->id,
+                'name'    =>  $new_arrival->name,
+                'code'    =>  $new_arrival->code,
+                'main_image'    =>  $new_arrival->main_image,
+            ];
+        }
+        $data['new_arrival_products']=$new_products;
         $data['banner_image_url']    = url('theme/images/sliders/');
         $data['category_image_url']  = url('theme/images/categories/icons/');
         $data['product_image_url']   = url('theme/images/products/main/');
