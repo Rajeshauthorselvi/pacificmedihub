@@ -103,6 +103,7 @@ class ShopController extends Controller
                             $allproducts[$pr_key]['code']=$product->code;
                             $allproducts[$pr_key]['main_image']=$product->main_image;
                             $allproducts[$pr_key]['url'] = url('/api/products/'.$product->id);
+                            $allproducts[$pr_key]['is_fav'] =false;
                         }
                     }
                 }
