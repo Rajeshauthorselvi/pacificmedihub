@@ -9,12 +9,14 @@ use App\Models\UserPoc;
 use App\Models\Notification;
 use App\Models\PasswordReset;
 use App\Mail\ResetPassword;
+use App\Models\Prefix;
 use App\User;
 use Auth;
 use Validator;
 use Mail;
 use Str;
 use Session;
+use Hash;
 
 
 class AuthController extends Controller
@@ -223,9 +225,9 @@ class AuthController extends Controller
         ];
         $check = User::where('email',$request->email)->first();
         if(isset($check->email)&&($check->email==$request->email)){
-            $user->password = Hash::make($request->password);
-            $user->save();
-            return response()->json(['success'=> true, 'errorMessage'=>'','data'=>$add]);
+            $check->password = Hash::make($request->password);
+            $check->save();
+            return response()->json(['success'=> true, 'errorMessage'=>'','data'=>$check]);
         }else{
             return response()->json(['success'=> false, 'errorMessage'=>'Email mismatch, User does not exist.!']);   
         }
