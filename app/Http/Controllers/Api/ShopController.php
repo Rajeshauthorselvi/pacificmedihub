@@ -218,6 +218,7 @@ class ShopController extends Controller
         }
         
         $data['product'] = $product;
+        $data['is_fav'] = false;
         return response()->json($data);
     }
 
