@@ -141,7 +141,7 @@ class ShopController extends Controller
        
         $data['default_variant_id'] = 0;
         $data['default_sku']        = null;
-        $data['is_favourite']       = false;
+        $data['is_fav']       = false;
         $data['options']            = null;
         $data['allowed_options']    = [];
 
@@ -218,7 +218,6 @@ class ShopController extends Controller
         }
         
         $data['product'] = $product;
-        $data['is_fav'] = false;
         return response()->json($data);
     }
 
