@@ -34,7 +34,13 @@
                        src="{{ asset('theme/images/profile/'.$admin->logo) }}"
                        alt="Profile picture">
                 </div>
-                <h3 class="profile-username text-center">{{ Auth::user()->name }}</h3>
+                <h3 class="profile-username text-center">
+                @if (Auth::guard('employee')->check()) 
+                  {{ Auth::guard('employee')->user()->emp_name }}
+                @else
+                  {{ Auth::user()->name }}
+                @endif
+                </h3>
                 <p class="text-muted text-center">Admin</p>
               </div>
               <!-- /.card-body -->

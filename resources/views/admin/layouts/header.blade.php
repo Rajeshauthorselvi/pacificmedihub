@@ -79,7 +79,7 @@
       <div class="user-panel d-flex">
         <div class="image" >
           <?php 
-          if ($profile_image!=null && File::exists('theme/images/profile/'.$profile_image)){
+          if ($profile_image!=null){
               $image=asset('theme/images/profile/'.$profile_image);
             }
             else{

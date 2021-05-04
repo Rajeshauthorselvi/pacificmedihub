@@ -147,13 +147,16 @@ class ProfileController extends Controller
             Cart::instance('wishlist')->restore('userID_'.$user_id);
             $items = Cart::instance('Wishlist')->content();
             $wishlist_data = array();
-            foreach($items as $key => $item)
+            $key=0;
+            foreach($items as $uniqueId => $item)
             {
                 $wishlist_data[$key]['uniqueId']      = $item->getUniqueId();
                 $wishlist_data[$key]['product_id']    = $item->id;
                 $wishlist_data[$key]['product_name']  = $item->name;
                 $wishlist_data[$key]['product_image'] = $item->options['product_img'];
                 $wishlist_data[$key]['url']           = url('/api/products/'.$item->id);
+                
+                $key++;
             }
 
             $data['user_id'] = $user_id;
