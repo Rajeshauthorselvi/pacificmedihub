@@ -78,7 +78,15 @@
 
       <div class="user-panel d-flex">
         <div class="image" >
-          <img src="{{ asset('theme/images/profile/'.$profile_image) }}" class="img-circle" alt="Profile Image">
+          <?php 
+          if ($profile_image!=null && File::exists('theme/images/profile/'.$profile_image)){
+              $image=asset('theme/images/profile/'.$profile_image);
+            }
+            else{
+              $image=asset('theme/images/user_placeholder.png');              
+            }
+            ?>
+          <img src="{{ $image }}" class="img-circle" alt="Profile Image">
         </div>
       </div>
 
