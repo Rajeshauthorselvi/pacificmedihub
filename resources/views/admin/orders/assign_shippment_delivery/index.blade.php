@@ -254,6 +254,9 @@
   .driver-btn {
     padding-top: 32px;
   }
+  .table-responsive{
+    overflow-x: visible !important;
+  }
 </style>
   <span class="load-error-data"></span>
   {!! Form::hidden('order_ids_hidden',null,['class'=>'order_ids_hidden']) !!}

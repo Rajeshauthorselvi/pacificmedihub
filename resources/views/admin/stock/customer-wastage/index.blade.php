@@ -31,7 +31,7 @@
               <div class="card-header">
                 <ul class="nav nav-tabs flex-nowrap">
                   <li class="nav-item">
-                    <a href="{{ route('wastage.index') }}" class="nav-link" title="Vendor Wastage List"><i class="fas fa-people-carry"></i> &nbsp;Vendor Wastage</a>
+                    <a href="{{ route('wastage.index') }}" class="nav-link" title="Vendor Wastage List"><i class="fas fa-people-carry"></i> &nbsp;Wastage</a>
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('customer-wastage.index') }}" class="nav-link active" title="Customer Wastage List"><i class="fas fa-users"></i> &nbsp;Customer Wastage</a>

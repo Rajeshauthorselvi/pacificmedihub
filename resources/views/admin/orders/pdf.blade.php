@@ -191,11 +191,15 @@
                             </tr>
                             <tr class="total-calculation">
                               <td colspan="4"  style="text-align: right;">Order Discount: </td>
-                              <td><span class="order-discount">{{$order->order_discount}}</span></td>
+                              <td><span class="order-discount">{{isset($order->order_discount)?$order->order_discount:'0.00'}}</span></td>
                             </tr>
                             <tr class="total-calculation">
                               <td colspan="4"  style="text-align: right;">Order Tax: </td>
-                              <td id="orderTax">{{$order->order_tax_amount}}</td>
+                              <td id="orderTax">{{isset($order->order_tax_amount)?$order->order_tax_amount:'0.00'}}</td>
+                            </tr>
+                            <tr class="total-calculation">
+                              <td colspan="4"  style="text-align: right;">Delivery Charge: </td>
+                              <td id="orderTax">{{isset($order->delivery_charge)?$order->delivery_charge:'0.00'}}</td>
                             </tr>
                             <tr class="total-calculation">
                               <th colspan="4"  style="text-align: right;">Total Amount(SGD): </th>

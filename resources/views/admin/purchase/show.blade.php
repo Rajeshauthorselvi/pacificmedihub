@@ -79,7 +79,7 @@
                               <span><i class="far fa-building"></i></span>
                             </div>
                             <div class="col-sm-10">
-                              <h4>{{$admin_address->company_name}}</h4>
+                              <h4>{{$admin_address->name}}</h4>
                               <p>
                                 <span>
                                   {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}
@@ -106,7 +106,7 @@
                             </div>
                           </div>
                         @endif
-                        @if(isset($admin_address))
+                        @if(isset($vendor_address))
                           <div class="col-sm-6 admin address">
                             <div class="col-sm-2">
                               <span><i class="fas fa-people-carry"></i></span>

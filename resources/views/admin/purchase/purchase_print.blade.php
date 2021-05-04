@@ -25,7 +25,7 @@
                       <div style="width: 70%;float: left; font-size: 14px">
                         @if(isset($admin_address))
                           <div class="customer address" style="width: 43%;float:left;padding-right: 7%;">
-                              <h4>{{$admin_address->company_name}}</h4>
+                              <h4>{{$admin_address->name}}</h4>
                               <p>
                                 <span>
                                   {{$admin_address->address_1}},&nbsp;{{$admin_address->address_2}}
@@ -52,7 +52,7 @@
                           </div>
                         @endif
                       
-                      @if(isset($admin_address))
+                      @if(isset($vendor_address))
                           <div class="admin address" style="width: 40%; float:right;">
                             <div class="col-sm-2">
                               <span><i class="fas fa-people-carry"></i></span>

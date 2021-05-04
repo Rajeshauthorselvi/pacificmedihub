@@ -229,22 +229,20 @@ class ShopController extends Controller
         if(Auth::check()){
             $user_id = Auth::id();
             Cart::instance('wishlist')->restore('userID_'.$user_id);
-            $k = 1;
             $wishlist = Cart::instance('Wishlist')->content();
+            $loop_count=0;
             foreach($wishlist as $item){
-                $wish_list[$k]['product_id'] = $item->id;
-                $k++;
+                $wish_list[$loop_count]['product_id'] = $item->id;
+                $loop_count++;
             }
             $data['user_id'] = $user_id;
             Cart::instance('cart')->restore('userID_'.$user_id);
             $cart_count = Cart::count();
-
             $notify_count = Notification::where('customer_id',$user_id)->where('if_read','no')->count();
         }
 		$data['cart_count']   = $cart_count;
         $data['notify_count'] = $notify_count;
         $data['wishlist']     = $wish_list;
-
         return response()->json($data);
     }
 }

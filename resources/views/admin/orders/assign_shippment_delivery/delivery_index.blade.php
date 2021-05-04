@@ -249,6 +249,7 @@
     .disabled{pointer-events: none;opacity: 0.5;}
     #ui-datepicker-div{z-index: 999 !important}
     .date-picker{display: inline-block;width: 50%}
+  .table-responsive{overflow-x: visible !important; }
   </style>
 
   @push('custom-scripts')

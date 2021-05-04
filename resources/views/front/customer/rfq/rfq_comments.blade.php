@@ -23,23 +23,24 @@
             
             <div class="action_sec">
               <ul class="list-unstyled" style="margin:0">
+                <?php $rfqId = base64_encode($rfq_id); ?>
                 <li style="background-color: #216ea7;border-right: 1px solid #227bbb;@if($rfq_details->status==22||$rfq_details->status==23||$rfq_details->status==10) display:none; @endif">
                   @if(($check_parent->parent_company!=0)&&($rfq_details->send_approval==0))
                     <a href="{{ route('send.rfq.approval',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Send Approval?')">
                     <i class="fa fa-plus-circle"></i>&nbsp; Send Approval
                     </a>
                   @elseif(($check_parent->parent_company!=0)&&($rfq_details->approval_status==1))
-                    <a href="{{ route('my.rfq.order',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
+                    <a href="{{ route('my.rfq.order',$rfqId) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
                     <i class="fa fa-plus-circle"></i>&nbsp; Place Order
                     </a>
                   @else
-                    <a href="{{ route('my.rfq.order',$rfq_id) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
+                    <a href="{{ route('my.rfq.order',$rfqId) }}" class="place-order" onclick="return confirm('Are you sure want to Place Order?')">
                       <i class="fa fa-plus-circle"></i>&nbsp; Place Order
                     </a>
                   @endif
                 </li>
                 <li style="background-color: #23bf79">
-                  <?php $rfqId = base64_encode($rfq_id); ?>
+                  
                   <a href="{{ route('my-rfq.show',$rfqId) }}" class="view">
                     <i class="fa fa-eye"></i>&nbsp; View
                   </a>

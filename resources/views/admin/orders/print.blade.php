@@ -206,6 +206,10 @@
                               <td id="orderTax">{{$order->order_tax_amount}}</td>
                             </tr>
                             <tr class="total-calculation">
+                              <td colspan="4"  style="text-align: right;">Delivery Charge: </td>
+                              <td id="orderTax">{{isset($order->delivery_charge)?$order->delivery_charge:'0.00'}}</td>
+                            </tr>
+                            <tr class="total-calculation">
                               <th colspan="4"  style="text-align: right;">Total Amount(SGD): </th>
                               <th style="text-align: left;">{{$order->sgd_total_amount}}</th>
                             </tr>

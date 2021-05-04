@@ -55,7 +55,10 @@ class ProductSheetImport implements ToCollection, WithHeadingRow, WithValidation
                 $replace_number = str_replace('[Start No]', $start_number, $replace_year);
                 $code=$replace_number;
             }
-            $product_slug=strtolower(str_replace(' ','-',$row['productname']));
+            $product_slug=trim($row['productname']);
+            $product_slug=strtolower(str_replace(' ','-',$product_slug));
+            $product_slug=strtolower(str_replace('#','-',$product_slug));
+            $product_slug=strtolower(str_replace('/','-',$product_slug));
     		$data=[
     			'id'	=> $row['productid'],
     			'name'	=> $row['productname'],

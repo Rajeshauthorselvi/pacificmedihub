@@ -377,6 +377,7 @@
   <style type="text/css">
     .form-group{display:flex;}
     .disabled{pointer-events: none;opacity: 0.5;}
+    .table-responsive{overflow-x: visible !important; }
   </style>
   @push('custom-scripts')
   <script type="text/javascript">
