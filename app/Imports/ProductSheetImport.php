@@ -59,6 +59,7 @@ class ProductSheetImport implements ToCollection, WithHeadingRow, WithValidation
             $product_slug=strtolower(str_replace(' ','-',$product_slug));
             $product_slug=strtolower(str_replace('#','-',$product_slug));
             $product_slug=strtolower(str_replace('/','-',$product_slug));
+            $product_slug=strtolower(str_replace('@','-',$product_slug));
     		$data=[
     			'id'	=> $row['productid'],
     			'name'	=> $row['productname'],

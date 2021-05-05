@@ -378,7 +378,12 @@ class EmployeeController extends Controller
                     $commission_history->save();
                 }
             }
-            return Redirect::route('employees.index')->with('success','Employee details updated successfully.!');    
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+           return Redirect::back()->with('success','Employee details updated successfully.!');
+        } 
+        else{
+            return Redirect::route('employees.index')->with('success','Employee details updated successfully.!');
+        }
         }else{
             return Redirect::back()->with('error','Somthing wrong please try again...!');
         }
