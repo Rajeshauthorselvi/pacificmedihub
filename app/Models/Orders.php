@@ -224,7 +224,6 @@ class Orders extends Model
                         'product_variant_id'  => $product_variant_id
                       ])
                       ->get();
-                      // 'batch_id','expiry_date'
 
         return $batch_details;
     }

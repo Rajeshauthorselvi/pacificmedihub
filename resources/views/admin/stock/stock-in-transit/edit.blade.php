@@ -94,7 +94,7 @@
                             <th class="quantity-info">Stock Quantity<br><small>(A-C-D)</small></th>
                             <th>Batch Id</th>
                             <th>Expiry Date</th>
-                            <th>LocationId</th>
+                            <th>Location Id</th>
                           </tr>
                         </thead>
                         <tbody>

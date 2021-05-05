@@ -224,6 +224,8 @@ Route::group(['prefix' =>'admin','middleware' => ['superAdmin','employee']], fun
 	Route::resource('report-order','Admin\OrderReportController');
 	Route::resource('report-purchase','Admin\PurchaseReportController');
 	Route::resource('report-employee','Admin\EmployeeReportController');
+	Route::resource('stock-list','Admin\StockListController');
+
 
 });
 

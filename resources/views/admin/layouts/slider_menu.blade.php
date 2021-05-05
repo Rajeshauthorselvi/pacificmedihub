@@ -87,6 +87,11 @@
                   <i class="fas fa-angle-double-right"></i> <p>Stock-In-Transit (Customer)</p>
                 </a>
               </li>
+              <li class="nav-item @if($current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit') active @endif">
+                <a href="{{ url('admin/stock-list') }}" class="nav-link">
+                  <i class="fas fa-angle-double-right"></i> <p>Stock List</p>
+                </a>
+              </li>
               
               <li class="nav-item @if($current_route=='return.index'||$current_route=='return.edit'||$current_route=='return.show'||$current_route=='customer-return.index'||$current_route=='customer-return.show') active @endif">
                 <a href="{{ route('return.index') }}" class="nav-link">
