@@ -233,6 +233,7 @@
                                               <input type="hidden" name="variant[final_price][]" class="form-control dis-price" value="{{ $variation_details['final_price'] }}">
                                             </td>
                                             <td>
+
                                               <input type="text" class="form-control stock_qty" name="variant[stock_qty][]" autocomplete="off" value="{{ $variation_details['quantity'] }}">
                                             </td>
                                             <td>
@@ -412,6 +413,56 @@
 
   @push('custom-scripts')
     <script type="text/javascript">
+      $(document).ready(function() {
+          $.each($(".rfq_price"), function(index, val) {
+
+              var current_price  = $(this).val();
+              var qty            = $(this).parents('.parent_tr').find('.stock_qty').val();
+              var discountType   = $(this).parents('.parent_tr').parent().find('.discount-type').find('input[type=radio]:checked').val();
+              var discount     = $(this).parents('.parent_tr').find('.discount-value').val();
+   
+              var dis_price = current_price;
+              if(discountType=='amount'){
+                if(discount>parseInt(current_price)){
+                  discount = current_price;
+                  $(this).parents('.parent_tr').find('.discount-value').val(discount);
+                }
+                dis_price = current_price-discount;
+              }else if(discountType=='percentage'){
+                if(discount>100){
+                  discount=100;
+                  $(this).parents('.parent_tr').find('.discount-value').val(discount);
+                }
+                dis_price = (current_price - (current_price * discount/100));
+              }
+              var subTotal = singeSubtotal(qty,dis_price);
+              if(qty==0||qty==''){
+                $(this).parents('.parent_tr').find('.dis-price').val(0);
+                $(this).parents('.parent_tr').find('.dis-price').text(0);
+              }else{
+                $(this).parents('.parent_tr').find('.dis-price').val(dis_price);
+                $(this).parents('.parent_tr').find('.dis-price').text(dis_price);
+              }
+              $(this).parents('.parent_tr').find('.price').val(current_price*qty);
+              $(this).parents('.parent_tr').find('.price').text(current_price*qty);
+              $(this).parents('.parent_tr').find('.sub_total').text(subTotal.toFixed(2));
+              $(this).parents('.parent_tr').find('.subtotal_hidden').val(subTotal);
+              var total_quantity = SumTotal('.collapse:first .stock_qty');
+              $('.collapse:first').find('.total_quantity').text(total_quantity);
+              var attr_id=$(this).parents('tbody').find('.collapse:first').attr('id');
+              var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+              $('.collapse:first').find('.total_amount').text(total_amount.toFixed(2));
+
+              $('.all_quantity').text(SumAllTotal('.total_quantity'));
+              $('.all_amount').text(SumAllTotal('.total_amount'));
+
+              var all_amount = $('#allAmount').text();
+              var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+              overallCalculation(all_amount,tax_rate);
+              currencyCalculation();
+      
+          });
+      });
       $(function ($) {
         $('.no-search.select2bs4').select2({
           minimumResultsForSearch: -1

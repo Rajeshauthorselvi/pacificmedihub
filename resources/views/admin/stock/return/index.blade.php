@@ -98,23 +98,15 @@
  --}}
                             <td><span class="badge" style="background:{{ $return['color_code'] }};color: #fff ">{{ $return['order_status'] }}</span></td>
                             <td>
-                                <div class="input-group-prepend">
+                                <a href="{{route('return.show',$return['id'])}}" class="btn btn-primary">
+                                  <i class="fa fa-eye"></i>&nbsp; View
+                                </a>
+{{--                                 <div class="input-group-prepend">
                                   <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
                                   <ul class="dropdown-menu">
 
                                     <a href="{{route('return.show',$return['id'])}}"><li class="dropdown-item"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</li></a>
                                     <a href="{{route('return.edit',$return['id'])}}"><li class="dropdown-item"><i class="far fa-edit"></i>&nbsp;&nbsp;Edit</li></a>
-          {{--                           <a href="javascript:void(0)" class="view-payment" return-id="{{ $return['id'] }}">
-                                      <li class="dropdown-item">
-                                        <i class="fa fa-credit-card"></i>&nbsp;&nbsp;View Payments
-                                      </li>
-                                    </a>
-
-                                    <a href="javascript:void(0)" class="add-payment" return-id="{{ $return['id'] }}">
-                                      <li class="dropdown-item">
-                                        <i class="fa fa-credit-card"></i>&nbsp;&nbsp;Add Payment
-                                      </li>
-                                    </a> --}}
                                     <a href="javascript:void(0)"><li class="dropdown-item">
                                       <i class="fa fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF
                                     </li></a>
@@ -125,7 +117,7 @@
                                       <i class="fa fa-print"></i>&nbsp;&nbsp;Print
                                     </li></a>
                                   </ul>
-                                </div>
+                                </div> --}}
                               </td>
                           </tr>
                         @endforeach

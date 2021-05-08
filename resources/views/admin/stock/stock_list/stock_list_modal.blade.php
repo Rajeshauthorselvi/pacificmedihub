@@ -12,6 +12,7 @@
 			<th>Minimum Selling Price</th>
 			<th>Stock Qty</th>
 			<th>Batch Id</th>
+			<th>Expiry Date</th>
 			<th>Location Id</th>
 		</tr>
 	</thead>
@@ -19,6 +20,15 @@
 		@foreach($product_variant as $variant)
         <?php  
         	$batch_details=App\Models\Orders::PurchaseBatchInfo($product->id,$variant['variant_id']);
+            	$batch_id=$expiry_date=$location_id=array();
+            	foreach ($batch_details as $key=>$batch){
+            		array_push($batch_id, $batch->batch_id);
+            		array_push($expiry_date, $batch->expiry_date);
+            		array_push($location_id, $batch->location_id);
+            	}
+            	$batch_id=(count($batch_id)>0)?implode(',',array_filter($batch_id)):'-';
+            	$expiry_date=(count($expiry_date)>0)?implode(',',array_filter($expiry_date)):'-';
+            	$location_id=(count($location_id)>0)?implode(',',array_filter($location_id)):'-';
         ?>
 		<tr>
             <td><div class="form-group"> {{$variant['vendor_name']}}</div></td>
@@ -40,18 +50,9 @@
             <td> <div class="form-group">{{$variant['retail_price']}}</div> </td>
             <td> <div class="form-group">{{$variant['minimum_selling_price']}}</div> </td>
             <td> <div class="form-group">{{$variant['stock_quantity']}}</div> </td>
-            <td>
-                @foreach ($batch_details as $key=>$batch)
-                  {{ $batch->batch_id }}
-                  @if(!$loop->last),@endif
-                @endforeach
-            </td>
-            <td>
-                @foreach ($batch_details as $key=>$batch)
-                  {{ $batch->location_id }}
-                  @if(!$loop->last),@endif
-                @endforeach
-            </td>
+            <td> {{ $batch_id }} </td>
+            <td> {{ $expiry_date }} </td>
+            <td> {{ $location_id }} </td>
 		</tr>
 		@endforeach
 	</tbody>

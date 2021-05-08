@@ -87,18 +87,27 @@ class StockInTransitCustomerController extends Controller
           $quantity = $variant->stock_quantity + $request->variant['return_qty'][$key];
           $variant->stock_quantity  =  $quantity;
           $variant->save();
-
           $order_product = OrderProducts::where('product_variation_id',$request->variant['variant_id'][$key])
+                              ->where('order_id',$request->order_id)
                               ->where('product_id',$request->variant['product_id'][$key])->first();
+
           $order_qty = $order_product->quantity - $request->variant['total_return_quantity'][$key];
+
           $sub_total = $request->variant['total_return_quantity'][$key] * $order_product->final_price;
           $sub_total_amt = $order_product->sub_total - $sub_total;
-          $order_product->quantity = $order_qty;
+
+/*          $order_product->quantity = $order_qty;
           $order_product->sub_total = $sub_total_amt;
+           $order_product->save();*/
+          OrderProducts::where('product_variation_id',$request->variant['variant_id'][$key])
+          ->where('order_id',$request->order_id)
+          ->update(['quantity'=>$order_qty,'sub_total'=>$sub_total_amt]);
+          
           $subTotal += $sub_total;
           $total += $sub_total_amt;
-          $order_product->save();
+          
         }
+
         $order->total_amount = $total;
         $order->sgd_total_amount = $order->sgd_total_amount - $subTotal;
         $order->exchange_total_amount = $order->exchange_total_amount - $subTotal;

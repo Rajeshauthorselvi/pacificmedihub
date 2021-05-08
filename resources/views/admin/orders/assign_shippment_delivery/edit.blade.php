@@ -156,12 +156,14 @@
                                             <th>Quantity</th>
                                             <th>Batch Id</th>
                                             <th>Expiry Date</th>
+                                            <th>Location Id</th>
                                           </tr>
                                         </thead>
                                         <tbody>
                                           <?php $total_amount=$total_quantity=$final_price=0 ?>
                                           @foreach($product['product_variant'] as $key=>$variant)
                                             <?php
+                                                $batch_details=App\Models\Orders::PurchaseBatchInfo($product['product_id'],$variant['variant_id']);
                                               $option_count=$product['option_count'];
                                               $variation_details=\App\Models\OrderProducts::VariationPrice($product['product_id'],$variant['variant_id'],$order->id);
 
@@ -187,6 +189,7 @@
                                                 <?php
                                                 $batch_details=App\Models\Orders::PurchaseBatchInfo($product['product_id'],$variant['variant_id']);
 
+
                                                 $batch_val=explode(',',$variation_details->batch_ids);
                                                 $exp_dates=App\Models\OrderProducts::BatchInfos($batch_val);
                                                 ?>
@@ -207,13 +210,22 @@
                                                 @foreach ($batch_details as $batch)
                                                   <input type="hidden"  class="batch_{{ $batch->id }}" value="{{ $batch->expiry_date }}">
                                                   <input type="hidden" name="exp_dates[{{ $product['product_id'] }}][{{ $variant['variant_id'] }}]" class="append_data_{{$batch->id}} ex-date">
+                                                   <input type="hidden"  class="location_{{ $batch->id }}" value="{{ $batch->location_id }}">
                                                 @endforeach
 
                                               </td>
                                               <td width="20%" class="expiry_date_text">
-                                                  @if (isset($exp_dates))
+
+                                                  @if (isset($exp_dates['batch_exp']))
                                                     {{ $exp_dates['batch_exp'] }}
                                                   @endif
+                                              </td>
+                                              <td width="20%" class="location_id_text">
+                                                @if (isset($exp_dates['location']))
+                                                  {{ $exp_dates['location'] }}
+                                                @endif
+                                                 
+                                              
                                               </td>
                                             </tr>
                                             <?php $total_quantity +=$variation_details['quantity']; ?>
@@ -270,12 +282,14 @@
         event.preventDefault();
         var parent_this=$(this);
         $(this).parents('.parent_tr').find('.expiry_date_text').text('');
+        $(this).parents('.parent_tr').find('.location_id_text').text('');
         $(this).parents('.parent_tr').find('.ex-date').val('');
 
         var currenct_val=$(this).select2('data');
         $.each(currenct_val, function(index, val) {
             var att_id=val.element.attributes[0].value;
             var exp_date=$('.batch_'+att_id).val();
+            var location=$('.location_'+att_id).val();
             var check_parent=parent_this.parents('.parent_tr').find('.expiry_date_text').text();
 
             if (check_parent=="") {
@@ -286,6 +300,16 @@
               parent_this.parents('.parent_tr').find('.expiry_date_text').append(', '+exp_date);
             }
               $('.append_data_'+att_id).val(exp_date);
+
+            var check_parent=parent_this.parents('.parent_tr').find('.location_id_text').text();
+            if (check_parent=="") {
+
+              parent_this.parents('.parent_tr').find('.location_id_text').append(location);
+            }
+            else{
+              parent_this.parents('.parent_tr').find('.location_id_text').append(', '+location);
+            }
+              // $('.append_data_'+att_id).val(exp_date);
         });
       });
 

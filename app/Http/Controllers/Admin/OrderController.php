@@ -608,6 +608,10 @@ class OrderController extends Controller
                 }
             }
           }
+          else{
+            OrderProducts::where('order_id',$id)
+                  ->update(['batch_ids'=>null]);
+          }
 
         }
         else{

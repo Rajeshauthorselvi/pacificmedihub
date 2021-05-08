@@ -266,12 +266,18 @@
   
 
   $(document).on('click', '.save-btn', function(event) {
+
     var sum = 0;
     $('.damaged-qty').each(function(index, el) {
       inputVal = $(this).val();
-      sum += parseFloat(inputVal);
+       sum += parseFloat(inputVal);
     });
-    if(sum!=''){
+    var return_q = 0;
+    $('.return-qty').each(function(index, el) {
+      inputVal = $(this).val();
+      return_q += parseFloat(inputVal);
+    });
+    if((sum>0) || (return_q>0)){
       $('#returnForm').submit();
     }else{
       alert("Please enter damaged Quantity's");
