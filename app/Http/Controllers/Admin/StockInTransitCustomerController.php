@@ -146,11 +146,13 @@ class StockInTransitCustomerController extends Controller
         foreach ($return_products as $key => $product) {
             $product_name = Product::where('id',$product->order_product_id)->value('name');
             $options      = $this->Options($product->order_product_id);
-            $all_variants = OrderProducts::where('order_id',$return->order_id)
-                                         ->where('product_id',$product->order_product_id)
-                                         ->pluck('product_variation_id')
-                                         ->toArray();
-            $product_variant = $this->Variants($product->order_product_id,$all_variants);
+
+            $return_variants = CustomerOrderReturnProducts::where('customer_order_return_id',$return->id)
+            ->where('order_product_id',$product->order_product_id)
+            ->pluck('order_product_variant_id')
+            ->toArray();
+           
+            $product_variant = $this->Variants($product->order_product_id,$return_variants);
 
             $product_data[$product->order_product_id]=[
                 'row_id'          => $product->id,
@@ -164,7 +166,7 @@ class StockInTransitCustomerController extends Controller
         }
         $data['return_products'] = $product_data;
         $data['product_name']    = $product_name;
-        //dd($data);
+
         return view('admin/stock/stock-in-transit-customer/update',$data);
     }
 

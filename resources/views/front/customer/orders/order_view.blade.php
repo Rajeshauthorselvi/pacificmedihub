@@ -63,7 +63,20 @@
                 <li><span>Order Date:</span>{{ date('d/m/Y',strtotime($order->created_at)) }}</li>
                 @if($order->approximate_delivery_date)<li><span>Delivery Date:</span>{{ date('d/m/Y',strtotime($order->approximate_delivery_date))}}</li>@endif
                 <li>
-                  <span>Status</span>: <span class="badge" style="background:{{$order->statusName->color_codes}};color:#fff;padding: 5px">{{ $order->statusName->status_name }}</span>
+                  <span>Status</span>: 
+                  @if ($order_data['order_return']['order_return_status']==22)
+                    <span class="badge" style="background:#f0ad4e;color:#fff;padding: 5px">
+                      Return Request
+                    </span>
+                  @elseif($order_data['order_return']['order_return_status']==24)
+                    <span class="badge badge-info" style="padding: 5px">
+                      Return Request Approved
+                    </span>
+                  @else
+                   <span class="badge" style="background:{{ $order['color_code'] }};color:#fff;padding: 5px">
+                    {{ $order['status'] }}
+                  </span>
+                  @endif
                 </li>
                 <?php 
                   if($order->payment_status==1) $pay_status = 'Paid';
@@ -159,11 +172,18 @@
                     <th class="text-center width">Discount</th>
                     <th class="text-center width">Discount Price <br><small>(a)</small></th>
                     <th class="text-center width">QTY <br><small>(b)</small></th>
+                    <th class="text-center width">Return Quantity</th>
+
                     <th class="text-center width">Total <br><small>(a x b)</small></th>
                 </thead>
                 <tbody>
                   @php $s_no = 1 @endphp
                   @foreach($order_products as $products)
+                    <?php 
+
+                    $order_returns=\App\Models\CustomerOrderReturnProducts::ReturnProducts($order->id,$products['product_id'],$products['product_variation_id']);
+
+                    ?>
                   <tr>
                     <td>{{ $s_no }}</td>
                     <td>
@@ -195,6 +215,13 @@
                     <td class="text-center">@if($products['discount_type']=='amount') $ @endif {{ $products['discount_value'] }} @if($products['discount_type']=='percentage') % @endif </td>
                     <td class="text-center">{{ number_format($products['final_price'],2,'.','') }}</td>
                     <td class="text-center">{{ $products['quantity'] }}</td>
+                    <td>
+                      @if (isset($order_returns->return_quantity))
+                        {{  $order_returns->return_quantity  }}
+                      @else
+                        -
+                      @endif
+                    </td>
                     <td class="text-center">{{ number_format($products['sub_total'],2,'.','') }}</td>
                   </tr>
                   @php $s_no++ @endphp

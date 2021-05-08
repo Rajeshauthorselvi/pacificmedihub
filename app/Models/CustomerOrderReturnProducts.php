@@ -17,4 +17,14 @@ class CustomerOrderReturnProducts extends Model
 						 ->first();
 		return $variation_price;
     }
+
+    static function ReturnProducts($order_id,$product_id,$variant_id)
+    {
+    	$products=self::where('order_id',$order_id)
+    			  ->where('order_product_id',$product_id)
+    			  ->where('order_product_variant_id',$variant_id)
+    			  ->first();
+
+    	return $products;
+    }
 }

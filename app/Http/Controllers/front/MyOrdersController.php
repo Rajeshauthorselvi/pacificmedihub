@@ -68,6 +68,11 @@ class MyOrdersController extends Controller
           }
           $order_data[$key]['days_count'] = $diff_in_days;
           $order_data[$key]['order_return'] = CustomerOrderReturn::where('order_id',$item->id)->first();
+          $order_data[$key]['total_order_products']=OrderProducts::where('order_id',$item->id)->sum('quantity');
+          $order_data[$key]['total_return_quantity']=CustomerOrderReturnProducts::where('order_id',$item->id)
+                                                      ->sum('return_quantity');
+          $order_data[$key]['total_damage_quantity']=CustomerOrderReturnProducts::where('order_id',$item->id)
+                                                      ->sum('damage_quantity');
         }
         $pagination = array();
         $pagination['firstItem']   = $all_data->firstItem();
@@ -78,7 +83,7 @@ class MyOrdersController extends Controller
         $data['pagination']        = $pagination;            
 
         $data['order_data'] = $order_data;
-        //dd($data);
+        // dd($data);
         return view('front/customer/orders/order_index',$data);
     }
 
@@ -111,19 +116,23 @@ class MyOrdersController extends Controller
       if($add_return){
         $item_details = $request->item;
         foreach($item_details['order_product_id'] as $key => $items) {
-          $add_rtn_prod = new CustomerOrderReturnProducts;
-          $add_rtn_prod->customer_order_return_id = $add_return->id;
-          $add_rtn_prod->order_id         = $request->order_id;
-          $add_rtn_prod->order_product_id = $item_details['order_product_id'][$key];
-          $add_rtn_prod->order_product_variant_id = $item_details['order_product_variant_id'][$key];
-          $add_rtn_prod->qty_received     = $item_details['recived_qty'][$key];
-          $add_rtn_prod->damage_quantity  = $item_details['damaged_qty'][$key];
-          $add_rtn_prod->return_quantity  = $item_details['return_qty'][$key];
-          $add_rtn_prod->total_return_quantity = $item_details['total_return_qty'][$key];
-          $add_rtn_prod->stock_quantity   = $item_details['stock_qty'][$key];
-          $add_rtn_prod->timestamps       = false;
-          $add_rtn_prod->save();
+
+          if ($item_details['damaged_qty'][$key] > 0 || $item_details['total_return_qty'][$key] > 0) {
+              $add_rtn_prod = new CustomerOrderReturnProducts;
+              $add_rtn_prod->customer_order_return_id = $add_return->id;
+              $add_rtn_prod->order_id         = $request->order_id;
+              $add_rtn_prod->order_product_id = $item_details['order_product_id'][$key];
+              $add_rtn_prod->order_product_variant_id = $item_details['order_product_variant_id'][$key];
+              $add_rtn_prod->qty_received     = $item_details['recived_qty'][$key];
+              $add_rtn_prod->damage_quantity  = $item_details['damaged_qty'][$key];
+              $add_rtn_prod->return_quantity  = $item_details['return_qty'][$key];
+              $add_rtn_prod->total_return_quantity = $item_details['total_return_qty'][$key];
+              $add_rtn_prod->stock_quantity   = $item_details['stock_qty'][$key];
+              $add_rtn_prod->timestamps       = false;
+              $add_rtn_prod->save();
+          }
         }
+
       }
       $creater_name=Auth::user()->name;
       $auth_id=Auth::id();
@@ -169,6 +178,7 @@ class MyOrdersController extends Controller
         $order_data = $order_items = array();
         foreach ($order_products as $key => $item) {
             $order_items[$key]['product_id'] =  $item->product->id;
+            $order_items[$key]['product_variation_id'] =  $item->product_variation_id;
             $order_items[$key]['product_name'] =  $item->product->name;
             $order_items[$key]['variant_sku'] = $item->variant->sku;
             $order_items[$key]['variant_option1'] = isset($item->variant->optionName1->option_name)?$item->variant->optionName1->option_name:null;

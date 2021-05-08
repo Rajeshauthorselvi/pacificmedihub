@@ -21,13 +21,32 @@
         <div class="rfq-container">
           @if(count($order_data)!=0)
             @foreach($order_data as $order)
+          
               <div class="order rfq-block">
                 <div class="header">
                   <div class="col-sm-4 text-left">
                     <span>Order Code</span>: #{{ $order['code'] }}
                   </div>
                   <div class="col-sm-4 text-center">
-                    <span>Status</span>: <span class="badge" style="background:{{$order['color_code']}};color:#fff;padding: 5px">{{ $order['status'] }}</span>
+                    <span>Status</span>: 
+                  @if ($order['order_return']['order_return_status']==22)
+                    <span class="badge" style="background:#f0ad4e;color:#fff;padding: 5px">
+                      Return Request
+                    </span>
+                  @elseif($order['order_return']['order_return_status']==24)
+                    <span class="badge badge-info" style="padding: 5px">
+                      Return Request Approved
+                    </span>
+                  @elseif($order['order_return']['order_return_status']==2 && $order['toatl_qty']==0)
+                    <span class="badge badge-info" style="padding: 5px;background:#00a65a;">
+                       Goods Returned
+                    </span>
+                  @else
+                   <span class="badge" style="background:{{ $order['color_code'] }};color:#fff;padding: 5px">
+                    {{ $order['status'] }}
+                  </span>
+                  @endif
+                    
                   </div>
                   <div class="col-sm-4 text-right">
                     @if(isset($order['delivered_at'])&& $order['delivered_at']!=null)
