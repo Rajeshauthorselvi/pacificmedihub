@@ -113,6 +113,12 @@ if(Auth::guard('employee')->user()->isAuthorized('currency_setting','read')){
 if(Auth::guard('employee')->user()->isAuthorized('payment_setting','read')){
   $payment_setting="yes";
 }
+if(Auth::guard('employee')->user()->isAuthorized('stock_list','read')){
+  $stock_list="yes";
+}
+if(Auth::guard('employee')->user()->isAuthorized('low_stock','read')){
+  $low_stock="yes";
+}
 ?>
   <span style="display: none;">{{$current_route=request()->route()->getName()}}</span>
   <!-- Main Sidebar Container -->
@@ -215,6 +221,13 @@ if(Auth::guard('employee')->user()->isAuthorized('payment_setting','read')){
                 </a>
               </li>
               @endif
+              @if (isset($stock_list))
+                <li class="nav-item @if($current_route=='stock-in-transit-customer.index'||$current_route=='stock-in-transit-customer.edit') active @endif">
+                  <a href="{{ url('admin/stock-list') }}" class="nav-link">
+                    <i class="fas fa-angle-double-right"></i> <p>Stock List</p>
+                  </a>
+                </li>
+              @endif
               @if($return!="")
                 <li class="nav-item @if($current_route=='return.index'||$current_route=='return.edit') active @endif">
                   <a href="{{ route('return.index') }}" class="nav-link">
@@ -228,6 +241,13 @@ if(Auth::guard('employee')->user()->isAuthorized('payment_setting','read')){
                     <i class="fas fa-angle-double-right"></i> <p>Wastage/Write Off</p>
                   </a>
                 </li>
+              @endif
+              @if (isset($low_stock))
+              <li class="nav-item @if($current_route=='low-stocks.index'||$current_route=='low-stock-purchase.create') active @endif">
+                <a href="{{ route('low-stocks.index') }}" class="nav-link">
+                  <i class="fas fa-angle-double-right"></i> <p>Low Stock Alert</p>
+                </a>
+              </li>
               @endif
             </ul>
           </li>
