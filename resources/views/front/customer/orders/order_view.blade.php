@@ -64,11 +64,11 @@
                 @if($order->approximate_delivery_date)<li><span>Delivery Date:</span>{{ date('d/m/Y',strtotime($order->approximate_delivery_date))}}</li>@endif
                 <li>
                   <span>Status</span>: 
-                  @if ($order_data['order_return']['order_return_status']==22)
+                  @if (isset($order_data['order_return']['order_return_status']) && $order_data['order_return']['order_return_status']==22)
                     <span class="badge" style="background:#f0ad4e;color:#fff;padding: 5px">
                       Return Request
                     </span>
-                  @elseif($order_data['order_return']['order_return_status']==24)
+                  @elseif(isset($order_data['order_return']['order_return_status']) && $order_data['order_return']['order_return_status']==24)
                     <span class="badge badge-info" style="padding: 5px">
                       Return Request Approved
                     </span>
@@ -84,12 +84,12 @@
                   elseif($order->payment_status==3) $pay_status = 'Not Paid';
                 ?>
                 <li><span>Payment Status:</span>{{ $pay_status }}</li>
-                <br>
+{{--                 <br>
                 @if(isset($order_data['order_return']['order_return_status']))
                   <li>
                     <span>Return Status</span>: <span class="badge" style="background:{{$order_data['order_return']['statusName']['color_codes']}};color:#fff;padding: 5px">{{ $order_data['order_return']['statusName']['status_name'] }}</span>
                   </li>
-                @endif
+                @endif --}}
               </ul>
             </div>
             <div class="address-block col-sm-8">
@@ -216,8 +216,8 @@
                     <td class="text-center">{{ number_format($products['final_price'],2,'.','') }}</td>
                     <td class="text-center">{{ $products['quantity'] }}</td>
                     <td>
-                      @if (isset($order_returns->return_quantity))
-                        {{  $order_returns->return_quantity  }}
+                      @if (isset($order_returns->return_quantity) || isset($order_returns->damage_quantity))
+                        {{  $order_returns->return_quantity+$order_returns->damage_quantity  }}
                       @else
                         -
                       @endif

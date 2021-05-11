@@ -50,6 +50,7 @@ Route::middleware('auth:api')->group( function () {
 
 	//RFQ
 	Route::resource('rfq-api','Api\RFQApiController');
+	Route::post('add-address','Api\RFQApiController@AddAddress');
 
 	//Profile
 	Route::get('profile','Api\ProfileController@index');

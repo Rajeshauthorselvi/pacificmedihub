@@ -148,6 +148,32 @@ class RFQApiController extends Controller
     }
     public function AddAddress(Request $request)
     {
-        
+         $address=[
+            'customer_id'       => Auth::id(),
+            'name'              => $request->name,
+            'mobile'            => $request->mobile,
+            'address_line1'     => $request->address_line1,
+            'address_line2'     => $request->address_line2,
+            'country_id'        => $request->country_id,
+            'state_id'          => $request->state_id,
+            'city_id'           => $request->city_id,
+            'post_code'         => $request->post_code,
+            'latitude'          => $request->latitude,
+            'longitude'         => $request->longitude
+        ];
+
+        $check_order_exists=UserAddress::where('customer_id',Auth::id())->count();
+        $address['address_type']=1;
+        if ($check_order_exists!=0 && $request->is_default=="yes") {
+            UserAddress::where('customer_id',Auth::id())->update(['address_type'=>1]);
+            $address['address_type']=0;
+        }
+        elseif ($check_order_exists==0) {
+            $address['address_type']=0;
+        }
+        $address['created_at']=date('Y-m-d H:i:s');
+        $address_id=UserAddress::insertGetId($address);
+        $address=UserAddress::find($address_id);
+        return response()->json(['success'=> true,'data'=>$address]);
     }
 }

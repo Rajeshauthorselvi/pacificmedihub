@@ -345,6 +345,19 @@ class OrderController extends Controller
         'user_type'   => $user_type 
       ];
       OrderHistory::insert($order_history);
+
+              Notification::insert([
+                'type'                => 'order',
+                'ref_id'              => $order_id,
+                'customer_id'         => $request->customer_id,
+                'content'             => 'You have new order. Order no is '.$request->order_no,
+                'url'                 => url('admin/assign-delivery/'.$order_id.'/edit'),
+                'created_at'          => date('Y-m-d H:i:s'),
+                'created_by'          => $updated_by,
+                'created_user_type'   => $user_type,
+                'delivery_employee_id'  => $request->sales_rep_id
+              ]);
+
       $this->EmailNotification($order_id);
       $route=$this->RouteLinks();
       return Redirect::route($route['back_route'])->with('success','Order details updated successfully');
@@ -585,6 +598,28 @@ class OrderController extends Controller
 
           if ($request->delivery_status==14) {
               $order_data['order_status']=14;
+          }
+         if (!Auth::check() && Auth::guard('employee')->check()) {
+            $updated_by=Auth::guard('employee')->user()->id;
+            $user_type=2;
+         }
+         else{
+            $updated_by=Auth::id();
+            $user_type=1;
+         }
+
+          if ($request->delivery_status==15) {
+              Notification::insert([
+                'type'                => 'order',
+                'ref_id'              => $order_details->id,
+                'customer_id'         => $order_details->customer_id,
+                'content'             => 'You have new order to deliver. Order no is '.$order_details->order_no,
+                'url'                 => url('admin/assign-delivery/'.$order_details->id.'/edit'),
+                'created_at'          => date('Y-m-d H:i:s'),
+                'created_by'          => $updated_by,
+                'created_user_type'   => $user_type,
+                'delivery_employee_id'  => $request->delivery_person_id 
+              ]);
           }
 
           if ($request->delivery_status==17) {

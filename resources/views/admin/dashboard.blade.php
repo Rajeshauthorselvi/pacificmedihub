@@ -54,6 +54,7 @@
               <a href="{{route('new-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
+          @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('completed_orders','create'))
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
@@ -69,6 +70,7 @@
             </div>
           </div>
           <!-- ./col -->
+          @endif
           <div class="col-lg-3 col-6">
             <!-- small box -->
             <div class="small-box">

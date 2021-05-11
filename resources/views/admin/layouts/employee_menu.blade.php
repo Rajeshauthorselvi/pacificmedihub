@@ -201,7 +201,7 @@ if(Auth::guard('employee')->user()->isAuthorized('low_stock','read')){
           </li>
           @endif
 
-          @if ($stock_vendor_allow !="" || $stock_customer_allow || $return!="" || $wastage!="")
+          @if ($stock_vendor_allow !="" || $stock_customer_allow || $return!="" || $wastage!="" || isset($stock_list) || isset($low_stock))
           <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-boxes"></i> <p>Stock <i class="fas fa-angle-left right"></i></p>

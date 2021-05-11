@@ -8,6 +8,7 @@ use App\Models\ProductVariant;
 use App\Models\ProductVariantVendor;
 use App\Models\Product;
 use App\Models\Option;
+use AUth;
 class StockListController extends Controller
 {
     /**
@@ -17,6 +18,11 @@ class StockListController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('stock_list','read')) {
+                abort(404);
+            }
+        }
         $data=array();
         $get_products = Product::where('is_deleted',0)->orderBy('id','desc')->get();
         $products = array();

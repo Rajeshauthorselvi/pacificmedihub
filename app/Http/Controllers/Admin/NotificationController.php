@@ -15,18 +15,25 @@ class NotificationController extends Controller
      */
     public function index()
     {
-
+         $access_via_role="";
          if (!Auth::check() && Auth::guard('employee')->check()) {
             $updated_by=Auth::guard('employee')->user()->id;
             $user_type=2;
+            $role_user_id=Auth::guard('employee')->user()->id;
+            if (Auth::guard('employee')->user()->role_id==6 || Auth::guard('employee')->user()->role_id==4) {
+                $access_via_role="yes";
+            }
          }
          else{
             $updated_by=Auth::id();
             $user_type=1;
          }
         $all_notifications=Notification::where('if_read','no')
-                          ->where('created_user_type','<>',$user_type)
-                          ->where('created_by','<>',$updated_by)
+                          ->where('created_user_type','<>',$user_type);
+                          if ($access_via_role=="yes") {
+                            $all_notifications->where('delivery_employee_id',$role_user_id);
+                          }
+                          $all_notifications=$all_notifications->where('created_by','<>',$updated_by)
                           ->orderBy('id','DESC')
                           ->get();
 
@@ -82,7 +89,27 @@ class NotificationController extends Controller
      */
     public function store(Request $request)
     {
-        Notification::where('if_read','no')->update(['if_read'=>'yes']);
+          $access_via_role="";
+         if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (Auth::guard('employee')->user()->role_id==6) {
+                 Notification::where('if_read','no')
+                 ->where('delivery_employee_id',Auth::guard('employee')->user()->id)
+                 ->update(['if_read'=>'yes']);
+            }
+            elseif (Auth::guard('employee')->user()->role_id==4) {
+                 Notification::where('if_read','no')
+                 ->where('delivery_employee_id',Auth::guard('employee')->user()->id)
+                 ->update(['if_read'=>'yes']);
+            }
+         }
+         else{
+            $user_type=1;
+            Notification::where('if_read','no')
+            ->where('delivery_employee_id',0)
+            ->update(['if_read'=>'yes']);
+         }
+
+        
 
         return ['status'=>true];
     }

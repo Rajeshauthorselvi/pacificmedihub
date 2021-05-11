@@ -10,6 +10,7 @@ use App\Models\ProductVariantVendor;
 use App\Models\Vendor;
 use App\Models\Orders;
 use DB;
+use Auth;
 class LowStockAlertController extends Controller
 {
     /**
@@ -19,6 +20,11 @@ class LowStockAlertController extends Controller
      */
     public function index()
     {
+        if (!Auth::check() && Auth::guard('employee')->check()) {
+            if (!Auth::guard('employee')->user()->isAuthorized('low_stock','read')) {
+                abort(404);
+            }
+        }
         $data=array();
         $stock_details=array();
 

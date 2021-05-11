@@ -407,8 +407,8 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-                                <input type="checkbox" name="stock[stock_transist_customer][read]" class="stock-read" id="stockRead">
-                                <label for="stockRead"></label>
+                                <input type="checkbox" name="stock[stock_transist_customer][read]" class="stock-read" id="stockCustomerRead">
+                                <label for="stockCustomerRead"></label>
                               </div>
                             </div>
                           </td>
@@ -416,8 +416,8 @@
                           <td>
                             <div class="form-group clearfix">
                               <div class="icheck-info d-inline">
-                                <input type="checkbox" name="stock[stock_transist_customer][update]" class="stock-update" id="stockReadWrite" >
-                                <label for="stockReadWrite"></label>
+                                <input type="checkbox" name="stock[stock_transist_customer][update]" class="stock-update" id="stockCustomerWrite" >
+                                <label for="stockCustomerWrite"></label>
                               </div>
                             </div>
                           </td>
@@ -459,7 +459,7 @@
                             </div>
                           </td>
                         </tr>
-                        <tr></tr>
+                        
                         <tr>
                           <td>4</td>
                           <td class="name">Wastage</td>
@@ -495,6 +495,45 @@
                               </div>
                             </div>
                           </td>
+                        </tr>
+                        
+                        <tr>
+                          <td>5</td>
+                          <td class="name">Low Stock</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="stock[low_stock][read]" class="stock-read" id="LowStockRead">
+                                <label for="LowStockRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="stock[low_stock][update]" class="stock-update" id="LowStockUpdate">
+                                <label for="LowStockUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                        </tr>
+                        
+                        <tr>
+                          <td>6</td>
+                          <td class="name">Stock List</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="stock[stock_list][read]" class="stock-read" id="StockListRead">
+                                <label for="StockListRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>-</td>
                         </tr>
                         
                       </tbody>
@@ -1263,6 +1302,42 @@
                             </div>
                           </td>
                         </tr>
+                        <tr>
+                          <td>3</td>
+                          <td class="name">Features</td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[features][read]" class="static-read" id="PageFeatureRead">
+                                <label for="PageFeatureRead"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[features][create]" class="static-create" id="PageFeatureCreate">
+                                <label for="PageFeatureCreate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[features][update]" class="static-update" id="PageFeatureUpdate">
+                                <label for="PageFeatureUpdate"></label>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group clearfix">
+                              <div class="icheck-info d-inline">
+                                <input type="checkbox" name="static_page[features][delete]" class="static-delete" id="PageFeatureDelete">
+                                <label for="PageFeatureDelete"></label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -1498,42 +1573,6 @@
                         </tr>
                         <tr>
                           <td>7</td>
-                          <td class="name">Customer Settings</td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="settings[customer_setting][read]" class="setting-read" id="customerSettingRead">
-                                <label for="customerSettingRead"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="settings[customer_setting][create]" class="setting-create" id="orderSettingCreate">
-                                <label for="orderSettingCreate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="settings[customer_setting][update]" class="setting-update" id="customerSettingUpdate">
-                                <label for="customerSettingUpdate"></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-group clearfix">
-                              <div class="icheck-info d-inline">
-                                <input type="checkbox" name="settings[customer_setting][delete]" class="setting-delete" id="customerSettingDelete">
-                                <label for="customerSettingDelete"></label>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>8</td>
                           <td class="name">Tax</td>
                           <td>
                             <div class="form-group clearfix">
@@ -1569,7 +1608,7 @@
                           </td>
                         </tr>
                         <tr>
-                          <td>9</td>
+                          <td>8</td>
                           <td class="name">Currencies</td>
                           <td>
                             <div class="form-group clearfix">
@@ -1605,7 +1644,7 @@
                           </td>
                         </tr>
                         <tr>
-                          <td>10</td>
+                          <td>9</td>
                           <td class="name">Payment Methods</td>
                           <td>
                             <div class="form-group clearfix">

@@ -201,6 +201,7 @@ class AccessController extends Controller
         else{
             RoleAccessPermission::where('object','pages')->update(['allow_access'=>'no']);
             RoleAccessPermission::where('object','static')->update(['allow_access'=>'no']);
+            RoleAccessPermission::where('object','features')->update(['allow_access'=>'no']);
         }
         /*Static*/
 
@@ -242,6 +243,15 @@ class AccessController extends Controller
                 RoleAccessPermission::where('object','static')->update(['allow_access'=>'no']);
             }
             /*Slider*/
+
+            /*Feature*/
+            if (isset($product_data['features'])) {
+                $this->DataLoop(4,$total_opration,'features',$product_data['features'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','features')->update(['allow_access'=>'no']);
+            }
+            /*Feature*/
     }
     public function EntireSettingSec($role_id,$total_opration,$product_data)
     {
@@ -535,6 +545,23 @@ class AccessController extends Controller
                 RoleAccessPermission::where('object','wastage')->update(['allow_access'=>'no']);
             }
             /*Wastage*/
+
+            /*Low Stock*/
+            if (isset($product_data['low_stock'])) {
+                $this->DataLoop(4,$total_opration,'low_stock',$product_data['low_stock'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','low_stock')->update(['allow_access'=>'no']);
+            }
+            /*Low Stock*/
+            /*Low Stock*/
+            if (isset($product_data['stock_list'])) {
+                $this->DataLoop(1,$total_opration,'stock_list',$product_data['stock_list'],$role_id);
+            }
+            else{
+                RoleAccessPermission::where('object','stock_list')->update(['allow_access'=>'no']);
+            }
+            /*Low Stock*/
 
     }
 

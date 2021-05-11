@@ -204,6 +204,7 @@
 </style>
 @push('custom-scripts')
 <script type="text/javascript">
+/*
   $(document).on('change', '.damaged-qty', function(event) {
     if(this.value==''){
         $(this).val(0); 
@@ -226,6 +227,7 @@
       }
       $(this).trigger('keyup');
   });
+*/
   $(document).ready(function() {
     $('.damaged-qty').on('keyup',function(){
       if(this.value==''){
@@ -238,6 +240,11 @@
       var orderedQty = $(this).parents('tr').find('.qty').text();
       var damagedQty = $(this).val();
       var returnQty  = $(this).parents('tr').find('.return-qty').val();
+      var balance_qty=parseInt(orderedQty)-parseInt(returnQty);
+      if ((damagedQty !== '') && (damagedQty.indexOf('.') === -1)) {
+          var damagedQty=Math.max(Math.min(damagedQty, parseInt(balance_qty)), -90);
+          $(this).val(damagedQty);
+      }
       var totalReturnQty = parseInt(damagedQty)+parseInt(returnQty);
       var stockQty   = parseInt(orderedQty)-parseInt(totalReturnQty);
       $(this).parents('tr').find('.total-return-qty').val(totalReturnQty);
@@ -255,6 +262,11 @@
       var orderedQty = $(this).parents('tr').find('.qty').text();
       var damagedQty = $(this).parents('tr').find('.damaged-qty').val();
       var returnQty  = $(this).val();
+      var balance_qty=parseInt(orderedQty)-parseInt(damagedQty);
+      if ((returnQty !== '') && (returnQty.indexOf('.') === -1)) {
+          var returnQty=Math.max(Math.min(returnQty, parseInt(balance_qty)), -90);
+          $(this).val(returnQty);
+      }
       var totalReturnQty = parseInt(damagedQty)+parseInt(returnQty);
       var stockQty   = parseInt(orderedQty)-parseInt(totalReturnQty);
       $(this).parents('tr').find('.total-return-qty').val(totalReturnQty);

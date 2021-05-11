@@ -29,15 +29,15 @@
                   </div>
                   <div class="col-sm-4 text-center">
                     <span>Status</span>: 
-                  @if ($order['order_return']['order_return_status']==22)
+                  @if (isset($order['order_return']['order_return_status']) && $order['order_return']['order_return_status']==22)
                     <span class="badge" style="background:#f0ad4e;color:#fff;padding: 5px">
                       Return Request
                     </span>
-                  @elseif($order['order_return']['order_return_status']==24)
+                  @elseif(isset($order['order_return']['order_return_status']) && $order['order_return']['order_return_status']==24)
                     <span class="badge badge-info" style="padding: 5px">
                       Return Request Approved
                     </span>
-                  @elseif($order['order_return']['order_return_status']==2 && $order['toatl_qty']==0)
+                  @elseif(isset($order['order_return']['order_return_status']) && $order['order_return']['order_return_status']==2 && $order['toatl_qty']==0)
                     <span class="badge badge-info" style="padding: 5px;background:#00a65a;">
                        Goods Returned
                     </span>
@@ -67,9 +67,9 @@
                   <div class="col-sm-4 text-left">
                     <span>Total Items</span>: {{ $order['item_count'] }}&nbsp;&nbsp;
                     <span>Total Qty</span>: {{ $order['toatl_qty'] }}<br>
-                    @if($order['order_return'])
+                    {{-- @if($order['order_return'])
                       <span>Return Status</span>: <span class="badge" style="background:{{$order['order_return']['statusName']['color_codes']}};color:#fff;padding: 5px">{{ $order['order_return']['statusName']['status_name'] }}</span>
-                    @endif
+                    @endif --}}
                   </div>
                   <div class="col-sm-3 text-right">
                     <?php $order_id = base64_encode($order['id']);?>

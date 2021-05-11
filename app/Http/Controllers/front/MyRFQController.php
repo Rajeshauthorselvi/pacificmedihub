@@ -438,8 +438,8 @@ class MyRFQController extends Controller
             $user_id    = Auth::id();
             $primary_id = Auth::user()->address_id;
 
-            $data['all_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('address_type',[1,2])
-                                              ->where('is_deleted',0)->get();
+            /*$data['all_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('address_type',[1,2])
+                                              ->where('is_deleted',0)->get();*/
 
             $delivery   = UserAddress::where('address_type',1)->where('customer_id',$user_id)->first();
             $primary    = UserAddress::where('id',$primary_id)->where('customer_id',$user_id)->first();
@@ -452,8 +452,8 @@ class MyRFQController extends Controller
                 $remove_id        = $primary_id;
             }
 
-            $data['billing_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('id',[$remove_id])
-                                                  ->where('is_deleted',0)->get();
+           /* $data['billing_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('id',[$remove_id])
+                                                  ->where('is_deleted',0)->get();*/
 
             $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
             $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
