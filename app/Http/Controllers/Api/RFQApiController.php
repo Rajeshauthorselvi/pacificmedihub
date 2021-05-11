@@ -75,7 +75,6 @@ class RFQApiController extends Controller
             $data['user_id']    = $user_id;
             $data['cart_count'] = Cart::count();
             $data['cart_data']  = $cart_data;
-
         return response()->json(['success'=> true,'data'=>$data]);
     }
 
