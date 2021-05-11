@@ -30,18 +30,20 @@ class CartController extends Controller
             $cart_count = $data['cart_count'] = Cart::count();
             
             if($cart_count!=0){
+                $cart_count=0;
                 foreach($cart_items as $key => $items)
                 {
                     $product = Product::find($items->id);
                     
-                    $cart_data[$key]['uniqueId']      = $items->getUniqueId();
-                    $cart_data[$key]['product_id']    = $items->id;
-                    $cart_data[$key]['product_name']  = $items->name;
-                    $cart_data[$key]['product_image'] = $items->options['product_img'];
-                    $cart_data[$key]['price']         = $items->price;
-                    $cart_data[$key]['qty']           = $items->quantity;
-                    $cart_data[$key]['variant_id']    = $items->options['variant_id'];
-                    $cart_data[$key]['sku']           = $items->options['variant_sku'];
+                    $cart_data[$cart_count]['uniqueId']      = $items->getUniqueId();
+                    $cart_data[$cart_count]['product_id']    = $items->id;
+                    $cart_data[$cart_count]['product_name']  = $items->name;
+                    $cart_data[$cart_count]['product_image'] = $items->options['product_img'];
+                    $cart_data[$cart_count]['price']         = $items->price;
+                    $cart_data[$cart_count]['qty']           = $items->quantity;
+                    $cart_data[$cart_count]['variant_id']    = $items->options['variant_id'];
+                    $cart_data[$cart_count]['sku']           = $items->options['variant_sku'];
+                    $cart_count++;
                 }
             }
             $data['cart_data'] = $cart_data;
