@@ -72,7 +72,57 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $price = (float)$request->price;
+        $qty = (int)$request->qty_count;
+        
+        $product = Product::find($request->product_id);    
+    
+        $user_id = Auth::id();
+        Cart::instance('cart')->restore('userID_'.$user_id);
+        
+        if(isset($user_id)){
+            Cart::instance('cart')->add($product->id, $product->name, $price, $qty,[
+                'product_img' => $request->product_img,
+                'variant_id'  => $request->variant_id,
+                'variant_sku' => $request->variant_sku
+            ]);
+            Cart::store('userID_'.$user_id);
+        }
+        else{
+            $cartItem = Cart::add($product->id, $product->name, $price, $qty,[
+                'product_img' => $request->product_img,
+                'variant_id'  => $request->variant_id,
+                'variant_sku' => $request->variant_sku
+            ]);
+        }
+
+            $cart_data = [];
+            Cart::instance('cart')->restore('userID_'.$user_id);
+            $cart_items = Cart::content();
+
+            $cart_count = $data['cart_count'] = Cart::count();
+            
+            if($cart_count!=0){
+                $cart_count=0;
+                foreach($cart_items as $key => $items)
+                {
+                    $product = Product::find($items->id);
+                    
+                    $cart_data[$cart_count]['uniqueId']      = $items->getUniqueId();
+                    $cart_data[$cart_count]['product_id']    = $items->id;
+                    $cart_data[$cart_count]['product_name']  = $items->name;
+                    $cart_data[$cart_count]['product_image'] = $items->options['product_img'];
+                    $cart_data[$cart_count]['price']         = $items->price;
+                    $cart_data[$cart_count]['qty']           = $items->quantity;
+                    $cart_data[$cart_count]['variant_id']    = $items->options['variant_id'];
+                    $cart_data[$cart_count]['sku']           = $items->options['variant_sku'];
+                    $cart_count++;
+                }
+            }
+            $data['cart_data'] = $cart_data;
+            $data['place_holder']=url('theme/images/products');
+            return response()->json(['success'=> true,'data'=>$data]);
+        
     }
 
     /**
