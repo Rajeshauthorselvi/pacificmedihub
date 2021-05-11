@@ -48,6 +48,9 @@ Route::middleware('auth:api')->group( function () {
 	//Cart
 	Route::resource('my-cart','Api\CartController');
 
+	//RFQ
+	Route::resource('rfq-api','Api\RFQApiController');
+
 	//Profile
 	Route::get('profile','Api\ProfileController@index');
 	Route::post('update-profile','Api\ProfileController@updateProfile');
