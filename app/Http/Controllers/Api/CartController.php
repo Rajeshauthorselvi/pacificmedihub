@@ -47,6 +47,7 @@ class CartController extends Controller
                 }
             }
             $data['cart_data'] = $cart_data;
+            $data['place_holder']=url('theme/images/products');
             return response()->json(['success'=> true,'data'=>$data]);
         }else{
             return response()->json(['success'=>false]);
