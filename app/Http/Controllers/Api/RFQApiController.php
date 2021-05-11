@@ -31,22 +31,25 @@ class RFQApiController extends Controller
             $primary    = UserAddress::where('id',$primary_id)->where('customer_id',$user_id)->first();
 
             if(isset($delivery)){
-                $data['default_delivery'] = $delivery;
+                $default_shipping_address = $delivery;
                 $remove_id        = $delivery->id;
             }else{
-                $data['default_delivery'] = $primary;
+                $default_shipping_address = $primary;
                 $remove_id        = $primary_id;
             }
+            $data['shipping_address']=$default_shipping_address;
+            $data['billing_address']=$default_shipping_address;
 
-            $data['billing_address'] = UserAddress::where('customer_id',$user_id)
+
+            /*$data['billing_address'] = UserAddress::where('customer_id',$user_id)
                                        ->whereNotIn('id',[$remove_id])
-                                       ->where('is_deleted',0)->get();
-            $data['all_address'] = UserAddress::where('customer_id',$user_id)
+                                       ->where('is_deleted',0)->get();*/
+         /*   $data['all_address'] = UserAddress::where('customer_id',$user_id)
                                        ->where('is_deleted',0)
-                                       ->get();
+                                       ->get();*/
 
             // $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
-            $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
+            // $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
             Cart::instance('cart')->restore('userID_'.$user_id);
 
             $cart_data = [];
@@ -142,5 +145,9 @@ class RFQApiController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function AddAddress(Request $request)
+    {
+        
     }
 }
