@@ -10,6 +10,8 @@ use App\Models\UserAddress;
 use App\Models\DeliveryMethod;
 use App\Models\Product;
 use App\Models\Countries;
+use App\Models\State;
+use App\Models\City;
 use Auth;
 use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
 class RFQApiController extends Controller
@@ -175,5 +177,17 @@ class RFQApiController extends Controller
         $address_id=UserAddress::insertGetId($address);
         $address=UserAddress::find($address_id);
         return response()->json(['success'=> true,'data'=>$address]);
+    }
+    public function AllCountries()
+    {
+        return Countries::get()->toArray();
+    }
+    public function StatesBasedCountry($country_id='')
+    {
+        return State::where('country_id',$country_id)->get()->toArray();
+    }
+    public function CityBasedState($state_id='')
+    {
+        return City::where('state_id',$state_id)->get()->toArray();
     }
 }

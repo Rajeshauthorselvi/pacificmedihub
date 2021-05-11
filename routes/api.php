@@ -39,6 +39,9 @@ Route::get('category/{category_id}','Api\ShopController@category');
 
 //Product
 Route::get('products/{product_id}','Api\ShopController@product');
+Route::get('country','Api\RFQApiController@AllCountries');
+Route::get('state/{country_id}','Api\RFQApiController@StatesBasedCountry');
+Route::get('city/{state_id}','Api\RFQApiController@CityBasedState');
 
 //Authenticated API's
 Route::middleware('auth:api')->group( function () {
