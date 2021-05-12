@@ -263,7 +263,7 @@
                                           @if (Auth::check())
                                             <td colspan="3" class="text-right">
                                           @else
-                                            <td colspan="2" class="text-right">
+                                            <td colspan="1" class="text-right">
                                           @endif
                                             Total's:
                                           </td>

@@ -178,6 +178,17 @@ class RFQApiController extends Controller
         $address=UserAddress::find($address_id);
         return response()->json(['success'=> true,'data'=>$address]);
     }
+    public function FunctionName($value='')
+    {
+        # code...
+    }
+    public function UpdatePrimaryAddress($address_id)
+    {
+        UserAddress::where('customer_id',Auth::id())->where('address_type',0)->update(['address_type'=>1]);
+        UserAddress::where('customer_id',Auth::id())->where('id',$address_id)->update(['address_type'=>0]);
+        return response()->json(['success'=> true,'data'=>[]]);
+    }
+
     public function AllCountries()
     {
         return Countries::get()->toArray();

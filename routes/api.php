@@ -51,6 +51,8 @@ Route::middleware('auth:api')->group( function () {
 	//Cart
 	Route::resource('my-cart','Api\CartController');
 
+	Route::get('update-primary-address/{address_id}','Api\AddressController@UpdatePrimaryAddress');
+
 	//RFQ
 	Route::resource('rfq-api','Api\RFQApiController');
 	Route::post('add-address','Api\RFQApiController@AddAddress');
