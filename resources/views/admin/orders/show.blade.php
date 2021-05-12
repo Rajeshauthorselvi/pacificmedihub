@@ -40,6 +40,7 @@
                 <div class="card-body">
                   <div class="action_sec">
                     <ul class="list-unstyled">
+                      @if (Auth::check())
                       <li>
                         <a href="{{ url('admin/cop_admin_pdf/'.$order->id) }}" class="pdf"><i class="fa fa-download"></i>&nbsp; PDF</a>
                       </li>
@@ -58,6 +59,7 @@
                           <i class="fa fa-trash"></i>&nbsp; Delete
                         </a>
                       </li>
+                      @endif
                     </ul>
                   </div>
                   <div class="address-sec col-sm-12">
@@ -159,10 +161,12 @@
                                   <span class="all_quantity">{{ $total_products->quantity }}</span>   
                               </th>
                               <th scope="col"></th>
+                              @if (Auth::check())
                               <th>
                                   Sub Total:&nbsp;
                                   <span class="all_amount">{{ $total_products->sub_total }}</span>
                               </th>
+                              @endif
                             </tr>
                           </thead>
                           <tbody>
@@ -176,7 +180,9 @@
                                 <th>Quantity: {{ $total_based_products->quantity }}</th>
                                 <!-- <th>Price: {{ $total_based_products->final_price }}</th> -->
                                 <th></th>
+                                @if (Auth::check())
                                 <th class="total-head">Total: {{ $total_based_products->sub_total }}</th>
+                                @endif
                               </tr>
                               <tr class="hide-table-padding">
                                 <td></td>
@@ -188,6 +194,7 @@
                                           @foreach ($product['options'] as $option)
                                             <th>{{ $option }}</th>
                                           @endforeach
+                                          @if (Auth::check())
                                           <th class="width">Base Price</th>
                                           <th class="width">Retail Price</th>
                                           <th class="width">Minimum Selling Price</th>
@@ -203,8 +210,11 @@
                                             </div>
                                           </th>
                                           <th class="width">Discount Price <br><small>(a)</small></th>
+                                          @endif
                                           <th class="width">QTY <br><small>(b)</small></th>
-                                          <th class="width">Total <br><small>(a x b)</small></th>
+                                          @if (Auth::check())
+                                            <th class="width">Total <br><small>(a x b)</small></th>
+                                          @endif
                                         </tr>
                                       </thead>
                                       <tbody>
@@ -228,25 +238,39 @@
                                             @if($option_count==5)
                                               <td> {{$variant['option_value5']}} </td>
                                             @endif
+                                            @if (Auth::check())
                                             <td class="base_price"> {{$variant['base_price']}} </td>
                                             <td>{{$variant['retail_price']}}</td>
                                             <td>{{$variant['minimum_selling_price']}} </td>
                                             <td>{{$variation_details['price']}}</td>
                                             <td>{{$variation_details['discount_value']}}</td>
                                             <td>{{$variation_details['final_price']}}</td>
+                                            @endif
                                             <td>{{$variation_details['quantity']}}</td>
-                                            <td>{{$variation_details['sub_total']}}</td>
+                                            @if (Auth::check())
+                                              <td>{{$variation_details['sub_total']}}</td>
+                                            @endif
                                           </tr>
                                           <?php $total_amount +=$variation_details['sub_total']; ?>
                                           <?php $total_quantity +=$variation_details['quantity']; ?>
                                         @endforeach
                                         <tr>
+                                          @if (Auth::check())
                                           <td colspan="{{ count($product['options'])+3 }}">
                                             <input type="text" class="form-control" placeholder="Notes" value="{{ isset($product_description_notes[$product['product_id']])?$product_description_notes[$product['product_id']]:'' }}">
                                           </td>
-                                          <td colspan="3" class="text-right">Total's:</td>
+                                          @endif
+                                          @if (Auth::check())
+                                            <td colspan="3" class="text-right">
+                                          @else
+                                            <td colspan="2" class="text-right">
+                                          @endif
+                                            Total's:
+                                          </td>
                                           <td class="total_quantity">{{ $total_quantity }}</td>
-                                          <td class="total_amount total">{{ $total_amount }}</td>
+                                          @if (Auth::check())
+                                            <td class="total_amount total">{{ $total_amount }}</td>
+                                          @endif
                                         </tr>
                                       </tbody>
                                     </table>
@@ -254,6 +278,7 @@
                                 </td>
                               </tr>
                             @endforeach
+                            @if (Auth::check())
                             <tr class="total-calculation">
                               <td colspan="4" class="title">Total</td>
                               <td><span class="all_amount">{{ $order->total_amount }}</span></td>
@@ -282,6 +307,7 @@
                               <th colspan="4" id="toatl_exchange_rate">{{$order->exchange_total_amount}}</th>
                             </tr>
                             <tr><td colspan="6"></td></tr>
+                            @endif
                           </tbody>
                         </table>
                       </div>

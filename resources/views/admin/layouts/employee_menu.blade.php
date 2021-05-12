@@ -117,9 +117,10 @@ if(Auth::guard('employee')->user()->isAuthorized('stock_list','read')){
   $stock_list="yes";
 }
 if(Auth::guard('employee')->user()->isAuthorized('low_stock','read')){
-  $low_stock="yes";
+  $low_stock_alert="yes";
 }
 ?>
+
   <span style="display: none;">{{$current_route=request()->route()->getName()}}</span>
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-light-primary">
@@ -201,7 +202,7 @@ if(Auth::guard('employee')->user()->isAuthorized('low_stock','read')){
           </li>
           @endif
 
-          @if ($stock_vendor_allow !="" || $stock_customer_allow || $return!="" || $wastage!="" || isset($stock_list) || isset($low_stock))
+          @if ($stock_vendor_allow !="" || $stock_customer_allow || $return!="" || $wastage!="" || isset($stock_list) || isset($low_stock_alert))
           <li class="nav-item @if($current_route=='return.index'||$current_route=='stock-in-transit.index'||$current_route=='return.create'||$current_route=='return.edit'||$current_route=='wastage.index'||$current_route=='wastage.create') menu-is-opening menu-open @endif">
             <a href="javascript:void(0)" class="nav-link">
               <i class="fas fa-boxes"></i> <p>Stock <i class="fas fa-angle-left right"></i></p>
@@ -242,7 +243,8 @@ if(Auth::guard('employee')->user()->isAuthorized('low_stock','read')){
                   </a>
                 </li>
               @endif
-              @if (isset($low_stock))
+              
+              @if (isset($low_stock_alert))
               <li class="nav-item @if($current_route=='low-stocks.index'||$current_route=='low-stock-purchase.create') active @endif">
                 <a href="{{ route('low-stocks.index') }}" class="nav-link">
                   <i class="fas fa-angle-double-right"></i> <p>Low Stock Alert</p>

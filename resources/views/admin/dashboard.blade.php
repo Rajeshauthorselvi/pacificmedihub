@@ -25,6 +25,39 @@
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         <div class="row">
+        @if (!Auth::check() && Auth::guard('employee')->user()->emp_department==2)
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Orders</h4>
+                <p>Total Active Orders</p>
+              </div>
+              <div class="icon">
+                <span>{{$inprocess}}</span>
+              </div>
+              <a href="{{route('assign-shippment.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+
+        <!-- Small boxes (Stat box) -->
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Orders</h4>
+                <p>Total Completed Orders</p>
+              </div>
+              <div class="icon">
+                <span>{{$completed}}</span>
+              </div>
+              <a href="{{route('completed-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          @endif
+
           @if (Auth::check())
             <div class="col-lg-3 col-6">
               <!-- small box -->
@@ -39,7 +72,6 @@
                 <a href="{{route('rfq.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
-          @endif
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
@@ -54,6 +86,40 @@
               <a href="{{route('new-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
+
+          @endif
+
+
+          @if (!Auth::check() && Auth::guard('employee')->user()->emp_department==3)
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Orders</h4>
+                <p>Total Assigned Orders</p>
+              </div>
+              <div class="icon">
+                <span>{{$delivery_inprocess}}</span>
+              </div>
+              <a href="{{route('assign-delivery.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Orders</h4>
+                <p>Total Delivery Completed</p>
+              </div>
+              <div class="icon">
+                <span>{{$delivery_completed}}</span>
+              </div>
+              <a href="{{route('completed-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          @endif
+
           @if (Auth::check() || Auth::guard('employee')->user()->isAuthorized('completed_orders','create'))
           <!-- ./col -->
           <div class="col-lg-3 col-6">
@@ -71,6 +137,7 @@
           </div>
           <!-- ./col -->
           @endif
+          @if (Auth::check())
           <div class="col-lg-3 col-6">
             <!-- small box -->
             <div class="small-box">
@@ -84,6 +151,7 @@
               <a href="{{route('assign-delivery.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
+          @endif
            @if (Auth::check())
           <!-- ./col -->
           <div class="col-lg-3 col-6">

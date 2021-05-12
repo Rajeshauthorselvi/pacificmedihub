@@ -132,8 +132,8 @@
                         <th>Customer</th>
                         <th>Sales Rep</th>
                         <th>Order Status</th>
+                        @if ($active_menu[0]=="completed-orders" && Auth::check()) 
                         <th>Grand Total</th>
-                        @if ($active_menu[0]=="completed-orders") 
                           <th>Paid</th>
                           <th>Balance</th>
                           <th>Payment Status</th>
@@ -176,11 +176,12 @@
                             {{  $order->statusName->status_name  }}
                             </span>
                           </td>
+                           @if ($active_menu[0]=="completed-orders" &&  Auth::check()) 
                           <td class="total_amount">{{$order->sgd_total_amount}}</td>
                           <?php 
                             $balance_amount=\App\Models\PaymentHistory::FindPendingBalance($order->id,$order->sgd_total_amount,2);
                           ?>
-                          @if ($active_menu[0]=="completed-orders") 
+                         
                           <td>{{ $balance_amount['paid_amount'] }}</td>
                           <td class="balance">
                             {{ number_format($balance_amount['balance_amount'],2,'.','') }}
@@ -232,7 +233,7 @@
                                     </li>
                                   </a>
                                 @endif
-
+                                @if (Auth::check())
                                 <a href="{{ url('admin/cop_admin_pdf/'.$order->id) }}">
                                   <li class="dropdown-item">
                                     <i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download Invoice
@@ -246,6 +247,7 @@
                                     <i class="fas fa-print"></i>&nbsp;&nbsp;Print
                                   </li>
                                 </a>
+                                @endif
                                 @if ($delete_permission=="yes")
                                 <a href="javascript:void(0)"><li class="dropdown-item">
                                   <form method="POST" action="{{ route($delete_route,$order->id) }}">@csrf 

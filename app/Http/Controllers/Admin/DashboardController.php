@@ -69,7 +69,32 @@ class DashboardController extends Controller
                                    ->whereYear('delivered_at', date('Y'))
                                    ->sum('sgd_total_amount');
 
+        if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==3) {
+            $data['delivery_inprocess'] = Orders::where('delivery_person_id',Auth::guard('employee')->user()->id)
+                                  ->where('order_status','<>',13)
+                                  ->count();
+            $data['delivery_completed'] = Orders::where('order_status',13)
+                                  ->where('delivery_person_id',Auth::guard('employee')->user()->id)
+                                  ->count();
+        }
 
+
+        if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==3) {
+            $data['inprocess'] = Orders::where('sales_rep_id',Auth::guard('employee')->user()->id)
+                                  ->where('order_status','<>',13)
+                                  ->count();
+            $data['completed'] = Orders::where('order_status',13)
+                                  ->where('sales_rep_id',Auth::guard('employee')->user()->id)
+                                  ->count();
+        }
+
+
+        if (!Auth::check() && Auth::guard('employee')->check() && Auth::guard('employee')->user()->emp_department==2) {
+            $data['inprocess'] = Orders::whereIn('order_status',[14,15,18])
+                                  ->count();
+            $data['completed'] = Orders::where('order_status',13)
+                                  ->count();
+        }
 
 
         

@@ -107,7 +107,6 @@ class CartController extends Controller
                 foreach($cart_items as $key => $items)
                 {
                     $product = Product::find($items->id);
-                    
                     $cart_data[$cart_count]['uniqueId']      = $items->getUniqueId();
                     $cart_data[$cart_count]['product_id']    = $items->id;
                     $cart_data[$cart_count]['product_name']  = $items->name;
