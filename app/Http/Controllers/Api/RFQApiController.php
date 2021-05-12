@@ -13,6 +13,7 @@ use App\Models\Countries;
 use App\Models\State;
 use App\Models\City;
 use Auth;
+use Validator;
 use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
 class RFQApiController extends Controller
 {
@@ -150,6 +151,22 @@ class RFQApiController extends Controller
     }
     public function AddAddress(Request $request)
     {
+        $rules =[
+            'name'  => 'required',
+            'mobile'  => 'required',
+            'address_line1'  => 'required',
+            'country_id'  => 'required',
+            'latitude'  => 'required',
+            'longitude'  => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()) {
+            $validation_error_response=array();
+            foreach ($rules as $key => $value) {
+                if(!empty($validator->messages()->first($key))) $validation_error_response[]=$validator->messages()->first($key);
+            }
+            return response()->json(['success'=> false, 'errorMessage'=> $validation_error_response]);
+        }
          $address=[
             'customer_id'       => Auth::id(),
             'name'              => $request->name,
@@ -178,9 +195,44 @@ class RFQApiController extends Controller
         $address=UserAddress::find($address_id);
         return response()->json(['success'=> true,'data'=>$address]);
     }
-    public function FunctionName($value='')
+    public function UpdateAddress(Request $request)
     {
-        # code...
+        // dd(Auth::id());
+        $rules =[
+            'address_id'    => 'required',
+            'name'          => 'required',
+            'mobile'        => 'required',
+            'address_line1' => 'required',
+            'country_id'    => 'required',
+            'latitude'      => 'required',
+            'longitude'     => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()) {
+            $validation_error_response=array();
+            foreach ($rules as $key => $value) {
+                if(!empty($validator->messages()->first($key))) $validation_error_response[]=$validator->messages()->first($key);
+            }
+            return response()->json(['success'=> false, 'errorMessage'=> $validation_error_response]);
+        }
+
+        $address_id=$request->address_id;
+         $address=[
+            'customer_id'       => Auth::id(),
+            'name'              => $request->name,
+            'mobile'            => $request->mobile,
+            'address_line1'     => $request->address_line1,
+            'address_line2'     => $request->address_line2,
+            'country_id'        => $request->country_id,
+            'state_id'          => $request->state_id,
+            'city_id'           => $request->city_id,
+            'post_code'         => $request->post_code,
+            'latitude'          => $request->latitude,
+            'longitude'         => $request->longitude
+        ];
+        UserAddress::where('id',$address_id)->update($address);
+        $address=UserAddress::find($address_id);
+         return response()->json(['success'=> true,'data'=>$address]);
     }
     public function UpdatePrimaryAddress($address_id)
     {

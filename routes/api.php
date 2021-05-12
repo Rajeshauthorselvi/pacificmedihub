@@ -51,11 +51,12 @@ Route::middleware('auth:api')->group( function () {
 	//Cart
 	Route::resource('my-cart','Api\CartController');
 
-	Route::get('update-primary-address/{address_id}','Api\AddressController@UpdatePrimaryAddress');
+	Route::get('update-primary-address/{address_id}','Api\RFQApiController@UpdatePrimaryAddress');
 
 	//RFQ
 	Route::resource('rfq-api','Api\RFQApiController');
 	Route::post('add-address','Api\RFQApiController@AddAddress');
+	Route::post('update-address','Api\RFQApiController@UpdateAddress');
 
 	//Profile
 	Route::get('profile','Api\ProfileController@index');
