@@ -15,6 +15,7 @@ use App\Models\City;
 use App\Models\Prefix;
 use App\Models\ProductVariantVendor;
 use App\Models\Notification;
+use App\Models\OrderStatus;
 use App\User;
 use Auth;
 use DB;
@@ -126,6 +127,8 @@ class RFQApiController extends Controller
             $rfq_data[$key]['toatl_qty'] = $toatl_qty;
             $rfq_data[$key]['sales_rep'] = isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'';
             $rfq_data[$key]['delivery_method'] = $rfq->deliveryMethod->delivery_method;
+            $rfq_data[$key]['status_name'] = OrderStatus::find($rfq->status)->status_name;
+
         }
 
 /*        $pagination = array();
