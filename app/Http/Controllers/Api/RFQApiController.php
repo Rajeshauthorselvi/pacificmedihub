@@ -244,7 +244,7 @@ class RFQApiController extends Controller
     {
         UserAddress::where('customer_id',Auth::id())->where('address_type',0)->update(['address_type'=>1]);
         UserAddress::where('customer_id',Auth::id())->where('id',$address_id)->update(['address_type'=>0]);
-        User::where('id',Auth::id())->update(['id'=>$address_id]);
+        User::where('id',Auth::id())->update(['address_id'=>$address_id]);
         return response()->json(['success'=> true,'data'=>[]]);
     }
 
