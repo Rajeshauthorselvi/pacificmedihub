@@ -50,7 +50,8 @@ Route::middleware('auth:api')->group( function () {
 
 	//Cart
 	Route::resource('my-cart','Api\CartController');
-
+	Route::get('delete-cart/{uniqid}','Api\CartController@DeleteCart');
+	
 	Route::get('update-primary-address/{address_id}','Api\RFQApiController@UpdatePrimaryAddress');
 
 	//RFQ
@@ -58,6 +59,7 @@ Route::middleware('auth:api')->group( function () {
 	Route::resource('rfq-api','Api\RFQApiController');
 	Route::post('add-address','Api\RFQApiController@AddAddress');
 	Route::post('update-address','Api\RFQApiController@UpdateAddress');
+	Route::get('delete-address/{address_id}','Api\AddressController@DeleteAddress');
 
 	//Profile
 	Route::get('profile','Api\ProfileController@index');

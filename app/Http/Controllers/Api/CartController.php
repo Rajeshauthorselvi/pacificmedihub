@@ -10,7 +10,7 @@ use App\Models\ProductVariant;
 use Auth;
 use Str;
 use Session;
-
+use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
 class CartController extends Controller
 {
     /**
@@ -168,5 +168,15 @@ class CartController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function DeleteCart($id)
+    {
+        if(Auth::check()){
+            $user_id = Auth::id();
+            Cart::instance('cart')->restore('userID_'.$user_id);
+        }
+        Cart::instance('cart')->remove($id);
+        if($user_id > 0) Cart::instance('cart')->store('userID_'.$user_id);
+        return response()->json(['success'=> true,'data'=>$data]);
     }
 }
