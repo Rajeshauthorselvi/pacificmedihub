@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Countries;
 use App\Models\State;
 use App\Models\City;
+use App\User;
 use Auth;
 use Validator;
 use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
@@ -243,6 +244,7 @@ class RFQApiController extends Controller
     {
         UserAddress::where('customer_id',Auth::id())->where('address_type',0)->update(['address_type'=>1]);
         UserAddress::where('customer_id',Auth::id())->where('id',$address_id)->update(['address_type'=>0]);
+        User::where('id',Auth::id())->update(['id'=>$address_id]);
         return response()->json(['success'=> true,'data'=>[]]);
     }
 
