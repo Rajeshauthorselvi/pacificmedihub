@@ -66,6 +66,7 @@ class RFQApiController extends Controller
                 $cart_data[$cart_loop]['uniqueId']      = $items->getUniqueId();
                 $cart_data[$cart_loop]['product_id']    = $items->id;
                 $cart_data[$cart_loop]['product_name']  = $items->name;
+                $cart_data[$cart_count]['product_code']  = $product->code;
                 $cart_data[$cart_loop]['product_sku']   = $items->options['variant_sku'];
                 $cart_data[$cart_loop]['product_image'] = $items->options['product_img'];
                 $cart_data[$cart_loop]['qty']           = $items->quantity;
