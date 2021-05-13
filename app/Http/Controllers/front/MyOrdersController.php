@@ -212,14 +212,16 @@ class MyOrdersController extends Controller
         $order_data['order_return'] = CustomerOrderReturn::where('order_id',$id)->first();
         $order_data['total']       = isset($order->total_amount)?(float)$order->total_amount:'0.00';
         $order_data['tax']         = isset($order->order_tax_amount)?(float)$order->order_tax_amount:'0.00';
-        $order_data['grand_total'] = isset($order->sgd_total_amount)?(float)$order->sgd_total_amount:'0.00';
+        $order_data['grand_total'] = isset($order->exchange_total_amount)?(float)$order->exchange_total_amount:'0.00';
+        $order_data['sgd_total'] = isset($order->sgd_total_amount)?(float)$order->sgd_total_amount:'0.00';
         $order_data['paid_amount'] = (float)$paid_amount;
-        $order_data['due_amount']  = (float)$order->sgd_total_amount - (float)$paid_amount;
+        $order_data['due_amount']  = (float)$order->exchange_total_amount - (float)$paid_amount;
         $order_data['notes']       = isset($order->notes)?$order->notes:'';
 
         $data['order_data']     = $order_data;
         $data['order_products'] = $order_items;
-        
+        $data['currency']       = Currency::where('published',1)->get();
+
         return view('front/customer/orders/order_view',$data);
     }
 

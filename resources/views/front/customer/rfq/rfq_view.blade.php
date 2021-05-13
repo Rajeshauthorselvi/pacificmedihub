@@ -71,7 +71,7 @@
                 </li>
                 <li style="background-color: #23bf79">
                   <a href="{{ route('my.rfq.comments',$rfq_id) }}" class="comment">
-                    <i class="fa fa-comment"></i>&nbsp; Comment
+                    <i class="fa fa-comment"></i>&nbsp; Message
                   </a>
                 </li>
                 <li style="background-color: #f6ac50;@if($rfq->status==22||$rfq->status==23||$rfq->status==24||$rfq->status==10) display:none; @endif">

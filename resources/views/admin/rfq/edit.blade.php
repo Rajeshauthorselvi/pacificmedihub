@@ -308,7 +308,7 @@
                     </div>
                   
                     <div class="summery-block">
-                      <h5>Summery</h5>
+                      <h5>Summary</h5>
                       <table>
                         <tbody>
                           <tr class="total-calculation">

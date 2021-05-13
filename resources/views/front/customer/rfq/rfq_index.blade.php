@@ -57,7 +57,7 @@
                   <div class="col-sm-5 text-right">
                     <?php $rfq_id = base64_encode($rfq['id']);?>
                     @if($rfq['status']!=11)
-                      <a href="{{ route('my.rfq.comments',$rfq_id) }}" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Comments</a>
+                      <a href="{{ route('my.rfq.comments',$rfq_id) }}" class="btn comment"><i class="fas fa-comments"></i>&nbsp;Message</a>
                     @endif
                     <a href="{{ route('my-rfq.show',$rfq_id) }}" class="btn view"><i class="far fa-eye"></i>&nbsp;View</a>
                     @if($rfq['status']==25)

@@ -2,7 +2,7 @@
 	<thead>
 		<th>S.No</th>
 		<th>Image</th>
-		<th>Comments</th>
+		<th>Message</th>
 		<th>Created Date</th>
 	</thead>
 	<tbody>

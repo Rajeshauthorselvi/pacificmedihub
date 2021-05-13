@@ -354,6 +354,7 @@ class MyRFQController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         if(!Auth::check()){
             return redirect()->route('customer.login')->with('info', 'You must be logged in!');
         }
@@ -438,8 +439,8 @@ class MyRFQController extends Controller
             $user_id    = Auth::id();
             $primary_id = Auth::user()->address_id;
 
-            /*$data['all_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('address_type',[1,2])
-                                              ->where('is_deleted',0)->get();*/
+            $data['all_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('address_type',[1,2])
+                                              ->where('is_deleted',0)->get();
 
             $delivery   = UserAddress::where('address_type',1)->where('customer_id',$user_id)->first();
             $primary    = UserAddress::where('id',$primary_id)->where('customer_id',$user_id)->first();
@@ -452,8 +453,8 @@ class MyRFQController extends Controller
                 $remove_id        = $primary_id;
             }
 
-           /* $data['billing_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('id',[$remove_id])
-                                                  ->where('is_deleted',0)->get();*/
+            $data['billing_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('id',[$remove_id])
+                                                  ->where('is_deleted',0)->get();
 
             $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
             $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
@@ -841,7 +842,7 @@ class MyRFQController extends Controller
             'address_id'            => $rfq->delivery_address_id,
             'created_at'            => date('Y-m-d H:i:s')
         ];
-       
+
         $order_id = Orders::insertGetId($order_data);
        
         $rfq_products = RFQProducts::where('rfq_id',$rfq->id)->get();

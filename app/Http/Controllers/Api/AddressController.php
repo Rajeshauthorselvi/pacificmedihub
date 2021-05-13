@@ -22,7 +22,20 @@ class AddressController extends Controller
     {
         $all_address=UserAddress::where('customer_id',Auth::id())->get();
         foreach ($all_address as $key => $address) {
+            $country_name=$state_name=$city_name=null;
+            if (isset($address->country_id)) {
+                $country_name = Countries::where('id',$address->country_id)->value('name');
+            }
+            if (isset($address->state_id)) {
+                $state_name = State::where('id',$address->state_id)->value('name');
+            }
+            if (isset($address->city_id)) {
+                $city_name= City::where('id',$address->city_id)->value('name');
+            }
             $address->address_type=($address->address_type==1)?true:false;
+            $address->country_name=$country_name;
+            $address->state_name=$state_name;
+            $address->city_name=$city_name;
         }
         return response()->json($all_address);
     }

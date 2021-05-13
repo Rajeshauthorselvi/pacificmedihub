@@ -56,7 +56,7 @@
                         <a href="" class="email"><i class="fa fa-envelope"></i>&nbsp; Email</a>
                       </li>
                       <li>
-                        <a href="{{ url('admin/rfq-comments/'.$rfq_id) }}" class="comment"><i class="fa fa-comment"></i>&nbsp; Comment</a>
+                        <a href="{{ url('admin/rfq-comments/'.$rfq_id) }}" class="comment"><i class="fa fa-comment"></i>&nbsp; Message</a>
                       </li>
                       
                       @if($rfqs->status!=23 && $rfqs->status!=10)

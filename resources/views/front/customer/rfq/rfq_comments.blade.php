@@ -5,7 +5,7 @@
     <ul class="items">
       <li><a href="{{ url('/') }}" title="Go to Home Page">Home</a></li>
       <li><a href="{{ route('my-rfq.index') }}" title="My RFQ">My RFQ</a></li>
-      <li><a title="My RFQ Comments">Comments</a></li>
+      <li><a title="My RFQ Message">Message</a></li>
     </ul>
   </div>
 </div>

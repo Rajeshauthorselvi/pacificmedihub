@@ -237,7 +237,7 @@
                     <td>{{number_format($order->delivery_charge,2,'.','')}}</td>
                   </tr>
                   <tr class="outer grand">
-                    <th colspan="6" class="text-right">Total Amount (SGD)</th><th>{{ number_format($order_data['grand_total'],2,'.','') }}</th>
+                    <th colspan="6" class="text-right">Total Amount (SGD)</th><th>{{ number_format($order_data['sgd_total'],2,'.','') }}</th>
                   </tr>
                   <tr class="outer">
                     <td colspan="6" class="text-right">Paid Amount (SGD)</td><td>{{ number_format($order_data['paid_amount'],2,'.','') }}</td>
