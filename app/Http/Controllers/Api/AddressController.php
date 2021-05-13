@@ -122,4 +122,13 @@ class AddressController extends Controller
         return response()->json($list);
     }
 
+    public function DeleteAddress($address_id)
+    {
+        UserAddress::where('customer_id',Auth::id())
+        ->where('id',$address_id)
+        ->update(['is_deleted'=>1,'deleted_at'=>date('Y-m-d H:i:s')]);
+        
+        return response()->json(['success'=> true,'data'=>[]]);
+    }   
+
 }

@@ -14,6 +14,7 @@ use App\Models\State;
 use App\Models\City;
 use App\User;
 use Auth;
+use DB;
 use Validator;
 use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
 class RFQApiController extends Controller
@@ -31,7 +32,7 @@ class RFQApiController extends Controller
             /*$data['all_address'] = UserAddress::where('customer_id',$user_id)->whereNotIn('address_type',[1,2])
                                               ->where('is_deleted',0)->get();*/
 
-            $delivery   = UserAddress::where('address_type',1)->where('customer_id',$user_id)->first();
+            $delivery   = UserAddress::where('address_type',0)->where('customer_id',$user_id)->first();
             $primary    = UserAddress::where('id',$primary_id)->where('customer_id',$user_id)->first();
 
             if(isset($delivery)){
@@ -242,7 +243,10 @@ class RFQApiController extends Controller
     }
     public function UpdatePrimaryAddress($address_id)
     {
-        UserAddress::where('customer_id',Auth::id())->where('address_type',0)->update(['address_type'=>1]);
+        DB::table('address')->where('customer_id',Auth::id())
+        ->where('address_type',0)
+        ->update(['address_type'=>1]);
+
         UserAddress::where('customer_id',Auth::id())->where('id',$address_id)->update(['address_type'=>0]);
         User::where('id',Auth::id())->update(['address_id'=>$address_id]);
         return response()->json(['success'=> true,'data'=>[]]);
