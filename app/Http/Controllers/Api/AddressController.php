@@ -20,7 +20,7 @@ class AddressController extends Controller
      */
     public function index()
     {
-        $all_address=UserAddress::where('customer_id',Auth::id())->get();
+        $all_address=UserAddress::where('customer_id',Auth::id())->where('is_deleted',0)->get();
         foreach ($all_address as $key => $address) {
             $country_name=$state_name=$city_name=null;
             if (isset($address->country_id)) {
