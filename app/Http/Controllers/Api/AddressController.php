@@ -20,7 +20,11 @@ class AddressController extends Controller
      */
     public function index()
     {
-        //
+        $all_address=UserAddress::where('customer_id',Auth::id())->get();
+        foreach ($all_address as $key => $address) {
+            $address->address_type=($address->address_type==1)?true:false;
+        }
+        return response()->json($all_address);
     }
 
     /**
