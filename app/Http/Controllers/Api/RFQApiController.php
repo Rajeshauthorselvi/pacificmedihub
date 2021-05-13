@@ -12,6 +12,9 @@ use App\Models\Product;
 use App\Models\Countries;
 use App\Models\State;
 use App\Models\City;
+use App\Models\Prefix;
+use App\Models\ProductVariantVendor;
+use App\Models\Notification;
 use App\User;
 use Auth;
 use DB;
@@ -105,7 +108,120 @@ class RFQApiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules =[
+            'delivery_address'    => 'required',
+            'billing_address'          => 'required',
+            'delevery_method'        => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()) {
+            $validation_error_response=array();
+            foreach ($rules as $key => $value) {
+                if(!empty($validator->messages()->first($key))) $validation_error_response[]=$validator->messages()->first($key);
+            }
+            return response()->json(['success'=> false, 'errorMessage'=> $validation_error_response]);
+        }
+
+        $rfq_code = Prefix::where('key','prefix')->where('code','rfq')->value('content');
+        if (isset($rfq_code)) {
+            $value             = unserialize($rfq_code);
+            $char_val          = $value['value'];
+            $year              = date('Y');
+            $total_datas       = RFQ::count();
+            $total_datas_count = $total_datas+1;
+
+            if(strlen($total_datas_count)==1){
+                $start_number = '0000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==2){
+                $start_number = '000'.$total_datas_count;
+            }else if(strlen($total_datas_count)==3){
+                $start_number = '00'.$total_datas_count;
+            }else if(strlen($total_datas_count)==4){
+                $start_number = '0'.$total_datas_count;
+            }else{
+                $start_number = $total_datas_count;
+            }
+            $replace_year   = str_replace('[yyyy]', $year, $char_val);
+            $replace_number = str_replace('[Start No]', $start_number, $replace_year);
+            $rfq_code = $replace_number;
+        }
+
+        $user_id = Auth::id();
+        $sales_rep_id = User::where('id',$user_id)->value('sales_rep');
+
+        $delivery_charge = DeliveryMethod::find($request->delevery_method);
+
+        $rfq_details=[
+            'order_no'            => $rfq_code,
+            'status'              => 22,
+            'customer_id'         => $user_id,
+            'sales_rep_id'        => isset($sales_rep_id)?$sales_rep_id:0,
+            'delivery_method_id'  => $request->delevery_method,
+            'delivery_charge'     => isset($delivery_charge->amount)?$delivery_charge->amount:0,
+            'notes'               => $request->notes,
+            'user_id'             => $user_id,
+            'delivery_address_id' => $request->delivery_address,
+            'billing_address_id'  => $request->billing_address,
+            'created_user_type'   => 3,
+            'created_at'          => date('Y-m-d H:i:s')
+        ];
+        $rfq_id = RFQ::insertGetId($rfq_details);
+
+        Cart::instance('cart')->restore('userID_'.$user_id);
+
+        $item_data = [];
+        if(isset($request->direct_rfq)){
+            $items = Cart::get($request->direct_rfq);
+            $item_data[$request->direct_rfq]['uniqueId']      = $items->getUniqueId();
+            $item_data[$request->direct_rfq]['product_id']    = $items->id;
+            $item_data[$request->direct_rfq]['qty']           = $items->quantity;
+            $item_data[$request->direct_rfq]['variant_id']    = $items->options['variant_id'];
+        }else{
+            $cart_items = Cart::content();
+            foreach($cart_items as $key => $items)
+            {
+                $item_data[$key]['uniqueId']      = $items->getUniqueId();
+                $item_data[$key]['product_id']    = $items->id;
+                $item_data[$key]['qty']           = $items->quantity;
+                $item_data[$key]['variant_id']    = $items->options['variant_id'];
+            }
+        }
+        foreach($item_data as $item){
+            $prices = ProductVariantVendor::where('product_variant_id',$item['variant_id'])->first();
+            $rfq_items =[
+                'rfq_id'                    => $rfq_id,
+                'product_id'                => $item['product_id'],
+                'product_variant_id'        => $item['variant_id'],
+                'base_price'                => $prices->base_price,
+                'retail_price'              => $prices->retail_price,
+                'minimum_selling_price'     => $prices->minimum_selling_price,
+                'quantity'                  => $item['qty'],
+                'sub_total'                 => 0
+            ];
+            RFQProducts::insert($rfq_items);
+
+            Cart::instance('cart')->remove($item['uniqueId']);
+            Cart::instance('cart')->store('userID_'.$user_id);
+        }
+
+        $creater_name=Auth::user()->name;
+        $auth_id=Auth::id();
+        $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$rfq_id)->first();
+        Notification::insert([
+            'type'                => 'orders',
+            'ref_id'              => $rfq_id,
+            'customer_id'         => $auth_id,
+            'content'             => $creater_name."'s new RFQ request for ".$rfq_details->order_no,
+            'url'                 => url('admin/rfq/'.$rfq_id),
+            'created_at'          => date('Y-m-d H:i:s'),
+            'created_by'          => $auth_id,
+            'created_user_type'   => 3,
+        ]);
+
+        $added_rfq_data = RFQ::find($rfq_id);
+        $data = $added_rfq_data->order_no;
+
+        return response()->json(['success'=> true,'data'=>$data]);
     }
 
     /**

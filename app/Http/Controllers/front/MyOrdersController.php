@@ -220,7 +220,7 @@ class MyOrdersController extends Controller
 
         $data['order_data']     = $order_data;
         $data['order_products'] = $order_items;
-        $data['currency']       = Currency::where('published',1)->get();
+        $data['currency']       = Currency::where('published',1)->where('id',$order->currency)->value('currency_code');
 
         return view('front/customer/orders/order_view',$data);
     }

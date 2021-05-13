@@ -243,7 +243,7 @@
                     <td colspan="6" class="text-right">Paid Amount (SGD)</td><td>{{ number_format($order_data['paid_amount'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer" style="border-bottom:1px solid #ddd">
-                    <th colspan="6" class="text-right">Due Amount (SGD)</th><th>{{ number_format($order_data['due_amount'],2,'.','') }}</th>
+                    <th colspan="6" class="text-right">Due Amount ({{ $currency }})</th><th>{{ number_format($order_data['due_amount'],2,'.','') }}</th>
                   </tr>
                 </tbody>
               </table>
