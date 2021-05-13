@@ -10,7 +10,6 @@ use App\Models\ProductVariant;
 use Auth;
 use Str;
 use Session;
-use Melihovv\ShoppingCart\Facades\ShoppingCart as Cart;
 class CartController extends Controller
 {
     /**
