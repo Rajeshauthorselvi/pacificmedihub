@@ -106,6 +106,41 @@ class RFQApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    public function RFQLIst()
+    {
+
+        $data = array();
+        $user_id = Auth::id();
+        $all_rfq_data = RFQ::where('customer_id',$user_id)->orderBy('id','desc')->paginate(5);
+        
+        $rfq_data = array();
+        foreach ($all_rfq_data as $key => $rfq) {
+            $item_count  = RFQProducts::where('rfq_id',$rfq->id)->count();
+            $toatl_qty   = RFQProducts::where('rfq_id',$rfq->id)->sum('quantity');
+            $rfq_data[$key]['id'] = $rfq->id;
+            $rfq_data[$key]['create_date'] = date('d/m/Y',strtotime($rfq->created_at));
+            $rfq_data[$key]['status'] = $rfq->status;
+            $rfq_data[$key]['code'] = $rfq->order_no;
+            $rfq_data[$key]['item_count'] = $item_count;
+            $rfq_data[$key]['toatl_qty'] = $toatl_qty;
+            $rfq_data[$key]['sales_rep'] = isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'';
+            $rfq_data[$key]['delivery_method'] = $rfq->deliveryMethod->delivery_method;
+        }
+
+/*        $pagination = array();
+        $pagination['firstItem']   = $all_rfq_data->firstItem();
+        $pagination['lastItem']    = $all_rfq_data->lastItem();
+        $pagination['total']       = $all_rfq_data->total();
+        $pagination['currentpage'] = $all_rfq_data->currentpage();
+        $pagination['links']       = $all_rfq_data->links();
+        $data['pagination']        = $pagination;  */
+
+        $data['rfq_datas'] = $rfq_data;
+        return response()->json(['success'=> true,'data'=>$data]);
+     
+    }
+
     public function store(Request $request)
     {
         $rules =[
