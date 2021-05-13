@@ -176,6 +176,6 @@ class CartController extends Controller
         }
         Cart::instance('cart')->remove($id);
         if($user_id > 0) Cart::instance('cart')->store('userID_'.$user_id);
-        return response()->json(['success'=> true,'data'=>$data]);
+        return response()->json(['success'=> true,'data'=>[]]);
     }
 }
