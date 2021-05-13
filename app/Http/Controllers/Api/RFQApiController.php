@@ -230,6 +230,10 @@ class RFQApiController extends Controller
             'latitude'          => $request->latitude,
             'longitude'         => $request->longitude
         ];
+/*        if($request->is_default=="yes"){
+            UserAddress::where('customer_id',Auth::id())->where('address_type',0)->update(['address_type'=>1]);
+            $address['address_type']=0;
+        }*/
         UserAddress::where('id',$address_id)->update($address);
         $address=UserAddress::find($address_id);
          return response()->json(['success'=> true,'data'=>$address]);

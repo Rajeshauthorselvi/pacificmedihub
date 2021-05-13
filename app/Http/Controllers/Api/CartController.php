@@ -37,6 +37,7 @@ class CartController extends Controller
                     
                     $cart_data[$cart_count]['uniqueId']      = $items->getUniqueId();
                     $cart_data[$cart_count]['product_id']    = $items->id;
+                    $cart_data[$cart_count]['product_code']  = $product->code;
                     $cart_data[$cart_count]['product_name']  = $items->name;
                     $cart_data[$cart_count]['product_image'] = $items->options['product_img'];
                     $cart_data[$cart_count]['price']         = $items->price;
