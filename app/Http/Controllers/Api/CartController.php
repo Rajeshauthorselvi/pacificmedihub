@@ -155,7 +155,32 @@ class CartController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $product_variant = ProductVariant::find($request->variant_id);
+        $product = Product::where('id',$product_variant->product_id)->first();
+
+        $price = (float)0.00;
+        $qty = (int)$request->qty_count;
+
+
+        if(Auth::check()){
+            $user_id = Auth::id();
+            Cart::instance('cart')->restore('userID_'.$user_id);
+        }
+
+        if(Cart::has($request->cart_id)){
+            Cart::instance('cart')->remove($request->cart_id);
+            Cart::instance('cart')->store('userID_'.$user_id);
+        }
+
+        if(isset($user_id)){
+            $cart = Cart::instance('cart')->add($product->id, $product->name, $price, $qty,[
+                'product_img' => $product->main_image,
+                'variant_id'  => $request->variant_id,
+                'variant_sku' => $product_variant->sku
+            ]);
+            Cart::store('userID_'.$user_id);
+        }
+         return response()->json(['success'=> true,'data'=>[]]);
     }
 
     /**
