@@ -76,7 +76,6 @@ class CartController extends Controller
         $qty = (int)$request->qty_count;
         
         $product = Product::find($request->product_id);    
-    
         $user_id = Auth::id();
         Cart::instance('cart')->restore('userID_'.$user_id);
         

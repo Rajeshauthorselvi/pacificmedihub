@@ -29,6 +29,7 @@
                   </div>
                   <div class="col-sm-4 text-center">
                     <span>Status</span>: 
+                    {{-- Return Status --}}
                   @if (isset($order['order_return']['order_return_status']) && $order['order_return']['order_return_status']==22)
                     <span class="badge" style="background:#f0ad4e;color:#fff;padding: 5px">
                       Return Request
@@ -41,10 +42,17 @@
                     <span class="badge badge-info" style="padding: 5px;background:#00a65a;">
                        Goods Returned
                     </span>
+                    {{-- Return Status --}}
                   @else
+                  {{-- Order Status --}}
                    <span class="badge" style="background:{{ $order['color_code'] }};color:#fff;padding: 5px">
-                    {{ $order['status'] }}
+                    @if ($order['status_id']==18 || $order['status_id']==19 || $order['status_id']==13 || $order['status_id']==17)
+                      {{ $order['status'] }}
+                    @elseif ($order['status_id']==15 || $order['status_id']==14)
+                      Assigned for Shipment
+                    @endif
                   </span>
+                  {{-- Order Status --}}
                   @endif
                     
                   </div>
