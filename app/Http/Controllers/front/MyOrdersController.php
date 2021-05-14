@@ -18,6 +18,7 @@ use App\Models\PaymentTerm;
 use App\Models\CustomerOrderReturn;
 use App\Models\CustomerOrderReturnProducts;
 use App\Models\Notification;
+use App\Models\OrderStatus;
 use Carbon\Carbon;
 use App\User;
 use Auth;
@@ -221,6 +222,7 @@ class MyOrdersController extends Controller
         $data['order_data']     = $order_data;
         $data['order_products'] = $order_items;
         $data['currency']       = Currency::where('published',1)->where('id',$order->currency)->value('currency_code');
+        $data['order_status']=OrderStatus::where('id',$order->order_status)->first();
 
         return view('front/customer/orders/order_view',$data);
     }

@@ -58,7 +58,7 @@ class RFQApiController extends Controller
                                        ->get();*/
 
             // $data['countries'] = [''=>'Please Select']+Countries::pluck('name','id')->toArray();
-            // $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
+            $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
             Cart::instance('cart')->restore('userID_'.$user_id);
 
             $cart_data = [];

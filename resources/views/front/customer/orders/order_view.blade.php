@@ -72,9 +72,16 @@
                     <span class="badge badge-info" style="padding: 5px">
                       Return Request Approved
                     </span>
+                    In
                   @else
-                   <span class="badge" style="background:{{ $order['color_code'] }};color:#fff;padding: 5px">
-                    {{ $order['status'] }}
+                  {{-- Order Status --}}
+                    <?php $status_id=$order->order_status; ?>
+                   <span class="badge" style="background:{{ $order_status->color_codes }};color:#fff;padding: 5px">
+                    @if ($status_id==18 || $status_id==19 || $status_id==13 || $status_id==17)
+                    {{ $order_status->status_name }}
+                    @elseif ($status_id==15 || $status_id==14)
+                      Assigned for Shipment
+                    @endif
                   </span>
                   @endif
                 </li>
