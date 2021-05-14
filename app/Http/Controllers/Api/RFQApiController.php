@@ -268,9 +268,70 @@ class RFQApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request,$id)
     {
-        //
+        // $id = base64_decode($id);
+        $rfq = $data['rfq'] = RFQ::with('salesrep')->find($id);
+
+        $user = User::find($rfq->customer_id);
+        if(isset($rfq->delivery_address_id)&& $rfq->delivery_address_id!=null){
+            $del_add_id = $rfq->delivery_address_id;
+        }else{
+            $del_add_id = $user->address_id;
+        }
+        $data['cus_email']        = $user->email;
+        $data['delivery_address'] = UserAddress::find($del_add_id);
+
+        // $data['admin_address']    = User::where('id',1)->first();
+
+        $data['delivery_method']  = DeliveryMethod::where('is_free_delivery','no')
+        ->where('id',$rfq->delivery_method_id)
+        ->where('status',1)
+        ->value('delivery_method');
+        $data['sales_rep']=$rfq->salesrep->emp_name;
+        $data['ordered_date']=date('d-m-Y',strtotime($rfq->created_at));
+       
+
+        $rfq_products = RFQProducts::with('product','variant','variantvendor')->where('rfq_id',$id)->orderBy('id','desc')->get();
+        $rfq_data = $rfq_items = array();
+        foreach ($rfq_products as $key => $item) {
+            $rfq_items[$key]['product_id'] =  $item->product->id;
+            $rfq_items[$key]['product_name'] =  $item->product->name;
+            $rfq_items[$key]['variant_sku'] = $item->variantvendor->sku;
+            $rfq_items[$key]['quantity'] = $item->quantity;
+            $rfq_items[$key]['rfq_price'] = isset($item->rfq_price)?(float)$item->rfq_price:'0.00';
+            $rfq_items[$key]['discount_value'] = isset($item->discount_value)?(float)$item->discount_value:'0.00';
+            $rfq_items[$key]['discount_type'] = isset($item->discount_type)?(float)$item->discount_type:'0.00';
+            $rfq_items[$key]['final_price'] = isset($item->final_price)?(float)$item->final_price:'0.00';
+            $rfq_items[$key]['total_price'] = isset($item->total_price)?(float)$item->total_price:'0.00';
+            $rfq_items[$key]['sub_total'] = isset($item->sub_total)?(float)$item->sub_total:'0.00';
+        }
+        $rfq_data['total']       = isset($rfq->total_amount)?(float)$rfq->total_amount:'0.00';
+        $rfq_data['discount']    = isset($rfq->order_discount)?(float)$rfq->order_discount:'0.00';
+        $rfq_data['tax']         = isset($rfq->order_tax_amount)?(float)$rfq->order_tax_amount:'0.00';
+        $rfq_data['grand_total'] = isset($rfq->sgd_total_amount)?(float)$rfq->sgd_total_amount:'0.00';
+        $rfq_data['notes']       = isset($rfq->notes)?$rfq->notes:'';
+        if(isset($rfq->currency)){
+            $rfq_data['currency_code']   = $rfq->currencyCode->currency_code;
+            $rfq_data['exchange_amount'] = $rfq->exchange_total_amount;
+        }else{
+            $rfq_data['currency_code']   = '';
+            $rfq_data['exchange_amount'] = '';
+        }
+        $check_parent = User::where('id',Auth::id())->first();
+        $data['check_parent'] = ($check_parent->parent_company==0)?true:false;
+        $data['rfq_data']     = $rfq_data;
+        $data['rfq_products'] = $rfq_items;
+        $data['currency_code'] = $rfq_data['currency_code'];
+        $data['data_from']    = '';
+
+        if($request->has('child')){
+            $data['data_from'] = 'child';
+        }
+        //$data['discount_type'] = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->pluck('discount_type','product_id')->toArray();
+ // dd($data);
+        return response()->json(['success'=> true,'data'=>$data]);
+        
     }
 
     /**
