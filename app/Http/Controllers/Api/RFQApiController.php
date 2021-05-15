@@ -128,6 +128,8 @@ class RFQApiController extends Controller
             $rfq_data[$key]['sales_rep'] = isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'';
             $rfq_data[$key]['delivery_method'] = $rfq->deliveryMethod->delivery_method;
             $rfq_data[$key]['status_name'] = OrderStatus::find($rfq->status)->status_name;
+            $rfq_data[$key]['show_edit'] =($rfq->status==25)?true:false;
+
 
         }
 
