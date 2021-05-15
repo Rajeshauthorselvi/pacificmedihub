@@ -674,6 +674,7 @@ class OrderController extends Controller
               'address_id'            => $customer_address,
               'updated_at'            => date('Y-m-d H:i:s')
           ];
+          // dd($order_data);
         }
       Orders::where('id',$id)->update($order_data);
       if ($request->order_status==19) {

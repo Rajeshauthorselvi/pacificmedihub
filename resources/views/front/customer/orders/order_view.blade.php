@@ -197,9 +197,7 @@
                   @php $s_no = 1 @endphp
                   @foreach($order_products as $products)
                     <?php 
-
                     $order_returns=\App\Models\CustomerOrderReturnProducts::ReturnProducts($order->id,$products['product_id'],$products['product_variation_id']);
-
                     ?>
                   <tr>
                     <td>{{ $s_no }}</td>
@@ -263,8 +261,18 @@
                     <td colspan="6" class="text-right">Paid Amount (SGD)</td><td>{{ number_format($order_data['paid_amount'],2,'.','') }}</td>
                   </tr>
                   <tr class="outer" style="border-bottom:1px solid #ddd">
-                    <th colspan="6" class="text-right">Due Amount ({{ $currency }})</th><th>{{ number_format($order_data['due_amount'],2,'.','') }}</th>
+                    <?php
+                    $balance_amount=$order_data['sgd_total']-$order_data['paid_amount'];
+                     ?>
+                    <th colspan="6" class="text-right">Due Amount (SGD)</th><th>{{ number_format($balance_amount,2,'.','') }}</th>
+                    
                   </tr>
+                  @if ($currency!="SGD")
+                    <tr class="outer" style="border-bottom:1px solid #ddd">
+                      <th colspan="6" class="text-right"> Total Amount ({{ $currency }}) </th>
+                      <th> {{ number_format($order_data['grand_total'],2,'.','') }} </th>
+                    </tr>
+                  @endif
                 </tbody>
               </table>
             </div>

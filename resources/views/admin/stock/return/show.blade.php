@@ -145,10 +145,6 @@
                         @endif
                       </div>
                       <div class="clearfix"></div><br><br>
-                      <div class="form-group col-sm-12">
-                        <a href="{{route('return.index')}}" class="btn reset-btn">Cancel</a>
-                        <button type="submit" class="btn save-btn">Save</button>
-                      </div>
                     {!! Form::close() !!}
                   </div>
                 </div>

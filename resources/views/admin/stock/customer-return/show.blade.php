@@ -85,6 +85,7 @@
                                             $variation_details=\App\Models\OrderProducts::VariationPrice($product['product_id'],$variant['variant_id'],$return->order_id);
                                             $return_details=\App\Models\CustomerOrderReturnProducts::qtyData($product['product_id'],$variant['variant_id'],$return->order_id);
                                           ?>
+                                          @if (isset($return_details))
                                           <tr class="parent_tr">
                                             <td>{{$variant['option_value1']}}</td>
                                             @if($option_count==2||$option_count==3||$option_count==4||$option_count==5)
@@ -101,6 +102,7 @@
                                             @endif
                                             <td>{{ $return_details['return_quantity'] }}</td>
                                           </tr>
+                                          @endif
                                         @endforeach
                                       </tbody>
                                     </table>

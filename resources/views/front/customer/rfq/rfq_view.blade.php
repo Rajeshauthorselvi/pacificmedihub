@@ -91,7 +91,7 @@
             <div class="rfq-detail col-sm-4">
               <ul class="list-unstyled">
                 <li><strong>RFQ Code : #{{ $rfq->order_no }}</strong></li>
-                <li><span>Date: </span>{{ date('d/m/Y - H:i a',strtotime($rfq->created_at)) }}</li>
+                <li><span>Date: </span>{{ date('d/m/Y',strtotime($rfq->created_at)) }}</li>
                 <li><span>Sales Rep: </span>{{ isset($rfq->salesrep->emp_name)?$rfq->salesrep->emp_name:'' }}</li>
                 @if(isset($rfq->delivery_method_id))
                   <li><span>Delivery Method</span>: {{ $rfq->deliveryMethod->delivery_method }}</li>

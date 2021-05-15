@@ -89,15 +89,18 @@
                                         </thead>
                                         <tbody>
                                           @foreach($product['product_variant'] as $keyv=> $variant)
+<?php      $return_details=\App\Models\CustomerOrderReturnProducts::qtyData($product['product_id'],$variant['variant_id'],$return->order_id);
+?>
+                                          @if (isset($return_details['damage_quantity']) || isset($return_details['total_return_quantity']))
                                             <?php 
                                               $option_count = $product['option_count'];
                                               $variation_details=\App\Models\OrderProducts::VariationPrice($product['product_id'],$variant['variant_id'],$return->order_id);
-                                              $return_details=\App\Models\CustomerOrderReturnProducts::qtyData($product['product_id'],$variant['variant_id'],$return->order_id);
+
                                             ?>
                                             <input type="hidden" name="variant[product_id][]" value="{{ $variation_details->product_id }}">
                                             <input type="hidden" name="variant[variant_id][]" value="{{ $variation_details->product_variation_id }}">
-                                            <input type="hidden" name="variant[damage_quantity][]" value="{{ $return_details['damage_quantity'] }}">
-                                            <input type="hidden" name="variant[return_qty][]" value="{{ $return_details['return_quantity'] }}">
+                                            <input type="hidden" name="variant[damage_quantity][]" value="{{ isset($return_details['damage_quantity'])?$return_details['damage_quantity']:0 }}">
+                                            <input type="hidden" name="variant[return_qty][]" value="{{ isset($return_details['return_quantity'])?$return_details['return_quantity']:0 }}">
                                             <input type="hidden" name="variant[total_return_quantity][]" value="{{ $return_details['total_return_quantity'] }}">
                                             <tr class="parent_tr">
                                               <td>{{$variant['option_value1']}}</td>
@@ -118,6 +121,7 @@
                                               <td>{{ $return_details['return_quantity'] }}</td>
                                               <td>{{ $return_details['total_return_quantity'] }}</td>
                                             </tr>
+                                          @endif
                                           @endforeach
                                         </tbody>
                                       </table>

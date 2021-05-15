@@ -322,7 +322,7 @@
                             </td>
                           </tr>
                             <tr class="total-calculation">
-                              <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$order->sgd_total_amoun}}">
+                              <input type="hidden" name="sgd_total_amount" id="sgd_total_amount_hidden" value="{{$order->sgd_total_amount}}">
                               <th  class="title">Total Amount(SGD)</th>
                             <th id="total_amount_sgd">{{$order->sgd_total_amount}}</th>
                           </tr>

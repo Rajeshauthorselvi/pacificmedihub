@@ -410,9 +410,54 @@ class RFQApiController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        //
-    }
+    {        
+        $rfq = RFQ::find($id);
+        $new_rfq_data = array('delivery_method_id'=>$request->delevery_method,'delivery_address_id'=>$request->delivery_add);
+        $old_rfq_data = array('delivery_method_id'=>$rfq->delivery_method_id,'delivery_address_id'=>$rfq->delivery_address_id);
+        $rfq_diff = array_diff($new_rfq_data,$old_rfq_data);
+        $rfq->total_amount     = $request->total_amount;
+        $rfq->sgd_total_amount = $request->grand_total;
+        $rfq->save();
+        $rfq_products = $request->item;
+        $rfq_items = RFQProducts::where('rfq_id',$id)->orderBy('id','desc')->get();
+        foreach($rfq_items as $item) {
+            $old_item['id'][]  = $item->id;
+            $old_item['qty'][] = $item->quantity;
+        }
+
+        foreach($rfq_products['id'] as $key => $value) {
+            $add = RFQProducts::find($value);
+            $add->quantity  = $rfq_products['qty'][$key];
+            $add->sub_total = $rfq_products['sub_total'][$key];
+            $add->update();
+        }
+        $rfq_item_diff = array_diff($rfq_products['qty'],$old_item['qty']);
+
+        if((count($rfq_diff)!=0)||(count($rfq_item_diff)!=0)){
+            $rfq->status = 22;            
+        }
+        $rfq->delivery_address_id = $request->delivery_add;
+        $rfq->billing_address_id  = $request->billing_add;
+        $rfq->delivery_method_id  = $request->delevery_method;
+        $rfq->notes               = $request->notes;
+        $rfq->save();
+
+        $creater_name=Auth::user()->name;
+        $auth_id=Auth::id();
+        $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
+        Notification::insert([
+            'type'                => 'orders',
+            'ref_id'              => $id,
+            'customer_id'         => $auth_id,
+            'content'             => $creater_name."'s RFQ changes and requested for ".$rfq_details->order_no,
+            'url'                 => url('admin/rfq/'.$id),
+            'created_at'          => date('Y-m-d H:i:s'),
+            'created_by'          => $auth_id,
+            'created_user_type'   => 3,
+        ]);
+
+        return response()->json(['success'=> true,'data'=>[]]);
+}
 
     /**
      * Remove the specified resource from storage.
