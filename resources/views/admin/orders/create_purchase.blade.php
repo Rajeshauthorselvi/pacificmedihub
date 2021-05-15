@@ -334,11 +334,6 @@
   </style>
   @push('custom-scripts')
     <script type="text/javascript">
-      $(document).ready(function() {
-          $.each($('.stock_qty'), function(index, val) {
-             StockQuantityKeyUp($(this));
-          });
-      });
 
       $(document).on('click', '.remove-product-row', function(event) {
         event.preventDefault();
@@ -452,8 +447,29 @@
         var remain_quantity=$(this).attr('remaining-quantity');
 
         $(this).val(remain_quantity);
+          var base=$(this).parents('.parent_tr');
+          var base_price=base.find('.base_price').val();
+          var total_price=base_price*$(this).val();
+          base.find('.subtotal_hidden').val(total_price);
+          base.find('.sub_total').text(total_price);          
 
-        StockQuantityKeyUp($(this));
+          var attr_id=$(this).parents('tbody').find('.collapse:first').attr('id');
+          var attr=$(this).parents('tbody').find('.collapse:first');
+          var total_quantity=SumTotal('.collapse:first .stock_qty');
+
+          $('.collapse:first').find('.total-quantity').text(total_quantity);
+          $('[href="#'+attr_id+'"]').find('.total-quantity').text(total_quantity);
+          var total_amount=SumTotal('#'+attr_id+' .subtotal_hidden');
+          $('.collapse:first').find('.total').text(total_amount);
+          $('[href="#'+attr_id+'"]').find('.total').text(total_amount);
+
+          $('.all_quantity').text(SumTotal('.stock_qty'));
+          $('.all_amount').text(SumTotal('.subtotal_hidden'));
+
+          var all_amount = $('#allAmount').text();
+          var tax_rate = $('option:selected', '#order_tax').attr("tax-rate");
+          overallCalculation(all_amount,tax_rate);
+
       });
 
       function StockQuantityKeyUp($this) {

@@ -39,19 +39,22 @@
                       Return Request Approved
                     </span>
                   @elseif(isset($order['order_return']['order_return_status']) && $order['order_return']['order_return_status']==2 && $order['toatl_qty']==0)
-                    <span class="badge badge-info" style="padding: 5px;background:#00a65a;">
+                    <span class="badge badge-info" style="padding: 5px;background:#f0ad4e;">
                        Goods Returned
                     </span>
                     {{-- Return Status --}}
                   @else
                   {{-- Order Status --}}
-                   <span class="badge" style="background:{{ $order['color_code'] }};color:#fff;padding: 5px">
+                   
                     @if ($order['status_id']==18 || $order['status_id']==19 || $order['status_id']==13 || $order['status_id']==17)
+                      <span class="badge" style="background:{{ $order['color_code'] }};color:#fff;padding: 5px">
                       {{ $order['status'] }}
+                      </span> 
                     @elseif ($order['status_id']==15 || $order['status_id']==14)
-                      Assigned for Shipment
+                      <span class="badge" style="background:#5bc0de;color:#fff;padding: 5px">
+                        Assigned for Shipment
+                      </span>
                     @endif
-                  </span>
                   {{-- Order Status --}}
                   @endif
                     

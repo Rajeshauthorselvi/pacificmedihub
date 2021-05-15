@@ -342,7 +342,64 @@ class RFQApiController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user_id = Auth::id();
+        $primary_id = Auth::user()->address_id;
+
+        $rfq = $data['rfq'] = RFQ::find($id);
+        
+        $user = User::find($rfq->customer_id);
+
+        if(isset($rfq->delivery_address_id)&& $rfq->delivery_address_id!=null){
+            $del_add_id = $rfq->delivery_address_id;
+        }else{
+            $del_add_id = $user->address_id;
+        }
+
+        if(isset($rfq->billing_address_id)&& $rfq->billing_address_id!=null){
+            $bill_add_id = $rfq->billing_address_id;
+        }else{
+            $bill_add_id = $user->address_id;
+        }
+
+        $data['cus_email']   = $user->email;
+        $data['delivery']    = UserAddress::find($del_add_id);
+        $data['billing']     = UserAddress::find($bill_add_id);
+
+        $data['all_address'] = UserAddress::where('customer_id',$user_id)->where('is_deleted',0)->get();
+        $data['delivery_method'] = DeliveryMethod::where('is_free_delivery','no')->where('status',1)->get();
+        $rfq_products = RFQProducts::with('product','variant')->where('rfq_id',$id)->orderBy('id','desc')->get();
+        $rfq_data = $rfq_items = array();
+        foreach ($rfq_products as $key => $item) {
+            $rfq_items[$key]['rfq_items_id'] = $item->id;
+            $rfq_items[$key]['rfq_id']       = $item->rfq_id;
+            $rfq_items[$key]['product_name'] = $item->product->name;
+            $rfq_items[$key]['variant_sku']  = $item->variant->sku;
+            $rfq_items[$key]['variant_option1'] = isset($item->variant->optionName1->option_name)?$item->variant->optionName1->option_name:null;
+            $rfq_items[$key]['variant_option_value1'] = isset($item->variant->optionValue1->option_value)?$item->variant->optionValue1->option_value:null;
+            $rfq_items[$key]['variant_option2'] = isset($item->variant->optionName2->option_name)?$item->variant->optionName2->option_name:null;
+            $rfq_items[$key]['variant_option_value2'] = isset($item->variant->optionValue2->option_value)?$item->variant->optionValue2->option_value:null;
+            $rfq_items[$key]['variant_option3'] = isset($item->variant->optionName3->option_name)?$item->variant->optionName3->option_name:null;
+            $rfq_items[$key]['variant_option_value3'] = isset($item->variant->optionValue3->option_value)?$item->variant->optionValue3->option_value:null;
+            $rfq_items[$key]['variant_option4'] = isset($item->variant->optionName4->option_name)?$item->variant->optionName4->option_name:null;
+            $rfq_items[$key]['variant_option_value4'] = isset($item->variant->optionValue4->option_value)?$item->variant->optionValue4->option_value:null;
+            $rfq_items[$key]['variant_option5'] = isset($item->variant->optionName5->option_name)?$item->variant->optionName5->option_name:null;
+            $rfq_items[$key]['variant_option_value5'] = isset($item->variant->optionValue5->option_value)?$item->variant->optionValue5->option_value:null;
+            $rfq_items[$key]['quantity'] = $item->quantity;
+            $rfq_items[$key]['rfq_price'] = isset($item->rfq_price)?(float)$item->rfq_price:'0.00';
+            $rfq_items[$key]['final_price'] = isset($item->final_price)?(float)$item->final_price:'0.00';
+            $rfq_items[$key]['sub_total'] = isset($item->sub_total)?(float)$item->sub_total:'0.00';
+        }
+
+        $rfq_data['total']       = isset($rfq->total_amount)?(float)$rfq->total_amount:'0.00';
+        $rfq_data['tax']         = isset($rfq->order_tax_amount)?(float)$rfq->order_tax_amount:'0.00';
+        $rfq_data['delivery_charge'] = isset($rfq->delivery_charge)?(float)$rfq->delivery_charge:'0.00';
+        $rfq_data['grand_total'] = isset($rfq->sgd_total_amount)?(float)$rfq->sgd_total_amount:'0.00';
+        $rfq_data['notes']       = isset($rfq->notes)?$rfq->notes:'';
+
+        $data['rfq_data']     = $rfq_data;
+        $data['rfq_products'] = $rfq_items;
+
+        return response()->json(['success'=> true,'data'=>$data]);
     }
 
     /**

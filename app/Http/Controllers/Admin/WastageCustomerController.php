@@ -31,7 +31,8 @@ class WastageCustomerController extends Controller
       $order_returns = CustomerOrderReturn::where('order_return_status',2)->orderBy('id','desc')->get();
       foreach ($order_returns as $value) {
         $order = Orders::find($value->order_id);
-        $damage_products_return_qty = CustomerOrderReturnProducts::where('customer_order_return_id',$value->id)->where('order_id',$value->order_id)->sum('damage_quantity');
+        $damage_products_return_qty = CustomerOrderReturnProducts::where('customer_order_return_id',$value->id)->where('order_id',$value->order_id)->where('damage_quantity','<>',0)->sum('damage_quantity');
+        if ($damage_products_return_qty>0) {
         $returns[]=[
           'return_id'       => $value->id,
           'return_date'     => date('d-m-Y',strtotime($value->created_at)),
@@ -39,6 +40,7 @@ class WastageCustomerController extends Controller
           'customer'        => $value->customer->name,
           'damage_quantity' => $damage_products_return_qty
         ];
+        }
       }
       $data['returns'] = $returns;
       return view('admin.stock.customer-wastage.index',$data);

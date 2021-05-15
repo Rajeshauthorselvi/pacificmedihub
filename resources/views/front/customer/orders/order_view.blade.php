@@ -64,25 +64,33 @@
                 @if($order->approximate_delivery_date)<li><span>Delivery Date:</span>{{ date('d/m/Y',strtotime($order->approximate_delivery_date))}}</li>@endif
                 <li>
                   <span>Status</span>: 
-                  @if (isset($order_data['order_return']['order_return_status']) && $order_data['order_return']['order_return_status']==22)
+                  <?php $order_return_status=isset($order_return->order_return_status)?$order_return->order_return_status:0 ?>
+                  @if (isset($order_return_status) && $order_return_status==22)
                     <span class="badge" style="background:#f0ad4e;color:#fff;padding: 5px">
                       Return Request
                     </span>
-                  @elseif(isset($order_data['order_return']['order_return_status']) && $order_data['order_return']['order_return_status']==24)
+                  @elseif(isset($order_return_status) && $order_return_status==24)
                     <span class="badge badge-info" style="padding: 5px">
                       Return Request Approved
                     </span>
-                    In
+                  @elseif(isset($order_return_status) && $order_return_status==2 && $toatl_qty==0)
+                  {{ $toatl_qty }}
+                    <span class="badge badge-info" style="padding: 5px;background:#f0ad4e;">
+                       Goods Returned
+                    </span>
                   @else
                   {{-- Order Status --}}
                     <?php $status_id=$order->order_status; ?>
-                   <span class="badge" style="background:{{ $order_status->color_codes }};color:#fff;padding: 5px">
+                  
                     @if ($status_id==18 || $status_id==19 || $status_id==13 || $status_id==17)
+                     <span class="badge" style="background:{{ $order_status->color_codes }};color:#fff;padding: 5px">
                     {{ $order_status->status_name }}
+                      </span>
                     @elseif ($status_id==15 || $status_id==14)
+                    <span class="badge" style="background:#5bc0de;color:#fff;padding: 5px">
                       Assigned for Shipment
+                    </span>
                     @endif
-                  </span>
                   @endif
                 </li>
                 <?php 
@@ -179,7 +187,9 @@
                     <th class="text-center width">Discount</th>
                     <th class="text-center width">Discount Price <br><small>(a)</small></th>
                     <th class="text-center width">QTY <br><small>(b)</small></th>
-                    <th class="text-center width">Return Quantity</th>
+                    @if ($order_return_status!=0)
+                      <th class="text-center width">Return Quantity</th>
+                    @endif
 
                     <th class="text-center width">Total <br><small>(a x b)</small></th>
                 </thead>
@@ -222,13 +232,16 @@
                     <td class="text-center">@if($products['discount_type']=='amount') $ @endif {{ $products['discount_value'] }} @if($products['discount_type']=='percentage') % @endif </td>
                     <td class="text-center">{{ number_format($products['final_price'],2,'.','') }}</td>
                     <td class="text-center">{{ $products['quantity'] }}</td>
-                    <td>
-                      @if (isset($order_returns->return_quantity) || isset($order_returns->damage_quantity))
-                        {{  $order_returns->return_quantity+$order_returns->damage_quantity  }}
-                      @else
-                        -
-                      @endif
-                    </td>
+                      {{-- expr --}}
+                      @if ($order_return_status!=0)
+                      <td>
+                        @if (isset($order_returns->return_quantity) || isset($order_returns->damage_quantity))
+                          {{  $order_returns->return_quantity+$order_returns->damage_quantity  }}
+                        @else
+                          -
+                        @endif
+                      </td>
+                    @endif
                     <td class="text-center">{{ number_format($products['sub_total'],2,'.','') }}</td>
                   </tr>
                   @php $s_no++ @endphp

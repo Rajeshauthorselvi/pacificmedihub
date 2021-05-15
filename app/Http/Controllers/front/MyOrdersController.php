@@ -210,7 +210,7 @@ class MyOrdersController extends Controller
           $order_data['days_count'] = $diff_in_days;
 
         $paid_amount = PaymentHistory::where('ref_id',$id)->where('payment_from',2)->sum('amount');
-        $order_data['order_return'] = CustomerOrderReturn::where('order_id',$id)->first();
+        $order_data['order_return']=$data['order_return'] = CustomerOrderReturn::where('order_id',$id)->first();
         $order_data['total']       = isset($order->total_amount)?(float)$order->total_amount:'0.00';
         $order_data['tax']         = isset($order->order_tax_amount)?(float)$order->order_tax_amount:'0.00';
         $order_data['grand_total'] = isset($order->exchange_total_amount)?(float)$order->exchange_total_amount:'0.00';
@@ -223,7 +223,7 @@ class MyOrdersController extends Controller
         $data['order_products'] = $order_items;
         $data['currency']       = Currency::where('published',1)->where('id',$order->currency)->value('currency_code');
         $data['order_status']=OrderStatus::where('id',$order->order_status)->first();
-
+        $data['toatl_qty']   = OrderProducts::where('order_id',$id)->sum('quantity');
         return view('front/customer/orders/order_view',$data);
     }
 
