@@ -19,12 +19,27 @@ class RFQCommentsController extends Controller
     {
         $id = $request->rfq_id;
         $data=array();
-        $data['check_parent'] = User::where('id',Auth::id())->first();
+        $rfq=RFQ::find($id);
+        $data['check_parent']=$check_parent = User::where('id',Auth::id())->first();
         $data['rfq_details']  = RFQ::with('customer','salesrep','statusName')->where('rfq.id',$id)->first();
         $data['rfq_id']       = $id;
-        $data['comments']     = RFQComments::where('rfq_id',$id)->get();
-        dd($data);
-        return view('front.customer.rfq.rfq_comments',$data);
+        $comments     = RFQComments::where('rfq_id',$id)->get();
+        $comments_data=array();
+        foreach ($comments as $key => $comment) {
+            if ($comment->commented_by==Auth::id()) {
+                $comment->commented_in=true;
+            }
+            else{
+                $comment->commented_in=false;
+            }
+
+            $comments_data[]=$comment;
+        }
+        $data['comments']=$comments_data;
+        $data['show_edit'] =($rfq->status==25)?true:false;
+        $data['check_parent'] = ($check_parent->parent_company==0)?true:false;
+
+        return response()->json(['success'=> true,'data'=>$data]);
     }
 
     /**
