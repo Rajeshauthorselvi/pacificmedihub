@@ -433,13 +433,17 @@ class EmployeeController extends Controller
 
 
         if(($month==date('m'))&&($year==date('Y'))){
-
             $get_employees = Employee::where('status',1)->whereMonth('created_at','<=',$month)
                                      ->whereYear('created_at','<=',$year)->where('is_deleted',0)->get();
             $pre_month     = Carbon::now()->subMonth()->format('m');
         }else{
-            $get_employees = Employee::where('status',1)->whereMonth('created_at','<=',$month)
-                                     ->whereYear('created_at','<=',$year)->get();
+            if($month > date('m')){
+                $get_employees = Employee::where('status',1)->whereMonth('created_at','<=',$month)
+                                         ->whereYear('created_at','<=',$year)->where('is_deleted',0)->get();
+            }else{
+                $get_employees = Employee::where('status',1)->whereMonth('created_at','<=',$month)
+                                         ->whereYear('created_at','<=',$year)->get();
+            }
             $pre_month     = (int)$month-1;
             if($pre_month==0){
                 $pre_month = 12;
@@ -448,55 +452,13 @@ class EmployeeController extends Controller
         }
          
         foreach ($get_employees as $key => $emp) {
-            $get_product_id = DB::table('orders as o')
-                                ->where('o.sales_rep_id',$emp->id)
-                                ->where('o.order_status',13)
-                                ->whereMonth('o.order_completed_at',$pre_month)
-                                ->whereYear('o.order_completed_at',$year)
-                                ->leftJoin('order_products as op','o.id','=','op.order_id')
-                                ->pluck('op.product_id')->toArray();
 
-            $product_id = array_unique($get_product_id);
-            $product_commission = 0;
-            foreach($product_id as $id){
-                $product = Product::find($id);
-                if(isset($product->commissionType)&& $product->commissionType->commission_type=='p'){
-                    $order_per        = OrderProducts::where('product_id',$id)->sum('sub_total');
-                    $get_prod_commission = $product->commission_value/100;
-                    $percentage_value = $order_per*$get_prod_commission;
-                }else{
-                    $fixed_value      = $product->commission_value;
-                }
-                $product_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
-            }
-
-            if(isset($emp->baseCommission)&& $emp->baseCommission->commission_type=='f'){
-                $commission = $product_commission*$emp->basic_commission_value;
-            }else{
-                $get_base_commission_value = $emp->basic_commission_value/100;
-                $commission = $product_commission*$get_base_commission_value;
-            }
-            
-            $targetCommissions  = Orders::where('sales_rep_id',$emp->id)->where('order_status',13)
-                                        ->whereMonth('order_completed_at',$pre_month)->sum('total_amount');
-            $t_commission       = (float)$targetCommissions;
-            $target_commissions = 0;
-            
-            if($targetCommissions!=0){
-                if($t_commission>=$emp->target_value){
-                    if(isset($emp->targetCommission)&& $emp->targetCommission->commission_type=='f'){
-                        $target_commissions = $emp->target_commission_value;
-                    }else{
-                        $get_target_commission_value = $emp->target_commission_value/100;
-                        $target_commissions = $t_commission*$get_target_commission_value;
-                    }
-                }
-            }
+            $commission = $employee[$key]['commission'] = \App\Models\Employee::getCommissionValue($emp->id,$pre_month,$year);
 
             $employee[$key]['id']         = $emp->id;
             $employee[$key]['name']       = $emp->emp_name;
             $employee[$key]['department'] = $emp->department->dept_name;
-            $payment                      = $emp->basic + $commission + $target_commissions;
+            $payment                      = $emp->basic + $commission;
             $deduction                    = $emp->self_cpf + $emp->sdl;
             $employee[$key]['payment']    = $payment;
             $employee[$key]['deduction']  = $deduction;
@@ -523,6 +485,7 @@ class EmployeeController extends Controller
             $employee[$key]['balance_amount'] = $balance_amount;
             $employee[$key]['status']         = $status;
             $employee[$key]['action']         = $action;
+
         }
         $data['date'] = $date;
         $data['employee_salary'] = $employee;
@@ -557,56 +520,67 @@ class EmployeeController extends Controller
         $salary_month         = date_create('01-'.$pre_month.'-'.$year);
         $data['salary_month'] = date_format($salary_month,"F Y");
 
-        $get_product_id = DB::table('orders as o')->where('o.sales_rep_id',$id)->where('o.order_status',13)
+
+        $orders = DB::table('orders as o')->where('o.sales_rep_id',$id)
+                                ->where('o.order_status',13)
                                 ->whereMonth('o.order_completed_at',$pre_month)
                                 ->whereYear('o.order_completed_at',$year)
-                                ->leftJoin('order_products as op','o.id','=','op.order_id')
-                                ->pluck('op.product_id')->toArray();
+                                ->get();
+        $order_data = $product_variant = array();
+        $p_commission = 0; $commission = 0; $get_commission = 0; $get_target_commission = 0;
 
-        $product_id = array_unique($get_product_id);
-        $product_commission = 0;
-        foreach($product_id as $id){
-            $product = Product::find($id);
-            if(isset($product->commissionType) && $product->commissionType->commission_type=='p'){
-                $order_per        = OrderProducts::where('product_id',$id)->sum('sub_total');
-                $get_prod_commission = $product->commission_value/100;
-                $percentage_value = $order_per*$get_prod_commission;
-            }else{
-                $fixed_value      = $product->commission_value;
+        foreach ($orders as $key => $order) {
+            $order_prd_id = OrderProducts::where('order_id',$order->id)->pluck('product_id')->toArray();
+
+            $products = Product::whereIn('id',$order_prd_id)->get();
+            foreach($products as $prd_key => $product)
+            {
+                $order_per = OrderProducts::where('product_id',$product->id)->sum('sub_total');
+                
+                if(isset($product->commissionType) && $product->commissionType->commission_type=='p'){
+                    $get_prod_commission = $product->commission_value/100;
+                    $percentage_value    = $order_per*$get_prod_commission;
+                }else if(isset($product->commissionType) && $product->commissionType->commission_type=='f'){
+                    $fixed_value = $product->commission_value;
+                }
+                $p_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
             }
-            $product_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
-        }
+            if(isset($employee->baseCommission) && $employee->baseCommission->commission_type=='f'){
+                $commission = $p_commission*$employee->basic_commission_value;
+            }elseif(isset($employee->baseCommission) && $employee->baseCommission->commission_type=='p'){
+                $get_base_commission_value = $employee->basic_commission_value/100;
+                $commission = $p_commission*$get_base_commission_value;
+            }
 
-        if(isset($employee->baseCommission) && $employee->baseCommission->commission_type=='f'){
-            $commission = $product_commission*$employee->basic_commission_value;
-        }else{
-            $get_base_commission_value = $employee->basic_commission_value/100;
-            $commission = $product_commission*$get_base_commission_value;
-        }
-          
-        $targetCommissions  = Orders::where('sales_rep_id',$employee->id)->where('order_status',13)
-                                    ->whereMonth('order_completed_at',$pre_month)->sum('total_amount');
-        $t_commission       = (float)$targetCommissions;
-        $target_commissions = 0;
+            $targetCommissions  = Orders::where('id',$order->id)->where('sales_rep_id',$employee->id)
+                                        ->where('order_status',13)
+                                        ->whereMonth('order_completed_at',$pre_month)
+                                        ->whereYear('order_completed_at',$year)->sum('total_amount');
+            $t_commission       = (float)$targetCommissions;
+            $target_commissions = 0;
 
-        if($targetCommissions!=0){
-            if($t_commission>=$employee->target_value){
-                if(isset($employee->targetCommission) && $employee->targetCommission->commission_type=='f'){
-                    $target_commissions = $employee->target_commission_value;
-                }else{
-                    $get_target_commission_value = $employee->target_commission_value/100;
-                    $target_commissions = $t_commission*$get_target_commission_value;
+            if($targetCommissions!=0){
+                if($t_commission>=$employee->target_value){
+                    if(isset($employee->targetCommission) && $employee->targetCommission->commission_type=='f'){
+                        $target_commissions = $employee->target_commission_value;
+                    }elseif(isset($employee->targetCommission) && $employee->targetCommission->commission_type=='p'){
+                        $get_target_commission_value = $employee->target_commission_value/100;
+                        $target_commissions = $t_commission*$get_target_commission_value;
+                    }
                 }
             }
+            $get_commission += isset($commission)?$commission:0;
+            $get_target_commission += isset($target_commissions)?$target_commissions:0;
         }
 
+
         $data['base_salary']        = $employee->basic;
-        $data['commission']         = isset($commission)?$commission:'0.00';
-        $data['target_commissions'] = isset($target_commissions)?$target_commissions:'0.00';
+        $data['commission']         = $get_commission;
+        $data['target_commissions'] = $get_target_commission;
         $data['cpf']                = $employee->self_cpf;
         $data['sdl']                = $employee->sdl;
         $data['employer_cpf']       = $employee->emp_cpf;
-        $payment_total              = $employee->basic + $commission + $target_commissions;
+        $payment_total              = $employee->basic + $get_commission + $get_target_commission;
         $deduction_total            = $employee->self_cpf + $employee->sdl;
         $data['payment_total']      = $payment_total;
         $data['deduction_total']    = $deduction_total;    
@@ -624,7 +598,6 @@ class EmployeeController extends Controller
 
     public function commissionList(Request $request,$emp_id)
     {
-        
         $id = base64_decode($emp_id);
         $employee = Employee::find($id);
         $data['employee'] = $employee;
@@ -639,35 +612,38 @@ class EmployeeController extends Controller
         }
 
         $orders = DB::table('orders as o')->where('o.sales_rep_id',$id)
-                                ->leftJoin('order_products as op','o.id','=','op.order_id')
                                 ->where('o.order_status',13)
                                 ->whereMonth('o.order_completed_at',$pre_month)
                                 ->whereYear('o.order_completed_at',$year)
-                                ->groupBy('op.order_id')
                                 ->get();
-        //dd($orders);
         $order_data = $product_variant = array();
         foreach ($orders as $key => $order) {
+            $order_prd_id = OrderProducts::where('order_id',$order->id)->pluck('product_id')->toArray();
 
-            $product = Product::find($order->product_id);
-
-            if(isset($product->commissionType) && $product->commissionType->commission_type=='p'){
-                $order_per        = OrderProducts::where('order_id',$order->order_id)->where('product_id',$order->product_id)->sum('sub_total');
-                $get_prod_commission = $product->commission_value/100;
-                $percentage_value = $order_per*$get_prod_commission;
-            }else{
-                $fixed_value      = $product->commission_value;
+            $products = Product::whereIn('id',$order_prd_id)->get();
+            $p_commission = 0;
+            foreach($products as $prd_key => $product)
+            {
+                $order_per = OrderProducts::where('product_id',$product->id)->sum('sub_total');
+                
+                if(isset($product->commissionType) && $product->commissionType->commission_type=='p'){
+                    $get_prod_commission = $product->commission_value/100;
+                    $percentage_value    = $order_per*$get_prod_commission;
+                }else if(isset($product->commissionType) && $product->commissionType->commission_type=='f'){
+                    $fixed_value = $product->commission_value;
+                }
+                $p_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
             }
-            $p_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
             
             if(isset($employee->baseCommission) && $employee->baseCommission->commission_type=='f'){
                 $product_commission = $p_commission*$employee->basic_commission_value;
-            }else{
+            }elseif(isset($employee->baseCommission) && $employee->baseCommission->commission_type=='p'){
                 $get_base_commission_value = $employee->basic_commission_value/100;
                 $product_commission = $p_commission*$get_base_commission_value;
             }
-              
-            $targetCommissions  = Orders::where('sales_rep_id',$employee->id)->where('order_status',13)
+
+            $targetCommissions  = Orders::where('id',$order->id)->where('sales_rep_id',$employee->id)
+                                        ->where('order_status',13)
                                         ->whereMonth('order_completed_at',$pre_month)
                                         ->whereYear('order_completed_at',$year)->sum('total_amount');
             $t_commission       = (float)$targetCommissions;
@@ -677,7 +653,7 @@ class EmployeeController extends Controller
                 if($t_commission>=$employee->target_value){
                     if(isset($employee->targetCommission) && $employee->targetCommission->commission_type=='f'){
                         $target_commissions = $employee->target_commission_value;
-                    }else{
+                    }elseif(isset($employee->targetCommission) && $employee->targetCommission->commission_type=='p'){
                         $get_target_commission_value = $employee->target_commission_value/100;
                         $target_commissions = $t_commission*$get_target_commission_value;
                     }
@@ -686,8 +662,8 @@ class EmployeeController extends Controller
 
             $commission = $product_commission+$target_commissions;
 
-            $order_data[$order->order_id] = [
-                'order_id'     => $order->order_id,
+            $order_data[$order->id] = [
+                'order_id'     => $order->id,
                 'order_code'   => $order->order_no,
                 'total_amount' => $order->total_amount,
                 'product_commission' => $product_commission,
