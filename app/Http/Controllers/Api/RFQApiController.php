@@ -330,6 +330,7 @@ class RFQApiController extends Controller
         if($request->has('child')){
             $data['data_from'] = 'child';
         }
+        
         //$data['discount_type'] = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->pluck('discount_type','product_id')->toArray();
  // dd($data);
         return response()->json(['success'=> true,'data'=>$data]);
