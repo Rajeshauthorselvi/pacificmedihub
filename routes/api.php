@@ -62,6 +62,7 @@ Route::middleware('auth:api')->group( function () {
 	Route::post('update-address','Api\RFQApiController@UpdateAddress');
 	Route::get('delete-address/{address_id}','Api\AddressController@DeleteAddress');
 	Route::resource('rfq-api','Api\RFQApiController');
+	Route::resource('rfq-comments-api','Api\RFQCommentsController');
 	//Profile
 	Route::get('profile','Api\ProfileController@index');
 	Route::post('update-profile','Api\ProfileController@updateProfile');
