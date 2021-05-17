@@ -1912,3 +1912,9 @@ color: #fff;
     background-color: #ac85bc;
     border-color: #ac85bc;
 }
+
+
+@media only screen and (min-width: 992px) {
+    .hamburger-menu{padding: 14px;}
+    .hamburger-menu span{font-size: 14px;}
+} 
