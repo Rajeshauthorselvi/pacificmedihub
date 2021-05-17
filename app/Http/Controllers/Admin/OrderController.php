@@ -290,6 +290,7 @@ class OrderController extends Controller
       $sub_total             = $variant['sub_total'];
 
       foreach ($product_ids as $key => $product_id) {
+        $product = Product::where('id',$product_id)->first();
         if ($stock_qty[$key]!=0) {
           $data=[
             'order_id'                  => $order_id,
@@ -303,7 +304,9 @@ class OrderController extends Controller
             'discount_type'             => $variant['discount_type'][$product_id],
             'discount_value'            => $discount_value[$key],
             'final_price'               => $final_price[$key],
-            'sub_total'                 => $sub_total[$key]
+            'sub_total'                 => $sub_total[$key],
+            'commission_type'           => $product->commission_type,
+            'commission_value'          => $product->commission_value,
           ];
           OrderProducts::insert($data);
         }
@@ -725,6 +728,7 @@ class OrderController extends Controller
           $final_price           = $variant['final_price'];
           $sub_total             = $variant['sub_total'];
           foreach ($product_ids as $key => $product_id) {
+            $product = Product::where('id',$product_id)->first();
             if ($stock_qty[$key]!=0 && $stock_qty[$key]!="") {
               $data=[
                 'order_id'                  => $id,
@@ -738,7 +742,9 @@ class OrderController extends Controller
                 'discount_type'             => $variant['discount_type'][$product_id],
                 'discount_value'            => $discount_value[$key],
                 'final_price'               => $final_price[$key],
-                'sub_total'                 => $sub_total[$key]
+                'sub_total'                 => $sub_total[$key],
+                'commission_type'           => $product->commission_type,
+                'commission_value'          => $product->commission_value
               ];
               OrderProducts::insert($data);
             }
@@ -1019,6 +1025,7 @@ class OrderController extends Controller
         $rfq_products = RFQProducts::where('rfq_id',$rfq->id)->get();
 
         foreach ($rfq_products as $key => $products) {
+          $product = Product::where('id',$products->id)->first();
           OrderProducts::insert([
             'order_id'              => $order_id,
             'product_id'            => $products->product_id,
@@ -1031,7 +1038,9 @@ class OrderController extends Controller
             'discount_value'        => $products->discount_value,
             'discount_type'         => $products->discount_type,
             'final_price'           => $products->final_price,
-            'sub_total'             => $products->sub_total                
+            'sub_total'             => $products->sub_total,
+            'commission_type'       => $product->commission_type,
+            'commission_value'      => $product->commission_value
           ]);
         }
       RFQ::where('id',$rfq->id)->update(['status'=>10]);

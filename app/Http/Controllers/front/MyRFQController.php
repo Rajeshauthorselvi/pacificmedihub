@@ -848,6 +848,7 @@ class MyRFQController extends Controller
         $rfq_products = RFQProducts::where('rfq_id',$rfq->id)->get();
 
         foreach ($rfq_products as $key => $products) {
+            $product = Product::where('id',$products->id)->first();
             OrderProducts::insert([
                 'order_id'              => $order_id,
                 'product_id'            => $products->product_id,
@@ -861,6 +862,8 @@ class MyRFQController extends Controller
                 'discount_value'        => $products->discount_value,
                 'final_price'           => $products->final_price,
                 'sub_total'             => $products->sub_total,
+                'commission_type'       => $product->commission_type,
+                'commission_value'      => $product->commission_value,
             ]);
         }
         $creater_name=Auth::user()->name;
