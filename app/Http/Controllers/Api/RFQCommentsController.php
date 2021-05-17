@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
 use App\Models\RFQComments;
+use App\Models\Notification;
 use App\Models\RFQ;
 use Auth;
 class RFQCommentsController extends Controller
@@ -60,7 +61,28 @@ class RFQCommentsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data=[
+            'rfq_id'                  => $request->rfq_id,
+            'comment'                 => $request->comment,
+            'commented_by'            => $auth_id,
+            'commented_by_user_type'  => $created_user_type
+        ];
+
+        $rfq_commene_id = RFQComments::insertGetId($data);
+
+        $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$request->rfq_id)->first();
+        Notification::insert([
+            'type'                => 'orders',
+            'ref_id'              => $request->rfq_id,
+            'customer_id'         => Auth::id(),
+            'content'             => $creater_name.' added new comment to '.$rfq_details->order_no,
+            'url'                 => url('admin/rfq-comments/'.$request->rfq_id),
+            'created_at'          => date('Y-m-d H:i:s'),
+            'created_by'          => $auth_id,
+            'created_user_type'   => 3,
+        ]);
+
+        return response()->json(['success'=> true,'data'=>[]]);
     }
 
     /**
