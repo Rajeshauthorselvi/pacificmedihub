@@ -460,7 +460,7 @@ class EmployeeController extends Controller
             $product_commission = 0;
             foreach($product_id as $id){
                 $product = Product::find($id);
-                if($product->commissionType->commission_type=='p'){
+                if(isset($product->commissionType)&& $product->commissionType->commission_type=='p'){
                     $order_per        = OrderProducts::where('product_id',$id)->sum('sub_total');
                     $get_prod_commission = $product->commission_value/100;
                     $percentage_value = $order_per*$get_prod_commission;
@@ -484,7 +484,7 @@ class EmployeeController extends Controller
             
             if($targetCommissions!=0){
                 if($t_commission>=$emp->target_value){
-                    if($emp->targetCommission->commission_type=='f'){
+                    if(isset($emp->targetCommission)&& $emp->targetCommission->commission_type=='f'){
                         $target_commissions = $emp->target_commission_value;
                     }else{
                         $get_target_commission_value = $emp->target_commission_value/100;
@@ -567,7 +567,7 @@ class EmployeeController extends Controller
         $product_commission = 0;
         foreach($product_id as $id){
             $product = Product::find($id);
-            if($product->commissionType->commission_type=='p'){
+            if(isset($product->commissionType) && $product->commissionType->commission_type=='p'){
                 $order_per        = OrderProducts::where('product_id',$id)->sum('sub_total');
                 $get_prod_commission = $product->commission_value/100;
                 $percentage_value = $order_per*$get_prod_commission;
@@ -591,7 +591,7 @@ class EmployeeController extends Controller
 
         if($targetCommissions!=0){
             if($t_commission>=$employee->target_value){
-                if($employee->targetCommission->commission_type=='f'){
+                if(isset($employee->targetCommission) && $employee->targetCommission->commission_type=='f'){
                     $target_commissions = $employee->target_commission_value;
                 }else{
                     $get_target_commission_value = $employee->target_commission_value/100;
@@ -651,7 +651,7 @@ class EmployeeController extends Controller
 
             $product = Product::find($order->product_id);
 
-            if($product->commissionType->commission_type=='p'){
+            if(isset($product->commissionType) && $product->commissionType->commission_type=='p'){
                 $order_per        = OrderProducts::where('order_id',$order->order_id)->where('product_id',$order->product_id)->sum('sub_total');
                 $get_prod_commission = $product->commission_value/100;
                 $percentage_value = $order_per*$get_prod_commission;
@@ -660,7 +660,7 @@ class EmployeeController extends Controller
             }
             $p_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
             
-            if($employee->baseCommission->commission_type=='f'){
+            if(isset($employee->baseCommission) && $employee->baseCommission->commission_type=='f'){
                 $product_commission = $p_commission*$employee->basic_commission_value;
             }else{
                 $get_base_commission_value = $employee->basic_commission_value/100;
@@ -675,7 +675,7 @@ class EmployeeController extends Controller
 
             if($targetCommissions!=0){
                 if($t_commission>=$employee->target_value){
-                    if($employee->targetCommission->commission_type=='f'){
+                    if(isset($employee->targetCommission) && $employee->targetCommission->commission_type=='f'){
                         $target_commissions = $employee->target_commission_value;
                     }else{
                         $get_target_commission_value = $employee->target_commission_value/100;
