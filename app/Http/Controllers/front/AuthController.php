@@ -103,13 +103,11 @@ class AuthController extends Controller
             // $this->validate(request(), ['email' => 'required']);
 
             $check = User::where('email',$request->email)->where('role_id',7)->first();
-
             if(isset($check->email)&&($check->email==$request->email)){
                 $code = Str::random(6);
-
                 $add = new PasswordReset;
                 $add->email = $request->email;
-                $add->token = $request->_token;
+                $add->token = isset($request->_token)?$request->_token:NULL;
                 $add->code  = $code;
                 $add->created_at = date('Y-m-d H:i:s');
                 $add->save();
