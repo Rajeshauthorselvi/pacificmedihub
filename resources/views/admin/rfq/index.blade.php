@@ -106,7 +106,9 @@
                                   @if($rfq->status==25 || $rfq->status==24)
                                     <a href="{{ route('rfq.toOrder',$rfq->id) }}" onclick="return confirm('Are you sure want to Place Order?')"><li class="dropdown-item"><i class="fa fa-heart"></i>&nbsp;&nbsp;Create Order</li></a>
                                   @endif
-                                  <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
+                                  @if (Auth::check())
+                                    <a href="javascript:void(0)"><li class="dropdown-item"><i class="fa fa-star"></i>&nbsp;&nbsp;Create Purchase</li></a>
+                                  @endif
 
                                   <a href="{{ url('admin/rfq_pdf/'.$rfq->id) }}"><li class="dropdown-item"><i class="far fa-file-pdf"></i>&nbsp;&nbsp;Download as PDF</li></a>
 

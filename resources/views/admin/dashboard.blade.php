@@ -88,6 +88,74 @@
           </div>
 
           @endif
+          @if (!Auth::check() && Auth::guard('employee')->user()->emp_department==1)
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box">
+                <div class="inner">
+                  <h4>RFQ</h4>
+                  <p>Total New Quotations</p>
+                </div>
+                <div class="icon">
+                  <span>{{$rfq_count}}</span>
+                </div>
+                <a href="{{route('rfq.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Orders</h4>
+                <p>Total New Orders</p>
+              </div>
+              <div class="icon">
+                <span>{{$pending_order_count}}</span>
+              </div>
+              <a href="{{route('new-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Deliveries</h4>
+                <p>Total Delivered</p>
+              </div>
+              <div class="icon">
+                <span>{{$delivery_completed}}</span>
+              </div>
+              <a href="{{route('completed-orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Delivery InProcess</h4>
+                <p>InProcess</p>
+              </div>
+              <div class="icon">
+                <span>{{$delivery_inprocess}}</span>
+              </div>
+              <a href="{{route('assign-delivery.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h4>Customers</h4>
+                <p>Total Customers</p>
+              </div>
+              <div class="icon">
+                <span>{{$customer_count}}</span>
+              </div>
+              <a href="{{route('customers.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          @endif
 
 
           @if (!Auth::check() && Auth::guard('employee')->user()->emp_department==3)

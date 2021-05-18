@@ -55,6 +55,7 @@
                   <li class="nav-item">
                     <a href="{{ route('customers.index') }}" class="nav-link active" title="Active Customer List"><i class="fas fa-users"></i> &nbsp;Active Customers</a>
                   </li>
+                  @if (Auth::check())
                   <li class="nav-item">
                     <a href="{{ route('new.customer') }}" class="nav-link" title="New Customer Requests List"><i class="fas fa-user-plus"></i> &nbsp;New Requests</a>
                   </li>
@@ -67,6 +68,7 @@
                   <li class="nav-item">
                     <a href="{{ route('interested.customers') }}" class="nav-link" title="Interested Customer List"><i class="fas fa-user-tie"></i> &nbsp;Interested Customers</a>
                   </li>
+                  @endif
                 </ul>
               </div>
               <div class="card">

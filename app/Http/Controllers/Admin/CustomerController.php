@@ -41,7 +41,17 @@ class CustomerController extends Controller
         }
 
         $data=array();
-        $data['all_customers'] = User::where('users.role_id',7)->where('appoved_status',3)->where('status',1)->where('is_deleted',0)->orderBy('id','desc')->get();
+        $customers= User::where('users.role_id',7)
+                                ->where('appoved_status',3)
+                                ->where('status',1)
+                                ->where('is_deleted',0);
+                                if (!Auth::check()) {
+                                    $customers->where('sales_rep',Auth::guard('employee')->user()->id);
+                                }
+                                $customers=$customers->orderBy('id','desc')
+                                ->get();
+        $data['all_customers']=$customers;
+
         return view('admin.customer.index',$data);
     }
 
