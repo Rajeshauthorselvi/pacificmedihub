@@ -64,11 +64,25 @@ class RFQCommentsController extends Controller
         $data=[
             'rfq_id'                  => $request->rfq_id,
             'comment'                 => $request->comment,
-            'commented_by'            => $auth_id,
-            'commented_by_user_type'  => $created_user_type
+            'commented_by'            => Auth::id(),
+            'commented_by_user_type'  => 3
         ];
 
         $rfq_commene_id = RFQComments::insertGetId($data);
+            if (isset($request->image)) {
+                $imgArray = array();
+                    $type=$request->type;
+                    $photo_id=$request->image;
+                    $original_path = public_path('/theme/images/rfq_comment_attachment');
+                      if (base64_decode($photo_id, true) == true  && ($photo_id!=""))
+                      {
+                          $type=explode('/',$type);
+                          $full_filename=uniqid().'.'.$type[1];
+                          $imgArray[] = $full_filename;
+                          $decode_img = base64_decode($photo_id);
+                          $success = file_put_contents($original_path.$full_filename, $decode_img);
+                      }
+            }
 
         $rfq_details=RFQ::with('customer','salesrep','statusName')->where('rfq.id',$request->rfq_id)->first();
         Notification::insert([
