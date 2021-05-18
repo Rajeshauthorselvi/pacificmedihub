@@ -172,9 +172,34 @@
                           <td>{{ $order->customer->name }}</td>
                           <td>{{ $order->salesrep->emp_name }}</td>
                           <td>
+                            @if ($active_menu[0]!="completed-orders")
                             <span class="badge" style="background: {{ $order->statusName->color_codes }};color: #fff">
                             {{  $order->statusName->status_name  }}
                             </span>
+                            @else
+                            <?php 
+                              $active_order=\App\Models\CustomerOrderReturn::where('order_id',$order->id)->first();
+                              $total_quantity=\App\Models\OrderProducts::where('order_id',$order->id)->sum('quantity');
+
+                              ?>
+                              @if (isset($active_order) && $active_order->order_return_status==22)
+                                <span class="badge" style="background:#f0ad4e;color:#fff;padding: 5px">
+                                  Return Request
+                                </span>
+                              @elseif (isset($active_order) && $active_order->order_return_status==24)
+                                <span class="badge badge-info" style="padding: 5px">
+                                  Return Request Approved
+                                </span>
+                              @elseif (isset($active_order) && $active_order->order_return_status==2 && $total_quantity==0)
+                                <span class="badge badge-info" style="padding: 5px;background:#f0ad4e;">
+                                   Goods Returned
+                                </span>
+                              @else
+                                <span class="badge" style="background: {{ $order->statusName->color_codes }};color: #fff">
+                                {{  $order->statusName->status_name  }}
+                                </span>
+                              @endif
+                            @endif
                           </td>
                            @if ($active_menu[0]=="completed-orders" &&  Auth::check()) 
                           <td class="total_amount">{{$order->sgd_total_amount}}</td>

@@ -47,7 +47,7 @@
                   <table id="example2" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                          <th><input type="checkbox" class="select-all"></th>
+                          {{-- <th><input type="checkbox" class="select-all"></th> --}}
                           <th>Delivery Method</th>
                           <th>Chargeable Amount</th>
                           <th>Target Amount</th>
@@ -58,9 +58,9 @@
                     <tbody>
                         @foreach ($all_delivery_methods as $delivery_method)
                           <tr>
-                            <td>
+                           {{--  <td>
                               <input type="checkbox" value="{{ $delivery_method->id }}" name="method-ids">
-                            </td>
+                            </td> --}}
                             <td>{{ $delivery_method->delivery_method }}</td>
                             <td>{{ $delivery_method->amount }}</td>
                             <td>{{ $delivery_method->target_amount }}</td>

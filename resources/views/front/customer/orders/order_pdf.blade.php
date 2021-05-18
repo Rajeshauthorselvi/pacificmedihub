@@ -129,6 +129,9 @@
                       <th style="font-weight: normal;border-right: 1px solid #000;">
                         Quantity <br><small>(b)</small>
                       </th>
+                      @if ($returns->order_return_status!=0)
+                      <th>Return Quantity</th>
+                      @endif
                       <th style="font-weight: normal;border-right: 1px solid #000;">
                         Total <br><small>(a x b)</small>
                       </th>
@@ -137,9 +140,13 @@
                   <tbody style="font-size: 14px;">
                     <?php $total_amount=$total_quantity=$final_price=0; ?>
                     @foreach($product['product_variant'] as $key=>$variant)
-                      <?php 
+                    <?php 
+                    $order_returns=\App\Models\CustomerOrderReturnProducts::ReturnProducts($orders->id,$variant['product_id'],$variant['variant_id']);
+
                         $option_count=$product['option_count'];
-                        $variation_details=\App\Models\OrderProducts::where('product_id',$product['product_id'])->where('product_variation_id',$variant['variant_id'])->first();
+                        $variation_details=\App\Models\OrderProducts::where('product_id',$product['product_id'])->where('product_variation_id',$variant['variant_id'])
+                        ->where('order_id',$orders->id)
+                        ->first();
                         
                       ?>
                      
@@ -173,6 +180,15 @@
                         <td style="border: 1px solid #000">
                           {{ $variation_details['quantity'] }}
                         </td>
+                        @if ($returns->order_return_status!=0)
+                          <td style="border: 1px solid #000">
+                            @if(isset($order_returns->damage_quantity) || isset($order_returns->return_quantity))
+                            {{  $order_returns->return_quantity+$order_returns->damage_quantity  }}
+                            @else
+                              -
+                            @endif
+                          </td>
+                        @endif
                         <td style="border: 1px solid #000">
                           {{ $variation_details['sub_total'] }}
                         </td>
@@ -185,6 +201,7 @@
                         Total:
                       </td>
                       <td  style="border: 1px solid #000">{{ $total_quantity }}</td>
+                      <td></td>
                       <td style="border: 1px solid #000;border-collapse: collapse;">{{ $total_amount }}</td>
                     </tr>
                   </tbody>
@@ -231,4 +248,3 @@
       Stamp & Signature
     </div>
   </div>
-  

@@ -365,7 +365,7 @@ class MyOrdersController extends Controller
         $data['payment_terms']    = [''=>'Please Select']+PaymentTerm::where('published',1)->where('is_deleted',0)
                                         ->pluck('name','id')->toArray();  
         $data['currencies']       = Currency::where('is_deleted',0)->where('published',1)->get();
-
+        $data['returns'] = CustomerOrderReturn::where('order_id',$id)->first();
         //return view('front/customer/orders/order_pdf',$data);
 
         $layout = View::make('front.customer.orders.order_pdf',$data);
