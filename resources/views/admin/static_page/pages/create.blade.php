@@ -1,6 +1,11 @@
 @extends('admin.layouts.master')
 @section('main_container')
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<script src="{{ asset('theme/plugins/ckeditor/ckeditor.js') }}"></script>
+<script src="{{ asset('theme/plugins/ckeditor/samples/js/sample.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('theme/plugins/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css') }}">
+
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -48,6 +53,7 @@
               <div class="card-body">
                 {!! Form::open(['route'=>'static-page.store','method'=>'POST','class'=>'page-form']) !!}
                   <div class="form-group">
+                    {!! Form::hidden('from','page') !!}
                     <div class="col-sm-12">
                       <label for="pageTitle">Page Title *</label>
                       {!!Form::text('page_title',null, ['class'=>'form-control','id'=>'pageTitle'])!!}
@@ -57,9 +63,12 @@
                   <div class="form-group">
                     <div class="col-sm-12">
                       <label>Page Contents *</label>
-                      <div class="centered">
-                        <div id="editor"></div>
-                        <textarea id="editor1" name="editor1"></textarea>
+                      <div class="adjoined-bottom">
+                        <div class="grid-container">
+                          <div class="grid-width-100">
+                            <textarea id="editor" name="page_content"></textarea>
+                          </div>
+                        </div>
                       </div>
                       <span class="text-danger page_contents" style="display:none;">Page Contents is required.</span>
                     </div>
@@ -106,34 +115,12 @@
       display: flex;
     }
   </style>
-  {{-- <script src="{{ asset('theme/plugins/ckeditor/ckeditor.js') }}"></script> --}}
-  <script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
   <script>
-
-ClassicEditor
-  .create( document.querySelector( '#editor1' ), {
-    ckfinder: {
-      uploadUrl:  "{{route('ckfinder.upload', ['_token' => csrf_token() ])}}",
-    }
-  } )
-  .catch( error => {
-    console.error( error );
-  } );
+    initSample();
   </script>
 
   @push('custom-scripts')
     <script type="text/javascript">
-
-      $(document).ready(function($) {
-        $('.page-contents').summernote({
-          height: 300,
-          callbacks: {
-            onInit: function() {
-              $("div.note-editor button.btn-codeview").click();
-            }
-          }
-        });
-      });
 
       $('.page-form').on('keyup keypress', function(e) {
         var keyCode = e.keyCode || e.which;
@@ -158,18 +145,6 @@ ClassicEditor
           $("#pageTitle").closest('.form-group').find('span.text-danger.page_title').show();
           valid = false;
         }
-
-        if($('.page-contents').summernote('isEmpty')) {
-    console.log('contents is empty, fill it!');
-
-    // cancel submit
-  }
-
-        if ($(".page-contents").val()=="") {
-          $(".page-contents").closest('.form-group').find('span.text-danger.page_contents').show();
-          valid = false;
-        }
-        return valid;
       }
 
       function scroll_to(form){

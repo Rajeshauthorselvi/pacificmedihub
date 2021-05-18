@@ -73,54 +73,67 @@ class StaticPageController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         $data=array();
-        if($request->from=='home'){
+        if($request->from=='page'){
+            if($request->published){$published = 1;}else{$published = 0;}
+            $add_page = new StaticPage;
+            $add_page->page_title   = $request->page_title;
+            $add_page->page_content = $request->page_content;
+            $add_page->sort_by      = $request->sort_order;
+            $add_page->slug         = $request->search_engine;
+            $add_page->published    = $published;
+            $add_page->created_at   = date('Y-m-d H:i:s');
+            $add_page->save();
+        }else{
+            if($request->from=='home'){
 
-            $update_slider = Slider::where('is_deleted',0)->update(['published'=>0]);
-            if($update_slider){
-                Slider::where('id',$request->slider)->update(['published'=>1]);
+                $update_slider = Slider::where('is_deleted',0)->update(['published'=>0]);
+                if($update_slider){
+                    Slider::where('id',$request->slider)->update(['published'=>1]);
+                }
+
+                $update_features = FeatureBlock::where('is_deleted',0)->update(['published'=>0]);
+                if($update_features){
+                    FeatureBlock::where('id',$request->features)->update(['published'=>1]);
+                }
+
+                $content=[
+                    'slider_status'         => $request->slider_status,
+                    'features_status'       => $request->features_status,
+                    'new_arrival_status'    => $request->new_arrival_status,
+                    'category_block_status' => $request->category_block_status
+                ];
+            }
+            if($request->from=='header'){
+                $image = $request->hasFile('main_image');
+                if($image){
+                    $photo          = $request->file('main_image');            
+                    $filename       = $photo->getClientOriginalName();            
+                    $file_extension = $request->file('main_image')->getClientOriginalExtension();
+                    $image_name     = strtotime("now").".".$file_extension;
+                    $request->main_image->move(public_path('front/img/'), $image_name);
+                }
+                else{
+                    $image_name = 'logo_mtcu.png';
+                }
+                $content=[
+                    'image'     => $image_name,
+                    'email'     => $request->email,
+                    'helpline'  => $request->helpline
+                ];  
             }
 
-            $update_features = FeatureBlock::where('is_deleted',0)->update(['published'=>0]);
-            if($update_features){
-                FeatureBlock::where('id',$request->features)->update(['published'=>1]);
-            }
+            $data['content']      = serialize($content);
+            $data['key']          = 'front-end';
+            $data['code']         = $request->from;
+            $data['if_serialize'] = 1;
+            $data['created_at']   = date('Y-m-d H:i:s');
 
-            $content=[
-                'slider_status'         => $request->slider_status,
-                'features_status'       => $request->features_status,
-                'new_arrival_status'    => $request->new_arrival_status,
-                'category_block_status' => $request->category_block_status
-            ];
+            Settings::updateOrCreate(
+                ['key'=>'front-end','code'=>$request->from],$data
+            );
         }
-        if($request->from=='header'){
-            $image = $request->hasFile('main_image');
-            if($image){
-                $photo          = $request->file('main_image');            
-                $filename       = $photo->getClientOriginalName();            
-                $file_extension = $request->file('main_image')->getClientOriginalExtension();
-                $image_name     = strtotime("now").".".$file_extension;
-                $request->main_image->move(public_path('front/img/'), $image_name);
-            }
-            else{
-                $image_name = 'logo_mtcu.png';
-            }
-            $content=[
-                'image'     => $image_name,
-                'email'     => $request->email,
-                'helpline'  => $request->helpline
-            ];  
-        }
-
-        $data['content']      = serialize($content);
-        $data['key']          = 'front-end';
-        $data['code']         = $request->from;
-        $data['if_serialize'] = 1;
-        $data['created_at']   = date('Y-m-d H:i:s');
-
-        Settings::updateOrCreate(
-            ['key'=>'front-end','code'=>$request->from],$data
-        );
 
         return Redirect::route('static-page.index')->with('success','Page change updated successfully...!');
     }
@@ -142,9 +155,11 @@ class StaticPageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($from)
+    public function edit($id)
     {
-        //
+        $data = array();
+        $data['page'] = StaticPage::find($id);
+        return view('admin/static_page/pages/edit',$data);
     }
 
     /**
@@ -156,7 +171,19 @@ class StaticPageController extends Controller
      */
     public function update(Request $request, $id)
     {
-       //
+        $update_page = StaticPage::find($id);
+        if($update_page){
+            if($request->published){$published = 1;}else{$published = 0;}
+            $update_page->page_title   = $request->page_title;
+            $update_page->page_content = $request->page_content;
+            $update_page->sort_by      = $request->sort_order;
+            $update_page->slug         = $request->search_engine;
+            $update_page->published    = $published;
+            $update_page->save();
+            return redirect()->route('static-page.index')->with('info','Page updated successfully...!');
+        }else{
+            return redirect()->route('static-page.index')->with('info','Somthing wrong please check and try again...!');
+        }
     }
 
     /**
@@ -167,6 +194,13 @@ class StaticPageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $check_page = StaticPage::find($id);
+        if($check_page){
+            $check_page->published  = 0;
+            $check_page->is_deleted = 1;
+            $check_page->deleted_at = date('Y-m-d H:i:s');
+            $check_page->save();
+        }
+        return redirect()->route('static-page.index')->with('error','Page deleted successfully...!');
     }
 }

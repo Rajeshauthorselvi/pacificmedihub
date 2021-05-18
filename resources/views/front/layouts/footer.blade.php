@@ -2,6 +2,8 @@
 	$categories = App\Models\Categories::where('published',1)->where('is_deleted',0)
 											  ->where('parent_category_id',NULL)->limit(5)
 											  ->orderBy('display_order','asc')->get();
+
+	$static_pages = App\Models\StaticPage::where('published',1)->where('is_deleted',0)->orderBy('sort_by','asc')->get();
 ?>
 
 <div class="footer">
@@ -30,11 +32,10 @@
 		<div class="container">
 			<ul>
 				<li><strong>Useful Links:</strong></li>
-				<li><a href="">About Us</a></li>
-				<li><a href="">FAQ</a></li>
-				<li><a href="">Privacy Policy</a></li>
-				<li><a href="">Terms & Condition</a></li>
-				<li><a href="">Custom Service</a></li>
+				@foreach($static_pages as $page)
+					<?php $page_id = base64_encode($page->id); ?>
+					<li><a href="{{ url("static/page/$page->slug/$page_id") }}">{{ $page->page_title }}</a></li>
+				@endforeach
 			</ul>
 			<ul>
 				<li><strong>Categories:</strong></li>

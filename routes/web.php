@@ -310,5 +310,6 @@ Route::post('search',['as'=>'seach.text','uses'=>'front\HomePageController@searc
 Route::get('{slug}/{category_id}','front\ShopController@category');
 //Product
 Route::get('{category_slug}/{product_slug}/{product_id}','front\ShopController@product');
-//About Us
-Route::get('about-us','front\AboutController@index');
+
+//Static Pages
+Route::get('static/page/{slug}/{page_id}','front\PageController@index');
