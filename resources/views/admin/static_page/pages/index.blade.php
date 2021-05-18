@@ -53,12 +53,37 @@
                     <tbody>
                       <tr>
                         <td>Header Block</td><td><i class="fas fa-check"></i></td>
-                        <td><a href="{{ route('static-page.create','header') }}" class="btn btn-primary">Edit</a></td>
+                        <td><a href="{{ route('static-page.create','header') }}" class="btn btn-primary">
+                          <i class="far fa-edit"></i>&nbsp;Edit</a>
+                        </td>
                       </tr>
                       <tr>
                         <td>Home Page</td><td><i class="fas fa-check"></i></td>
-                        <td><a href="{{ route('static-page.create','home') }}" class="btn btn-primary">Edit</a></td>
+                        <td><a href="{{ route('static-page.create','home') }}" class="btn btn-primary">
+                          <i class="far fa-edit"></i>&nbsp;Edit</a>
+                        </td>
                       </tr>
+                      @foreach($static_pages as $page)
+                        <tr>
+                          <td>{{ $page->page_title }}</td>
+                          <?php 
+                            if($page->published==1){$published = "fa-check";}
+                            else{$published = "fa-ban";}
+                          ?>
+                          <td><i class="fas {{$published}}"></i></td>
+                          <td>
+                            <a href="{{ route('static-page.edit',$page->id) }}" class="btn btn-primary">
+                            <i class="far fa-edit"></i>&nbsp;Edit</a>&nbsp;&nbsp;
+                            
+                            <a href="#">
+                              <form method="POST" action="{{ route('static-page.destroy',$page->id) }}">@csrf 
+                                <input name="_method" type="hidden" value="DELETE">
+                                <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this page?');"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;Delete</button>
+                              </form>
+                            </a>
+                          </td>
+                        </tr>
+                      @endforeach
                     </tbody>
                   </table>
                 </div>
@@ -70,8 +95,9 @@
     </section>
   </div>
 
-  @push('custom-scripts')
- 
-  @endpush
-  
+  <style type="text/css">
+    #example2 td a {
+      display: inline-block;
+    }
+  </style>
 @endsection
