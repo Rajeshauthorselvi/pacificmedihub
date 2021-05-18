@@ -530,18 +530,17 @@ class EmployeeController extends Controller
         $p_commission = 0; $commission = 0; $get_commission = 0; $get_target_commission = 0;
 
         foreach ($orders as $key => $order) {
-            $order_prd_id = OrderProducts::where('order_id',$order->id)->pluck('product_id')->toArray();
+            $order_products = OrderProducts::where('order_id',$order->id)->groupBy('product_id')->get();
 
-            $products = Product::whereIn('id',$order_prd_id)->get();
-            foreach($products as $prd_key => $product)
+            foreach($order_products as $prd_key => $item)
             {
-                $order_per = OrderProducts::where('product_id',$product->id)->sum('sub_total');
+                $order_per = OrderProducts::where('product_id',$item->product_id)->sum('sub_total');
                 
-                if(isset($product->commissionType) && $product->commissionType->commission_type=='p'){
-                    $get_prod_commission = $product->commission_value/100;
+                 if(isset($item->commissionType) && $item->commissionType->commission_type=='p'){
+                    $get_prod_commission = $item->commissionType->commission_value/100;
                     $percentage_value    = $order_per*$get_prod_commission;
-                }else if(isset($product->commissionType) && $product->commissionType->commission_type=='f'){
-                    $fixed_value = $product->commission_value;
+                }else if(isset($item->commissionType) && $item->commissionType->commission_type=='f'){
+                    $fixed_value = $item->commissionType->commission_value;
                 }
                 $p_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
             }
@@ -618,19 +617,18 @@ class EmployeeController extends Controller
                                 ->get();
         $order_data = $product_variant = array();
         foreach ($orders as $key => $order) {
-            $order_prd_id = OrderProducts::where('order_id',$order->id)->pluck('product_id')->toArray();
-
-            $products = Product::whereIn('id',$order_prd_id)->get();
             $p_commission = 0;
-            foreach($products as $prd_key => $product)
+            $order_products = OrderProducts::where('order_id',$order->id)->groupBy('product_id')->get();
+
+            foreach($order_products as $prd_key => $item)
             {
-                $order_per = OrderProducts::where('product_id',$product->id)->sum('sub_total');
+                $order_per = OrderProducts::where('product_id',$item->product_id)->sum('sub_total');
                 
-                if(isset($product->commissionType) && $product->commissionType->commission_type=='p'){
-                    $get_prod_commission = $product->commission_value/100;
+                 if(isset($item->commissionType) && $item->commissionType->commission_type=='p'){
+                    $get_prod_commission = $item->commissionType->commission_value/100;
                     $percentage_value    = $order_per*$get_prod_commission;
-                }else if(isset($product->commissionType) && $product->commissionType->commission_type=='f'){
-                    $fixed_value = $product->commission_value;
+                }else if(isset($item->commissionType) && $item->commissionType->commission_type=='f'){
+                    $fixed_value = $item->commissionType->commission_value;
                 }
                 $p_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
             }

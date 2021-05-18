@@ -42,6 +42,13 @@ class Employee extends Model
         return $this->belongsTo('App\Models\CommissionValue','target_commission_type');
     }
 
+    static function commissionType($commission_type_id){
+        $commission = DB::table('commission_values')->where('commission_id',$commission_type_id)->first();
+        return $commission;
+    }
+
+    
+
     static function getCommissionValue($emp_id,$pre_month,$year){
 
         $orders = DB::table('orders')->where('sales_rep_id',$emp_id)->where('order_status',13)
@@ -51,22 +58,20 @@ class Employee extends Model
         $p_commission = 0; $commission=0; $commissions = 0;
         foreach ($orders as $key => $order) {
 
-            $order_prd_id = OrderProducts::where('order_id',$order->id)->pluck('product_id')->toArray();
-
-            $products = Product::whereIn('id',$order_prd_id)->get();
-            foreach($products as $prd_key => $product)
+            $order_products = OrderProducts::where('order_id',$order->id)->groupBy('product_id')->get();
+            
+            foreach($order_products as $prd_key => $item)
             {
-                $order_per = OrderProducts::where('product_id',$product->id)->sum('sub_total');
-                
-                if(isset($product->commissionType) && $product->commissionType->commission_type=='p'){
-                    $get_prod_commission = $product->commission_value/100;
+                $order_per = OrderProducts::where('product_id',$item->product_id)->sum('sub_total');
+
+                if(isset($item->commissionType) && $item->commissionType->commission_type=='p'){
+                    $get_prod_commission = $item->commissionType->commission_value/100;
                     $percentage_value    = $order_per*$get_prod_commission;
-                }else if(isset($product->commissionType) && $product->commissionType->commission_type=='f'){
-                    $fixed_value = $product->commission_value;
+                }else if(isset($item->commissionType) && $item->commissionType->commission_type=='f'){
+                    $fixed_value = $item->commissionType->commission_value;
                 }
                 $p_commission = (isset($percentage_value)?$percentage_value:0)+(isset($fixed_value)?$fixed_value:0);
             }
-
             $employee = Employee::find($emp_id);
 
             if(isset($employee->baseCommission) && $employee->baseCommission->commission_type=='f'){

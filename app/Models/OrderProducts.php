@@ -52,4 +52,8 @@ class OrderProducts extends Model
         $location=array_filter($location);
         return ['batch_exp'=>implode(',', $batch_exp),'location'=>implode(',', $location)];
     }
+
+    public function commissionType(){
+        return $this->belongsTo('App\Models\CommissionValue','commission_type');   
+    }
 }
