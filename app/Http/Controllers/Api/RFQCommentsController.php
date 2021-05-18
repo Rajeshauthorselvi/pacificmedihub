@@ -89,10 +89,10 @@ class RFQCommentsController extends Controller
             'type'                => 'orders',
             'ref_id'              => $request->rfq_id,
             'customer_id'         => Auth::id(),
-            'content'             => $creater_name.' added new comment to '.$rfq_details->order_no,
+            'content'             => Auth::user()->name.' added new comment to '.$rfq_details->order_no,
             'url'                 => url('admin/rfq-comments/'.$request->rfq_id),
             'created_at'          => date('Y-m-d H:i:s'),
-            'created_by'          => $auth_id,
+            'created_by'          => Auth::id(),
             'created_user_type'   => 3,
         ]);
 
