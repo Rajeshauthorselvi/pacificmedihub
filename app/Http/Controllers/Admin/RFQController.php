@@ -334,7 +334,7 @@ class RFQController extends Controller
                                      ->toArray();
       $product_data = $product_variant=array();
       $products     = RFQProducts::where('rfq_id',$id)->groupBy('product_id')->get();
-      $data['delivery_methods'] = DeliveryMethod::all();
+      $data['delivery_methods'] = DeliveryMethod::where('status',1)->get();
         $data['free_delivery'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('amount');
         $data['free_delivery_target'] = DeliveryMethod::where('is_free_delivery','yes')->where('status',1)->value('target_amount');
       foreach ($products as $key => $product) {
